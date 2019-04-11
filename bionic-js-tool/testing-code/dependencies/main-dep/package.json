@@ -1,0 +1,13 @@
+{
+  "name": "main-dep",
+  "version": "1.0.0",
+  "description": "Main Dep!",
+  "author": "Marco Vanetti",
+  "license": "SEE LICENSE IN license.txt",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "shared-dep": "file:../shared-dep"
+  },
+  "devDependencies": {}
+}

@@ -1,0 +1,17 @@
+{
+  "name": "guest-code",
+  "version": "1.0.0",
+  "description": "BionicJS guest code example",
+  "author": "Marco Vanetti",
+  "license": "SEE LICENSE IN license.txt",
+  "private": true,
+  "main": "guest1.js",
+  "dependencies": {
+    "indirect-dep": "file:../dependencies/indirect-dep",
+    "main-dep": "file:../dependencies/main-dep",
+    "format": "0.2.2"
+  },
+  "devDependencies": {
+    "dev-dep": "file:../dependencies/dev-dep"
+  }
+}

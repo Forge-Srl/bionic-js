@@ -1,0 +1,11 @@
+{
+  "name": "indirect-dep",
+  "version": "1.0.0",
+  "description": "Indirect Dep!",
+  "author": "Marco Vanetti",
+  "license": "SEE LICENSE IN license.txt",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {}
+}

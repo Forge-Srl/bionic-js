@@ -1,0 +1,28 @@
+{
+  "name": "bionicjs",
+  "version": "0.1.0",
+  "description": "Bionic.js",
+  "author": "Marco Vanetti",
+  "license": "SEE LICENSE IN license.txt",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "compile-parser": "node node_modules/pegjs/bin/pegjs --allowed-start-rules \"CommentText, Tags, BionicTag, DescriptionTag\" -o parser/Parser.js parser/pegjsSrc/Parser.pegjs"
+  },
+  "dependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/generator": "^7.3.0",
+    "@babel/parser": "^7.3.1",
+    "chokidar": "^2.0.4",
+    "flatmap": "0.0.3",
+    "ignore": "^5.0.5",
+    "mkdirp": "^0.5.1",
+    "npm": "^6.7.0",
+    "rimraf": "^2.6.3",
+    "string-format": "^2.0.0"
+  },
+  "devDependencies": {
+    "jest-cli": "^24.0.0",
+    "pegjs": "^0.10.0"
+  }
+}

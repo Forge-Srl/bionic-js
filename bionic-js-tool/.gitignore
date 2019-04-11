@@ -1,0 +1,13 @@
+# Custom
+bionic/testing-code/guest/package-lock.json
+bionic/testing-code/host
+
+# IntelliJ
+**/.idea/workspace.xml
+
+# Node.js
+node_modules
+
+# Coverages
+**/core/coverage
+**/parser/coverage

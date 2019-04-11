@@ -1,0 +1,4 @@
+1. Modify the parsers source (Parser.pegjs) using online tool (https://pegjs.org/online)
+
+2. Generate the JS parser running the npm script target "compile-parser"
+    npm run compile-parser
