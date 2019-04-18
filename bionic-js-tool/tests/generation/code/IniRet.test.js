@@ -1,4 +1,4 @@
-const t = require('../../common')
+const t = require('../../test-utils')
 const codeDir = 'generation/code/'
 
 describe('IniRet', () => {
@@ -9,8 +9,8 @@ describe('IniRet', () => {
         CodeBlock = t.requireModule(`${codeDir}CodeBlock`)
     })
 
-    test('empty constructor', () => {
-        const iniRet = new IniRet()
+    test('create', () => {
+        const iniRet = IniRet.create()
         expect(iniRet.returningCode).toBeInstanceOf(CodeBlock)
         expect(iniRet.returningCode.codeElements).toEqual([])
         expect(iniRet.initializationCode).toBeInstanceOf(CodeBlock)
@@ -18,6 +18,6 @@ describe('IniRet', () => {
     })
 
     test('append', () => {
-        expect(false)
+        fail('todo')
     })
 })

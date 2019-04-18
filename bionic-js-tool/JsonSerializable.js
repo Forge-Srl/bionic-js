@@ -1,7 +1,26 @@
 class JsonSerializable {
 
     static fromObj(obj) {
-        return Object.assign(new this(), obj)
+        if (this.getDeserializationInfo && obj) {
+            const info = this.getDeserializationInfo()
+            const classId = obj[info.idField]
+            const classFactory = info.ids[classId]
+            if (classFactory) {
+                const ObjectClass = classFactory()
+
+                // static getDeserializationInfo should not be inherited
+                if (this.getDeserializationInfo === ObjectClass.getDeserializationInfo)
+                    ObjectClass.getDeserializationInfo = undefined
+
+                // static fromSuperObj should not be inherited
+                if (this.fromSuperObj === ObjectClass.fromSuperObj)
+                    ObjectClass.fromSuperObj = undefined
+
+                return ObjectClass.fromObj(obj)
+            }
+        }
+
+        return this.fromSuperObj ? this.fromSuperObj(obj) : Object.assign(new this(), obj)
     }
 
     static fromObjList(objList) {
@@ -18,7 +37,7 @@ class JsonSerializable {
 
     static fromJsonList(json) {
         try {
-            return JSON.parse(json).map(obj => this.fromObj(obj))
+            return this.fromObjList(JSON.parse(json))
         } catch (error) {
             throw new Error(`Cannot deserialize a list of ${this.name} from JSON:'${json}'`)
         }
@@ -30,6 +49,10 @@ class JsonSerializable {
         } catch (error) {
             throw new Error(`Cannot deserialize native JSON:'${json}'`)
         }
+    }
+
+    static toJsonNative(obj) {
+        return JSON.stringify(obj)
     }
 
     get toJson() {

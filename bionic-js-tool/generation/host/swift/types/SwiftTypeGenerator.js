@@ -36,12 +36,12 @@ class SwiftTypeGenerator extends HostGenerator {
     }
 
 
-    getJsIniRet(nativeIniRet) {
+    getJsIniRet(nativeIniRet, context) {
         return IniRet.create()
             .appendRet('Bjs.get.putPrimitive(').append(nativeIniRet).appendRet(')')
     }
 
-    getNativeIniRet(jsIniRet) {
+    getNativeIniRet(jsIniRet, context) {
         return IniRet.create()
             .appendRet(`Bjs.get.${this.getJsToPrimitiveMethodName()}(`).append(jsIniRet).appendRet(')')
     }

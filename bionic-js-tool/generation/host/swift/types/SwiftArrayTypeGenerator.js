@@ -7,7 +7,7 @@ class SwiftArrayTypeGenerator extends SwiftTypeGenerator {
         return `[${this.schema.elementType.getSwiftGenerator().getTypeStatement()}]?`
     }
 
-    getJsIniRet(nativeIniRet) {
+    getJsIniRet(nativeIniRet, context) {
         const elementNativeIniRet = IniRet.create().appendRet('$0')
         const elementJsIniRet = this.schema.elementType.getJsIniRet(elementNativeIniRet)
         return IniRet.create()
@@ -19,7 +19,7 @@ class SwiftArrayTypeGenerator extends SwiftTypeGenerator {
             .appendIni(nativeIniRet.initializationCode)
     }
 
-    getNativeIniRet(jsIniRet) {
+    getNativeIniRet(jsIniRet, context) {
         const elementJsIniRet = IniRet.create().appendRet('$0')
         const elementNativeIniRet = this.schema.elementType.getNativeIniRet(elementJsIniRet)
         return IniRet.create()

@@ -1,6 +1,6 @@
-class BlockContext {
+class GenerationContext {
 
-    constructor(lastUniqueId) {
+    constructor(lastUniqueId = 0) {
         Object.assign(this, {lastUniqueId})
     }
 
@@ -9,4 +9,4 @@ class BlockContext {
     }
 }
 
-module.exports = BlockContext
+module.exports = GenerationContext

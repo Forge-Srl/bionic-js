@@ -1,4 +1,4 @@
-const t = require('./common/index')
+const t = require('./test-utils')
 
 describe('JsonSerializable', () => {
 
@@ -9,16 +9,237 @@ describe('JsonSerializable', () => {
         JsonSerializable = t.requireModule('jsonSerializable')
     })
 
-    test('fromObj base behavior', () => {
+    test('fromObj without getDeserializationInfo()', () => {
 
         class SerializedObj extends JsonSerializable {
         }
 
-        const obj = SerializedObj.fromObj({prop1: 'test1', prop2: 'test2'})
+        const jsonObj = {prop1: 'test1', prop2: 'test2'}
+        const obj = SerializedObj.fromObj(jsonObj)
 
         expect(obj).toBeInstanceOf(SerializedObj)
-        expect(obj.prop1).toBe('test1')
-        expect(obj.prop2).toBe('test2')
+        expect(obj).toEqual(jsonObj)
+    })
+
+    test('fromObj without getDeserializationInfo() with fromSuperObj()', () => {
+
+        class SerializedObj extends JsonSerializable {
+            static fromSuperObj(obj) {
+                return 'super instance'
+            }
+        }
+
+        const obj = SerializedObj.fromObj({prop1: 'test1', prop2: 'test2'})
+        expect(obj).toBe('super instance')
+    })
+
+    test('fromObj with getDeserializationInfo() but no idField', () => {
+
+        class SerializedObj extends JsonSerializable {
+            static getDeserializationInfo() {
+                return {
+                    idField: 'classId',
+                    ids: {},
+                }
+            }
+        }
+
+        const jsonObj = {prop1: 'test1'}
+        const obj = SerializedObj.fromObj(jsonObj)
+
+        expect(obj).toBeInstanceOf(SerializedObj)
+        expect(obj).toEqual(jsonObj)
+    })
+
+    test('fromObj with getDeserializationInfo() but no matching id', () => {
+
+        class SerializedObj extends JsonSerializable {
+            static getDeserializationInfo() {
+                return {
+                    idField: 'classId',
+                    ids: {
+                        id1: () => class SubClass extends SerializedObj {
+                        },
+                    },
+                }
+            }
+        }
+
+        const jsonObj = {prop1: 'test1', classId: 'unknownId'}
+        const obj = SerializedObj.fromObj(jsonObj)
+
+        expect(obj).toBeInstanceOf(SerializedObj)
+        expect(obj).toEqual(jsonObj)
+    })
+
+    test('fromObj with getDeserializationInfo()', () => {
+
+        class SerializedObj extends JsonSerializable {
+            static getDeserializationInfo() {
+                return {
+                    idField: 'classId',
+                    ids: {
+                        id1: () => null,
+                        id2: () => SubClass,
+                    },
+                }
+            }
+        }
+
+        class SubClass extends SerializedObj {
+        }
+
+        const jsonObj = {prop1: 'test1', classId: 'id2'}
+        const obj = SerializedObj.fromObj(jsonObj)
+
+        expect(obj).toBeInstanceOf(SubClass)
+        expect(obj).toEqual(jsonObj)
+
+        expect(SubClass.getDeserializationInfo).toBe(undefined)
+        expect(SerializedObj.getDeserializationInfo().idField).toBe('classId')
+    })
+
+    test('fromObj with getDeserializationInfo(), subClass with fromObj() method', () => {
+
+        class SerializedObj extends JsonSerializable {
+            static getDeserializationInfo() {
+                return {
+                    idField: 'classId',
+                    ids: {
+                        id1: () => null,
+                        id2: () => SubClass,
+                    },
+                }
+            }
+        }
+
+        class SubClass extends SerializedObj {
+            static fromObj(obj) {
+                return Object.assign(new SubClass(), {custom: obj.prop1})
+            }
+        }
+
+        const obj = SerializedObj.fromObj({prop1: 'test1', classId: 'id2'})
+
+        expect(obj).toBeInstanceOf(SubClass)
+        expect(obj).toEqual({custom: 'test1'})
+
+        expect(SubClass.getDeserializationInfo).toBe(undefined)
+        expect(SerializedObj.getDeserializationInfo().idField).toBe('classId')
+    })
+
+    test('fromObj with getDeserializationInfo(), superClass with getDeserializationInfo() method', () => {
+
+        class SerializedObj extends JsonSerializable {
+            static getDeserializationInfo() {
+                return {
+                    idField: 'classId',
+                    ids: {
+                        id: () => SubClass,
+                    },
+                }
+            }
+
+            static fromSuperObj(obj) {
+                return 'super instance'
+            }
+        }
+
+        class SubClass extends SerializedObj {
+            static getDeserializationInfo() {
+                return {
+                    idField: 'subClassId',
+                    ids: {
+                        sid: () => SubSubClass,
+                    },
+                }
+            }
+        }
+
+        class SubSubClass extends SubClass {
+        }
+
+
+        const jsonObj = {prop: 'test', classId: 'id', subClassId: 'sid'}
+        const obj = SerializedObj.fromObj(jsonObj)
+
+        expect(obj).toBeInstanceOf(SubSubClass)
+        expect(obj).toEqual(jsonObj)
+
+        expect(SerializedObj.getDeserializationInfo().idField).toBe('classId')
+        expect(SerializedObj.fromSuperObj()).toBe('super instance')
+
+        expect(SubClass.getDeserializationInfo().idField).toBe('subClassId')
+        expect(SubClass.fromSuperObj).toBe(undefined)
+
+        expect(SubSubClass.getDeserializationInfo).toBe(undefined)
+        expect(SubSubClass.fromSuperObj).toBe(undefined)
+    })
+
+    test('fromObj with getDeserializationInfo(), subClasses with fromSuperObj() method', () => {
+
+        class SerializedObj extends JsonSerializable {
+            static getDeserializationInfo() {
+                return {
+                    idField: 'classId',
+                    ids: {
+                        id: () => SubClass,
+                    },
+                }
+            }
+
+            static fromSuperObj(obj) {
+                return 'super instance'
+            }
+        }
+
+        class SubClass extends SerializedObj {
+            static getDeserializationInfo() {
+                return {
+                    idField: 'subClassId',
+                    ids: {
+                        sid: () => SubSubClass,
+                    },
+                }
+            }
+
+            static fromSuperObj(obj) {
+                return 'sub instance'
+            }
+        }
+
+        class SubSubClass extends SubClass {
+            static fromSuperObj(obj) {
+                return 'sub sub instance'
+            }
+        }
+
+
+        const obj = SerializedObj.fromObj({prop: 'test', classId: 'id', subClassId: 'sid'})
+
+        expect(obj).toBe('sub sub instance')
+
+        expect(SerializedObj.getDeserializationInfo().idField).toBe('classId')
+        expect(SerializedObj.fromSuperObj()).toBe('super instance')
+
+        expect(SubClass.getDeserializationInfo().idField).toBe('subClassId')
+        expect(SubClass.fromSuperObj()).toBe('sub instance')
+
+        expect(SubSubClass.getDeserializationInfo).toBe(undefined)
+        expect(SubSubClass.fromSuperObj()).toBe('sub sub instance')
+    })
+
+    test('fromObjList', () => {
+
+        class SerializedObj extends JsonSerializable {
+            static fromObj(obj) {
+                return `${obj.id}`
+            }
+        }
+
+        const objList = SerializedObj.fromObjList([{id: 1}, {id: 2}])
+
+        expect(objList).toEqual(['1', '2'])
     })
 
     test('fromObjList', () => {
@@ -36,7 +257,7 @@ describe('JsonSerializable', () => {
 
     test('fromJson', () => {
 
-        const fromObj1 = t.mockFn(() => 'obj1')
+        const fromObj1 = jest.fn(() => 'obj1')
 
         class Serializable1 extends JsonSerializable {
             static fromObj(obj) {
@@ -44,7 +265,7 @@ describe('JsonSerializable', () => {
             }
         }
 
-        const fromObj2 = t.mockFn(() => 'obj2')
+        const fromObj2 = jest.fn(() => 'obj2')
 
         class Serializable2 extends Serializable1 {
             static fromObj(obj) {
@@ -74,7 +295,7 @@ describe('JsonSerializable', () => {
 
     test('fromJsonList', () => {
 
-        const fromObj = t.mockFn(() => 'obj')
+        const fromObj = jest.fn(() => 'obj')
 
         class Serializable extends JsonSerializable {
             static fromObj(obj) {
@@ -108,6 +329,12 @@ describe('JsonSerializable', () => {
 
         expect(() => JsonSerializable.fromJsonNative('error'))
             .toThrow('Cannot deserialize native JSON:\'error\'')
+    })
+
+    test('toJsonNative', () => {
+
+        const res = JsonSerializable.toJsonNative({obj: 2})
+        expect(res).toEqual('{"obj":2}')
     })
 
     test('toJson', () => {
@@ -180,7 +407,7 @@ describe('JsonSerializable', () => {
             }
 
             static get default() {
-                return new Serializable("prop1")
+                return new Serializable('prop1')
             }
         }
 

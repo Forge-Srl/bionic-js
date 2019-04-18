@@ -1,6 +1,5 @@
 const SwiftObjectTypeGenerator = require('./SwiftObjectTypeGenerator')
 const IniRet = require('../../../code/IniRet')
-const CodeBlock = require('../../../code/CodeBlock')
 
 class SwiftNativeObjectTypeGenerator extends SwiftObjectTypeGenerator {
 
@@ -8,17 +7,14 @@ class SwiftNativeObjectTypeGenerator extends SwiftObjectTypeGenerator {
         return `${this.schema.className}?`
     }
 
-    getJsIniRet(nativeIniRet) {
+    getJsIniRet(nativeIniRet, context) {
         return IniRet.create()
             .appendRet('Bjs.get.putNative(').append(nativeIniRet).appendRet(')')
     }
 
-    getNativeIniRet(jsIniRet) {
+    getNativeIniRet(jsIniRet, context) {
         return IniRet.create()
-            .appendRet('Bjs.get.getNative(')
-        return new IniRet(
-            CodeBlock.create().append('Bjs.get.getNative(').append(jsIniRet.returningCode).append(`, ${this.schema.className}.self)`),
-            jsIniRet.initializationCode)
+            .appendRet('Bjs.get.getNative(').append(jsIniRet).appendRet(`, ${this.schema.className}.self)`)
     }
 }
 

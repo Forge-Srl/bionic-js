@@ -1,4 +1,4 @@
-const t = require('../../common')
+const t = require('../../test-utils')
 const parser = require('@babel/parser')
 const ClassExplorer = t.requireModule('parser/explorers/ClassExplorer')
 const MethodExplorer = t.requireModule('parser/explorers/MethodExplorer')

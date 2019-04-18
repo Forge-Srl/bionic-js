@@ -1,4 +1,4 @@
-const t = require('../../../common')
+const t = require('../../../test-utils')
 
 describe('Indentation', () => {
     let Indentation, indStr = '    '

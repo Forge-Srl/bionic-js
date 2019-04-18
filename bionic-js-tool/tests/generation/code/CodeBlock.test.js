@@ -1,4 +1,4 @@
-const t = require('../../common')
+const t = require('../../test-utils')
 const codeDir = 'generation/code/'
 const codeElementsDir = `${codeDir}/codeElements/`
 

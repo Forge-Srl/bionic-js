@@ -1,5 +1,6 @@
 const SwiftTypeGenerator = require('./SwiftTypeGenerator')
 const IniRet = require('../../../code/IniRet')
+const BlockContext = require('../../../code/GenerationContext')
 
 class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
 
@@ -15,15 +16,16 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
         return `((${parameterTypes}) -> ${returnType})?`
     }
 
-    getJsFuncCallWithNativeIniRet(tempJsFuncName) {
+    getCallerWithNativeIniRet(jsFunctionVariable) {
+        const callerContext = new BlockContext()
         const params = this.schema.parameters
 
         const callJsIniRet = IniRet.create()
-            .appendRet(`Bjs.get.funcCall(${tempJsFuncName}`)
+            .appendRet(`Bjs.get.funcCall(${jsFunctionVariable}`)
 
         for (let paramIndex = 0; paramIndex < params.length; paramIndex++) {
             const paramTypeGenerator = params[paramIndex].getSwiftGenerator()
-            callJsIniRet.appendRet(', ').append(paramTypeGenerator.getJsIniRet(`$${paramIndex}`))
+            callJsIniRet.appendRet(', ').append(paramTypeGenerator.getJsIniRet(IniRet.create().appendRet(`$${paramIndex}`), callerContext))
         }
         callJsIniRet.appendRet(')')
 
@@ -37,37 +39,36 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
         }
      */
 
-    getNativeIniRet(jsIniRet) {
-        const tempJsFuncName = '__jsFunc'
-        const funcCallNativeIniRet = this.getJsFuncCallWithNativeIniRet(tempJsFuncName)
+    getNativeIniRet(jsIniRet, context) {
+        const jsFunctionVar = '__jsFunc'
         return IniRet.create()
             .editIni(ini =>
                 ini.append(jsIniRet.initializationCode)
-                    .append(`let ${tempJsFuncName} = `).append(jsIniRet.returningCode).newLine())
+                    .append(`let ${jsFunctionVar} = `).append(jsIniRet.returningCode).newLine())
             .editRet(ret =>
-                ret.append(`Bjs.get.getFunc(${tempJsFuncName}) {`).newLineIndenting()
-                    .append(this.returnTypeGenerator.getNativeReturnCode(funcCallNativeIniRet)).newLineDeindenting()
+                ret.append(`Bjs.get.getFunc(${jsFunctionVar}) {`).newLineIndenting()
+                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithNativeIniRet(jsFunctionVar))).newLineDeindenting()
                     .append('}'))
     }
 
 
-    getNativeFuncCallWithJsIniRet(funcReturningCode) {
+    getCallerWithJsIniRet(nativeFunctionReturningCode) {
         const params = this.schema.parameters
 
-        const callNativeIniRet = IniRet.create().appendRet(funcReturningCode).appendRet('!(')
+        const callerNativeIniRet = IniRet.create().appendRet(nativeFunctionReturningCode).appendRet('!(')
 
         for (let paramIndex = 0; paramIndex < params.length; paramIndex++) {
             const paramTypeGenerator = params[paramIndex].getSwiftGenerator()
 
             const parameterJsIniRet = IniRet.create().appendRet(`$${paramIndex}`)
-            callNativeIniRet.append(paramTypeGenerator.getNativeIniRet(parameterJsIniRet))
+            callerNativeIniRet.append(paramTypeGenerator.getNativeIniRet(parameterJsIniRet))
             if (paramIndex < params.length - 1) {
-                callNativeIniRet.appendRet(', ')
+                callerNativeIniRet.appendRet(', ')
             }
         }
-        callNativeIniRet.appendRet(')')
+        callerNativeIniRet.appendRet(')')
 
-        return this.returnTypeGenerator.getJsIniRet(callNativeIniRet)
+        return this.returnTypeGenerator.getJsIniRet(callerNativeIniRet)
     }
 
     /**
@@ -78,24 +79,23 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
 
      */
 
-    getJsIniRet(nativeIniRet) {
+    getJsIniRet(nativeIniRet, context) {
 
         const nativeReturningCode = nativeIniRet.returningCode
-        const getFuncCallJsIniRet = this.getNativeFuncCallWithJsIniRet(nativeReturningCode)
 
-        const funcNativeRet = `__func${nativeIniRet.getNextUniqueId()}`
+        const nativeFunctionVar = `_bjsNativeFunc${context.getNextUniqueId()}`
         return IniRet.create()
             .editIni(ini =>
                 ini.append(nativeIniRet.initializationCode)
-                    .append(`let ${funcNativeRet}: @convention(block) (`)
+                    .append(`let ${nativeFunctionVar}: @convention(block) (`)
                     .__.append(this.schema.parameters.map(param => param.type.getSwiftGenerator().getBlockTypeStatement()).join(', '))
                     .__.append(')').append(this.returnTypeGenerator.getBlockReturnTypeStatement())
                     .__.append(' = {').newLineIndenting()
-                    .append(this.returnTypeGenerator.getNativeReturnCode(getFuncCallJsIniRet)).newLineDeindenting()
+                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithJsIniRet(nativeReturningCode))).newLineDeindenting()
                     .append('}').newLine())
 
             .editRet(ret =>
-                ret.append('Bjs.get.putFunc(').append(nativeReturningCode).append(`, ${funcNativeRet})`))
+                ret.append('Bjs.get.putFunc(').append(nativeReturningCode).append(`, ${nativeFunctionVar})`))
     }
 }
 

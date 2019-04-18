@@ -1,4 +1,4 @@
-const t = require('../common/index')
+const t = require('../test-utils')
 
 describe('@bionic tag parser', () => {
 

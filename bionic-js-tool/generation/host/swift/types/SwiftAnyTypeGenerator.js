@@ -11,7 +11,7 @@ class SwiftAnyTypeGenerator extends SwiftTypeGenerator {
         return 'getAny'
     }
 
-    getJsIniRet(nativeIniRet) {
+    getJsIniRet(nativeIniRet, context) {
         return IniRet.create()
             .appendRet(`${nativeIniRet.returningCode}.jsObj`)
             .appendIni(nativeIniRet.initializationCode)

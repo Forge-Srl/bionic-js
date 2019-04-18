@@ -7,12 +7,12 @@ class SwiftNativeObjectTypeGenerator extends SwiftObjectTypeGenerator {
         return `${this.schema.className}?`
     }
 
-    getJsIniRet(nativeIniRet) {
+    getJsIniRet(nativeIniRet, context) {
         return IniRet.create()
             .appendRet('Bjs.get.putWrapped(').append(nativeIniRet).appendRet(`, ${this.schema.className}.self)`)
     }
 
-    getNativeIniRet(jsIniRet) {
+    getNativeIniRet(jsIniRet, context) {
         return IniRet.create()
             .appendRet('Bjs.get.getWrapped(').append(jsIniRet.returningCode).appendRet(`, ${this.schema.className}.self)`)
     }

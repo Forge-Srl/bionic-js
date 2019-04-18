@@ -1,4 +1,4 @@
-const t = require('../common')
+const t = require('../test-utils')
 const path = require('path')
 
 describe('Npm', () => {

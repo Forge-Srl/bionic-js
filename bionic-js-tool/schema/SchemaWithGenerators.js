@@ -16,3 +16,5 @@ class SchemaWithGenerators extends JsonSerializable {
 }
 
 module.exports = SchemaWithGenerators
+
+// Put getGenerator(schema) into SwiftHostGenerator

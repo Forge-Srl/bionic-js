@@ -1,23 +1,24 @@
 const HostGeneratorWithClass = require('../HostGeneratorWithClass')
 const CodeBlock = require('../../code/CodeBlock')
+const BlockContext = require('../../code/GenerationContext')
 
 class SwiftConstructorGenerator extends HostGeneratorWithClass {
 
     getImplementation() {
-        const paramsGenerators = this.schema.parameters.map(par => par.getSwiftGenerator())
+        const parameterGenerators = this.schema.parameters.map(par => par.getSwiftGenerator())
+        const parameterList = parameterGenerators.map(generator => generator.getParameterStatement()).join(', ')
 
-        const paramsList = paramsGenerators.map(generator => generator.getParameterStatement()).join(', ')
+        const argumentsJsIniRets = parameterGenerators.map(generator => generator.getJsIniRet(new BlockContext()))
 
-        const paramsJsIniRets = paramsGenerators.map(generator => generator.getJsIniRet())
-        const paramsJsInits = CodeBlock.create()
-        paramsJsIniRets.map(iniRet => iniRet.initializationCode).forEach(initCode => paramsJsInits.append(initCode))
+        const argumentsInitCode = CodeBlock.create()
+        argumentsJsIniRets.map(iniRet => iniRet.initializationCode).forEach(initCode => argumentsInitCode.append(initCode))
 
-        const paramsJsRets = paramsJsIniRets.map(iniRet => iniRet.returningCode.getString()).join(', ')
+        const argumentsReturningList = argumentsJsIniRets.map(iniRet => iniRet.returningCode.getString()).join(', ')
 
         return CodeBlock.create()
-            .append(`convenience init(${paramsList}) {`).newLineIndenting()
-            .append(paramsJsInits)
-            .append(`self.init(${this.classSchema.name}.bjsClass, [${paramsJsRets}])`).newLineDeindenting()
+            .append(`convenience init(${parameterList}) {`).newLineIndenting()
+            .append(argumentsInitCode)
+            .append(`self.init(${this.classSchema.name}.bjsClass, [${argumentsReturningList}])`).newLineDeindenting()
             .append('}')
     }
 }

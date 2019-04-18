@@ -18,11 +18,11 @@ class SwiftVoidTypeGenerator extends SwiftTypeGenerator {
         return '_ = '
     }
 
-    getNativeIniRet(jsIniRet) {
+    getNativeIniRet(jsIniRet, context) {
         return jsIniRet
     }
 
-    getJsIniRet(nativeIniRet) {
+    getJsIniRet(nativeIniRet, context) {
         return nativeIniRet
     }
 }

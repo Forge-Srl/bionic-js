@@ -1,4 +1,4 @@
-const t = require('../common/TestUtils')
+const t = require('../test-utils')
 
 describe('Parameter', () => {
 

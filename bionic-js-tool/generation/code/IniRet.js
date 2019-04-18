@@ -2,12 +2,12 @@ const CodeBlock = require('../code/CodeBlock')
 
 class IniRet {
 
-    static create(blockContext) {
-        return new IniRet(CodeBlock.create(), CodeBlock.create(), blockContext)
+    static create() {
+        return new IniRet(CodeBlock.create(), CodeBlock.create())
     }
 
-    constructor(returningCode, initializationCode, blockContext) {
-        Object.assign(this, {returningCode, initializationCode, blockContext})
+    constructor(returningCode, initializationCode) {
+        Object.assign(this, {returningCode, initializationCode})
     }
 
     append(iniRet) {

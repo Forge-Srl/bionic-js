@@ -1,4 +1,4 @@
-const t = require('../../../../common')
+const t = require('../../../../test-utils')
 
 describe('SwiftLambdaTypeGenerator', () => {
 
@@ -33,7 +33,7 @@ describe('SwiftLambdaTypeGenerator', () => {
         expect(generator.getTypeStatement()).toBe('(() -> ret_type_statement)?')
     })
 
-    test('getJsFuncCallWithNativeIniRet', () => {
+    test('getCallerWithNativeIniRet', () => {
 
         const generator = new SwiftLambdaTypeGenerator({
             returnType: {
@@ -82,7 +82,7 @@ describe('SwiftLambdaTypeGenerator', () => {
             },
         })
 
-        generator.getJsFuncCallWithNativeIniRet = t.mockFn(() => IniRet.create()
+        generator.getCallerWithNativeIniRet = t.mockFn(() => IniRet.create()
             .editIni(ini => ini.append('init(returningNative)').newLine())
             .editRet(ret => ret.append('returningNative()')))
 
@@ -106,7 +106,7 @@ describe('SwiftLambdaTypeGenerator', () => {
         )
     })
 
-    test('getNativeFuncCallWithJsIniRet', () => {
+    test('getCallerWithJsIniRet', () => {
 
     })
 })
