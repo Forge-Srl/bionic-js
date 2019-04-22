@@ -44,31 +44,4 @@ describe('Swift constructors acceptance', () => {
             '    }',
             ...expectedFooter)
     })
-
-    test('class with constructor', () => {
-
-        const class2Type = new ObjectType('Class2')
-        const parameter = new Parameter(class2Type, 'class2', '')
-        const class1 = new Class('Class1', '', [new Constructor('', [parameter])], [], [], '', '')
-
-        const sourceFile = getClassCode(class1)
-        t.expectCode(sourceFile,
-            'import JavaScriptCore',
-            'import Bjs',
-            '',
-            'convenience init() {',
-            '    self.init(Class1.bjsClass, [])',
-            '}',
-            '',
-            'class Class1: BjsClass {',
-            '    class func bjsFactory(_ jsObject: JSValue) -> Class1 {',
-            '        return Class1(jsObject)',
-            '    }',
-            '    ',
-            '    class var bjsModulePath: String {',
-            '        return ""',
-            '    }',
-            '}')
-    })
-
 })

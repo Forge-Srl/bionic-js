@@ -11,6 +11,11 @@ class SwiftParameterGenerator extends HostGenerator {
         const nativeIniRet = IniRet.create().appendRet(this.schema.name)
         return this.schema.type.getSwiftGenerator().getJsIniRet(nativeIniRet, context)
     }
+
+    getNativeIniRet(context) {
+        const jsIniRet = IniRet.create().appendRet(this.schema.name)
+        return this.schema.type.getSwiftGenerator().getNativeIniRet(jsIniRet, context)
+    }
 }
 
 module.exports = SwiftParameterGenerator

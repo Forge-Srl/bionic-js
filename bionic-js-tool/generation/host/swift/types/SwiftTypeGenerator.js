@@ -35,6 +35,9 @@ class SwiftTypeGenerator extends HostGenerator {
             .append(this.getNativeReturnStatement()).append(iniRet.returningCode)
     }
 
+    getCallResultIniRet(callIniRet, context) {
+        return callIniRet
+    }
 
     getJsIniRet(nativeIniRet, context) {
         return IniRet.create()

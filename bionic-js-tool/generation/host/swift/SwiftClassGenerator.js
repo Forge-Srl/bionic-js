@@ -64,7 +64,7 @@ class SwiftClassGenerator extends HostGenerator {
             .append(`return ${this.schema.name}(jsObject)`).newLineDeindenting()
             .append('}').newLine()
             .newLine()
-            .append(`${override}class var bjsModulePath: String {`).newLineIndenting()
+            .append('override class var bjsModulePath: String {').newLineIndenting()
             .append(`return "${this.schema.modulePath}"`).newLineDeindenting()
             .append('}').newLineDeindenting()
             .append('}')

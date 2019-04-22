@@ -3,13 +3,17 @@ const IniRet = require('../../../code/IniRet')
 
 class SwiftArrayTypeGenerator extends SwiftTypeGenerator {
 
+    get elementTypeGenerator() {
+        return this.schema.elementType.getSwiftGenerator()
+    }
+
     getTypeStatement() {
-        return `[${this.schema.elementType.getSwiftGenerator().getTypeStatement()}]?`
+        return `[${this.elementTypeGenerator.getTypeStatement()}]?`
     }
 
     getJsIniRet(nativeIniRet, context) {
         const elementNativeIniRet = IniRet.create().appendRet('$0')
-        const elementJsIniRet = this.schema.elementType.getJsIniRet(elementNativeIniRet)
+        const elementJsIniRet = this.elementTypeGenerator.getJsIniRet(elementNativeIniRet, context)
         return IniRet.create()
             .editRet(ret =>
                 ret.append('Bjs.get.putArray(').append(nativeIniRet.returningCode).append(', {').newLineIndenting()
@@ -21,7 +25,7 @@ class SwiftArrayTypeGenerator extends SwiftTypeGenerator {
 
     getNativeIniRet(jsIniRet, context) {
         const elementJsIniRet = IniRet.create().appendRet('$0')
-        const elementNativeIniRet = this.schema.elementType.getNativeIniRet(elementJsIniRet)
+        const elementNativeIniRet = this.elementTypeGenerator.getNativeIniRet(elementJsIniRet, context)
         return IniRet.create()
             .editRet(ret => ret.append('Bjs.get.getArray(').append(jsIniRet.returningCode).append(', {').newLineIndenting()
                 .append(elementNativeIniRet.initializationCode)

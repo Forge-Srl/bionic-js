@@ -35,6 +35,10 @@ class IniRet {
         this.initializationCode = getInitializationCode(this.initializationCode)
         return this
     }
+
+    get __() {
+        return this
+    }
 }
 
 module.exports = IniRet

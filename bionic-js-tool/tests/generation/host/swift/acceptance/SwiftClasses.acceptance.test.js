@@ -26,7 +26,7 @@ describe('Swift classes acceptance', () => {
             '        return Class1(jsObject)',
             '    }',
             '    ',
-            '    class var bjsModulePath: String {',
+            '    override class var bjsModulePath: String {',
             '        return "module/path"',
             '    }',
             '}')

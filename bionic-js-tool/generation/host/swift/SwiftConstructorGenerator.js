@@ -1,6 +1,6 @@
 const HostGeneratorWithClass = require('../HostGeneratorWithClass')
 const CodeBlock = require('../../code/CodeBlock')
-const BlockContext = require('../../code/GenerationContext')
+const GenerationContext = require('../../code/GenerationContext')
 
 class SwiftConstructorGenerator extends HostGeneratorWithClass {
 
@@ -8,17 +8,24 @@ class SwiftConstructorGenerator extends HostGeneratorWithClass {
         const parameterGenerators = this.schema.parameters.map(par => par.getSwiftGenerator())
         const parameterList = parameterGenerators.map(generator => generator.getParameterStatement()).join(', ')
 
-        const argumentsJsIniRets = parameterGenerators.map(generator => generator.getJsIniRet(new BlockContext()))
+        const constructorContext = new GenerationContext()
+        const argumentsJsIniRets = parameterGenerators.map(paramGen => paramGen.getJsIniRet(constructorContext))
 
         const argumentsInitCode = CodeBlock.create()
-        argumentsJsIniRets.map(iniRet => iniRet.initializationCode).forEach(initCode => argumentsInitCode.append(initCode))
-
-        const argumentsReturningList = argumentsJsIniRets.map(iniRet => iniRet.returningCode.getString()).join(', ')
+        const argumentsRetCode = CodeBlock.create()
+        for (let argId = 0; argId < argumentsJsIniRets.length; argId++) {
+            const argIniRet = argumentsJsIniRets[argId]
+            argumentsInitCode.append(argIniRet.initializationCode)
+            argumentsRetCode.append(argIniRet.returningCode)
+            if (argId < argumentsJsIniRets.length - 1) {
+                argumentsRetCode.append(', ')
+            }
+        }
 
         return CodeBlock.create()
             .append(`convenience init(${parameterList}) {`).newLineIndenting()
             .append(argumentsInitCode)
-            .append(`self.init(${this.classSchema.name}.bjsClass, [${argumentsReturningList}])`).newLineDeindenting()
+            .append(`self.init(${this.classSchema.name}.bjsClass, [`).append(argumentsRetCode).append('])').newLineDeindenting()
             .append('}')
     }
 }

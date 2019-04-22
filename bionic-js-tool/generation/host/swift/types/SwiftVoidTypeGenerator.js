@@ -1,4 +1,5 @@
 const SwiftTypeGenerator = require('./SwiftTypeGenerator')
+const IniRet = require('../../../code/IniRet')
 
 class SwiftVoidTypeGenerator extends SwiftTypeGenerator {
 
@@ -18,12 +19,12 @@ class SwiftVoidTypeGenerator extends SwiftTypeGenerator {
         return '_ = '
     }
 
-    getNativeIniRet(jsIniRet, context) {
-        return jsIniRet
-    }
-
     getJsIniRet(nativeIniRet, context) {
         return nativeIniRet
+    }
+
+    getNativeIniRet(jsIniRet, context) {
+        return jsIniRet
     }
 }
 

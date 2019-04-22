@@ -4,8 +4,8 @@ class GenerationContext {
         Object.assign(this, {lastUniqueId})
     }
 
-    getNextUniqueId() {
-        return this.lastUniqueId++
+    getUniqueIdentifier(prefix) {
+        return `${prefix}_bjs${this.lastUniqueId++}`
     }
 }
 
