@@ -86,8 +86,8 @@ public class Bjs {
         return bjsObj != nil ? bjsObj!.bjsObj : jsNull
     }
     
-    public func putFunc<N, J>(_ nativeFunc: N?, _ jsFuncCaller: J) -> AnyObject {
-        return nativeFunc == nil ? jsNull : unsafeBitCast(jsFuncCaller, to: AnyObject.self)
+    public func putFunc<N, J>(_ nativeFunc: N?, _ jsFuncCaller: J) -> JSValue {
+        return nativeFunc == nil ? jsNull : context.createJsObject(unsafeBitCast(jsFuncCaller, to: AnyObject.self))
     }
     
     public func putArray<T>(_ nativeArray: [T]?, _ elementConverter: (_ nativeElement: T) -> AnyObject) -> JSValue {
@@ -126,8 +126,8 @@ public class Bjs {
         return Bjs.isNullOrUndefined(jsObj) ? nil : jsObj.toString()
     }
     
-    public func getFunc<T>(_ jsObj: JSValue, _ nativeFunc: T) -> T? {
-        return Bjs.isNullOrUndefined(jsObj) ? nil : nativeFunc
+    public func getFunc<T>(_ jsObj: JSValue, _ nativeCallerFunc: T) -> T? {
+        return Bjs.isNullOrUndefined(jsObj) ? nil : nativeCallerFunc
     }
     
     public func getAny(_ jsObj: JSValue) -> BjsAnyObject {

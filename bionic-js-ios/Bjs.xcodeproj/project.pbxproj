@@ -311,7 +311,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -vr \"$BUILD_DIR/Debug$EFFECTIVE_PLATFORM_NAME/Bjs.framework/\" \"$PROJECT_DIR/../../lunch-ios/frameworks/Bjs.framework\"\n";
+			shellScript = "cp -vr \"$BUILD_DIR/Debug$EFFECTIVE_PLATFORM_NAME/Bjs.framework/\" \"$PROJECT_DIR/../lunch-ios/frameworks/Bjs.framework\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
