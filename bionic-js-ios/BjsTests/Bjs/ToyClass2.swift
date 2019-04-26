@@ -174,7 +174,7 @@ class ToyClass2: ToyClass1 {
             lambda!()
         }
         let __jsFunc0 = bjsCall("lambdaVoidFunc", Bjs.get.putFunc(lambda, __func0))
-        return Bjs.get.getFunc(__jsFunc0) { () -> Void in
+        return Bjs.get.getFunc(__jsFunc0) {
             _ = Bjs.get.funcCall(__jsFunc0)
         }
     }
