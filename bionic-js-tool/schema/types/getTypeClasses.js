@@ -1,4 +1,4 @@
-module.exports = {
+module.exports = () => ({
     Any: require('./AnyType'),
     Array: require('./ArrayType'),
     Bool: require('./BoolType'),
@@ -11,4 +11,4 @@ module.exports = {
     String: require('./StringType'),
     Void: require('./VoidType'),
     WrappedObject: require('./WrappedObjectType'),
-}
+})

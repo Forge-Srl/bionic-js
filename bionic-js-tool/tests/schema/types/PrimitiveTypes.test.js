@@ -6,7 +6,7 @@ describe('Primitive types', () => {
     const getTypeClass = typeName => t.requireModule(`schema/types/${typeName}Type`)
 
     test('Non primitive types count', () => {
-        const allTypes = Object.keys(t.requireModule('schema/types/typesIndex'))
+        const allTypes = Object.keys(t.requireModule('schema/types/getTypeClasses')())
         let nonPrimitiveTypes = allTypes.length - primitives.length
         expect(nonPrimitiveTypes).toBe(5)
     })

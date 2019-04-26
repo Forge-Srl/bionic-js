@@ -4,7 +4,10 @@ const IniRet = require('../../code/IniRet')
 class SwiftParameterGenerator extends HostGenerator {
 
     getParameterStatement() {
-        return `_ ${this.schema.name}: ${this.schema.type.getSwiftGenerator().getTypeStatement()}`
+        const typeStatement = this.schema.type.getSwiftGenerator().getTypeStatement()
+        const typeName = this.schema.name
+
+        return typeName ? `_ ${typeName}: ${typeStatement}` : typeStatement
     }
 
     getJsIniRet(context) {

@@ -165,7 +165,7 @@ describe('MethodExplorer', () => {
     })
 
     test('schema of a getter property', () => {
-        const schema = new Property('getterX', 'Description\nx', false, undefined, new IntType(), 'get')
+        const schema = new Property('getterX', 'Description\nx', false, undefined, new IntType(), ['get'])
         const explorer = getExplorer(`
             /* @bionic Int
              * @description Description
@@ -177,7 +177,7 @@ describe('MethodExplorer', () => {
     })
 
     test('schema of a static setter property', () => {
-        const schema = new Property('setterX', 'Desc', true, undefined, new ObjectType('ClassX'), 'set')
+        const schema = new Property('setterX', 'Desc', true, undefined, new ObjectType('ClassX'), ['set'])
         const explorer = getExplorer(`
             /* @bionic ClassX
              * @description Desc 

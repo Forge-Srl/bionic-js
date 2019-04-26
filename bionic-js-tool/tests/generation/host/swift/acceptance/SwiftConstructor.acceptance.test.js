@@ -1,19 +1,26 @@
 const t = require('../../../../test-utils')
 
-describe('Swift constructors acceptance', () => {
+describe('Swift constructor acceptance', () => {
 
-    let Class, Constructor, Parameter, VoidType, IntType, ArrayType, LambdaType, expectedHeader, expectedFooter
+    let Class, Constructor, Parameter, VoidType, BoolType, IntType, ArrayType, LambdaType, expectedHeader,
+        expectedFooter
 
-    function getClassCode(classObj) {
-        return classObj.getSwiftGenerator().getFiles()[0].content
+    function getCode(constructorParameters) {
+        const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], '', '')
+        return class1.getSwiftGenerator().getFiles()[0].content
+    }
+
+    function newParam(type, name) {
+        return new Parameter(type, name, 'parameter description')
     }
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class')
         Constructor = t.requireModule('schema/Constructor')
         Parameter = t.requireModule('schema/Parameter')
-        VoidType = t.requireModule('schema/types/VoidType')
+        BoolType = t.requireModule('schema/types/BoolType')
         IntType = t.requireModule('schema/types/IntType')
+        VoidType = t.requireModule('schema/types/VoidType')
         ArrayType = t.requireModule('schema/types/ArrayType')
         LambdaType = t.requireModule('schema/types/LambdaType')
 
@@ -37,10 +44,9 @@ describe('Swift constructors acceptance', () => {
     })
 
     test('no params', () => {
-        const class1 = new Class('Class1', '', [new Constructor('', [])], [], [], '', '')
+        const code = getCode([])
 
-        const sourceFile = getClassCode(class1)
-        t.expectCode(sourceFile,
+        t.expectCode(code,
             ...expectedHeader,
             '    convenience init() {',
             '        self.init(Class1.bjsClass, [])',
@@ -48,25 +54,39 @@ describe('Swift constructors acceptance', () => {
             ...expectedFooter)
     })
 
-    test('primitive parameter', () => {
-        const primitivePar = new Parameter(new IntType(), 'parameter', '')
-        const class1 = new Class('Class1', '', [new Constructor('', [primitivePar])], [], [], '', '')
+    test('single primitive', () => {
+        const intPar = newParam(new IntType(), 'intParam')
 
-        const sourceFile = getClassCode(class1)
-        t.expectCode(sourceFile,
+        const code = getCode([intPar])
+
+        t.expectCode(code,
             ...expectedHeader,
-            '    convenience init(_ parameter: Int?) {',
-            '        self.init(Class1.bjsClass, [Bjs.get.putPrimitive(parameter)])',
+            '    convenience init(_ intParam: Int?) {',
+            '        self.init(Class1.bjsClass, [Bjs.get.putPrimitive(intParam)])',
             '    }',
             ...expectedFooter)
     })
 
-    test('void lambda parameter', () => {
-        const voidLambdaParam = new Parameter(new LambdaType(new VoidType(), []), 'voidNativeFunc', '')
-        const class1 = new Class('Class1', '', [new Constructor('', [voidLambdaParam])], [], [], '', '')
+    test('multiple primitives', () => {
+        const boolPar = newParam(new BoolType(), 'boolParam')
+        const intPar = newParam(new IntType(), 'intParam')
 
-        const sourceFile = getClassCode(class1)
-        t.expectCode(sourceFile,
+        const code = getCode([boolPar, intPar])
+
+        t.expectCode(code,
+            ...expectedHeader,
+            '    convenience init(_ boolParam: Bool?, _ intParam: Int?) {',
+            '        self.init(Class1.bjsClass, [Bjs.get.putPrimitive(boolParam), Bjs.get.putPrimitive(intParam)])',
+            '    }',
+            ...expectedFooter)
+    })
+
+    test('void lambda', () => {
+        const voidLambdaParam = newParam(new LambdaType(new VoidType(), []), 'voidNativeFunc')
+
+        const code = getCode([voidLambdaParam])
+
+        t.expectCode(code,
             ...expectedHeader,
             '    convenience init(_ voidNativeFunc: (() -> Void)?) {',
             '        let nativeFunc_bjs0 = voidNativeFunc',
@@ -78,16 +98,15 @@ describe('Swift constructors acceptance', () => {
             ...expectedFooter)
     })
 
-    test('multiple lambda parameters', () => {
-        const voidLambdaParam = new Parameter(new LambdaType(new VoidType(), []), 'voidNativeFunc', '')
-        const intLambdaParam = new Parameter(new LambdaType(new IntType(), []), 'intNativeFunc', '')
-        const arrayLambdaParam = new Parameter(new LambdaType(new ArrayType(new IntType()), []), 'arrayNativeFunc', '')
-        const intParam = new Parameter(new IntType(), 'intPar', '')
+    test('void lambda, lambda returning primitive, primitive', () => {
+        const voidLambdaParam = newParam(new LambdaType(new VoidType(), []), 'voidNativeFunc')
+        const intLambdaParam = newParam(new LambdaType(new IntType(), []), 'intNativeFunc')
+        const arrayLambdaParam = newParam(new LambdaType(new ArrayType(new IntType()), []), 'arrayNativeFunc')
+        const intParam = newParam(new IntType(), 'intPar')
 
-        const class1 = new Class('Class1', '', [new Constructor('', [voidLambdaParam, intLambdaParam, arrayLambdaParam, intParam])], [], [], '', '')
+        const code = getCode([voidLambdaParam, intLambdaParam, arrayLambdaParam, intParam])
 
-        const sourceFile = getClassCode(class1)
-        t.expectCode(sourceFile,
+        t.expectCode(code,
             ...expectedHeader,
             '    convenience init(_ voidNativeFunc: (() -> Void)?, _ intNativeFunc: (() -> Int?)?, _ arrayNativeFunc: (() -> [Int?]?)?, _ intPar: Int?) {',
             '        let nativeFunc_bjs0 = voidNativeFunc',
@@ -109,13 +128,13 @@ describe('Swift constructors acceptance', () => {
             ...expectedFooter)
     })
 
-    test('"lambda returning lambda returning lambda" parameter', () => {
+    test('lambda returning lambda returning void lambda', () => {
         const chainLambda = new LambdaType(new LambdaType(new LambdaType(new VoidType(), []), []), [])
-        const funcReturningFuncReturningVoidFunc = new Parameter(chainLambda, 'funcReturningFuncReturningVoidFunc', '')
-        const class1 = new Class('Class1', '', [new Constructor('', [funcReturningFuncReturningVoidFunc])], [], [], '', '')
+        const funcReturningFuncReturningVoidFunc = newParam(chainLambda, 'funcReturningFuncReturningVoidFunc')
 
-        const sourceFile = getClassCode(class1)
-        t.expectCode(sourceFile,
+        const code = getCode([funcReturningFuncReturningVoidFunc])
+
+        t.expectCode(code,
             ...expectedHeader,
             '    convenience init(_ funcReturningFuncReturningVoidFunc: (() -> (() -> (() -> Void)?)?)?) {',
             '        let nativeFunc_bjs0 = funcReturningFuncReturningVoidFunc',
@@ -135,16 +154,16 @@ describe('Swift constructors acceptance', () => {
             ...expectedFooter)
     })
 
-    test('"lambda taking lambda taking void lambda" parameter', () => {
-        const voidFunc = new Parameter(new LambdaType(new VoidType(), []), 'voidFunc', '')
-        const func2TakingVoidFunc = new Parameter(new LambdaType(new VoidType(), [voidFunc]), 'func2TakingVoidFunc', '')
-        const func1TakingFunc2 = new Parameter(new LambdaType(new VoidType(), [func2TakingVoidFunc]), 'func1TakingFunc2', '')
-        const class1 = new Class('Class1', '', [new Constructor('', [func1TakingFunc2])], [], [], '', '')
+    test('lambda taking lambda taking void lambda', () => {
+        const voidFunc = newParam(new LambdaType(new VoidType(), []))
+        const func2TakingVoidFunc = newParam(new LambdaType(new VoidType(), [voidFunc]), 'func2TakingVoidFunc')
+        const func1TakingFunc2 = newParam(new LambdaType(new VoidType(), [func2TakingVoidFunc]), 'func1TakingFunc2')
 
-        const sourceFile = getClassCode(class1)
-        t.expectCode(sourceFile,
+        const code = getCode([func1TakingFunc2])
+
+        t.expectCode(code,
             ...expectedHeader,
-            '    convenience init(_ func1TakingFunc2: ((_ func2TakingVoidFunc: ((_ voidFunc: (() -> Void)?) -> Void)?) -> Void)?) {',
+            '    convenience init(_ func1TakingFunc2: ((_ func2TakingVoidFunc: (((() -> Void)?) -> Void)?) -> Void)?) {',
             '        let nativeFunc_bjs0 = func1TakingFunc2',
             '        let jsFunc_bjs1: @convention(block) (JSValue) -> Void = {',
             '            let jsFunc_bjs2 = $0',
@@ -161,15 +180,15 @@ describe('Swift constructors acceptance', () => {
             ...expectedFooter)
     })
 
-    test('array of lambdas taking and returning array of void lambda', () => {
+    test('array of lambdas taking and returning array of void lambdas', () => {
         const arrayOfVoidLambda = new ArrayType(new LambdaType(new VoidType(), []))
-        const arrayOfVoidLambdaPar = new Parameter(arrayOfVoidLambda, 'arrayOfVoidLambdas', '')
+        const arrayOfVoidLambdaPar = newParam(arrayOfVoidLambda, 'arrayOfVoidLambdas')
         const lambda1 = new LambdaType(arrayOfVoidLambda, [arrayOfVoidLambdaPar])
-        const arrayOfLambda1 = new Parameter(new ArrayType(lambda1), 'arrayOfLambda1', '')
-        const class1 = new Class('Class1', '', [new Constructor('', [arrayOfLambda1])], [], [], '', '')
+        const arrayOfLambda1 = newParam(new ArrayType(lambda1), 'arrayOfLambda1')
 
-        const sourceFile = getClassCode(class1)
-        t.expectCode(sourceFile,
+        const code = getCode([arrayOfLambda1])
+
+        t.expectCode(code,
             ...expectedHeader,
             '    convenience init(_ arrayOfLambda1: [((_ arrayOfVoidLambdas: [(() -> Void)?]?) -> [(() -> Void)?]?)?]?) {',
             '        self.init(Class1.bjsClass, [Bjs.get.putArray(arrayOfLambda1, {',

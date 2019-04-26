@@ -3,29 +3,17 @@ const IniRet = require('../../../code/IniRet')
 
 class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
 
-    get returnTypeGenerator() {
+    getReturnTypeGenerator() {
         return this.schema.returnType.getSwiftGenerator()
     }
 
     getTypeStatement() {
-        const parameterTypes = this.schema.parameters
-            .map(parameter => parameter.getSwiftGenerator().getParameterStatement())
-            .join(', ')
-        const returnType = this.returnTypeGenerator.getTypeStatement()
-        return `((${parameterTypes}) -> ${returnType})?`
+        const parametersStatements = this.schema.parameters
+            .map(parameter => parameter.getSwiftGenerator().getParameterStatement()).join(', ')
+        const returnTypeStatement = this.getReturnTypeGenerator().getTypeStatement()
+
+        return `((${parametersStatements}) -> ${returnTypeStatement})?`
     }
-
-    getCallResultIniRet(callIniRet, context) {
-        const retValueVariable = context.getUniqueIdentifier('callRetValue')
-        return IniRet.create()
-            .editIni(ini => ini
-                .append(callIniRet.initializationCode)
-                .append(`let ${retValueVariable} = `).append(callIniRet.returningCode).newLine())
-            .appendRet(retValueVariable)
-    }
-
-
-    /** JS LAMBDA -> NATIVE LAMBDA */
 
     getNativeIniRet(jsFuncIniRet, context) {
         const jsFuncVar = context.getUniqueIdentifier('jsFunc')
@@ -35,7 +23,7 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
                     .append(`let ${jsFuncVar} = `).append(jsFuncIniRet.returningCode).newLine())
             .editRet(ret =>
                 ret.append(`Bjs.get.getFunc(${jsFuncVar}) {`).newLineIndenting()
-                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithNativeIniRet(jsFuncVar, context))).newLineDeindenting()
+                    .append(this.getReturnTypeGenerator().getNativeReturnCode(this.getCallerWithNativeIniRet(jsFuncVar, context))).newLineDeindenting()
                     .append('}'))
     }
 
@@ -54,12 +42,8 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
         }
         callJsIniRet.appendRet(')')
 
-        return this.returnTypeGenerator.getNativeIniRet(callJsIniRet, context)
+        return this.getReturnTypeGenerator().getNativeIniRet(callJsIniRet, context)
     }
-
-    /** *******************************/
-
-    /** NATIVE LAMBDA -> JS LAMBDA */
 
     getJsIniRet(nativeFuncIniRet, context) {
         const nativeFuncVar = context.getUniqueIdentifier('nativeFunc')
@@ -70,9 +54,9 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
                     .append(`let ${nativeFuncVar} = `).append(nativeFuncIniRet.returningCode).newLine()
                     .append(`let ${jsFuncVar}: @convention(block) (`)
                     .__.append(this.schema.parameters.map(param => param.type.getSwiftGenerator().getBlockTypeStatement()).join(', '))
-                    .__.append(')').append(this.returnTypeGenerator.getBlockReturnTypeStatement())
+                    .__.append(')').append(this.getReturnTypeGenerator().getBlockReturnTypeStatement())
                     .__.append(' = {').newLineIndenting()
-                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithJsIniRet(nativeFuncVar, context))).newLineDeindenting()
+                    .append(this.getReturnTypeGenerator().getNativeReturnCode(this.getCallerWithJsIniRet(nativeFuncVar, context))).newLineDeindenting()
                     .append('}').newLine())
 
             .editRet(ret =>
@@ -98,11 +82,8 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
         const callIniRet = IniRet.create()
             .editRet(ret => ret.append(`${nativeFuncVar}!(`)).append(parametersIniRet).editRet(ret => ret.append(')'))
 
-        //const callResultIniRet = this.returnTypeGenerator.getCallResultIniRet(callIniRet, context)
-        return this.returnTypeGenerator.getJsIniRet(callIniRet, context)
+        return this.getReturnTypeGenerator().getJsIniRet(callIniRet, context)
     }
-
-    /** *******************************/
 }
 
 module.exports = SwiftLambdaTypeGenerator

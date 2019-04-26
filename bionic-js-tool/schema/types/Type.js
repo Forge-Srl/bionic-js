@@ -1,4 +1,5 @@
 const SchemaWithGenerators = require('../SchemaWithGenerators')
+const getTypeClasses = require('./getTypeClasses')
 
 class Type extends SchemaWithGenerators {
 
@@ -20,8 +21,7 @@ class Type extends SchemaWithGenerators {
     }
 
     static fromObj(obj) {
-        const typesIndex = require('./typesIndex')
-        return typesIndex[obj.type].fromObj(obj)
+        return getTypeClasses()[obj.type].fromObj(obj)
     }
 }
 

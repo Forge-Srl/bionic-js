@@ -20,10 +20,10 @@ describe('Property', () => {
     test('fromObj', () => {
         const propertyObj = {
             name: 'getter', description: 'getter desc', isStatic: false, isOverriding: false,
-            type: {type: 'Int'}, kind: 'get'
+            type: {type: 'Int'}, kinds: ['get', 'set']
         }
 
-        const expectedProperty = new Property('getter', 'getter desc', false, false, new IntType(), 'get')
+        const expectedProperty = new Property('getter', 'getter desc', false, false, new IntType(), ['get', 'set'])
 
         const property = Property.fromObj(propertyObj)
 

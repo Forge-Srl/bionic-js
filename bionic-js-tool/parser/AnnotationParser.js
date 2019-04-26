@@ -3,22 +3,20 @@ const Parser = require('./Parser')
 class AnnotationParser {
 
     get tags() {
-        if (this._tags) return this._tags
-        this._tags = new Map()
+        if (!this._tags) {
 
-        const tagsTexts = this.parseWithRule(this.annotation, 'CommentText')
+            this._tags = new Map()
+            const tagsTexts = this.parseWithRule(this.annotation, 'CommentText')
+            for (const tagText of tagsTexts) {
+                const tag = this.parseWithRule(tagText, 'Tags')
+                if (tag === 'UnknownTag')
+                    continue
 
-        for (const tagText of tagsTexts) {
-            const tag = this.parseWithRule(tagText, 'Tags')
-
-            if (tag === 'UnknownTag')
-                continue
-
-            if (this._tags.get(tag)) {
-                throw new Error(`The tag "${tag}" was inserted more than one time in the annotation`)
+                if (this._tags.get(tag)) {
+                    throw new Error(`The tag "${tag}" was inserted more than one time in the annotation`)
+                }
+                this._tags.set(tag, this.parseWithRule(tagText, tag))
             }
-
-            this._tags.set(tag, this.parseWithRule(tagText, tag))
         }
         return this._tags
     }

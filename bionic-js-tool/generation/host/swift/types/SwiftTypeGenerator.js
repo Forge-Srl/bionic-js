@@ -28,15 +28,10 @@ class SwiftTypeGenerator extends HostGenerator {
         throw new Error('method "getJsToPrimitiveMethodName" must be implemented')
     }
 
-
     getNativeReturnCode(iniRet) {
         return CodeBlock.create()
             .append(iniRet.initializationCode)
             .append(this.getNativeReturnStatement()).append(iniRet.returningCode)
-    }
-
-    getCallResultIniRet(callIniRet, context) {
-        return callIniRet
     }
 
     getJsIniRet(nativeIniRet, context) {

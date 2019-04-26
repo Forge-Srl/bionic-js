@@ -156,4 +156,8 @@ describe('CodeBlock', () => {
 
         expect(() => codeBlock.append({})).toThrow('Object cannot be appended')
     })
+
+    test('__', () => {
+        expect(codeBlock.__).toBe(codeBlock)
+    })
 })

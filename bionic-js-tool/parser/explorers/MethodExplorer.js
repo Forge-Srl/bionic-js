@@ -68,7 +68,7 @@ class MethodExplorer extends JsExplorer {
                     this.signature.returnType, this.signature.parameters)
 
             } else if (this.kind === 'get' || this.kind === 'set') {
-                this._schema = new Property(this.name, this.description, this.static, undefined, this.type, this.kind)
+                this._schema = new Property(this.name, this.description, this.static, undefined, this.type, [this.kind])
             }
         }
         return this._schema

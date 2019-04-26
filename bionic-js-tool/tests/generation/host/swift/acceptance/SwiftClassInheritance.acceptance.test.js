@@ -1,10 +1,10 @@
 const t = require('../../../../test-utils')
 
-describe('Swift classes acceptance', () => {
+describe('Swift class inheritance acceptance', () => {
 
     let Class
 
-    function getClassCode(classObj) {
+    function getCode(classObj) {
         return classObj.getSwiftGenerator().getFiles()[0].content
     }
 
@@ -15,8 +15,8 @@ describe('Swift classes acceptance', () => {
     test('class without inheritance', () => {
         const class1 = new Class('Class1', '', [], [], [], '', 'module/path')
 
-        const sourceFile = getClassCode(class1)
-        t.expectCode(sourceFile,
+        const code = getCode(class1)
+        t.expectCode(code,
             'import JavaScriptCore',
             'import Bjs',
             '',
@@ -35,8 +35,8 @@ describe('Swift classes acceptance', () => {
     test('class with inheritance', () => {
         const class1 = new Class('Class1', '', [], [], [], 'SuperClass', 'module/path')
 
-        const sourceFile = getClassCode(class1)
-        t.expectCode(sourceFile,
+        const code = getCode(class1)
+        t.expectCode(code,
             'import JavaScriptCore',
             'import Bjs',
             '',

@@ -32,7 +32,7 @@ describe('Class', () => {
             }],
             properties: [{
                 name: 'getter', description: 'getter desc', isStatic: false, isOverriding: false,
-                type: {type: 'Int'}, kind: 'get',
+                type: {type: 'Int'}, kinds: ['get'],
             }],
             methods: [{
                 name: 'method', description: 'method desc', isStatic: false, isOverriding: false,
@@ -43,7 +43,7 @@ describe('Class', () => {
         const clazz = Class.fromObj(classObj)
 
         const expectedClass = new Class('Class', 'Class desc', [new Constructor('constructor desc', [])],
-            [new Property('getter', 'getter desc', false, false, new IntType(), 'get')],
+            [new Property('getter', 'getter desc', false, false, new IntType(), ['get'])],
             [new Method('method', 'method desc', false, false, new VoidType(), [])], 'SuperClass', '../filePath')
 
         expect(clazz).toBeInstanceOf(Class)

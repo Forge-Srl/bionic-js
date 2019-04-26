@@ -1,32 +1,41 @@
-const HostGeneratorWithClass = require('../HostGeneratorWithClass')
+const SwiftBaseMethodGenerator = require('./SwiftBaseMethodGenerator')
 const CodeBlock = require('../../code/CodeBlock')
+const GenerationContext = require('../../code/GenerationContext')
+const IniRet = require('../../code/IniRet')
 
-class SwiftMethodGenerator extends HostGeneratorWithClass {
+class SwiftMethodGenerator extends SwiftBaseMethodGenerator {
 
-    getImplementation() {
-        return CodeBlock.create()
-            .append(this.getHeaderCode()).newLineIndenting()
-            .getBodyCode().newLineDeindenting()
-            .append('}')
+    getReturnTypeGenerator() {
+        return this.schema.returnType.getSwiftGenerator()
     }
 
     getHeaderCode() {
         const override_ = this.schema.isOverriding ? 'override ' : ''
         const class_ = this.schema.isStatic ? 'class ' : ''
-        const parameters = this.schema.parameters.map(par => par.getSwiftGenerator().getParameterStatement()).join(', ')
-        const returnSignature = this.schema.returnType.getSwiftGenerator().getMethodReturnSignature()
+        const returnTypeStatement = this.getReturnTypeGenerator().getNativeReturnTypeStatement()
 
         return CodeBlock.create()
-            .append(`${override_}${class_}func ${this.schema.name}(${parameters})${returnSignature} {`)
+            .append(`${override_}${class_}func ${this.schema.name}(`).append(this.getParametersStatements())
+            .__.append(`)${returnTypeStatement} {`)
     }
 
     getBodyCode() {
-        const returnStatement = this.schema.returnType.getSwiftGenerator().getReturnStatement()
+        const methodContext = new GenerationContext()
+        const anyParameter = this.schema.parameters.length
+        const returnTypeGen = this.getReturnTypeGenerator()
 
+        const callIniRet = IniRet.create()
+            .appendRet(this.schema.isStatic ? 'Bjs.get.call(self.bjsClass, ' : 'bjsCall(').appendRet(`"${this.schema.name}"`)
+            .__.appendRet(anyParameter ? ', ' : '').append(this.getArgumentsListIniRet(methodContext)).appendRet(')')
+        return returnTypeGen.getNativeReturnCode(returnTypeGen.getNativeIniRet(callIniRet, methodContext))
+
+    }
+
+    getImplementation() {
         return CodeBlock.create()
-            .append(returnStatement).append(this.schema.isStatic ? 'Bjs.get.call' : 'bjsCall')
-            .append(`("${this.schema.name}")`)
-
+            .append(this.getHeaderCode()).newLineIndenting()
+            .append(this.getBodyCode()).newLineDeindenting()
+            .append('}')
     }
 }
 
