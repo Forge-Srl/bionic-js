@@ -6,8 +6,8 @@ describe('Swift primitive types generators', () => {
     const primitiveTypesExpectations = [
         {
             name: 'Any',
-            statement: 'BjsAnyObject?',
-            nativeReturnTypeStatement: ' -> BjsAnyObject?',
+            statement: 'BjsAnyObject',
+            nativeReturnTypeStatement: ' -> BjsAnyObject',
             nativeReturnStatement: 'return '
         },
         {

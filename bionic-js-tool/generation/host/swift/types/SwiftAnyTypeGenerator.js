@@ -4,7 +4,7 @@ const IniRet = require('../../../code/IniRet')
 class SwiftAnyTypeGenerator extends SwiftTypeGenerator {
 
     getTypeStatement() {
-        return 'BjsAnyObject?'
+        return 'BjsAnyObject'
     }
 
     getJsToPrimitiveMethodName() {
@@ -12,9 +12,7 @@ class SwiftAnyTypeGenerator extends SwiftTypeGenerator {
     }
 
     getJsIniRet(nativeIniRet, context) {
-        return IniRet.create()
-            .appendRet(`${nativeIniRet.returningCode}.jsObj`)
-            .appendIni(nativeIniRet.initializationCode)
+        return IniRet.create().append(nativeIniRet).appendRet('.jsObj')
     }
 }
 
