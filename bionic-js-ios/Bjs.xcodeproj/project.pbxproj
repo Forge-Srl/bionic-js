@@ -41,7 +41,7 @@
 		C584E43521636C4B00A38028 /* BjsExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C584E43421636C4B00A38028 /* BjsExport.swift */; };
 		C58757692161361700AA6221 /* ToyWrapped1.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58757682161361700AA6221 /* ToyWrapped1.swift */; };
 		C587576B216140B800AA6221 /* ToyWrapped1Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C587576A216140B800AA6221 /* ToyWrapped1Wrapper.swift */; };
-		C587576D2161624500AA6221 /* ToyNative1User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C587576C2161624500AA6221 /* ToyNative1User.swift */; };
+		C587576D2161624500AA6221 /* ToyWrapped1User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C587576C2161624500AA6221 /* ToyWrapped1User.swift */; };
 		C587576F216171AC00AA6221 /* ToyWrapped1Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = C587576E216171AC00AA6221 /* ToyWrapped1Test.swift */; };
 		C5F993DE20B6A71400356DFD /* ToyClass1Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F993DC20B6A71400356DFD /* ToyClass1Test.swift */; };
 		C5F993DF20B6A71400356DFD /* ToyClass2Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F993DD20B6A71400356DFD /* ToyClass2Test.swift */; };
@@ -75,7 +75,7 @@
 		C584E43421636C4B00A38028 /* BjsExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BjsExport.swift; sourceTree = "<group>"; };
 		C58757682161361700AA6221 /* ToyWrapped1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyWrapped1.swift; sourceTree = "<group>"; };
 		C587576A216140B800AA6221 /* ToyWrapped1Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyWrapped1Wrapper.swift; sourceTree = "<group>"; };
-		C587576C2161624500AA6221 /* ToyNative1User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyNative1User.swift; sourceTree = "<group>"; };
+		C587576C2161624500AA6221 /* ToyWrapped1User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyWrapped1User.swift; sourceTree = "<group>"; };
 		C587576E216171AC00AA6221 /* ToyWrapped1Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyWrapped1Test.swift; sourceTree = "<group>"; };
 		C5F993DC20B6A71400356DFD /* ToyClass1Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToyClass1Test.swift; sourceTree = "<group>"; };
 		C5F993DD20B6A71400356DFD /* ToyClass2Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToyClass2Test.swift; sourceTree = "<group>"; };
@@ -181,7 +181,7 @@
 				C5F993E820B6EF5A00356DFD /* test.bundle */,
 				C5F993E320B6A8AC00356DFD /* ToyClass1.swift */,
 				C5F993E420B6A8AC00356DFD /* ToyClass2.swift */,
-				C587576C2161624500AA6221 /* ToyNative1User.swift */,
+				C587576C2161624500AA6221 /* ToyWrapped1User.swift */,
 				C587576A216140B800AA6221 /* ToyWrapped1Wrapper.swift */,
 			);
 			path = Bjs;
@@ -361,7 +361,7 @@
 				C5F993DF20B6A71400356DFD /* ToyClass2Test.swift in Sources */,
 				C57C900920AC6BAC007CFA3B /* BjsNativeWrapper.swift in Sources */,
 				C587576F216171AC00AA6221 /* ToyWrapped1Test.swift in Sources */,
-				C587576D2161624500AA6221 /* ToyNative1User.swift in Sources */,
+				C587576D2161624500AA6221 /* ToyWrapped1User.swift in Sources */,
 				C57C900320AC6BAC007CFA3B /* BjsCustomBundleFileInfo.swift in Sources */,
 				C58757692161361700AA6221 /* ToyWrapped1.swift in Sources */,
 				C57C900220AC6BAC007CFA3B /* BjsContext.swift in Sources */,

@@ -1,6 +1,6 @@
 const ToyWrapped1 = require('./ToyWrapped1')
 
-class ToyNative1User {
+class ToyWrapped1User {
     
     // @bionic (Int, Int, Int) => Void
     static add(offset, int1, int2) {
@@ -19,4 +19,4 @@ class ToyNative1User {
     }
 }
 
-module.exports = ToyNative1User
+module.exports = ToyWrapped1User

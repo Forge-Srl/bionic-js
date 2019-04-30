@@ -31,7 +31,7 @@ class ToyWrapped1Test: XCTestCase {
         
         allocationTestBegin()
         for _ in 1...objectsCount {
-            XCTAssertEqual(ToyNative1User.add(1, 2, 3), 6)
+            XCTAssertEqual(ToyWrapped1User.add(1, 2, 3), 6)
         }
         allocationTestEnd()
     }
@@ -40,9 +40,9 @@ class ToyWrapped1Test: XCTestCase {
         
         allocationTestBegin()
         for _ in 1...objectsCount {
-            let toy = ToyNative1User.getToy(1, 2)
-            XCTAssertEqual(toy?.number1, "1")
-            XCTAssertEqual(toy?.number2, "2")
+            let toy = ToyWrapped1User.getToy(1, 2)
+            XCTAssertEqual(toy?.number1String, "1")
+            XCTAssertEqual(toy?.number2String, "2")
         }
         allocationTestEnd()
     }
@@ -53,8 +53,8 @@ class ToyWrapped1Test: XCTestCase {
         for _ in 1...objectsCount / 2 {
             let toy1 = ToyWrapped1("1", "2")
             let toy2 = ToyWrapped1("3", "4")
-            XCTAssertEqual(ToyNative1User.getSum(toy1, toy2), 10)
-            XCTAssertEqual(ToyNative1User.getSum(toy2, toy1), 10)
+            XCTAssertEqual(ToyWrapped1User.getSum(toy1, toy2), 10)
+            XCTAssertEqual(ToyWrapped1User.getSum(toy2, toy1), 10)
         }
         allocationTestEnd()
     }
