@@ -9,6 +9,10 @@ describe('Parameter', () => {
         ObjectType = t.requireModule('schema/types/ObjectType')
     })
 
+    test('schemaName', () => {
+        expect(Parameter.schemaName).toBe('Parameter')
+    })
+
     test('fromObj', () => {
         const parameter = Parameter.fromObj({
             type: {type: 'Object', className: 'Class1'},
@@ -21,13 +25,5 @@ describe('Parameter', () => {
         expect(parameter).toBeInstanceOf(Parameter)
         expect(parameter.type).toBeInstanceOf(ObjectType)
         expect(parameter).toEqual(expectedParameter)
-    })
-
-    test('getHostGeneratorClass', () => {
-        const ExpectedGeneratorClass = t.requireModule('generation/host/swift/SwiftParameterGenerator')
-
-        const GeneratorClass = new Parameter().getHostGeneratorClass('swift', 'Swift')
-
-        expect(GeneratorClass).toBe(ExpectedGeneratorClass)
     })
 })

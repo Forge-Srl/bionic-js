@@ -14,12 +14,8 @@ describe('Method', () => {
         stringParam = new Parameter(new StringType(), 'stringPar', 'stringPar desc')
     })
 
-    test('getHostGeneratorClass', () => {
-        const ExpectedGeneratorClass = new Method().getHostGeneratorClass('swift', 'Swift')
-
-        const GeneratorClass = t.requireModule('generation/host/swift/SwiftMethodGenerator')
-
-        expect(ExpectedGeneratorClass).toBe(GeneratorClass)
+    test('schemaName', () => {
+        expect(Method.schemaName).toBe('Method')
     })
 
     test('fromObj', () => {

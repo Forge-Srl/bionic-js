@@ -9,12 +9,8 @@ describe('Property', () => {
         IntType = t.requireModule('schema/types/IntType')
     })
 
-    test('getHostGeneratorClass', () => {
-        const ExpectedGeneratorClass = t.requireModule('generation/host/swift/SwiftPropertyGenerator')
-
-        const GeneratorClass = new Property().getHostGeneratorClass('swift', 'Swift')
-
-        expect(GeneratorClass).toBe(ExpectedGeneratorClass)
+    test('schemaName', () => {
+        expect(Property.schemaName).toBe('Property')
     })
 
     test('fromObj', () => {

@@ -1,7 +1,7 @@
-const HostGeneratorWithClass = require('../HostGeneratorWithClass')
+const CodeGeneratorWithClass = require('../../CodeGeneratorWithClass')
 const IniRet = require('../../code/IniRet')
 
-class SwiftBaseMethodGenerator extends HostGeneratorWithClass {
+class SwiftBaseMethodGenerator extends CodeGeneratorWithClass {
 
     getParametersGenerators() {
         if (!this._parametersGenerators) {

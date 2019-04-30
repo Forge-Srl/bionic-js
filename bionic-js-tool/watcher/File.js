@@ -5,6 +5,10 @@ const crypto = require('crypto'), sha256 = 'sha256', hex = 'hex'
 
 class File {
 
+    constructor(path, rootDirPath) {
+        Object.assign(this, {path, rootDirPath})
+    }
+
     get dir() {
         return new Directory(path.parse(this.path).dir)
     }
@@ -20,12 +24,6 @@ class File {
     get relativePath() {
         return path.relative(this.rootDirPath, this.path)
     }
-
-
-    constructor(path, rootDirPath) {
-        Object.assign(this, {path, rootDirPath})
-    }
-
 
     composeNewPath(newRootDirPath, newExtension) {
         return path.format({

@@ -6,8 +6,13 @@ const Validation = require('./Validation')
 
 class Class extends SchemaWithGenerators {
 
-    get isValid() {
-        return Validation.validateIdentifier('class name', this.name)
+    static get schemaName() {
+        return 'Class'
+    }
+
+    static fromObj(obj) {
+        return new Class(obj.name, obj.description, Constructor.fromObjList(obj.constructors),
+            Property.fromObjList(obj.properties), Method.fromObjList(obj.methods), obj.superClassName, obj.modulePath)
     }
 
     constructor(name, description, constructors, properties, methods, superClassName, modulePath) {
@@ -15,13 +20,8 @@ class Class extends SchemaWithGenerators {
         Object.assign(this, {name, description, constructors, properties, methods, superClassName, modulePath})
     }
 
-    getHostGeneratorClass(directory, classPrefix) {
-        return require(`../generation/host/${directory}/${classPrefix}ClassGenerator`)
-    }
-
-    static fromObj(obj) {
-        return new Class(obj.name, obj.description, Constructor.fromObjList(obj.constructors),
-            Property.fromObjList(obj.properties), Method.fromObjList(obj.methods), obj.superClassName, obj.modulePath)
+    get isValid() {
+        return Validation.validateIdentifier('class name', this.name)
     }
 }
 

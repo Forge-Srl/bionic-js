@@ -1,8 +1,8 @@
-class HostFile {
+class CodeFile {
 
     constructor(name, content) {
         Object.assign(this, {name, content})
     }
 }
 
-module.exports = HostFile
+module.exports = CodeFile

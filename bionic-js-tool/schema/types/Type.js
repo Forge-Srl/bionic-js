@@ -12,8 +12,8 @@ class Type extends SchemaWithGenerators {
         return {validity: true, error: null}
     }
 
-    getHostGeneratorClass(directory, classPrefix) {
-        return require(`../../generation/host/${directory}/types/${classPrefix}${this.constructor.name}Generator`)
+    getGeneratorClass(language) {
+        return require(`../../generation/${language.toLowerCase()}/types/${language}${this.constructor.typeName}TypeGenerator`)
     }
 
     toString() {

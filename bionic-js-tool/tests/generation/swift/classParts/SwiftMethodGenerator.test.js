@@ -1,6 +1,6 @@
-const t = require('../../../../test-utils')
+const t = require('../../../test-utils')
 
-describe('Swift method acceptance', () => {
+describe('SwiftMethodGenerator', () => {
 
     let Class, Method, Parameter, VoidType, BoolType, IntType, LambdaType, expectedHeader, expectedFooter
 

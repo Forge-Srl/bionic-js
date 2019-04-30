@@ -1,8 +1,8 @@
-const HostGenerator = require('../../HostGenerator')
-const CodeBlock = require('../../../code/CodeBlock')
-const IniRet = require('../../../code/IniRet')
+const CodeGenerator = require('../../CodeGenerator')
+const CodeBlock = require('../../code/CodeBlock')
+const IniRet = require('../../code/IniRet')
 
-class SwiftTypeGenerator extends HostGenerator {
+class SwiftTypeGenerator extends CodeGenerator {
 
     getTypeStatement() {
         throw new Error('method "getTypeStatement" must be implemented')

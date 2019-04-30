@@ -1,6 +1,6 @@
-const t = require('../../../../test-utils')
+const t = require('../../../test-utils')
 
-describe('Swift constructor acceptance', () => {
+describe('SwiftConstructorGenerator', () => {
 
     let Class, Constructor, Parameter, VoidType, BoolType, IntType, ArrayType, LambdaType, expectedHeader,
         expectedFooter

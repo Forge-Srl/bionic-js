@@ -2,16 +2,16 @@ const JsonSerializable = require('../JsonSerializable')
 
 class SchemaWithGenerators extends JsonSerializable {
 
-    getHostGeneratorClass(directory, classPrefix) {
-        throw new Error('method "getHostGeneratorClass" must be implemented')
+    getGeneratorClass(language) {
+        return require(`../generation/${language.toLowerCase()}/classParts/${language}${this.constructor.schemaName}Generator`)
     }
 
     getJavaGenerator(...params) {
-        return new (this.getHostGeneratorClass('java', 'Java'))(this, ...params)
+        return new (this.getGeneratorClass('Java'))(this, ...params)
     }
 
     getSwiftGenerator(...params) {
-        return new (this.getHostGeneratorClass('swift', 'Swift'))(this, ...params)
+        return new (this.getGeneratorClass('Swift'))(this, ...params)
     }
 }
 

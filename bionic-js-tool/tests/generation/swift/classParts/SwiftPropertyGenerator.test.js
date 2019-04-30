@@ -1,6 +1,6 @@
-const t = require('../../../../test-utils')
+const t = require('../../../test-utils')
 
-describe('Swift property acceptance', () => {
+describe('SwiftPropertyGenerator', () => {
 
     let Class, Property, Parameter, AnyType, ArrayType, BoolType, DateType, FloatType, IntType, LambdaType,
         NativeObjectType, ObjectType, StringType, VoidType, WrappedObjectType, expectedHeader, expectedFooter

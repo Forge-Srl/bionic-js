@@ -1,5 +1,5 @@
-const t = require('../../../../test-utils')
-let typesGeneratorsPath = 'generation/host/swift/types/'
+const t = require('../../../test-utils')
+let typesGeneratorsPath = 'generation/swift/types/'
 
 describe('Swift primitive types generators', () => {
 

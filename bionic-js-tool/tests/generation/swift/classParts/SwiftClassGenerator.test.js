@@ -1,6 +1,6 @@
-const t = require('../../../../test-utils')
+const t = require('../../../test-utils')
 
-describe('Swift class', () => {
+describe('SwiftClassGenerator', () => {
 
     let Class, Constructor, Property, Method, IntType,
         expectedImports, expectedClassDeclaration, expectedFactoryMethod, expectedModulePathVar

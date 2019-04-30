@@ -13,12 +13,8 @@ describe('Constructor', () => {
         intParam = new Parameter(new IntType(), 'intPar', 'intPar desc')
     })
 
-    test('getHostGeneratorClass', () => {
-        const ExpectedGeneratorClass = new Constructor().getHostGeneratorClass('swift', 'Swift')
-
-        const GeneratorClass = t.requireModule('generation/host/swift/SwiftConstructorGenerator')
-
-        expect(ExpectedGeneratorClass).toBe(GeneratorClass)
+    test('schemaName', () => {
+        expect(Constructor.schemaName).toBe('Constructor')
     })
 
     test('fromObj', () => {

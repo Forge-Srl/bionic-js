@@ -12,14 +12,17 @@ describe('Type', () => {
         expect(type.isValid).toEqual({validity: true, error: null})
     })
 
-    test('getHostGeneratorClass', () => {
+    test('getGeneratorClass', () => {
         class StringType extends Type {
+            static get typeName() {
+                return 'String'
+            }
         }
 
         const stringType = new StringType(undefined)
-        const JavaStringTypeGenerator = t.requireModule('generation/host/swift/types/SwiftStringTypeGenerator')
+        const JavaStringTypeGenerator = t.requireModule('generation/swift/types/SwiftStringTypeGenerator')
 
-        const generatorClass = stringType.getHostGeneratorClass('swift', 'Swift')
+        const generatorClass = stringType.getGeneratorClass('Swift')
 
         expect(generatorClass).toBe(JavaStringTypeGenerator)
     })

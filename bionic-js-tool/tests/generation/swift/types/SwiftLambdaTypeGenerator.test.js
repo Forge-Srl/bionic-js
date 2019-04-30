@@ -1,11 +1,11 @@
-const t = require('../../../../test-utils')
+const t = require('../../../test-utils')
 
 describe('SwiftLambdaTypeGenerator', () => {
 
     let SwiftLambdaTypeGenerator
 
     beforeEach(() => {
-        SwiftLambdaTypeGenerator = t.requireModule('generation/host/swift/types/SwiftLambdaTypeGenerator')
+        SwiftLambdaTypeGenerator = t.requireModule('generation/swift/types/SwiftLambdaTypeGenerator')
     })
 
     test('getTypeStatement', () => {

@@ -1,9 +1,9 @@
-const HostGeneratorWithClass = require('../HostGeneratorWithClass')
+const CodeGeneratorWithClass = require('../../CodeGeneratorWithClass')
 const CodeBlock = require('../../code/CodeBlock')
 const GenerationContext = require('../../code/GenerationContext')
 const IniRet = require('../../code/IniRet')
 
-class SwiftPropertyGenerator extends HostGeneratorWithClass {
+class SwiftPropertyGenerator extends CodeGeneratorWithClass {
 
     getTypeGenerator() {
         return this.schema.type.getSwiftGenerator()

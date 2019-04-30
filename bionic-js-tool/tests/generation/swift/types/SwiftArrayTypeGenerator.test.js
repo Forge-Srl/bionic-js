@@ -1,9 +1,9 @@
-const t = require('../../../../test-utils')
+const t = require('../../../test-utils')
 
 describe('SwiftArrayTypeGenerator', () => {
 
     test('getTypeStatement', () => {
-        const SwiftArrayTypeGenerator = t.requireModule('generation/host/swift/types/SwiftArrayTypeGenerator')
+        const SwiftArrayTypeGenerator = t.requireModule('generation/swift/types/SwiftArrayTypeGenerator')
         const generator = new SwiftArrayTypeGenerator({
             elementType: {getSwiftGenerator: () => ({getTypeStatement: () => 'el_type_statement'})},
         })

@@ -1,8 +1,8 @@
-const HostGenerator = require('../HostGenerator')
+const CodeGenerator = require('../../CodeGenerator')
 const CodeBlock = require('../../code/CodeBlock')
-const HostFile = require('../HostFile')
+const CodeFile = require('../../CodeFile')
 
-class SwiftClassGenerator extends HostGenerator {
+class SwiftClassGenerator extends CodeGenerator {
 
     get staticProperties() {
         return this.schema.properties.filter(property => property.isStatic)
@@ -34,7 +34,7 @@ class SwiftClassGenerator extends HostGenerator {
             .append(this.getPartsCode(this.instanceMethods))
             .append(this.getFooterCode())
 
-        return [new HostFile(this.schema.name + '.swift', code.getString())]
+        return [new CodeFile(this.schema.name + '.swift', code.getString())]
     }
 
     getHeaderCode() {

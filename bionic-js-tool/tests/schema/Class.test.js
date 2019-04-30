@@ -13,14 +13,8 @@ describe('Class', () => {
         VoidType = t.requireModule('schema/types/VoidType')
     })
 
-
-    test('getHostGeneratorClass', () => {
-        const ExpectedGeneratorClass = t.requireModule('generation/host/swift/SwiftClassGenerator')
-
-        const clazz = new Class()
-        const GeneratorClass = clazz.getHostGeneratorClass('swift', 'Swift')
-
-        expect(GeneratorClass).toBe(ExpectedGeneratorClass)
+    test('schemaName', () => {
+        expect(Class.schemaName).toBe('Class')
     })
 
     test('fromObj', () => {

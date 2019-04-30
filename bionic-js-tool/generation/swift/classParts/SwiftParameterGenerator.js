@@ -1,7 +1,7 @@
-const HostGenerator = require('../HostGenerator')
+const CodeGenerator = require('../../CodeGenerator')
 const IniRet = require('../../code/IniRet')
 
-class SwiftParameterGenerator extends HostGenerator {
+class SwiftParameterGenerator extends CodeGenerator {
 
     getParameterStatement() {
         const typeStatement = this.schema.type.getSwiftGenerator().getTypeStatement()
