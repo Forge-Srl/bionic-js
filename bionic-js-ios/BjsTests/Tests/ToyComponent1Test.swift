@@ -1,7 +1,7 @@
 import XCTest
 import JavaScriptCore
 
-class ToyWrapped1Test: XCTestCase {
+class ToyComponent1Test: XCTestCase {
 
     var testExpectation: XCTestExpectation!
     let objectsCount = 100
@@ -10,20 +10,20 @@ class ToyWrapped1Test: XCTestCase {
         super.setUp()
         
         Bjs.get.clearJsEnvironment()
-        Bjs.get.customBundles.add(bundleName: "test", bundle: Bundle(for: ToyWrapped1Test.self))
-        Bjs.get.addNativeWrapper(ToyWrapped1Wrapper.self)
+        Bjs.get.customBundles.add(bundleName: "test", bundle: Bundle(for: ToyComponent1Test.self))
+        Bjs.get.addNativeWrapper(ToyComponent1Wrapper.self)
     }
     
     func testWrapped_getSum() {
         
-        let wrapped = ToyWrapped1("1", "2")
+        let wrapped = ToyComponent1("1", "2")
         XCTAssertEqual(wrapped.getSum(3), 6)
     }
     
     func testWrapped_getToySum() {
         
-        let wrapped1 = ToyWrapped1("1", "2")
-        let wrapped2 = ToyWrapped1("3", "4")
+        let wrapped1 = ToyComponent1("1", "2")
+        let wrapped2 = ToyComponent1("3", "4")
         XCTAssertEqual(wrapped2.getToySum(wrapped1), 10)
     }
     
@@ -31,7 +31,7 @@ class ToyWrapped1Test: XCTestCase {
         
         allocationTestBegin()
         for _ in 1...objectsCount {
-            XCTAssertEqual(ToyWrapped1User.add(1, 2, 3), 6)
+            XCTAssertEqual(UserOfToyComponent1.add(1, 2, 3), 6)
         }
         allocationTestEnd()
     }
@@ -40,7 +40,7 @@ class ToyWrapped1Test: XCTestCase {
         
         allocationTestBegin()
         for _ in 1...objectsCount {
-            let toy = ToyWrapped1User.getToy(1, 2)
+            let toy = UserOfToyComponent1.getToy(1, 2)
             XCTAssertEqual(toy?.number1String, "1")
             XCTAssertEqual(toy?.number2String, "2")
         }
@@ -51,16 +51,16 @@ class ToyWrapped1Test: XCTestCase {
         
         allocationTestBegin()
         for _ in 1...objectsCount / 2 {
-            let toy1 = ToyWrapped1("1", "2")
-            let toy2 = ToyWrapped1("3", "4")
-            XCTAssertEqual(ToyWrapped1User.getSum(toy1, toy2), 10)
-            XCTAssertEqual(ToyWrapped1User.getSum(toy2, toy1), 10)
+            let toy1 = ToyComponent1("1", "2")
+            let toy2 = ToyComponent1("3", "4")
+            XCTAssertEqual(UserOfToyComponent1.getSum(toy1, toy2), 10)
+            XCTAssertEqual(UserOfToyComponent1.getSum(toy2, toy1), 10)
         }
         allocationTestEnd()
     }
     
     func allocationTestBegin() {
-        ToyWrapped1.deallocCounter = 0
+        ToyComponent1.deallocCounter = 0
         testExpectation = expectation(description: "all objects deallocated")
     }
     
@@ -68,7 +68,7 @@ class ToyWrapped1Test: XCTestCase {
         //JSGarbageCollect(Bjs.get.context.jsContext.jsGlobalContextRef)
         DispatchQueue.global().async {
             // At least 90% of allocated objects should be deallocated
-            while ToyWrapped1.deallocCounter < (self.objectsCount / 10) * 9 {
+            while ToyComponent1.deallocCounter < (self.objectsCount / 10) * 9 {
                 JSGarbageCollect(Bjs.get.context.jsContext.jsGlobalContextRef)
                 sleep(1)
             }

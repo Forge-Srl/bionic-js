@@ -1,7 +1,7 @@
 import JavaScriptCore
 import Bjs
 
-class ToyClass1: BjsClass {
+class ToyClass1: BjsObject {
     
     // CONSTRUCTOR
     

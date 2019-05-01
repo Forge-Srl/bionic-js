@@ -13,11 +13,11 @@ public class BjsAnyObject {
         self.jsObj = jsObj
     }
     
-    public init(_ bjsObj: BjsClass) {
+    public init(_ bjsObj: BjsObject) {
         self.jsObj = bjsObj.bjsObj
     }
     
-    public func getObject<T : BjsClass>(_ bjsFactory: Bjs.Factory<T>) -> T? {
+    public func getObject<T : BjsObject>(_ bjsFactory: Bjs.Factory<T>) -> T? {
         return Bjs.get.getObj(jsObj, bjsFactory)
     }
 }

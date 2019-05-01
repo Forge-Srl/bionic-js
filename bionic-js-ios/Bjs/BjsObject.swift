@@ -6,7 +6,7 @@
 import UIKit
 import JavaScriptCore
 
-open class BjsClass : Hashable {
+open class BjsObject : Hashable {
     
     open class var bjsModulePath: String { return "" }
     public let bjsObj: JSValue
@@ -44,7 +44,7 @@ open class BjsClass : Hashable {
     }
     
     
-    public func castTo<T: BjsClass>(_ bjsFactory: Bjs.Factory<T>) -> T? {
+    public func castTo<T: BjsObject>(_ bjsFactory: Bjs.Factory<T>) -> T? {
         return Bjs.get.getObj(self.bjsObj, bjsFactory)
     }
     
@@ -52,7 +52,7 @@ open class BjsClass : Hashable {
         ObjectIdentifier(self).hash(into: &hasher)
     }
     
-    public static func ==(lhs: BjsClass, rhs: BjsClass) -> Bool {
+    public static func ==(lhs: BjsObject, rhs: BjsObject) -> Bool {
         return lhs === rhs
     }
 }

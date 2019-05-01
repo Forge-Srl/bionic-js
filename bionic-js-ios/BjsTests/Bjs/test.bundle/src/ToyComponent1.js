@@ -1,6 +1,6 @@
-const native = require('ToyWrapped1')
+const native = require('ToyComponent1')
 
-class ToyWrapped1 {
+class ToyComponent1 {
     
     // @bionic Float
     static get pi() {
@@ -42,10 +42,10 @@ class ToyWrapped1 {
         return native.bjs_getSum(this, offset)
     }
     
-    // @bionic (ToyWrapped1) => Int
-    getToySum(toy) {
-        return native.bjs_getToySum(this, toy)
+    // @bionic (ToyComponent1) => Int
+    getToySum(toyComponent1) {
+        return native.bjs_getToySum(this, toyComponent1)
     }
 }
 
-module.exports = ToyWrapped1
+module.exports = ToyComponent1

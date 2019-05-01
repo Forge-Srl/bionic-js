@@ -3,13 +3,13 @@ import JavaScriptCore
 
 class BjsLibTest: XCTestCase {
     
-    let bjsClassFactory = { (jsValue: JSValue) -> BjsClass in
-        return BjsClass(jsValue)
+    let bjsObjectFactory = { (jsValue: JSValue) -> BjsObject in
+        return BjsObject(jsValue)
     }
     
-    class BjsClass2: BjsClass { }
-    let bjsClass2Factory = { (jsValue: JSValue) -> BjsClass2 in
-        return BjsClass2(jsValue)
+    class BjsObject2: BjsObject { }
+    let bjsClass2Factory = { (jsValue: JSValue) -> BjsObject2 in
+        return BjsObject2(jsValue)
     }
     
     var jsInstance1: JSValue!
@@ -27,27 +27,27 @@ class BjsLibTest: XCTestCase {
     }
     
     func test_bjsObject_differentJsInstances() {
-        let instance1 = Bjs.get.getObj(jsInstance1, bjsClassFactory)
-        let instance2 = Bjs.get.getObj(jsInstance2, bjsClassFactory)
+        let instance1 = Bjs.get.getObj(jsInstance1, bjsObjectFactory)
+        let instance2 = Bjs.get.getObj(jsInstance2, bjsObjectFactory)
         XCTAssertNotEqual(instance1, instance2)
     }
     
     func test_bjsObject_sameInstances_sameTypes() {
-        let instance1 = Bjs.get.getObj(jsInstance1, bjsClassFactory)
-        let instance1Again = Bjs.get.getObj(jsInstance1) { (jsValue: JSValue) -> BjsClass in
+        let instance1 = Bjs.get.getObj(jsInstance1, bjsObjectFactory)
+        let instance1Again = Bjs.get.getObj(jsInstance1) { (jsValue: JSValue) -> BjsObject in
             XCTFail("Factory shouldn't be called again")
-            return BjsClass(jsValue)
+            return BjsObject(jsValue)
         }
         XCTAssertEqual(instance1, instance1Again)
     }
     
     func test_bjsObject_sameInstances_differentTypes() {
-        let instance1 = Bjs.get.getObj(jsInstance1, bjsClassFactory)
+        let instance1 = Bjs.get.getObj(jsInstance1, bjsObjectFactory)
         let instance1DifferentType = Bjs.get.getObj(jsInstance1, bjsClass2Factory);
         XCTAssertNotEqual(instance1, instance1DifferentType)
         XCTAssertEqual(instance1?.bjsObj, instance1DifferentType?.bjsObj)
         
-        let instance1Again = Bjs.get.getObj(jsInstance1, bjsClassFactory)
+        let instance1Again = Bjs.get.getObj(jsInstance1, bjsObjectFactory)
         let instance1DifferentTypeAgain = Bjs.get.getObj(jsInstance1, bjsClass2Factory);
         
         XCTAssertEqual(instance1, instance1Again)

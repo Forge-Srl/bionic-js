@@ -7,18 +7,22 @@ import JavaScriptCore
 
 public class Bjs {
     
-    public typealias Factory<T: BjsClass> = (_ jsObj: JSValue) -> T
+    static let bjsWrapperObjFieldName = "bjsWrapperObj"
+    static let bjsWrapperObjFieldUnboundValue = "unbound"
+    static let bjsNativeObjFieldName = "bjsNativeObj"
+    
+    public typealias Factory<T: BjsObject> = (_ jsObj: JSValue) -> T
     public static var get = Bjs()
     public var jsNull: JSValue { return context.createJsNull() }
     public var customBundles: BjsCustomBundles { return context.appBundle.customBundles }
     
     let context: BjsModules
-    var jsValueToNative: [BjsNativeObjectIdentifier : BjsClass]
+    var jsValueToNative: [BjsNativeObjectIdentifier : BjsObject]
     var modulesCache: [String : JSValue]
     
     init() {
         context = BjsModules(BjsBundle("BjsSources"))
-        jsValueToNative = [BjsNativeObjectIdentifier : BjsClass]()
+        jsValueToNative = [BjsNativeObjectIdentifier : BjsObject]()
         modulesCache = [String : JSValue]()
     }
     
@@ -65,9 +69,9 @@ public class Bjs {
         }
         if let jsObj = context.createJsObject(native) {
             unprotect(jsObj)
-            let jsWrapperObj = jsObj.objectForKeyedSubscript("bjsWrapperObj")
+            let jsWrapperObj = jsObj.objectForKeyedSubscript(Bjs.bjsWrapperObjFieldName)
             if jsWrapperObj == nil || jsWrapperObj!.isUndefined {
-                jsObj.setObject("unbound", forKeyedSubscript: "bjsWrapperObj" as NSString)
+                jsObj.setObject(Bjs.bjsWrapperObjFieldUnboundValue, forKeyedSubscript: Bjs.bjsWrapperObjFieldName as NSString)
                 let wrapperClass = self.loadModule(nativeWrapperClass.wrapperPath)
                 
                 let newJsWrapperObj = wrapperClass.construct(withArguments: [jsObj])!
@@ -82,7 +86,7 @@ public class Bjs {
         }
     }
     
-    public func putObj(_ bjsObj: BjsClass?) -> JSValue {
+    public func putObj(_ bjsObj: BjsObject?) -> JSValue {
         return bjsObj != nil ? bjsObj!.bjsObj : jsNull
     }
     
@@ -148,7 +152,7 @@ public class Bjs {
         }
         
         unprotect(jsWrapperObj)
-        if let jsObj = jsWrapperObj.objectForKeyedSubscript("bjsNativeObj") {
+        if let jsObj = jsWrapperObj.objectForKeyedSubscript(Bjs.bjsNativeObjFieldName) {
             unprotect(jsObj)
             return jsObj.toObjectOf(T.self as? AnyClass) as? T
         } else {
@@ -156,7 +160,7 @@ public class Bjs {
         }
     }
     
-    public func getObj<T: BjsClass>(_ jsObj: JSValue, _ bjsFactory: Factory<T>) -> T? {
+    public func getObj<T: BjsObject>(_ jsObj: JSValue, _ bjsFactory: Factory<T>) -> T? {
         if Bjs.isNullOrUndefined(jsObj) {
             return nil
         }
@@ -194,8 +198,8 @@ public class Bjs {
     
     public func getBound<T>(_ jsObj: JSValue, _ nativeClass: T.Type) -> T? {
         if jsObj.isInstance(of: nativeClass) {
-            let bjsWrapperObj = jsObj.objectForKeyedSubscript("bjsWrapperObj")!
-            if bjsWrapperObj.toString() == "unbound" {
+            let bjsWrapperObj = jsObj.objectForKeyedSubscript(Bjs.bjsWrapperObjFieldName)!
+            if bjsWrapperObj.toString() == Bjs.bjsWrapperObjFieldUnboundValue {
                 return jsObj.toObjectOf(T.self as? AnyClass) as? T
             }
         }
@@ -204,8 +208,8 @@ public class Bjs {
     
     public func bindNative(_ native: Any!, _ wrapper: JSValue) -> Void {
         if let nativeJsObj = context.createJsObject(native) {
-            wrapper.setObject(nativeJsObj, forKeyedSubscript: "bjsNativeObj" as NSString)
-            nativeJsObj.setObject(wrapper, forKeyedSubscript: "bjsWrapperObj" as NSString)
+            wrapper.setObject(nativeJsObj, forKeyedSubscript: Bjs.bjsNativeObjFieldName as NSString)
+            nativeJsObj.setObject(wrapper, forKeyedSubscript: Bjs.bjsWrapperObjFieldName as NSString)
         }
     }
     
@@ -243,7 +247,7 @@ public class Bjs {
         JSValueUnprotect(context.jsContext.jsGlobalContextRef, jsUbj.jsValueRef)
     }
     
-    func createNativeObj(_ jsObj: JSValue, _ bjsObj: BjsClass) {
+    func createNativeObj(_ jsObj: JSValue, _ bjsObj: BjsObject) {
         let nativeObjectIdentifier = BjsNativeObjectIdentifier(jsObj, type(of:bjsObj))
         if jsValueToNative[nativeObjectIdentifier] == nil {
             jsValueToNative[nativeObjectIdentifier] = bjsObj

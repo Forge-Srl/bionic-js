@@ -1,6 +1,6 @@
 import Bjs
 
-class ToyWrapped1: BjsExport {
+class ToyComponent1: BjsExport {
     
     static var deallocCounter: Int = 0
     var number1String, number2String: String?
@@ -32,12 +32,12 @@ class ToyWrapped1: BjsExport {
         return offset! + Int(number1String!)! + Int(number2String!)!
     }
     
-    func getToySum(_ toy: ToyWrapped1?) -> Int? {
-        return getSum(0)! + toy!.getSum(0)!
+    func getToySum(_ toyComponent1: ToyComponent1?) -> Int? {
+        return getSum(0)! + toyComponent1!.getSum(0)!
     }
     
     deinit {
-        ToyWrapped1.deallocCounter += 1
-        print("**** dealloc \(ToyWrapped1.deallocCounter)")
+        ToyComponent1.deallocCounter += 1
+        print("**** dealloc \(ToyComponent1.deallocCounter)")
     }
 }
