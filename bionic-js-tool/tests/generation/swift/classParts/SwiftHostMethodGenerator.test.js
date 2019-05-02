@@ -1,13 +1,13 @@
 const t = require('../../../test-utils')
 
-describe('SwiftMethodGenerator', () => {
+describe('SwiftHostMethodGenerator', () => {
 
     let Class, Method, Parameter, VoidType, BoolType, IntType, LambdaType, expectedHeader, expectedFooter
 
     function getCode(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters) {
         const class1 = new Class('Class1', '', [new Method('method1', 'method description', isMethodStatic,
             isMethodOverriding, methodReturnType, methodParameters)], [], [], '', '')
-        return class1.getSwiftGenerator().getFiles()[0].content
+        return class1.generator.swift.forHosting().getFiles()[0].content
     }
 
     function newParam(type, name) {

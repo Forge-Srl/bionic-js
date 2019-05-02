@@ -1,8 +1,8 @@
-const SwiftBaseMethodGenerator = require('./SwiftBaseMethodGenerator')
-const GenerationContext = require('../../code/GenerationContext')
-const CodeBlock = require('../../code/CodeBlock')
+const SwiftMethodGenerator = require('./SwiftMethodGenerator')
+const GenerationContext = require('../code/GenerationContext')
+const CodeBlock = require('../code/CodeBlock')
 
-class SwiftConstructorGenerator extends SwiftBaseMethodGenerator {
+class SwiftConstructorGenerator extends SwiftMethodGenerator {
 
     getImplementation() {
         const constructorContext = new GenerationContext()

@@ -1,30 +1,20 @@
 const t = require('../../test-utils')
 
 describe('Type', () => {
-    let Type, type
+    let Type, type, TypeGeneratorFactory
 
     beforeEach(() => {
         Type = t.requireModule('schema/types/Type')
         type = new Type()
+        TypeGeneratorFactory = t.requireModule('generation/factory/TypeGeneratorFactory')
     })
 
     test('isValid', () => {
         expect(type.isValid).toEqual({validity: true, error: null})
     })
 
-    test('getGeneratorClass', () => {
-        class StringType extends Type {
-            static get typeName() {
-                return 'String'
-            }
-        }
-
-        const stringType = new StringType(undefined)
-        const JavaStringTypeGenerator = t.requireModule('generation/swift/types/SwiftStringTypeGenerator')
-
-        const generatorClass = stringType.getGeneratorClass('Swift')
-
-        expect(generatorClass).toBe(JavaStringTypeGenerator)
+    test('generator', () => {
+        expect(new Type().generator).toBeInstanceOf(TypeGeneratorFactory)
     })
 
     test('toString', () => {

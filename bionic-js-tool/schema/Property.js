@@ -1,7 +1,7 @@
-const SchemaWithGenerators = require('./SchemaWithGenerators')
+const MultiTargetGenerable = require('./MultiTargetGenerable')
 const Type = require('./types/Type')
 
-class Property extends SchemaWithGenerators {
+class Property extends MultiTargetGenerable {
 
     static get schemaName() {
         return 'Property'

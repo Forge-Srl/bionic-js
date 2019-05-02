@@ -1,7 +1,7 @@
-const SchemaWithGenerators = require('./SchemaWithGenerators')
+const Generable = require('./Generable')
 const Type = require('./types/Type')
 
-class Parameter extends SchemaWithGenerators {
+class Parameter extends Generable {
 
     static get schemaName() {
         return 'Parameter'

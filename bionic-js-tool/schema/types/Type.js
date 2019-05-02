@@ -1,7 +1,8 @@
-const SchemaWithGenerators = require('../SchemaWithGenerators')
+const JsonSerializable = require('../../JsonSerializable')
+const TypeGeneratorFactory = require('../../generation/factory/TypeGeneratorFactory')
 const getTypeClasses = require('./getTypeClasses')
 
-class Type extends SchemaWithGenerators {
+class Type extends JsonSerializable {
 
     constructor(typeName) {
         super()
@@ -12,8 +13,8 @@ class Type extends SchemaWithGenerators {
         return {validity: true, error: null}
     }
 
-    getGeneratorClass(language) {
-        return require(`../../generation/${language.toLowerCase()}/types/${language}${this.constructor.typeName}TypeGenerator`)
+    get generator() {
+        return new TypeGeneratorFactory(this)
     }
 
     toString() {

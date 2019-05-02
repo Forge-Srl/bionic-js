@@ -1,13 +1,13 @@
 const t = require('../../../test-utils')
 
-describe('SwiftClassGenerator', () => {
+describe('SwiftHostClassGenerator', () => {
 
     let Class, Constructor, Property, Method, IntType,
         expectedImports, expectedClassDeclaration, expectedFactoryMethod, expectedModulePathVar
 
     function getCode(constructors, properties, methods, superClassName = '') {
         const class1 = new Class('Class1', 'class description', constructors, properties, methods, superClassName, 'module/path')
-        return class1.getSwiftGenerator().getFiles()[0].content
+        return class1.generator.swift.forHosting().getFiles()[0].content
     }
 
     beforeEach(() => {

@@ -1,18 +1,18 @@
-const SwiftBaseMethodGenerator = require('./SwiftBaseMethodGenerator')
-const CodeBlock = require('../../code/CodeBlock')
-const GenerationContext = require('../../code/GenerationContext')
-const IniRet = require('../../code/IniRet')
+const SwiftMethodGenerator = require('./SwiftMethodGenerator')
+const CodeBlock = require('../code/CodeBlock')
+const GenerationContext = require('../code/GenerationContext')
+const IniRet = require('../code/IniRet')
 
-class SwiftMethodGenerator extends SwiftBaseMethodGenerator {
+class SwiftHostMethodGenerator extends SwiftMethodGenerator {
 
-    getReturnTypeGenerator() {
-        return this.schema.returnType.getSwiftGenerator()
+    get returnTypeGenerator() {
+        return this.schema.returnType.generator.swift
     }
 
     getHeaderCode() {
         const override_ = this.schema.isOverriding ? 'override ' : ''
         const class_ = this.schema.isStatic ? 'class ' : ''
-        const returnTypeStatement = this.getReturnTypeGenerator().getNativeReturnTypeStatement()
+        const returnTypeStatement = this.returnTypeGenerator.getNativeReturnTypeStatement()
 
         return CodeBlock.create()
             .append(`${override_}${class_}func ${this.schema.name}(`).append(this.getParametersStatements())
@@ -22,7 +22,7 @@ class SwiftMethodGenerator extends SwiftBaseMethodGenerator {
     getBodyCode() {
         const methodContext = new GenerationContext()
         const anyParameter = this.schema.parameters.length
-        const returnTypeGen = this.getReturnTypeGenerator()
+        const returnTypeGen = this.returnTypeGenerator
 
         const callIniRet = IniRet.create()
             .appendRet(this.schema.isStatic ? 'Bjs.get.call(self.bjsClass, ' : 'bjsCall(').appendRet(`"${this.schema.name}"`)
@@ -39,4 +39,4 @@ class SwiftMethodGenerator extends SwiftBaseMethodGenerator {
     }
 }
 
-module.exports = SwiftMethodGenerator
+module.exports = SwiftHostMethodGenerator

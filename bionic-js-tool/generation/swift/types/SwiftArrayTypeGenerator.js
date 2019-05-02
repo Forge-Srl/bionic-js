@@ -4,7 +4,7 @@ const IniRet = require('../../code/IniRet')
 class SwiftArrayTypeGenerator extends SwiftTypeGenerator {
 
     get elementTypeGenerator() {
-        return this.schema.elementType.getSwiftGenerator()
+        return this.schema.elementType.generator.swift
     }
 
     getTypeStatement() {

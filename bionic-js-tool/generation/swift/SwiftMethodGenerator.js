@@ -1,11 +1,16 @@
-const CodeGeneratorWithClass = require('../../CodeGeneratorWithClass')
-const IniRet = require('../../code/IniRet')
+const CodeGenerator = require('../CodeGenerator')
+const IniRet = require('../code/IniRet')
 
-class SwiftBaseMethodGenerator extends CodeGeneratorWithClass {
+class SwiftMethodGenerator extends CodeGenerator {
+
+    constructor(schema, classSchema) {
+        super(schema)
+        Object.assign(this, {classSchema})
+    }
 
     getParametersGenerators() {
         if (!this._parametersGenerators) {
-            this._parametersGenerators = this.schema.parameters.map(par => par.getSwiftGenerator())
+            this._parametersGenerators = this.schema.parameters.map(par => par.generator.swift)
         }
         return this._parametersGenerators
     }
@@ -31,4 +36,4 @@ class SwiftBaseMethodGenerator extends CodeGeneratorWithClass {
     }
 }
 
-module.exports = SwiftBaseMethodGenerator
+module.exports = SwiftMethodGenerator

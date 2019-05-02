@@ -1,18 +1,18 @@
-const CodeGeneratorWithClass = require('../../CodeGeneratorWithClass')
-const CodeBlock = require('../../code/CodeBlock')
-const GenerationContext = require('../../code/GenerationContext')
-const IniRet = require('../../code/IniRet')
+const CodeGenerator = require('../CodeGenerator')
+const CodeBlock = require('../code/CodeBlock')
+const GenerationContext = require('../code/GenerationContext')
+const IniRet = require('../code/IniRet')
 
-class SwiftPropertyGenerator extends CodeGeneratorWithClass {
+class SwiftHostPropertyGenerator extends CodeGenerator {
 
-    getTypeGenerator() {
-        return this.schema.type.getSwiftGenerator()
+    get typeGenerator() {
+        return this.schema.type.generator.swift
     }
 
     getHeaderCode() {
         const override_ = this.schema.isOverriding ? 'override ' : ''
         const class_ = this.schema.isStatic ? 'class ' : ''
-        const typeStatement = this.getTypeGenerator().getTypeStatement()
+        const typeStatement = this.typeGenerator.getTypeStatement()
 
         return CodeBlock.create()
             .append(`${override_}${class_}var ${this.schema.name}:`).append(`${typeStatement} {`)
@@ -26,7 +26,7 @@ class SwiftPropertyGenerator extends CodeGeneratorWithClass {
             .appendRet(this.schema.isStatic ? 'Bjs.get.getProperty(self.bjsClass, ' : 'bjsGetProperty(')
             .__.appendRet(`"${this.schema.name}")`)
 
-        const typeGen = this.getTypeGenerator()
+        const typeGen = this.typeGenerator
         const getterContext = new GenerationContext()
 
         return CodeBlock.create()
@@ -40,7 +40,7 @@ class SwiftPropertyGenerator extends CodeGeneratorWithClass {
             return null
 
         const setterContext = new GenerationContext()
-        const jsValueIniRet = this.getTypeGenerator().getJsIniRet(IniRet.create().appendRet('newValue'), setterContext)
+        const jsValueIniRet = this.typeGenerator.getJsIniRet(IniRet.create().appendRet('newValue'), setterContext)
 
         return CodeBlock.create()
             .append('set {').newLineIndenting()
@@ -67,4 +67,4 @@ class SwiftPropertyGenerator extends CodeGeneratorWithClass {
     }
 }
 
-module.exports = SwiftPropertyGenerator
+module.exports = SwiftHostPropertyGenerator

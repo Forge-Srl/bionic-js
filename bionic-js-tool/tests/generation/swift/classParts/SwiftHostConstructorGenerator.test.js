@@ -1,13 +1,13 @@
 const t = require('../../../test-utils')
 
-describe('SwiftConstructorGenerator', () => {
+describe('SwiftHostConstructorGenerator', () => {
 
     let Class, Constructor, Parameter, VoidType, BoolType, IntType, ArrayType, LambdaType, expectedHeader,
         expectedFooter
 
     function getCode(constructorParameters) {
         const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], '', '')
-        return class1.getSwiftGenerator().getFiles()[0].content
+        return class1.generator.swift.forHosting().getFiles()[0].content
     }
 
     function newParam(type, name) {

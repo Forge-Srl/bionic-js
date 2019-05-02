@@ -1,28 +1,8 @@
-const CodeGenerator = require('../../CodeGenerator')
-const CodeBlock = require('../../code/CodeBlock')
-const CodeFile = require('../../CodeFile')
+const SwiftClassGenerator = require('./SwiftClassGenerator')
+const CodeBlock = require('../code/CodeBlock')
+const CodeFile = require('../CodeFile')
 
-class SwiftClassGenerator extends CodeGenerator {
-
-    get staticProperties() {
-        return this.schema.properties.filter(property => property.isStatic)
-    }
-
-    get staticMethods() {
-        return this.schema.methods.filter(method => method.isStatic)
-    }
-
-    get constructors() {
-        return this.schema.constructors
-    }
-
-    get instanceProperties() {
-        return this.schema.properties.filter(property => !property.isStatic)
-    }
-
-    get instanceMethods() {
-        return this.schema.methods.filter(method => !method.isStatic)
-    }
+class SwiftHostClassGenerator extends SwiftClassGenerator {
 
     getFiles() {
         const code = CodeBlock.create()
@@ -50,7 +30,7 @@ class SwiftClassGenerator extends CodeGenerator {
 
     getPartsCode(parts) {
         const code = CodeBlock.create()
-        parts.map(part => part.getSwiftGenerator(this.schema)).forEach(generator => code.append(
+        parts.map(classPart => classPart.generator.swift.forHosting(this.schema)).forEach(generator => code.append(
             generator.getImplementation()).newLine()
             .newLine())
         return code
@@ -71,4 +51,4 @@ class SwiftClassGenerator extends CodeGenerator {
     }
 }
 
-module.exports = SwiftClassGenerator
+module.exports = SwiftHostClassGenerator

@@ -6,13 +6,13 @@ describe('SwiftParameterGenerator', () => {
 
     beforeEach(() => {
 
-        SwiftParameterGenerator = t.requireModule('generation/swift/classParts/SwiftParameterGenerator')
+        SwiftParameterGenerator = t.requireModule('generation/swift/SwiftParameterGenerator')
     })
 
     test('getTypeStatement', () => {
 
         const generator = new SwiftParameterGenerator({
-            name: 'paramName', type: {getSwiftGenerator: () => ({getTypeStatement: () => 'type_statement'})},
+            name: 'paramName', type: {generator: {swift: {getTypeStatement: () => 'type_statement'}}},
         })
 
         const parameterStatement = generator.getParameterStatement()
@@ -23,7 +23,7 @@ describe('SwiftParameterGenerator', () => {
     test('getTypeStatement, missing parameter name', () => {
 
         const generator = new SwiftParameterGenerator({
-            type: {getSwiftGenerator: () => ({getTypeStatement: () => 'type_statement'})},
+            type: {generator: {swift: {getTypeStatement: () => 'type_statement'}}},
         })
 
         const parameterStatement = generator.getParameterStatement()

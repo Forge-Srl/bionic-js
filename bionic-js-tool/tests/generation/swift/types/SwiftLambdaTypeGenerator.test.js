@@ -11,10 +11,10 @@ describe('SwiftLambdaTypeGenerator', () => {
     test('getTypeStatement', () => {
 
         const generator = new SwiftLambdaTypeGenerator({
-            returnType: {getSwiftGenerator: () => ({getTypeStatement: () => 'ret_type_statement'})},
+            returnType: {generator: {swift: {getTypeStatement: () => 'ret_type_statement'}}},
             parameters: [
-                {getSwiftGenerator: () => ({getParameterStatement: () => 'par1_type_statement'})},
-                {getSwiftGenerator: () => ({getParameterStatement: () => 'par2_type_statement'})},
+                {generator: {swift: {getParameterStatement: () => 'par1_type_statement'}}},
+                {generator: {swift: {getParameterStatement: () => 'par2_type_statement'}}},
             ],
         })
 
@@ -24,7 +24,7 @@ describe('SwiftLambdaTypeGenerator', () => {
     test('getTypeStatement with no parameters', () => {
 
         const generator = new SwiftLambdaTypeGenerator({
-            returnType: {getSwiftGenerator: () => ({getTypeStatement: () => 'ret_type_statement'})},
+            returnType: {generator: {swift: {getTypeStatement: () => 'ret_type_statement'}}},
             parameters: [],
         })
 

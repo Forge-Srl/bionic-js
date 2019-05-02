@@ -1,6 +1,6 @@
 const t = require('../../../test-utils')
 
-describe('SwiftPropertyGenerator', () => {
+describe('SwiftHostPropertyGenerator', () => {
 
     let Class, Property, Parameter, AnyType, ArrayType, BoolType, DateType, FloatType, IntType, LambdaType,
         NativeObjectType, ObjectType, StringType, VoidType, WrappedObjectType, expectedHeader, expectedFooter
@@ -8,7 +8,7 @@ describe('SwiftPropertyGenerator', () => {
     function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set']) {
         const class1 = new Class('Class1', '', [], [new Property('property1', 'property description', isPropertyStatic,
             isPropertyOverriding, propertyType, propertyKinds)], [], '', '')
-        return class1.getSwiftGenerator().getFiles()[0].content
+        return class1.generator.swift.forHosting().getFiles()[0].content
     }
 
     beforeEach(() => {
