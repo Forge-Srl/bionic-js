@@ -68,14 +68,14 @@ public class Bjs {
             return jsNull
         }
         if let jsObj = context.createJsObject(native) {
-            unprotect(jsObj)
+            //unprotect(jsObj) TODO
             let jsWrapperObj = jsObj.objectForKeyedSubscript(Bjs.bjsWrapperObjFieldName)
             if jsWrapperObj == nil || jsWrapperObj!.isUndefined {
                 jsObj.setObject(Bjs.bjsWrapperObjFieldUnboundValue, forKeyedSubscript: Bjs.bjsWrapperObjFieldName as NSString)
                 let wrapperClass = self.loadModule(nativeWrapperClass.wrapperPath)
                 
                 let newJsWrapperObj = wrapperClass.construct(withArguments: [jsObj])!
-                unprotect(newJsWrapperObj)
+                //unprotect(newJsWrapperObj) TODO
                 
                 return newJsWrapperObj
             } else {
