@@ -4,9 +4,9 @@ describe('Type', () => {
     let Type, type, TypeGeneratorFactory
 
     beforeEach(() => {
-        Type = t.requireModule('schema/types/Type')
+        Type = t.requireModule('schema/types/Type').Type
         type = new Type()
-        TypeGeneratorFactory = t.requireModule('generation/factory/TypeGeneratorFactory')
+        TypeGeneratorFactory = t.requireModule('generation/factory/TypeGeneratorFactory').TypeGeneratorFactory
     })
 
     test('isValid', () => {
@@ -28,18 +28,21 @@ describe('Type', () => {
             }
         }
 
-        const testType = new TestType(undefined)
+        const testType = new TestType()
+        expect(testType.typeName).toBe('test...')
         expect(testType.toString()).toBe('test...')
     })
 
     test('fromObj String', () => {
         const instance = Type.fromObj({type: 'String'})
-        expect(instance).toBeInstanceOf(t.requireModule('schema/types/StringType'))
+        const StringType = t.requireModule('schema/types/StringType').StringType
+        expect(instance).toBeInstanceOf(StringType)
     })
 
     test('fromObj Class', () => {
         const instance = Type.fromObj({type: 'Object', className: 'MyName'})
-        expect(instance).toBeInstanceOf(t.requireModule('schema/types/ObjectType'))
+        const ObjectType = t.requireModule('schema/types/ObjectType').ObjectType
+        expect(instance).toBeInstanceOf(ObjectType)
         expect(instance.className).toBe('MyName')
     })
 })

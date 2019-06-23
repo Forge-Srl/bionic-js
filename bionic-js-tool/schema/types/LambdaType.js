@@ -1,5 +1,5 @@
-const Type = require('./Type')
-const Parameter = require('../Parameter')
+const {Type} = require('./Type')
+const {Parameter} = require('../Parameter')
 
 class LambdaType extends Type {
 
@@ -12,7 +12,7 @@ class LambdaType extends Type {
     }
 
     constructor(returnType, parameters) {
-        super(LambdaType.typeName)
+        super()
         Object.assign(this, {returnType, parameters})
     }
 
@@ -41,4 +41,4 @@ class LambdaType extends Type {
     }
 }
 
-module.exports = LambdaType
+module.exports = {LambdaType}

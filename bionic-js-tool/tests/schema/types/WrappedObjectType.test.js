@@ -5,7 +5,7 @@ describe('WrappedObjectType', () => {
     let WrappedObjectType
 
     beforeEach(() => {
-        WrappedObjectType = t.requireModule('schema/types/WrappedObjectType')
+        WrappedObjectType = t.requireModule('schema/types/WrappedObjectType').WrappedObjectType
     })
 
     test('typeName', () => {

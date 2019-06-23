@@ -1,21 +1,7 @@
-const SwiftClassGenerator = require('./SwiftClassGenerator')
-const CodeBlock = require('../code/CodeBlock')
-const CodeFile = require('../CodeFile')
+const {SwiftClassGenerator} = require('./SwiftClassGenerator')
+const {CodeBlock} = require('../code/CodeBlock')
 
 class SwiftHostClassGenerator extends SwiftClassGenerator {
-
-    getFiles() {
-        const code = CodeBlock.create()
-            .append(this.getHeaderCode())
-            .append(this.getPartsCode(this.staticProperties))
-            .append(this.getPartsCode(this.staticMethods))
-            .append(this.getPartsCode(this.constructors))
-            .append(this.getPartsCode(this.instanceProperties))
-            .append(this.getPartsCode(this.instanceMethods))
-            .append(this.getFooterCode())
-
-        return [new CodeFile(this.schema.name + '.swift', code.getString())]
-    }
 
     getHeaderCode() {
         const superClassName = this.schema.superClassName || 'BjsClass'
@@ -28,12 +14,11 @@ class SwiftHostClassGenerator extends SwiftClassGenerator {
             .newLine()
     }
 
-    getPartsCode(parts) {
-        const code = CodeBlock.create()
-        parts.map(classPart => classPart.generator.swift.forHosting(this.schema)).forEach(generator => code.append(
-            generator.getImplementation()).newLine()
-            .newLine())
-        return code
+    getBodyCode() {
+        return CodeBlock.create()
+            .append(this.getClassParts().map(classPart =>
+                classPart.generator.swift.forHosting(this.schema).getImplementation().newLine()
+                    .newLine()))
     }
 
     getFooterCode() {
@@ -51,4 +36,4 @@ class SwiftHostClassGenerator extends SwiftClassGenerator {
     }
 }
 
-module.exports = SwiftHostClassGenerator
+module.exports = {SwiftHostClassGenerator}

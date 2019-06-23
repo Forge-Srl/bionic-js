@@ -1,4 +1,4 @@
-const JsExplorer = require('./JsExplorer')
+const {JsExplorer} = require('./JsExplorer')
 
 class ParameterExplorer extends JsExplorer {
 
@@ -11,4 +11,4 @@ class ParameterExplorer extends JsExplorer {
     }
 }
 
-module.exports = ParameterExplorer
+module.exports = {ParameterExplorer}

@@ -3,7 +3,7 @@ const t = require('../../test-utils')
 describe('Primitive types', () => {
 
     const primitives = ['Any', 'Bool', 'Date', 'Float', 'Int', 'String', 'Void']
-    const getTypeClass = typeName => t.requireModule(`schema/types/${typeName}Type`)
+    const getTypeClass = typeName => t.requireModule(`schema/types/${typeName}Type`)[`${typeName}Type`]
 
     test('Non primitive types count', () => {
         const allTypes = Object.keys(t.requireModule('schema/types/getTypeClasses')())

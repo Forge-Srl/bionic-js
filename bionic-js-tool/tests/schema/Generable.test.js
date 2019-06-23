@@ -5,8 +5,8 @@ describe('Generable', () => {
     let Generable, GeneratorFactory
 
     beforeEach(() => {
-        Generable = t.requireModule('schema/Generable')
-        GeneratorFactory = t.requireModule('generation/factory/GeneratorFactory')
+        Generable = t.requireModule('schema/Generable').Generable
+        GeneratorFactory = t.requireModule('generation/factory/GeneratorFactory').GeneratorFactory
     })
 
     test('generator', () => {

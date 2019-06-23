@@ -35,4 +35,4 @@ class Validation {
     }
 }
 
-module.exports = Validation
+module.exports = {Validation}

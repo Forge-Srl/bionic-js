@@ -1,4 +1,4 @@
-const SwiftTypeGenerator = require('./SwiftTypeGenerator')
+const {SwiftTypeGenerator} = require('./SwiftTypeGenerator')
 
 class SwiftIntTypeGenerator extends SwiftTypeGenerator {
 
@@ -11,4 +11,4 @@ class SwiftIntTypeGenerator extends SwiftTypeGenerator {
     }
 }
 
-module.exports = SwiftIntTypeGenerator
+module.exports = {SwiftIntTypeGenerator}

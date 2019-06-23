@@ -1,8 +1,8 @@
 const path = require('path')
-const Configuration = require('./Configuration')
-const GuestWatcher = require('./GuestWatcher')
-const Directory = require('./Directory')
-const PackageFile = require('./PackageFile')
+const {Configuration} = require('./Configuration')
+const {GuestWatcher} = require('./GuestWatcher')
+const {Directory} = require('./Directory')
+const {PackageFile} = require('./PackageFile')
 
 async function main() {
     const args = process.argv.slice(2)

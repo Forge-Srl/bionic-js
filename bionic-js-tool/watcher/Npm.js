@@ -82,4 +82,4 @@ class Npm {
     }
 }
 
-module.exports = Npm
+module.exports = {Npm}

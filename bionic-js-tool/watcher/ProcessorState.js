@@ -1,4 +1,4 @@
-const JsonFile = require('./JsonFile')
+const {JsonFile} = require('./JsonFile')
 
 class ProcessorState {
 
@@ -58,4 +58,4 @@ class ProcessorState {
     }
 }
 
-module.exports = ProcessorState
+module.exports = {ProcessorState}

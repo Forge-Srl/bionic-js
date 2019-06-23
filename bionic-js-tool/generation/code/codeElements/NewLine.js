@@ -6,4 +6,4 @@ class NewLine {
     }
 }
 
-module.exports = NewLine
+module.exports = {NewLine}

@@ -1,7 +1,7 @@
-const CodeWatcher = require('./CodeWatcher')
-const Npm = require('./Npm')
-const FilesFilter = require('./FilesFilter')
-const GuestFile = require('./GuestFile')
+const {CodeWatcher} = require('./CodeWatcher')
+const {Npm} = require('./Npm')
+const {FilesFilter} = require('./FilesFilter')
+const {GuestFile} = require('./GuestFile')
 
 class GuestWatcher extends CodeWatcher {
 
@@ -13,7 +13,7 @@ class GuestWatcher extends CodeWatcher {
     }
 }
 
-module.exports = GuestWatcher
+module.exports = {GuestWatcher}
 
 /*
 Dev dependencies

@@ -1,5 +1,5 @@
-const MultiTargetGenerable = require('./MultiTargetGenerable')
-const Type = require('./types/Type')
+const {MultiTargetGenerable} = require('./MultiTargetGenerable')
+const {Type} = require('./types/Type')
 
 class Property extends MultiTargetGenerable {
 
@@ -18,4 +18,4 @@ class Property extends MultiTargetGenerable {
     }
 }
 
-module.exports = Property
+module.exports = {Property}

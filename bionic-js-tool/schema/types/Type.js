@@ -1,12 +1,12 @@
-const JsonSerializable = require('../../JsonSerializable')
-const TypeGeneratorFactory = require('../../generation/factory/TypeGeneratorFactory')
+const {JsonSerializable} = require('../../JsonSerializable')
+const {TypeGeneratorFactory} = require('../../generation/factory/TypeGeneratorFactory')
 const getTypeClasses = require('./getTypeClasses')
 
 class Type extends JsonSerializable {
 
-    constructor(typeName) {
+    constructor() {
         super()
-        Object.assign(this, {typeName})
+        Object.assign(this, {typeName: this.constructor.typeName})
     }
 
     get isValid() {
@@ -26,4 +26,4 @@ class Type extends JsonSerializable {
     }
 }
 
-module.exports = Type
+module.exports = {Type}

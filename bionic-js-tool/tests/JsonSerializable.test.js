@@ -6,7 +6,7 @@ describe('JsonSerializable', () => {
 
     beforeEach(() => {
 
-        JsonSerializable = t.requireModule('jsonSerializable')
+        JsonSerializable = t.requireModule('JsonSerializable').JsonSerializable
     })
 
     test('fromObj', () => {

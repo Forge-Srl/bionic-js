@@ -5,8 +5,8 @@ describe('Property', () => {
     let Property, IntType
 
     beforeEach(() => {
-        Property = t.requireModule('schema/Property')
-        IntType = t.requireModule('schema/types/IntType')
+        Property = t.requireModule('schema/Property').Property
+        IntType = t.requireModule('schema/types/IntType').IntType
     })
 
     test('schemaName', () => {

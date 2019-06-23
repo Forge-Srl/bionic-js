@@ -1,6 +1,6 @@
-const MultiTargetGenerable = require('./MultiTargetGenerable')
-const Type = require('./types/Type')
-const Parameter = require('./Parameter')
+const {MultiTargetGenerable} = require('./MultiTargetGenerable')
+const {Type} = require('./types/Type')
+const {Parameter} = require('./Parameter')
 
 class Method extends MultiTargetGenerable {
 
@@ -19,4 +19,4 @@ class Method extends MultiTargetGenerable {
     }
 }
 
-module.exports = Method
+module.exports = {Method}

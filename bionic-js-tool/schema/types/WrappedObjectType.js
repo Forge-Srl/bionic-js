@@ -1,4 +1,4 @@
-const ObjectType = require('./ObjectType')
+const {ObjectType} = require('./ObjectType')
 
 class WrappedObjectType extends ObjectType {
 
@@ -11,4 +11,4 @@ class WrappedObjectType extends ObjectType {
     }
 }
 
-module.exports = WrappedObjectType
+module.exports = {WrappedObjectType}

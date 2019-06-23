@@ -1,15 +1,15 @@
 const t = require('../../test-utils')
 const parser = require('@babel/parser')
-const MethodExplorer = t.requireModule('parser/explorers/MethodExplorer')
-const ParameterExplorer = t.requireModule('parser/explorers/ParameterExplorer')
-const Parameter = t.requireModule('schema/Parameter')
-const Method = t.requireModule('schema/Method')
-const Property = t.requireModule('schema/Property')
-const IntType = t.requireModule('schema/types/IntType')
-const VoidType = t.requireModule('schema/types/VoidType')
-const LambdaType = t.requireModule('schema/types/LambdaType')
-const ArrayType = t.requireModule('schema/types/ArrayType')
-const ObjectType = t.requireModule('schema/types/ObjectType')
+const MethodExplorer = t.requireModule('parser/explorers/MethodExplorer').MethodExplorer
+const ParameterExplorer = t.requireModule('parser/explorers/ParameterExplorer').ParameterExplorer
+const Parameter = t.requireModule('schema/Parameter').Parameter
+const Method = t.requireModule('schema/Method').Method
+const Property = t.requireModule('schema/Property').Property
+const IntType = t.requireModule('schema/types/IntType').IntType
+const VoidType = t.requireModule('schema/types/VoidType').VoidType
+const LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
+const ArrayType = t.requireModule('schema/types/ArrayType').ArrayType
+const ObjectType = t.requireModule('schema/types/ObjectType').ObjectType
 
 describe('MethodExplorer', () => {
 

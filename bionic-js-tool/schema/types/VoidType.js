@@ -1,10 +1,6 @@
-const Type = require('./Type')
+const {Type} = require('./Type')
 
 class VoidType extends Type {
-
-    constructor() {
-        super(VoidType.typeName)
-    }
 
     static get typeName() {
         return 'Void'
@@ -15,4 +11,4 @@ class VoidType extends Type {
     }
 }
 
-module.exports = VoidType
+module.exports = {VoidType}

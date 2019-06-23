@@ -5,7 +5,7 @@ describe('SwiftLambdaTypeGenerator', () => {
     let SwiftLambdaTypeGenerator
 
     beforeEach(() => {
-        SwiftLambdaTypeGenerator = t.requireModule('generation/swift/types/SwiftLambdaTypeGenerator')
+        SwiftLambdaTypeGenerator = t.requireModule('generation/swift/types/SwiftLambdaTypeGenerator').SwiftLambdaTypeGenerator
     })
 
     test('getTypeStatement', () => {

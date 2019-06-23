@@ -5,12 +5,12 @@ describe('Class', () => {
     let Class, Constructor, Property, Method, IntType, VoidType
 
     beforeEach(() => {
-        Class = t.requireModule('schema/Class')
-        Constructor = t.requireModule('schema/Constructor')
-        Property = t.requireModule('schema/Property')
-        Method = t.requireModule('schema/Method')
-        IntType = t.requireModule('schema/types/IntType')
-        VoidType = t.requireModule('schema/types/VoidType')
+        Class = t.requireModule('schema/Class').Class
+        Constructor = t.requireModule('schema/Constructor').Constructor
+        Property = t.requireModule('schema/Property').Property
+        Method = t.requireModule('schema/Method').Method
+        IntType = t.requireModule('schema/types/IntType').IntType
+        VoidType = t.requireModule('schema/types/VoidType').VoidType
     })
 
     test('schemaName', () => {
@@ -50,10 +50,10 @@ describe('Class', () => {
     test('isValid', () => {
         t.resetModulesCache()
 
-        const Validation = t.mockAndRequireModule('schema/Validation')
+        const Validation = t.mockAndRequireModule('schema/Validation').Validation
         Validation.validateIdentifier.mockReturnValueOnce('isValid')
 
-        Class = t.requireModule('schema/Class')
+        Class = t.requireModule('schema/Class').Class
         const actualClass = new Class('ClassName')
 
         expect(actualClass.isValid).toBe('isValid')

@@ -1,5 +1,5 @@
-const Type = require('./Type')
-const Validation = require('../Validation')
+const {Type} = require('./Type')
+const {Validation} = require('../Validation')
 
 class ObjectType extends Type {
 
@@ -12,7 +12,7 @@ class ObjectType extends Type {
     }
 
     constructor(className) {
-        super(ObjectType.typeName)
+        super()
         Object.assign(this, {className})
     }
 
@@ -25,4 +25,4 @@ class ObjectType extends Type {
     }
 }
 
-module.exports = ObjectType
+module.exports = {ObjectType}

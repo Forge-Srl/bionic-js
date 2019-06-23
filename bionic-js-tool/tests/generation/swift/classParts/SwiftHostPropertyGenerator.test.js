@@ -12,21 +12,21 @@ describe('SwiftHostPropertyGenerator', () => {
     }
 
     beforeEach(() => {
-        Class = t.requireModule('schema/Class')
-        Property = t.requireModule('schema/Property')
-        Parameter = t.requireModule('schema/Parameter')
-        AnyType = t.requireModule('schema/types/AnyType')
-        ArrayType = t.requireModule('schema/types/ArrayType')
-        BoolType = t.requireModule('schema/types/BoolType')
-        DateType = t.requireModule('schema/types/DateType')
-        FloatType = t.requireModule('schema/types/FloatType')
-        IntType = t.requireModule('schema/types/IntType')
-        LambdaType = t.requireModule('schema/types/LambdaType')
-        NativeObjectType = t.requireModule('schema/types/NativeObjectType')
-        ObjectType = t.requireModule('schema/types/ObjectType')
-        StringType = t.requireModule('schema/types/StringType')
-        VoidType = t.requireModule('schema/types/VoidType')
-        WrappedObjectType = t.requireModule('schema/types/WrappedObjectType')
+        Class = t.requireModule('schema/Class').Class
+        Property = t.requireModule('schema/Property').Property
+        Parameter = t.requireModule('schema/Parameter').Parameter
+        AnyType = t.requireModule('schema/types/AnyType').AnyType
+        ArrayType = t.requireModule('schema/types/ArrayType').ArrayType
+        BoolType = t.requireModule('schema/types/BoolType').BoolType
+        DateType = t.requireModule('schema/types/DateType').DateType
+        FloatType = t.requireModule('schema/types/FloatType').FloatType
+        IntType = t.requireModule('schema/types/IntType').IntType
+        LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
+        NativeObjectType = t.requireModule('schema/types/NativeObjectType').NativeObjectType
+        ObjectType = t.requireModule('schema/types/ObjectType').ObjectType
+        StringType = t.requireModule('schema/types/StringType').StringType
+        VoidType = t.requireModule('schema/types/VoidType').VoidType
+        WrappedObjectType = t.requireModule('schema/types/WrappedObjectType').WrappedObjectType
 
         expectedHeader = [
             'import JavaScriptCore',

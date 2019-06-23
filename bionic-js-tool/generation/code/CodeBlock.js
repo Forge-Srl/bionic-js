@@ -1,7 +1,7 @@
-const Indentation = require('./codeElements/Indentation')
-const StringBuilder = require('./StringBuilder')
-const NewLine = require('./codeElements/NewLine')
-const InlineCode = require('./codeElements/InlineCode')
+const {Indentation} = require('./codeElements/Indentation')
+const {StringBuilder} = require('./StringBuilder')
+const {NewLine} = require('./codeElements/NewLine')
+const {InlineCode} = require('./codeElements/InlineCode')
 
 class CodeBlock {
 
@@ -35,8 +35,8 @@ class CodeBlock {
         return this
     }
 
-    newLineDeindenting() {
-        return this.newLineIndenting(-1)
+    newLineDeindenting(indentation = -1) {
+        return this.newLineIndenting(indentation)
     }
 
     appendString(codeString) {
@@ -57,6 +57,12 @@ class CodeBlock {
     append(obj) {
         if (!obj) {
             return this
+        } else if (Array.isArray(obj)) {
+            let codeBlock = this
+            obj.forEach(obj => {
+                codeBlock = codeBlock.append(obj)
+            })
+            return codeBlock
         } else if (typeof obj === 'string') {
             return this.appendString(obj)
         } else if (obj instanceof CodeBlock) {
@@ -73,4 +79,4 @@ class CodeBlock {
     }
 }
 
-module.exports = CodeBlock
+module.exports = {CodeBlock}

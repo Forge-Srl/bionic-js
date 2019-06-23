@@ -5,4 +5,4 @@ class CodeFile {
     }
 }
 
-module.exports = CodeFile
+module.exports = {CodeFile}

@@ -1,4 +1,4 @@
-const AnnotationParser = require('../AnnotationParser')
+const {AnnotationParser} = require('../AnnotationParser')
 
 class JsExplorer {
 
@@ -27,4 +27,4 @@ class JsExplorer {
     }
 }
 
-module.exports = JsExplorer
+module.exports = {JsExplorer}

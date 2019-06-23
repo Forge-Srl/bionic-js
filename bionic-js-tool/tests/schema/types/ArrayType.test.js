@@ -4,8 +4,8 @@ describe('ArrayType', () => {
     let ArrayType, IntType
 
     beforeEach(() => {
-        ArrayType = t.requireModule('schema/types/ArrayType')
-        IntType = t.requireModule('schema/types/IntType')
+        ArrayType = t.requireModule('schema/types/ArrayType').ArrayType
+        IntType = t.requireModule('schema/types/IntType').IntType
     })
 
     test('constructor', () => {
@@ -15,7 +15,7 @@ describe('ArrayType', () => {
     })
 
     test('isValid', () => {
-        const StringType = t.requireModule('schema/types/stringType')
+        const StringType = t.requireModule('schema/types/StringType').StringType
         const arrayType = new ArrayType(new StringType())
         const isValid = arrayType.isValid
         expect(isValid.validity).toBeTruthy()
@@ -37,7 +37,7 @@ describe('ArrayType', () => {
     })
 
     test('isValid when element type is not valid', () => {
-        const Type = t.requireModule('schema/types/Type')
+        const Type = t.requireModule('schema/types/Type').Type
         const invalidType = new Type()
         t.mockGetter(invalidType, 'isValid', () => {
             return {validity: false, error: 'error!'}
@@ -51,7 +51,7 @@ describe('ArrayType', () => {
     })
 
     test('isValid with VoidType', () => {
-        const VoidType = t.requireModule('schema/types/VoidType')
+        const VoidType = t.requireModule('schema/types/VoidType').VoidType
         const arrayType = new ArrayType(new VoidType())
         const isValid = arrayType.isValid
         expect(isValid.validity).toBeFalsy()
@@ -70,6 +70,7 @@ describe('ArrayType', () => {
     test('fromObj', () => {
         const arrayType = ArrayType.fromObj({elementType: {type: 'String'}})
         expect(arrayType).toBeInstanceOf(ArrayType)
-        expect(arrayType.elementType).toBeInstanceOf(t.requireModule('schema/types/StringType'))
+        const StringType = t.requireModule('schema/types/StringType').StringType
+        expect(arrayType.elementType).toBeInstanceOf(StringType)
     })
 })

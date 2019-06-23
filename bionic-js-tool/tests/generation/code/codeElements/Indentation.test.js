@@ -4,7 +4,7 @@ describe('Indentation', () => {
     let Indentation, indStr = '    '
 
     beforeEach(() => {
-        Indentation = t.requireModule('generation/code/codeElements/Indentation')
+        Indentation = t.requireModule('generation/code/codeElements/Indentation').Indentation
     })
 
     test('indentationString', () => {

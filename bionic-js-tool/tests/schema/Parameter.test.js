@@ -5,8 +5,8 @@ describe('Parameter', () => {
     let Parameter, ObjectType
 
     beforeEach(() => {
-        Parameter = t.requireModule('schema/Parameter')
-        ObjectType = t.requireModule('schema/types/ObjectType')
+        Parameter = t.requireModule('schema/Parameter').Parameter
+        ObjectType = t.requireModule('schema/types/ObjectType').ObjectType
     })
 
     test('schemaName', () => {

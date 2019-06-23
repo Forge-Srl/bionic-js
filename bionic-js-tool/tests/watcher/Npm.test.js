@@ -6,7 +6,7 @@ describe('Npm', () => {
     let Npm
 
     beforeEach(() => {
-        Npm = t.requireModule('watcher/Npm')
+        Npm = t.requireModule('watcher/Npm').Npm
     })
 
     test('getOptions path not existent', async () => {
@@ -27,7 +27,7 @@ describe('Npm', () => {
 
     test('integration: installPackage and getDevDependencies', async () => {
 
-        const Npm = t.requireModule('watcher/Npm')
+        const Npm = t.requireModule('watcher/Npm').Npm
         const npm = new Npm(path.resolve(__dirname, '../../testing-code/guest'))
 
         expect(await npm.install()).toBe('ok')

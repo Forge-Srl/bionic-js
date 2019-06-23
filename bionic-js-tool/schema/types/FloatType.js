@@ -1,10 +1,6 @@
-const Type = require('./Type')
+const {Type} = require('./Type')
 
 class FloatType extends Type {
-
-    constructor() {
-        super(FloatType.typeName)
-    }
 
     static get typeName() {
         return 'Float'
@@ -15,4 +11,4 @@ class FloatType extends Type {
     }
 }
 
-module.exports = FloatType
+module.exports = {FloatType}

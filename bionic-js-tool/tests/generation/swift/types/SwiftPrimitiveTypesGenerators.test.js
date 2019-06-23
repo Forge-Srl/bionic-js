@@ -8,48 +8,49 @@ describe('Swift primitive types generators', () => {
             name: 'Any',
             statement: 'BjsAnyObject',
             nativeReturnTypeStatement: ' -> BjsAnyObject',
-            nativeReturnStatement: 'return '
+            nativeReturnStatement: 'return ',
         },
         {
             name: 'Bool',
             statement: 'Bool?',
             nativeReturnTypeStatement: ' -> Bool?',
-            nativeReturnStatement: 'return '
+            nativeReturnStatement: 'return ',
         },
         {
             name: 'Date',
             statement: 'Date?',
             nativeReturnTypeStatement: ' -> Date?',
-            nativeReturnStatement: 'return '
+            nativeReturnStatement: 'return ',
         },
         {
             name: 'Float',
             statement: 'Double?',
             nativeReturnTypeStatement: ' -> Double?',
-            nativeReturnStatement: 'return '
+            nativeReturnStatement: 'return ',
         },
         {
             name: 'Int',
             statement: 'Int?',
             nativeReturnTypeStatement: ' -> Int?',
-            nativeReturnStatement: 'return '
+            nativeReturnStatement: 'return ',
         },
         {
             name: 'String',
             statement: 'String?',
             nativeReturnTypeStatement: ' -> String?',
-            nativeReturnStatement: 'return '
+            nativeReturnStatement: 'return ',
         },
         {
             name: 'Void',
             statement: 'Void',
             nativeReturnTypeStatement: '',
-            nativeReturnStatement: '_ = '
+            nativeReturnStatement: '_ = ',
         },
     ]
 
     for (const expectation of primitiveTypesExpectations) {
-        const Generator = t.requireModule(`${typesGeneratorsPath}/Swift${expectation.name}TypeGenerator`)
+        const generatorClassName = `Swift${expectation.name}TypeGenerator`
+        const Generator = t.requireModule(`${typesGeneratorsPath}/${generatorClassName}`)[generatorClassName]
         const generator = new Generator()
 
         test(`getTypeStatement of ${expectation.name}`, () => {

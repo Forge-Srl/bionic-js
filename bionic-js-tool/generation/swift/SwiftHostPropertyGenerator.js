@@ -1,7 +1,7 @@
-const CodeGenerator = require('../CodeGenerator')
-const CodeBlock = require('../code/CodeBlock')
-const GenerationContext = require('../code/GenerationContext')
-const IniRet = require('../code/IniRet')
+const {CodeGenerator} = require('../CodeGenerator')
+const {CodeBlock} = require('../code/CodeBlock')
+const {GenerationContext} = require('../code/GenerationContext')
+const {IniRet} = require('../code/IniRet')
 
 class SwiftHostPropertyGenerator extends CodeGenerator {
 
@@ -67,4 +67,4 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
     }
 }
 
-module.exports = SwiftHostPropertyGenerator
+module.exports = {SwiftHostPropertyGenerator}

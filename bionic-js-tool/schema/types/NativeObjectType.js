@@ -1,4 +1,4 @@
-const ObjectType = require('./ObjectType')
+const {ObjectType} = require('./ObjectType')
 
 class NativeObjectType extends ObjectType {
 
@@ -11,4 +11,4 @@ class NativeObjectType extends ObjectType {
     }
 }
 
-module.exports = NativeObjectType
+module.exports = {NativeObjectType}

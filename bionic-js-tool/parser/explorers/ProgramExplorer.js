@@ -1,5 +1,5 @@
-const JsExplorer = require('./JsExplorer')
-const ClassExplorer = require('./ClassExplorer')
+const {JsExplorer} = require('./JsExplorer')
+const {ClassExplorer} = require('./ClassExplorer')
 const flatMap = require('flatmap')
 
 class ProgramExplorer extends JsExplorer {
@@ -46,4 +46,4 @@ class ProgramExplorer extends JsExplorer {
     }
 }
 
-module.exports = ProgramExplorer
+module.exports = {ProgramExplorer}

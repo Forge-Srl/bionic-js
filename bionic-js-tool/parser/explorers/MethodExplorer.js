@@ -1,9 +1,9 @@
-const JsExplorer = require('./JsExplorer')
-const ParameterExplorer = require('./ParameterExplorer')
-const Type = require('../../schema/types/Type')
-const LambdaType = require('../../schema/types/LambdaType')
-const Method = require('../../schema/Method')
-const Property = require('../../schema/Property')
+const {JsExplorer} = require('./JsExplorer')
+const {ParameterExplorer} = require('./ParameterExplorer')
+const {Type} = require('../../schema/types/Type')
+const {LambdaType} = require('../../schema/types/LambdaType')
+const {Method} = require('../../schema/Method')
+const {Property} = require('../../schema/Property')
 
 class MethodExplorer extends JsExplorer {
 
@@ -75,4 +75,4 @@ class MethodExplorer extends JsExplorer {
     }
 }
 
-module.exports = MethodExplorer
+module.exports = {MethodExplorer}

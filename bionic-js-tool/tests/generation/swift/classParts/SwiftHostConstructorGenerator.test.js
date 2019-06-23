@@ -15,14 +15,14 @@ describe('SwiftHostConstructorGenerator', () => {
     }
 
     beforeEach(() => {
-        Class = t.requireModule('schema/Class')
-        Constructor = t.requireModule('schema/Constructor')
-        Parameter = t.requireModule('schema/Parameter')
-        BoolType = t.requireModule('schema/types/BoolType')
-        IntType = t.requireModule('schema/types/IntType')
-        VoidType = t.requireModule('schema/types/VoidType')
-        ArrayType = t.requireModule('schema/types/ArrayType')
-        LambdaType = t.requireModule('schema/types/LambdaType')
+        Class = t.requireModule('schema/Class').Class
+        Constructor = t.requireModule('schema/Constructor').Constructor
+        Parameter = t.requireModule('schema/Parameter').Parameter
+        BoolType = t.requireModule('schema/types/BoolType').BoolType
+        IntType = t.requireModule('schema/types/IntType').IntType
+        VoidType = t.requireModule('schema/types/VoidType').VoidType
+        ArrayType = t.requireModule('schema/types/ArrayType').ArrayType
+        LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
 
         expectedHeader = [
             'import JavaScriptCore',

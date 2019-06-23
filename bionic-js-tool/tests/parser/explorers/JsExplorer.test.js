@@ -1,6 +1,6 @@
 const t = require('../../test-utils')
 const parser = require('@babel/parser')
-const JsExplorer = t.requireModule('parser/explorers/JsExplorer')
+const JsExplorer = t.requireModule('parser/explorers/JsExplorer').JsExplorer
 
 describe('JsExplorer', () => {
 

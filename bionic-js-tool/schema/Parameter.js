@@ -1,5 +1,5 @@
-const Generable = require('./Generable')
-const Type = require('./types/Type')
+const {Generable} = require('./Generable')
+const {Type} = require('./types/Type')
 
 class Parameter extends Generable {
 
@@ -17,4 +17,4 @@ class Parameter extends Generable {
     }
 }
 
-module.exports = Parameter
+module.exports = {Parameter}

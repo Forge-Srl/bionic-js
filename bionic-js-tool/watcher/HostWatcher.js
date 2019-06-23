@@ -1,6 +1,6 @@
-const CodeWatcher = require('./CodeWatcher')
+const {CodeWatcher} = require('./CodeWatcher')
 const path = require('path')
-const FilesFilter = require('./FilesFilter')
+const {FilesFilter} = require('./FilesFilter')
 
 class HostWatcher extends CodeWatcher {
 
@@ -15,4 +15,4 @@ class HostWatcher extends CodeWatcher {
     }
 }
 
-module.exports = HostWatcher
+module.exports = {HostWatcher}

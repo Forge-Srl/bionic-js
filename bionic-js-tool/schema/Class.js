@@ -1,8 +1,8 @@
-const MultiTargetGenerable = require('./MultiTargetGenerable')
-const Constructor = require('./Constructor')
-const Method = require('./Method')
-const Property = require('./Property')
-const Validation = require('./Validation')
+const {MultiTargetGenerable} = require('./MultiTargetGenerable')
+const {Constructor} = require('./Constructor')
+const {Method} = require('./Method')
+const {Property} = require('./Property')
+const {Validation} = require('./Validation')
 
 class Class extends MultiTargetGenerable {
 
@@ -25,4 +25,4 @@ class Class extends MultiTargetGenerable {
     }
 }
 
-module.exports = Class
+module.exports = {Class}

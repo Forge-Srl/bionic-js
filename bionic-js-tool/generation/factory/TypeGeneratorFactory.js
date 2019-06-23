@@ -1,4 +1,4 @@
-const GeneratorFactory = require('./GeneratorFactory')
+const {GeneratorFactory} = require('./GeneratorFactory')
 
 class TypeGeneratorFactory extends GeneratorFactory {
 
@@ -12,9 +12,13 @@ class TypeGeneratorFactory extends GeneratorFactory {
         return this.getGenerator()
     }
 
+    get generatorName() {
+        return `${this.language}${this.schema.constructor.typeName}TypeGenerator`
+    }
+
     get generatorPath() {
-        return `../${this.language.toLowerCase()}/types/${this.language}${this.schema.constructor.typeName}TypeGenerator`
+        return `../${this.language.toLowerCase()}/types/${this.generatorName}`
     }
 }
 
-module.exports = TypeGeneratorFactory
+module.exports = {TypeGeneratorFactory}

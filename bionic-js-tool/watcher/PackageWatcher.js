@@ -1,4 +1,4 @@
-const CodeWatcher = require('./CodeWatcher')
+const {CodeWatcher} = require('./CodeWatcher')
 
 class PackageWatcher extends CodeWatcher {
 
@@ -11,4 +11,4 @@ class PackageWatcher extends CodeWatcher {
     }
 }
 
-module.exports = PackageWatcher
+module.exports = {PackageWatcher}

@@ -5,7 +5,7 @@ describe('NativeObjectType', () => {
     let NativeObjectType
 
     beforeEach(() => {
-        NativeObjectType = t.requireModule('schema/types/NativeObjectType')
+        NativeObjectType = t.requireModule('schema/types/NativeObjectType').NativeObjectType
     })
 
     test('typeName', () => {

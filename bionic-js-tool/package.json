@@ -9,6 +9,12 @@
     "test": "jest",
     "compile-parser": "node node_modules/pegjs/bin/pegjs --allowed-start-rules \"CommentText, Tags, BionicTag, DescriptionTag\" -o parser/Parser.js parser/pegjsSrc/Parser.pegjs"
   },
+  "files": [
+    "/generation",
+    "/parser",
+    "/schema",
+    "/watcher"
+  ],
   "dependencies": {
     "@babel/core": "^7.2.2",
     "@babel/generator": "^7.3.0",
@@ -17,12 +23,12 @@
     "flatmap": "0.0.3",
     "ignore": "^5.0.5",
     "mkdirp": "^0.5.1",
-    "npm": "^6.7.0",
+    "npm": "^6.9.0",
     "rimraf": "^2.6.3",
     "string-format": "^2.0.0"
   },
   "devDependencies": {
-    "jest-cli": "^24.0.0",
+    "jest-cli": "^24.8.0",
     "pegjs": "^0.10.0"
   }
 }

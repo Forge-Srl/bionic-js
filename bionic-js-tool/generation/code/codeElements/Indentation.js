@@ -16,4 +16,4 @@ class Indentation {
     }
 }
 
-module.exports = Indentation
+module.exports = {Indentation}

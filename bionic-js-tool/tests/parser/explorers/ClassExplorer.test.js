@@ -1,11 +1,11 @@
 const t = require('../../test-utils')
 const parser = require('@babel/parser')
-const ClassExplorer = t.requireModule('parser/explorers/ClassExplorer')
-const MethodExplorer = t.requireModule('parser/explorers/MethodExplorer')
-const Constructor = t.requireModule('schema/Constructor')
-const Property = t.requireModule('schema/Property')
-const Method = t.requireModule('schema/Method')
-const Class = t.requireModule('schema/Class')
+const ClassExplorer = t.requireModule('parser/explorers/ClassExplorer').ClassExplorer
+const MethodExplorer = t.requireModule('parser/explorers/MethodExplorer').MethodExplorer
+const Constructor = t.requireModule('schema/Constructor').Constructor
+const Property = t.requireModule('schema/Property').Property
+const Method = t.requireModule('schema/Method').Method
+const Class = t.requireModule('schema/Class').Class
 
 describe('ClassExplorer', () => {
 

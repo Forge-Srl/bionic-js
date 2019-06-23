@@ -14,14 +14,18 @@ class GeneratorFactory {
         return this.getGenerator()
     }
 
+    get generatorName() {
+        return `${this.language}${this.target}${this.schema.constructor.schemaName}Generator`
+    }
+
     get generatorPath() {
-        return `../${this.language.toLowerCase()}/${this.language}${this.target}${this.schema.constructor.schemaName}Generator`
+        return `../${this.language.toLowerCase()}/${this.generatorName}`
     }
 
     getGenerator(...params) {
-        const GeneratorClass = require(this.generatorPath)
+        const GeneratorClass = (require(this.generatorPath)[this.generatorName])
         return new GeneratorClass(this.schema, ...params)
     }
 }
 
-module.exports = GeneratorFactory
+module.exports = {GeneratorFactory}

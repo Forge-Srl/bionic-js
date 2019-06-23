@@ -3,7 +3,7 @@ const t = require('../../../test-utils')
 describe('NewLine', () => {
 
     test('appendToBuilder', () => {
-        const NewLine = t.requireModule('generation/code/codeElements/NewLine')
+        const NewLine = t.requireModule('generation/code/codeElements/NewLine').NewLine
         const newLine = new NewLine()
 
         const stringBuilder = {append: t.mockFn()}

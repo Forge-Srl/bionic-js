@@ -5,11 +5,11 @@ describe('Constructor', () => {
     let Constructor, Parameter, IntType, StringType, VoidType, intParam
 
     beforeEach(() => {
-        Constructor = t.requireModule('schema/Constructor')
-        Parameter = t.requireModule('schema/Parameter')
-        IntType = t.requireModule('schema/types/IntType')
-        VoidType = t.requireModule('schema/types/VoidType')
-        StringType = t.requireModule('schema/types/StringType')
+        Constructor = t.requireModule('schema/Constructor').Constructor
+        Parameter = t.requireModule('schema/Parameter').Parameter
+        IntType = t.requireModule('schema/types/IntType').IntType
+        VoidType = t.requireModule('schema/types/VoidType').VoidType
+        StringType = t.requireModule('schema/types/StringType').StringType
         intParam = new Parameter(new IntType(), 'intPar', 'intPar desc')
     })
 

@@ -6,7 +6,7 @@ describe('SwiftParameterGenerator', () => {
 
     beforeEach(() => {
 
-        SwiftParameterGenerator = t.requireModule('generation/swift/SwiftParameterGenerator')
+        SwiftParameterGenerator = t.requireModule('generation/swift/SwiftParameterGenerator').SwiftParameterGenerator
     })
 
     test('getTypeStatement', () => {

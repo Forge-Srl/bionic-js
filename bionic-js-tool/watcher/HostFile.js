@@ -1,4 +1,4 @@
-const File = require('./File')
+const {File} = require('./File')
 
 class HostFile extends File {
 
@@ -14,4 +14,4 @@ class HostFile extends File {
     }
 }
 
-module.exports = HostFile
+module.exports = {HostFile}

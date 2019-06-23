@@ -9,10 +9,10 @@ describe('File', () => {
 
         fs = t.mockAndRequireModule('watcher/async/fs')
         crypto = t.mockAndRequire('crypto')
-        File = t.requireModule('watcher/File')
+        File = t.requireModule('watcher/File').File
         filePath = '/dir1/dir2/filePath.js'
         file = new File(filePath, '/dir1')
-        Directory = t.requireModule('watcher/Directory')
+        Directory = t.requireModule('watcher/Directory').Directory
     })
 
     test('dir', () => {
@@ -85,7 +85,7 @@ describe('File', () => {
     test('getHash real hashes', async () => {
 
         jest.unmock('crypto')
-        const File = t.requireModule('watcher/file')
+        const File = t.requireModule('watcher/file').File
         const file = new File()
 
         file.getContent = t.mockFn()

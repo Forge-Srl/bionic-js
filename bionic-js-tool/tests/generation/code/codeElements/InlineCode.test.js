@@ -4,7 +4,7 @@ describe('InlineCode', () => {
     let InlineCode
 
     beforeEach(() => {
-        InlineCode = t.requireModule('generation/code/codeElements/InlineCode')
+        InlineCode = t.requireModule('generation/code/codeElements/InlineCode').InlineCode
     })
 
     test('construct with string', () => {

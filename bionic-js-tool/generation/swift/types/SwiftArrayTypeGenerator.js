@@ -1,5 +1,5 @@
-const SwiftTypeGenerator = require('./SwiftTypeGenerator')
-const IniRet = require('../../code/IniRet')
+const {SwiftTypeGenerator} = require('./SwiftTypeGenerator')
+const {IniRet} = require('../../code/IniRet')
 
 class SwiftArrayTypeGenerator extends SwiftTypeGenerator {
 
@@ -35,4 +35,4 @@ class SwiftArrayTypeGenerator extends SwiftTypeGenerator {
     }
 }
 
-module.exports = SwiftArrayTypeGenerator
+module.exports = {SwiftArrayTypeGenerator}

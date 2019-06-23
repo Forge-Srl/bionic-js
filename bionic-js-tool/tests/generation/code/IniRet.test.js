@@ -5,8 +5,8 @@ describe('IniRet', () => {
     let IniRet, CodeBlock, iniRet
 
     beforeEach(() => {
-        IniRet = t.requireModule(`${codeDir}IniRet`)
-        CodeBlock = t.requireModule(`${codeDir}CodeBlock`)
+        IniRet = t.requireModule(`${codeDir}IniRet`).IniRet
+        CodeBlock = t.requireModule(`${codeDir}CodeBlock`).CodeBlock
         iniRet = new IniRet(CodeBlock.create().append('ret'), CodeBlock.create().append('ini'))
     })
 

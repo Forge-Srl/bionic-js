@@ -1,7 +1,7 @@
 const chokidar = require('chokidar')
 const os = require('os')
-const File = require('./File')
-const Directory = require('./Directory')
+const {File} = require('./File')
+const {Directory} = require('./Directory')
 
 class Watcher {
 
@@ -69,4 +69,4 @@ class Watcher {
     }
 }
 
-module.exports = Watcher
+module.exports = {Watcher}

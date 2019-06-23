@@ -1,1 +1,1 @@
-module.exports = require('./TestUtils')
+module.exports = require('./TestUtils').TestUtils

@@ -1,4 +1,4 @@
-const Operation = require('./Operation')
+const {Operation} = require('./Operation')
 
 class ParseOperation extends Operation {
 
@@ -13,4 +13,4 @@ class ParseOperation extends Operation {
     }
 }
 
-module.exports = Operation
+module.exports = {Operation}

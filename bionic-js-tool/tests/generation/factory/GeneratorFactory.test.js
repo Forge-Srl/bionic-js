@@ -5,7 +5,7 @@ describe('GeneratorFactory', () => {
     let GeneratorFactory, mockedFactory
 
     beforeEach(() => {
-        GeneratorFactory = t.requireModule('generation/factory/GeneratorFactory')
+        GeneratorFactory = t.requireModule('generation/factory/GeneratorFactory').GeneratorFactory
 
         class Schema {
             static get schemaName() {
@@ -17,10 +17,11 @@ describe('GeneratorFactory', () => {
     })
 
     test('getGenerator', () => {
-        const ExpectedGeneratorClass = t.requireModule('generation/swift/SwiftMethodGenerator')
+        const ExpectedGeneratorClass = t.requireModule('generation/swift/SwiftMethodGenerator').SwiftMethodGenerator
 
         const factory = new GeneratorFactory('schema')
         t.mockGetter(factory, 'generatorPath', () => '../swift/SwiftMethodGenerator')
+        t.mockGetter(factory, 'generatorName', () => 'SwiftMethodGenerator')
 
         const actualGenerator = factory.getGenerator('classSchema')
 

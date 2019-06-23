@@ -1,10 +1,18 @@
-const Type = require('./Type')
-const VoidType = require('./VoidType')
+const {Type} = require('./Type')
+const {VoidType} = require('./VoidType')
 
 class ArrayType extends Type {
 
+    static get typeName() {
+        return 'Array'
+    }
+
+    static fromObj(obj) {
+        return new ArrayType(Type.fromObj(obj.elementType))
+    }
+
     constructor(elementType) {
-        super(ArrayType.typeName)
+        super()
         Object.assign(this, {elementType})
     }
 
@@ -29,14 +37,6 @@ class ArrayType extends Type {
     toString() {
         return `${ArrayType.typeName}<${this.elementType.toString()}>`
     }
-
-    static get typeName() {
-        return 'Array'
-    }
-
-    static fromObj(obj) {
-        return new ArrayType(Type.fromObj(obj.elementType))
-    }
 }
 
-module.exports = ArrayType
+module.exports = {ArrayType}

@@ -1,5 +1,5 @@
-const MultiTargetGenerable = require('./MultiTargetGenerable')
-const Parameter = require('./Parameter')
+const {MultiTargetGenerable} = require('./MultiTargetGenerable')
+const {Parameter} = require('./Parameter')
 
 class Constructor extends MultiTargetGenerable {
 
@@ -17,4 +17,4 @@ class Constructor extends MultiTargetGenerable {
     }
 }
 
-module.exports = Constructor
+module.exports = {Constructor}

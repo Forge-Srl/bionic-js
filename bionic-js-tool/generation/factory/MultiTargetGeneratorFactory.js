@@ -1,4 +1,4 @@
-const GeneratorFactory = require('./GeneratorFactory')
+const {GeneratorFactory} = require('./GeneratorFactory')
 
 class MultiTargetGeneratorFactory extends GeneratorFactory {
 
@@ -18,9 +18,9 @@ class MultiTargetGeneratorFactory extends GeneratorFactory {
     }
 
     forWrapping(...params) {
-        this.target = 'Wrapped'
+        this.target = 'Wrapper'
         return this.getGenerator(...params)
     }
 }
 
-module.exports = MultiTargetGeneratorFactory
+module.exports = {MultiTargetGeneratorFactory}

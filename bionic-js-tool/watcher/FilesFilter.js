@@ -6,6 +6,7 @@ class FilesFilter {
         Object.assign(this, {ignoredPaths, ignoredDirectories, allowedExtensions})
     }
 
+    // TODO: use a whitelist instead of a blacklist for ignoredDirectories
     get ignoreFilter() {
         if (!this.ignore) {
             this.ignore = ignore({ignorecase: false})
@@ -26,4 +27,4 @@ class FilesFilter {
     }
 }
 
-module.exports = FilesFilter
+module.exports = {FilesFilter}

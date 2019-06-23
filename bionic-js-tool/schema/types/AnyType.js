@@ -1,10 +1,6 @@
-const Type = require('./Type')
+const {Type} = require('./Type')
 
 class AnyType extends Type {
-
-    constructor() {
-        super(AnyType.typeName)
-    }
 
     static get typeName() {
         return 'Any'
@@ -15,4 +11,4 @@ class AnyType extends Type {
     }
 }
 
-module.exports = AnyType
+module.exports = {AnyType}

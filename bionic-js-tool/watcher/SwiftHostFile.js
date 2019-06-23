@@ -1,4 +1,4 @@
-const HostFile = require('./HostFile')
+const {HostFile} = require('./HostFile')
 
 class SwiftHostFile extends HostFile {
 
@@ -19,4 +19,4 @@ class SwiftHostFile extends HostFile {
     }
 }
 
-module.exports = SwiftHostFile
+module.exports = {SwiftHostFile}

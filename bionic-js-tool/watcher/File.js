@@ -1,4 +1,4 @@
-const Directory = require('./Directory')
+const {Directory} = require('./Directory')
 const path = require('path')
 const fs = require('./async/fs'), utf8 = 'utf8'
 const crypto = require('crypto'), sha256 = 'sha256', hex = 'hex'
@@ -29,14 +29,14 @@ class File {
         return path.format({
             dir: path.resolve(newRootDirPath, path.dirname(this.relativePath)),
             name: this.name,
-            ext: newExtension !== undefined ? newExtension : this.ext
+            ext: newExtension !== undefined ? newExtension : this.ext,
         })
     }
 
     async getContent() {
         try {
             return await fs.readFile(this.path, utf8)
-        } catch(error){
+        } catch (error) {
             throw new Error(`Error reading file "${this.path}"\n${error.stack}`)
         }
     }
@@ -52,4 +52,4 @@ class File {
     }
 }
 
-module.exports = File
+module.exports = {File}

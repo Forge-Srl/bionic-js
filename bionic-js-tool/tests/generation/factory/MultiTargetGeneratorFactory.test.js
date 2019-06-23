@@ -5,7 +5,7 @@ describe('MultiTargetGeneratorFactory', () => {
     let mockedFactory
 
     beforeEach(() => {
-        const MultiTargetGeneratorFactory = t.requireModule('generation/factory/MultiTargetGeneratorFactory')
+        const MultiTargetGeneratorFactory = t.requireModule('generation/factory/MultiTargetGeneratorFactory').MultiTargetGeneratorFactory
 
         class Schema {
             static get schemaName() {
@@ -24,6 +24,6 @@ describe('MultiTargetGeneratorFactory', () => {
 
     test('java, wrapping', () => {
         const actualGenerator = mockedFactory.java.forWrapping()
-        expect(actualGenerator.path).toBe('../java/JavaWrappedSchemaNameGenerator')
+        expect(actualGenerator.path).toBe('../java/JavaWrapperSchemaNameGenerator')
     })
 })

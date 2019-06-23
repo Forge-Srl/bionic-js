@@ -33,4 +33,4 @@ class Directory {
     }
 }
 
-module.exports = Directory
+module.exports = {Directory}

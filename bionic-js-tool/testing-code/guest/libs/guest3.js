@@ -10,4 +10,4 @@ class Guest3 {
     }
 }
 
-module.exports = Guest3
+module.exports = {Guest3}

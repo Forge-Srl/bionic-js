@@ -9,4 +9,4 @@ class GenerationContext {
     }
 }
 
-module.exports = GenerationContext
+module.exports = {GenerationContext}

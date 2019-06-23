@@ -10,4 +10,4 @@ class InlineCode {
     }
 }
 
-module.exports = InlineCode
+module.exports = {InlineCode}

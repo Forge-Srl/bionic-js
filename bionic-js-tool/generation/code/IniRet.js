@@ -1,4 +1,4 @@
-const CodeBlock = require('../code/CodeBlock')
+const {CodeBlock} = require('../code/CodeBlock')
 
 class IniRet {
 
@@ -41,4 +41,4 @@ class IniRet {
     }
 }
 
-module.exports = IniRet
+module.exports = {IniRet}

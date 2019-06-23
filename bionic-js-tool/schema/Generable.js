@@ -1,5 +1,5 @@
-const JsonSerializable = require('../JsonSerializable')
-const GeneratorFactory = require('../generation/factory/GeneratorFactory')
+const {JsonSerializable} = require('../JsonSerializable')
+const {GeneratorFactory} = require('../generation/factory/GeneratorFactory')
 
 class Generable extends JsonSerializable {
 
@@ -8,4 +8,4 @@ class Generable extends JsonSerializable {
     }
 }
 
-module.exports = Generable
+module.exports = {Generable}

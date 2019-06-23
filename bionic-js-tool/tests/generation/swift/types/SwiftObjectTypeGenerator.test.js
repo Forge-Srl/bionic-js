@@ -3,7 +3,7 @@ const t = require('../../../test-utils')
 describe('SwiftObjectTypeGenerator', () => {
 
     test('getTypeStatement', () => {
-        const SwiftClassTypeGenerator = t.requireModule('generation/swift/types/SwiftObjectTypeGenerator')
+        const SwiftClassTypeGenerator = t.requireModule('generation/swift/types/SwiftObjectTypeGenerator').SwiftObjectTypeGenerator
 
         const generator = new SwiftClassTypeGenerator({className: 'ClassName'})
 

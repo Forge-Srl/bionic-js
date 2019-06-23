@@ -1,5 +1,5 @@
-const JsonSerializable = require('../JsonSerializable')
-const MultiTargetGeneratorFactory = require('../generation/factory/MultiTargetGeneratorFactory')
+const {JsonSerializable} = require('../JsonSerializable')
+const {MultiTargetGeneratorFactory} = require('../generation/factory/MultiTargetGeneratorFactory')
 
 class MultiTargetGenerable extends JsonSerializable {
 
@@ -8,4 +8,4 @@ class MultiTargetGenerable extends JsonSerializable {
     }
 }
 
-module.exports = MultiTargetGenerable
+module.exports = {MultiTargetGenerable}

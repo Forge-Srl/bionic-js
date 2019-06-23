@@ -1,5 +1,5 @@
 // This is a require
-const Guest2 = require('./libs/Guest2')
+const {Guest2} = require('./libs/Guest2')
 
 // This is my guest class
 class Guest1 {
@@ -56,4 +56,4 @@ class Guest1 {
     }
 }
 
-module.exports = Guest1
+module.exports = {Guest1}

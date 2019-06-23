@@ -1,10 +1,10 @@
 const ignore = require('ignore')
-const Configuration = require('./Configuration')
+const {Configuration} = require('./Configuration')
 const path = require('path')
-const GuestWatcher = require('./GuestWatcher')
-const HostWatcher = require('./HostWatcher')
-const PackageWatcher = require('./PackageWatcher')
-const Processor = require('./Processor')
+const {GuestWatcher} = require('./GuestWatcher')
+const {HostWatcher} = require('./HostWatcher')
+const {PackageWatcher} = require('./PackageWatcher')
+const {Processor} = require('./Processor')
 
 async function main() {
     const args = process.argv.slice(2)

@@ -48,4 +48,4 @@ class TestUtils {
     }
 }
 
-module.exports = TestUtils
+module.exports = {TestUtils}

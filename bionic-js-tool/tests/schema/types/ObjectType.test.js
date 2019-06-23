@@ -5,8 +5,8 @@ describe('ObjectType', () => {
     let Validation, ObjectType
 
     beforeEach(() => {
-        Validation = t.mockAndRequireModule('schema/Validation')
-        ObjectType = t.requireModule('schema/types/ObjectType')
+        Validation = t.mockAndRequireModule('schema/Validation').Validation
+        ObjectType = t.requireModule('schema/types/ObjectType').ObjectType
     })
 
     test('typeName', () => {

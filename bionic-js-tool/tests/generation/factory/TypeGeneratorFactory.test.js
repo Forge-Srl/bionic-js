@@ -5,7 +5,7 @@ describe('TypeGeneratorFactory', () => {
     let mockedFactory
 
     beforeEach(() => {
-        const TypeGeneratorFactory = t.requireModule('generation/factory/TypeGeneratorFactory')
+        const TypeGeneratorFactory = t.requireModule('generation/factory/TypeGeneratorFactory').TypeGeneratorFactory
 
         class Schema {
             static get typeName() {

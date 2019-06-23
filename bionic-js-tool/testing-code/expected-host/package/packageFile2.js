@@ -49,4 +49,4 @@ class JsonSerializable {
     }
 }
 
-module.exports = JsonSerializable
+module.exports = {JsonSerializable}

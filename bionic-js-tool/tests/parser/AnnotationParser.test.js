@@ -1,5 +1,5 @@
 const t = require('../test-utils')
-const AnnotationParser = t.requireModule('parser/AnnotationParser')
+const AnnotationParser = t.requireModule('parser/AnnotationParser').AnnotationParser
 
 describe('AnnotationParser', () => {
 

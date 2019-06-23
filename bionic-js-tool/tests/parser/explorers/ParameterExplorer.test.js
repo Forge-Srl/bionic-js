@@ -1,6 +1,6 @@
 const t = require('../../test-utils')
 const parser = require('@babel/parser')
-const ParameterExplorer = t.requireModule('parser/explorers/ParameterExplorer')
+const ParameterExplorer = t.requireModule('parser/explorers/ParameterExplorer').ParameterExplorer
 
 describe('ParameterExplorer', () => {
 

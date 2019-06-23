@@ -52,4 +52,4 @@ class AnnotationParser {
     }
 }
 
-module.exports = AnnotationParser
+module.exports = {AnnotationParser}

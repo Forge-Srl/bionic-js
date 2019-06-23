@@ -4,7 +4,7 @@ describe('StringBuilder', () => {
     let stringBuilder
 
     beforeEach(() => {
-        let StringBuilder = t.requireModule('generation/code/StringBuilder')
+        let StringBuilder = t.requireModule('generation/code/StringBuilder').StringBuilder
         stringBuilder = new StringBuilder()
     })
 

@@ -1,5 +1,5 @@
 const t = require('../test-utils')
-const Validation = t.requireModule('schema/Validation')
+const Validation = t.requireModule('schema/Validation').Validation
 
 describe('Validation', () => {
 

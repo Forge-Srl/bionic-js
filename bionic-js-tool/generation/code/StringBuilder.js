@@ -13,4 +13,4 @@ class StringBuilder {
     }
 }
 
-module.exports = StringBuilder
+module.exports = {StringBuilder}

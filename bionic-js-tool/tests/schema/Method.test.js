@@ -5,11 +5,11 @@ describe('Method', () => {
     let Method, Parameter, IntType, StringType, VoidType, intParam, stringParam
 
     beforeEach(() => {
-        Method = t.requireModule('schema/Method')
-        Parameter = t.requireModule('schema/Parameter')
-        IntType = t.requireModule('schema/types/IntType')
-        VoidType = t.requireModule('schema/types/VoidType')
-        StringType = t.requireModule('schema/types/StringType')
+        Method = t.requireModule('schema/Method').Method
+        Parameter = t.requireModule('schema/Parameter').Parameter
+        IntType = t.requireModule('schema/types/IntType').IntType
+        VoidType = t.requireModule('schema/types/VoidType').VoidType
+        StringType = t.requireModule('schema/types/StringType').StringType
         intParam = new Parameter(new IntType(), 'intPar', 'intPar desc')
         stringParam = new Parameter(new StringType(), 'stringPar', 'stringPar desc')
     })

@@ -11,11 +11,11 @@ describe('SwiftHostClassGenerator', () => {
     }
 
     beforeEach(() => {
-        Class = t.requireModule('schema/Class')
-        Constructor = t.requireModule('schema/Constructor')
-        Property = t.requireModule('schema/Property')
-        Method = t.requireModule('schema/Method')
-        IntType = t.requireModule('schema/types/IntType')
+        Class = t.requireModule('schema/Class').Class
+        Constructor = t.requireModule('schema/Constructor').Constructor
+        Property = t.requireModule('schema/Property').Property
+        Method = t.requireModule('schema/Method').Method
+        IntType = t.requireModule('schema/types/IntType').IntType
 
         expectedImports = [
             'import JavaScriptCore',

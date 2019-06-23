@@ -5,4 +5,4 @@ class CodeGenerator {
     }
 }
 
-module.exports = CodeGenerator
+module.exports = {CodeGenerator}

@@ -1,4 +1,4 @@
-const Type = require('./Type')
+const {Type} = require('./Type')
 
 class BoolType extends Type {
 
@@ -9,10 +9,6 @@ class BoolType extends Type {
     static fromObj(obj) {
         return new BoolType()
     }
-
-    constructor() {
-        super(BoolType.typeName)
-    }
 }
 
-module.exports = BoolType
+module.exports = {BoolType}

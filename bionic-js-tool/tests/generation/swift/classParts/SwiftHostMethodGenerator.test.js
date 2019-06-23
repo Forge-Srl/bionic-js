@@ -15,13 +15,13 @@ describe('SwiftHostMethodGenerator', () => {
     }
 
     beforeEach(() => {
-        Class = t.requireModule('schema/Class')
-        Method = t.requireModule('schema/Method')
-        Parameter = t.requireModule('schema/Parameter')
-        BoolType = t.requireModule('schema/types/BoolType')
-        IntType = t.requireModule('schema/types/IntType')
-        VoidType = t.requireModule('schema/types/VoidType')
-        LambdaType = t.requireModule('schema/types/LambdaType')
+        Class = t.requireModule('schema/Class').Class
+        Method = t.requireModule('schema/Method').Method
+        Parameter = t.requireModule('schema/Parameter').Parameter
+        BoolType = t.requireModule('schema/types/BoolType').BoolType
+        IntType = t.requireModule('schema/types/IntType').IntType
+        VoidType = t.requireModule('schema/types/VoidType').VoidType
+        LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
 
         expectedHeader = [
             'import JavaScriptCore',

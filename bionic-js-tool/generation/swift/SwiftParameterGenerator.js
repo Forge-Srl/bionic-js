@@ -1,5 +1,5 @@
-const CodeGenerator = require('../CodeGenerator')
-const IniRet = require('../code/IniRet')
+const {CodeGenerator} = require('../CodeGenerator')
+const {IniRet} = require('../code/IniRet')
 
 class SwiftParameterGenerator extends CodeGenerator {
 
@@ -25,4 +25,4 @@ class SwiftParameterGenerator extends CodeGenerator {
     }
 }
 
-module.exports = SwiftParameterGenerator
+module.exports = {SwiftParameterGenerator}

@@ -9,19 +9,19 @@ describe('CodeBlock', () => {
         t.resetModulesCache()
 
         indentation = {fake: 'indentation'}
-        Indentation = t.mockAndRequireModule(`${codeElementsDir}Indentation`)
+        Indentation = t.mockAndRequireModule(`${codeElementsDir}Indentation`).Indentation
             .mockImplementation(() => indentation)
 
         newLine = {fake: 'newLine'}
-        NewLine = t.mockAndRequireModule(`${codeElementsDir}NewLine`)
+        NewLine = t.mockAndRequireModule(`${codeElementsDir}NewLine`).NewLine
             .mockImplementation(() => newLine)
 
         inlineCode = {fake: 'inlineCode'}
-        InlineCode = t.mockAndRequireModule(`${codeElementsDir}InlineCode`)
+        InlineCode = t.mockAndRequireModule(`${codeElementsDir}InlineCode`).InlineCode
             .mockImplementation(() => inlineCode)
 
-        StringBuilder = t.mockAndRequireModule(`${codeDir}StringBuilder`)
-        CodeBlock = t.requireModule(`${codeDir}CodeBlock`)
+        StringBuilder = t.mockAndRequireModule(`${codeDir}StringBuilder`).StringBuilder
+        CodeBlock = t.requireModule(`${codeDir}CodeBlock`).CodeBlock
         codeBlock = new CodeBlock()
     })
 
@@ -92,6 +92,14 @@ describe('CodeBlock', () => {
         expect(Indentation).toBeCalledWith(-1)
     })
 
+    test('newLineDeindenting with custom indentation', () => {
+        const result = codeBlock.newLineDeindenting(-2)
+
+        expect(result).toBe(codeBlock)
+        expect(codeBlock.codeElements).toEqual([newLine, indentation])
+        expect(Indentation).toBeCalledWith(-2)
+    })
+
     test('appendString', () => {
         const result = codeBlock.appendString('simple string')
 
@@ -123,6 +131,23 @@ describe('CodeBlock', () => {
         expect(codeBlock.append()).toEqual(codeBlock)
         expect(codeBlock.append(null)).toEqual(codeBlock)
         expect(codeBlock.append('')).toEqual(codeBlock)
+    })
+
+    test('append an array', () => {
+
+        const codeBlock2 = {
+            append: obj => {
+                return codeBlock.result + obj
+            }
+        }
+
+        codeBlock.appendString = str => {
+            codeBlock.result = str
+            return codeBlock2
+        }
+
+        const array = ['str1 ', 'str2']
+        expect(codeBlock.append(array)).toBe('str1 str2')
     })
 
     test('append a string', () => {

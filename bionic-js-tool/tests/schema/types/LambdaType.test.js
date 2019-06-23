@@ -1,5 +1,5 @@
 const t = require('../../test-utils')
-const LambdaType = t.requireModule('schema/types/LambdaType')
+const LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
 
 describe('LambdaType', () => {
 
@@ -17,19 +17,22 @@ describe('LambdaType', () => {
         })
 
         expect(lambdaType).toBeInstanceOf(LambdaType)
-        expect(lambdaType.returnType).toBeInstanceOf(t.requireModule('schema/types/StringType'))
+        const StringType = t.requireModule('schema/types/StringType').StringType
+        expect(lambdaType.returnType).toBeInstanceOf(StringType)
 
-        const Parameter = t.requireModule('schema/Parameter')
+        const Parameter = t.requireModule('schema/Parameter').Parameter
         const parameters = lambdaType.parameters
         expect(parameters.length).toBe(2)
 
         expect(parameters[0]).toBeInstanceOf(Parameter)
-        expect(parameters[0].type).toBeInstanceOf(t.requireModule('schema/types/IntType'))
+        const IntType = t.requireModule('schema/types/IntType').IntType
+        expect(parameters[0].type).toBeInstanceOf(IntType)
         expect(parameters[0].name).toBe('par1')
         expect(parameters[0].description).toBe('desc1')
 
         expect(parameters[1]).toBeInstanceOf(Parameter)
-        expect(parameters[1].type).toBeInstanceOf(t.requireModule('schema/types/AnyType'))
+        const AnyType = t.requireModule('schema/types/AnyType').AnyType
+        expect(parameters[1].type).toBeInstanceOf(AnyType)
         expect(parameters[1].name).toBe('par2')
         expect(parameters[1].description).toBe('desc2')
     })

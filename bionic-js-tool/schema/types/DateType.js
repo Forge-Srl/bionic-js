@@ -1,10 +1,6 @@
-const Type = require('./Type')
+const {Type} = require('./Type')
 
 class DateType extends Type {
-
-    constructor() {
-        super(DateType.typeName)
-    }
 
     static get typeName() {
         return 'Date'
@@ -15,4 +11,4 @@ class DateType extends Type {
     }
 }
 
-module.exports = DateType
+module.exports = {DateType}

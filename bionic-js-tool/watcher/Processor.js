@@ -1,7 +1,7 @@
-const ProcessorState = require('./ProcessorState')
-const PackageFile = require('./PackageFile')
-const HostFile = require('./HostFile')
-const Directory = require('./Directory')
+const {ProcessorState} = require('./ProcessorState')
+const {PackageFile} = require('./PackageFile')
+const {HostFile} = require('./HostFile')
+const {Directory} = require('./Directory')
 
 class Processor {
 
@@ -124,4 +124,4 @@ class Processor {
     }
 }
 
-module.exports = Processor
+module.exports = {Processor}
