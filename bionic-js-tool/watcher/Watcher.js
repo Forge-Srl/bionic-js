@@ -15,7 +15,7 @@ class Watcher {
 
     get options() {
         const options = {
-            ignored: /(^|[\/\\])\../ /* Ignore paths containing .files or .dirs */
+            ignored: /(^|[\/\\])\../, /* Ignore paths containing .files or .dirs */
         }
 
         if (os.platform() === 'win32') {
@@ -25,10 +25,6 @@ class Watcher {
             /* Polling big directories is computational expensive */
         }
         return options
-    }
-
-    getFile(filePath) {
-        return new File(filePath, this.directory)
     }
 
     start() {
@@ -45,7 +41,6 @@ class Watcher {
     stop() {
         this.watchProcess.close()
     }
-
 
     fileDidAdd(file) {
     }

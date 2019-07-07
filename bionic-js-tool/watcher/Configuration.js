@@ -1,4 +1,5 @@
 const path = require('path')
+const {NODE_MODULES_DIR_NAME, PACKAGE_JSON_LOCK_FILE_NAME} = require('./NodeModule')
 
 class Configuration {
 
@@ -23,14 +24,14 @@ class Configuration {
             guestDir: 0,
             packageDir: 0,
             hostDir: 0,
-            hostLanguage: 0
+            hostLanguage: 0,
         })
 
         let guestIgnores = []
         if (config.defaultGuestIgnores)
             guestIgnores.push(config.defaultGuestIgnores)
         else
-            guestIgnores = guestIgnores.concat(['package-lock.json'])
+            guestIgnores = guestIgnores.concat([NODE_MODULES_DIR_NAME, PACKAGE_JSON_LOCK_FILE_NAME])
 
         if (config.guestIgnores)
             guestIgnores = guestIgnores.concat(config.guestIgnores)

@@ -1,12 +1,12 @@
-const {CodeWatcher} = require('./CodeWatcher')
+const {DirectoryWatcher} = require('./DirectoryWatcher')
 
-class PackageWatcher extends CodeWatcher {
+class PackageWatcher extends DirectoryWatcher {
 
     constructor(packageDir) {
         super(packageDir)
     }
 
-    static async build(config) {
+    static build(config) {
         return new PackageWatcher(config.packageDir)
     }
 }

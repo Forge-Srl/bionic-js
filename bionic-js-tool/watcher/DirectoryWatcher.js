@@ -1,12 +1,12 @@
 const {Watcher} = require('./Watcher')
 
-class CodeWatcher extends Watcher {
+class DirectoryWatcher extends Watcher {
 
-    constructor(rootDir, filesFilter, fileFactory, persistent) {
+    constructor(rootDir, filesFilter, fileFactory) {
         super(rootDir)
-        Object.assign(this, {filesFilter, fileFactory, persistent})
+        Object.assign(this, {filesFilter, fileFactory})
 
-        this.ready = false
+        this.waitingForInitialFiles = true
         this.initialFiles = []
         this.initialFilesPromises = []
     }
@@ -15,7 +15,7 @@ class CodeWatcher extends Watcher {
         if (this.filesFilter && this.filesFilter.isToFilter(file))
             return
 
-        if (!this.ready) {
+        if (this.waitingForInitialFiles) {
             this.initialFiles.push(this.fileFactory ? this.fileFactory(file) : file)
         } else if (this.persistent) {
             console.log(`post ADD: ${file.path}`)
@@ -23,8 +23,8 @@ class CodeWatcher extends Watcher {
     }
 
     didReady() {
-        if (!this.ready) {
-            this.ready = true
+        if (this.waitingForInitialFiles) {
+            this.waitingForInitialFiles = false
             for (const promise of this.initialFilesPromises) {
                 promise.resolve(this.initialFiles)
             }
@@ -33,7 +33,7 @@ class CodeWatcher extends Watcher {
 
     async getInitialFiles() {
         return await new Promise((resolve, reject) => {
-            if (this.ready) {
+            if (!this.waitingForInitialFiles) {
                 resolve(this.initialFiles)
             }
             this.initialFilesPromises.push({resolve, reject})
@@ -44,4 +44,4 @@ class CodeWatcher extends Watcher {
     }
 }
 
-module.exports = {CodeWatcher}
+module.exports = {DirectoryWatcher}

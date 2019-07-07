@@ -1,16 +1,14 @@
 {
-  "name": "guest-code",
+  "name": "broken-dependencies",
   "version": "1.0",
-  "description": "BionicJS guest code example",
+  "description": "modules with broken dependencies",
   "author": "Forge srl",
   "license": "SEE LICENSE IN license.txt",
   "private": true,
-  "main": "Guest1.js",
+  "main": "index.js",
   "dependencies": {
-    "module-a": "1.0",
-    "module-b": "1.0"
+    "module-a": "1.0"
   },
   "devDependencies": {
-    "module-c": "1.0"
   }
 }

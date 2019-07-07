@@ -10,6 +10,7 @@ describe('File', () => {
         fs = t.mockAndRequireModule('watcher/async/fs')
         crypto = t.mockAndRequire('crypto')
         File = t.requireModule('watcher/File').File
+
         filePath = '/dir1/dir2/filePath.js'
         file = new File(filePath, '/dir1')
         Directory = t.requireModule('watcher/Directory').Directory
@@ -34,19 +35,31 @@ describe('File', () => {
     })
 
     test('composeNewPath with new root dir and extension', async () => {
-
         const result = await file.composeNewPath('/new/root/dir', '.new')
         expect(result).toBe('/new/root/dir/dir2/filePath.new')
     })
 
     test('composeNewPath with new root dir', async () => {
-
         const result = await file.composeNewPath('/new/root/dir')
         expect(result).toBe('/new/root/dir/dir2/filePath.js')
     })
 
-    test('getContent', async () => {
+    test('isReadable', async () => {
+        fs.access.mockImplementationOnce(async (path, mode) => {
+            expect(path).toBe(filePath)
+            expect(mode).toBe(fs.orig.constants.F_OK | fs.orig.constants.R_OK)
+        })
+        expect(await file.isReadable()).toBe(true)
+    })
 
+    test('isReadable, not readable', async () => {
+        fs.access.mockImplementationOnce(async (path, mode) => {
+            throw Error('not readable!')
+        })
+        expect(await file.isReadable()).toBe(false)
+    })
+
+    test('getContent', async () => {
         fs.readFile.mockImplementationOnce(async () => {
             return 'ok'
         })
@@ -57,7 +70,6 @@ describe('File', () => {
     })
 
     test('setContent', async () => {
-
         fs.writeFile.mockImplementationOnce(async () => {
         })
 
@@ -66,7 +78,6 @@ describe('File', () => {
     })
 
     test('getHash', async () => {
-
         file.getContent = t.mockFn(async () => 'content')
         const digest = t.mockFn(() => 'digest')
         const update = t.mockFn(() => ({digest}))
@@ -83,7 +94,6 @@ describe('File', () => {
     })
 
     test('getHash real hashes', async () => {
-
         jest.unmock('crypto')
         const File = t.requireModule('watcher/file').File
         const file = new File()

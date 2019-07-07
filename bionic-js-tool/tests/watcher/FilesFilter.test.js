@@ -2,6 +2,7 @@ const t = require('../test-utils')
 
 describe('FilesFilter', () => {
 
+    const filePath = '/dir1/dir2/dir3/filePath.ext'
     let FilesFilter, file
 
     beforeEach(() => {
@@ -9,33 +10,37 @@ describe('FilesFilter', () => {
         FilesFilter = t.requireModule('watcher/FilesFilter').FilesFilter
 
         const File = t.requireModule('watcher/File').File
-        file = new File('/dir1/dir2/dir3/filePath.ext', '/dir1')
+        file = new File(filePath, '/dir1')
     })
 
-    test('ignoreFilter cases', async () => {
-
+    describe('ignoreFilter on file ' + filePath, () => {
         const testCases = [
-            {paths: ['filePath.txt'], dirs: [], filtered: false},
-            {paths: ['filepath.ext'], dirs: [], filtered: false},
-            {paths: [], dirs: ['dir1'], filtered: false},
-            {paths: [], dirs: ['dir2/dir4'], filtered: false},
-            {paths: ['filePath.ext'], dirs: [], filtered: true},
-            {paths: ['*.ext'], dirs: [], filtered: true},
-            {paths: ['filePath.*'], dirs: [], filtered: true},
-            {paths: [], dirs: ['dir2'], filtered: true},
-            {paths: [], dirs: ['dir2/dir3'], filtered: true},
+            {paths: [], filtered: false},
+            {paths: ['filePath.txt'], filtered: false},
+            {paths: ['filepath.ext'], filtered: false},
+            {paths: ['filePath.ext'], filtered: true},
+            {paths: ['*.ext'], filtered: true},
+            {paths: ['filePath.*'], filtered: true},
+            {paths: ['dir1/'], filtered: false},
+            {paths: ['dir2/'], filtered: true},
+            {paths: ['**/dir3'], filtered: true},
+            {paths: ['**/dir2'], filtered: true},
+            {paths: ['**/dir1'], filtered: false},
         ]
 
         for (const testCase of testCases) {
-            const filesFilter = new FilesFilter(testCase.paths, testCase.dirs)
-            const ignoreFilter = filesFilter.ignoreFilter
+            test(`with paths ${testCase.paths.join(', ')}`, () => {
 
-            expect(ignoreFilter.ignores(file.relativePath)).toBe(testCase.filtered)
-            expect(ignoreFilter).toBe(filesFilter.ignoreFilter)
+                const filesFilter = new FilesFilter(testCase.paths)
+                const ignoreFilter = filesFilter.ignoreFilter
+
+                expect(ignoreFilter.ignores(file.relativePath)).toBe(testCase.filtered)
+                expect(ignoreFilter).toBe(filesFilter.ignoreFilter)
+            })
         }
     })
 
-    test('isToFilter with ignored file', async () => {
+    test('isToFilter with ignored file', () => {
 
         const filesFilter = new FilesFilter()
         const ignores = t.mockFn().mockImplementation(() => true)
@@ -47,9 +52,9 @@ describe('FilesFilter', () => {
         expect(ignores).toBeCalledWith('dir2/dir3/filePath.ext')
     })
 
-    test('isToFilter with not allowed extension', async () => {
+    test('isToFilter with not allowed extension', () => {
 
-        const filesFilter = new FilesFilter(undefined, undefined, [])
+        const filesFilter = new FilesFilter(undefined, [])
         const ignores = t.mockFn().mockImplementation(() => false)
         t.mockGetter(filesFilter, 'ignoreFilter', t.mockFn(() => ({ignores})))
 
@@ -59,9 +64,9 @@ describe('FilesFilter', () => {
         expect(ignores).toBeCalled()
     })
 
-    test('isToFilter with allowed extension', async () => {
+    test('isToFilter with allowed extension', () => {
 
-        const filesFilter = new FilesFilter(undefined, undefined, ['.ext'])
+        const filesFilter = new FilesFilter(undefined, ['.ext'])
         const ignores = t.mockFn().mockImplementation(() => false)
         t.mockGetter(filesFilter, 'ignoreFilter', t.mockFn(() => ({ignores})))
 
@@ -71,7 +76,7 @@ describe('FilesFilter', () => {
         expect(ignores).toBeCalled()
     })
 
-    test('isToFilter with undefined allowed extensions', async () => {
+    test('isToFilter with undefined allowed extensions', () => {
 
         const filesFilter = new FilesFilter()
         const ignores = t.mockFn().mockImplementation(() => false)

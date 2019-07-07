@@ -1,6 +1,5 @@
 const {JsExplorer} = require('./JsExplorer')
 const {ClassExplorer} = require('./ClassExplorer')
-const flatMap = require('flatmap')
 
 class ProgramExplorer extends JsExplorer {
 
@@ -31,7 +30,7 @@ class ProgramExplorer extends JsExplorer {
                 return this.depthSearch(node.program, matchFunction)
 
             case 'Program':
-                return flatMap(node.body, node => this.depthSearch(node, matchFunction))
+                return node.body.flatMap(node => this.depthSearch(node, matchFunction))
 
             case 'ExpressionStatement':
                 return this.depthSearch(node.expression, matchFunction)
@@ -42,6 +41,9 @@ class ProgramExplorer extends JsExplorer {
             case 'ExportNamedDeclaration':
             case 'ExportDefaultDeclaration':
                 return this.depthSearch(node.declaration, matchFunction)
+
+            default:
+                return []
         }
     }
 }

@@ -1,0 +1,33 @@
+Dependencies tree:
+
+guest-code 1.0
+| PRO
+|-> module-a 1.0
+|   | PRO
+|   |-> [module-b 1.0]
+|   | DEV
+|   |-> module-c 2.0
+|   ^   ^
+|-> module-b 1.0
+|   | PRO
+|   |-> [module-c 1.0]
+|   ^
+| DEV
+|-> module-c 1.0
+^   | PRO
+    |-> [module-a 1.0]
+    |-> module-b 2.0
+    |   ^
+    | DEV
+    |-> module-d 1.0
+    ^   ^
+
+guest-code PRO dependencies:
+- module-a 1.0
+- module-b 1.0
+- module-c 1.0
+- module-b 2.0
+
+guest-code DEV dependencies:
+- module-c 2.0
+- module-d 1.0

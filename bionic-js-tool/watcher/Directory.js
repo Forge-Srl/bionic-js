@@ -1,11 +1,21 @@
+const {BaseFile} = require('./BaseFile')
+const {File} = require('./File')
+const path = require('path')
 const mkdirp = require('./async/mkdirp')
 const rimraf = require('./async/rimraf')
-const fs = require('./async/fs')
 
-class Directory {
+class Directory extends BaseFile {
 
-    constructor(path) {
-        Object.assign(this, {path})
+    getSubFile(relativePath) {
+        return new File(this.getSubPath(relativePath), this.rootDirPath)
+    }
+
+    getSubDir(relativePath) {
+        return new Directory(this.getSubPath(relativePath), this.rootDirPath)
+    }
+
+    getSubPath(relativePath) {
+        return path.join(this.path, relativePath)
     }
 
     async ensureExists() {
@@ -15,17 +25,8 @@ class Directory {
             throw new Error(`Cannot create directory "${this.path}"\n${error.stack}`)
         }
 
-        if (!await this.isReadableAndWriteable())
+        if (!await this.isReadableAndWritable())
             throw new Error(`Directory "${this.path}" has no RW permissions`)
-    }
-
-    async isReadableAndWriteable() {
-        try {
-            await fs.access(this.path, fs.orig.constants.R_OK | fs.orig.constants.W_OK)
-            return true
-        } catch (error) {
-            return false
-        }
     }
 
     async delete() {

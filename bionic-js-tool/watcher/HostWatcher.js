@@ -1,10 +1,10 @@
-const {CodeWatcher} = require('./CodeWatcher')
+const {DirectoryWatcher} = require('./DirectoryWatcher')
 const path = require('path')
 const {FilesFilter} = require('./FilesFilter')
 
-class HostWatcher extends CodeWatcher {
+class HostWatcher extends DirectoryWatcher {
 
-    static async build(config) {
+    static build(config) {
         let hostFilesFilter
         const relativePackageDir = path.relative(config.hostDir, config.packageDir)
         if (!!relativePackageDir && (!relativePackageDir.startsWith('../') || !relativePackageDir.startsWith('..\\'))
