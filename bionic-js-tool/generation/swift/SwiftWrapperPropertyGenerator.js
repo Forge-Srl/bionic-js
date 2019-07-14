@@ -3,10 +3,19 @@ const {CodeBlock} = require('../code/CodeBlock')
 const {GenerationContext} = require('../code/GenerationContext')
 const {IniRet} = require('../code/IniRet')
 
-class SwiftHostPropertyGenerator extends CodeGenerator {
+class SwiftWrapperPropertyGenerator extends CodeGenerator {
 
     get typeGenerator() {
         return this.schema.type.generator.swift
+    }
+
+    getWrapperExportLine() {
+        const staticMod = this.schema.isStatic ? 'Static' : ''
+        const kind = this.schema.kinds.includes('get') ? 'Get' : 'Set'
+        const methodName = `bjs${staticMod}${kind}_${this.schema.name}`
+
+        return CodeBlock.create()
+            .append(`.exportFunction("${methodName}", ${methodName}())`)
     }
 
     getHeaderCode() {
@@ -67,4 +76,4 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
     }
 }
 
-module.exports = {SwiftHostPropertyGenerator}
+module.exports = {SwiftWrapperPropertyGenerator}

@@ -2,7 +2,12 @@ const {SwiftMethodGenerator} = require('./SwiftMethodGenerator')
 const {GenerationContext} = require('../code/GenerationContext')
 const {CodeBlock} = require('../code/CodeBlock')
 
-class SwiftHostConstructorGenerator extends SwiftMethodGenerator {
+class SwiftWrapperConstructorGenerator extends SwiftMethodGenerator {
+
+    getWrapperExportLine() {
+        return CodeBlock.create()
+            .append('.exportBindFunction(bjsBind())')
+    }
 
     getHostCode() {
         const constructorContext = new GenerationContext()
@@ -17,4 +22,4 @@ class SwiftHostConstructorGenerator extends SwiftMethodGenerator {
     }
 }
 
-module.exports = {SwiftHostConstructorGenerator}
+module.exports = {SwiftWrapperConstructorGenerator}

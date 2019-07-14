@@ -14,7 +14,7 @@ describe('NodeModule', () => {
         const brokenModule = NodeModule.fromModulePath(moduleDirPath)
 
         await expect(brokenModule.getDependencies()).rejects
-            .toThrow(`Cannot read package.obj file in module "${moduleDirPath}"`)
+            .toThrow(`Cannot read package.json file in module "${moduleDirPath}"`)
     })
 
     test('getDependencies path is a file', async () => {
@@ -22,7 +22,7 @@ describe('NodeModule', () => {
         const brokenModule = NodeModule.fromModulePath(moduleDirPath)
 
         await expect(brokenModule.getDependencies()).rejects
-            .toThrow(`Cannot read package.obj file in module "${moduleDirPath}"`)
+            .toThrow(`Cannot read package.json file in module "${moduleDirPath}"`)
     })
 
     test('getDependencies complex module with broken dependencies', async () => {

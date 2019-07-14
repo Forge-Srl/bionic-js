@@ -16,8 +16,6 @@
     "/watcher"
   ],
   "dependencies": {
-    "@babel/core": "*",
-    "@babel/generator": "*",
     "@babel/parser": "*",
     "chokidar": "*",
     "ignore": "*",

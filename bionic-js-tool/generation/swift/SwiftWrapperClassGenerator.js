@@ -22,27 +22,15 @@ class SwiftWrapperClassGenerator extends SwiftClassGenerator {
             .newLine()
     }
 
-    /*
-
-    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) {
-        _ = nativeExports
-            .exportFunction("bjsStaticGet_pi", bjsStaticGet_pi())
-            .exportFunction("bjsStatic_sum", bjsStatic_sum())
-            .exportBindFunction(bjsBind())
-            .exportFunction("bjsGet_number1", bjsGet_number1())
-            .exportFunction("bjsSet_number1", bjsSet_number1())
-            .exportFunction("bjsGet_number2", bjsGet_number2())
-            .exportFunction("bjsSet_number2", bjsSet_number2())
-            .exportFunction("bjs_getSum", bjs_getSum())
-            .exportFunction("bjs_getToySum", bjs_getToySum())
-    }
-
-     */
     getExportFunctionsCode() {
         return CodeBlock.create()
             .append('override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) {').newLineIndenting()
             .append('_ = nativeExports').newLineIndenting()
-            .append(this.classPartsGenerators.map(generator => generator.getExportFunctionCode())).newLineDeindenting(-2)
+            .append(this.classPartsGenerators.map((generator, index, array) => {
+                const newLineIndentation = (index < array.length - 1) ? 0 : -2
+                return generator.getWrapperExportLine().newLineDeindenting(newLineIndentation)
+
+            }))
             .append('}')
     }
 
@@ -51,21 +39,12 @@ class SwiftWrapperClassGenerator extends SwiftClassGenerator {
             .append(this.getExportFunctionsCode())
             .newLine()
             .append(this.getClassParts().map(classPart =>
-                classPart.generator.swift.forWrapping(this.schema).getImplementation().newLine()
+                classPart.generator.swift.forWrapping(this.schema).getHostCode().newLine()
                     .newLine()))
     }
 
     getFooterCode() {
-        const override = !!this.schema.superClassName ? 'override ' : ''
-
         return CodeBlock.create()
-            .append(`${override}class func bjsFactory(_ jsObject: JSValue) -> ${this.schema.name} {`).newLineIndenting()
-            .append(`return ${this.schema.name}(jsObject)`).newLineDeindenting()
-            .append('}').newLine()
-            .newLine()
-            .append('override class var bjsModulePath: String {').newLineIndenting()
-            .append(`return "${this.schema.modulePath}"`).newLineDeindenting()
-            .append('}').newLineDeindenting()
             .append('}')
     }
 }

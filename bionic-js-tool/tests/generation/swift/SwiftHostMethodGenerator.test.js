@@ -1,4 +1,4 @@
-const t = require('../../../test-utils')
+const t = require('../../test-utils')
 
 describe('SwiftHostMethodGenerator', () => {
 

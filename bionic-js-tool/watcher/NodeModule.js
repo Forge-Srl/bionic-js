@@ -56,9 +56,10 @@ class NodeModule {
     async getShallowDependenciesNames() {
         if (!this._dependenciesNames) {
             try {
-                this._dependenciesNames = Object.keys((await this.getPackageObj()).dependencies)
+                const dependencies = (await this.getPackageObj()).dependencies
+                this._dependenciesNames = dependencies ? Object.keys(dependencies) : []
             } catch (e) {
-                throw new Error(`Cannot read package.obj file in module "${this.moduleDir.path}"`)
+                throw new Error(`Cannot read package.json file in module "${this.moduleDir.path}"`)
             }
         }
         return this._dependenciesNames
