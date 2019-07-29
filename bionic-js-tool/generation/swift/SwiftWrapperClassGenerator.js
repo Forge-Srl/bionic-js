@@ -1,7 +1,16 @@
 const {SwiftClassGenerator} = require('./SwiftClassGenerator')
+const {Constructor} = require('../../schema/Constructor')
 const {CodeBlock} = require('../code/CodeBlock')
 
 class SwiftWrapperClassGenerator extends SwiftClassGenerator {
+
+    get constructors() {
+        const constructors = super.constructors
+        if (!constructors.some(part => part instanceof Constructor)) {
+            return [new Constructor('Default constructor', [])]
+        }
+        return constructors
+    }
 
     get classPartsGenerators() {
         if (!this._classPartsGenerators) {
@@ -36,11 +45,15 @@ class SwiftWrapperClassGenerator extends SwiftClassGenerator {
 
     getBodyCode() {
         return CodeBlock.create()
-            .append(this.getExportFunctionsCode())
+            .append(this.getExportFunctionsCode()).newLine()
             .newLine()
-            .append(this.getClassParts().map(classPart =>
-                classPart.generator.swift.forWrapping(this.schema).getHostCode().newLine()
-                    .newLine()))
+            .append(this.getClassParts().map((classPart, index, array) => {
+                const code = classPart.generator.swift.forWrapping(this.schema).getCode()
+                if (index < array.length - 1)
+                    return code.newLine().newLine()
+                else
+                    return code.newLineDeindenting()
+            }))
     }
 
     getFooterCode() {

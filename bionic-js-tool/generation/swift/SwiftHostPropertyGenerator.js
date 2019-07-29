@@ -50,7 +50,7 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
             .append('}')
     }
 
-    getHostCode() {
+    getCode() {
         const getterCode = this.getGetterCode()
         const setterCode = this.getSetterCode()
 

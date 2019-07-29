@@ -9,13 +9,18 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
         return this.schema.type.generator.swift
     }
 
-    getWrapperExportLine() {
-        const staticMod = this.schema.isStatic ? 'Static' : ''
-        const kind = this.schema.kinds.includes('get') ? 'Get' : 'Set'
-        const methodName = `bjs${staticMod}${kind}_${this.schema.name}`
+    get propertyName() {
+        if (!this._propertyName) {
+            const staticMod = this.schema.isStatic ? 'Static' : ''
+            const kind = this.schema.kinds.includes('get') ? 'Get' : 'Set'
+            this._propertyName = `bjs${staticMod}${kind}_${this.schema.name}`
+        }
+        return this._propertyName
+    }
 
+    getWrapperExportLine() {
         return CodeBlock.create()
-            .append(`.exportFunction("${methodName}", ${methodName}())`)
+            .append(`.exportFunction("${this.propertyName}", ${this.propertyName}())`)
     }
 
     getHeaderCode() {
@@ -59,7 +64,7 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
             .append('}')
     }
 
-    getHostCode() {
+    getCode() {
         const getterCode = this.getGetterCode()
         const setterCode = this.getSetterCode()
 

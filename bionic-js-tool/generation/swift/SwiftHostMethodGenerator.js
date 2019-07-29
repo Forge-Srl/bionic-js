@@ -5,10 +5,6 @@ const {IniRet} = require('../code/IniRet')
 
 class SwiftHostMethodGenerator extends SwiftMethodGenerator {
 
-    get returnTypeGenerator() {
-        return this.schema.returnType.generator.swift
-    }
-
     getHeaderCode() {
         const override_ = this.schema.isOverriding ? 'override ' : ''
         const class_ = this.schema.isStatic ? 'class ' : ''
@@ -21,17 +17,17 @@ class SwiftHostMethodGenerator extends SwiftMethodGenerator {
 
     getBodyCode() {
         const methodContext = new GenerationContext()
-        const anyParameter = this.schema.parameters.length
+        const anyParameter = this.parameters.length
         const returnTypeGen = this.returnTypeGenerator
 
         const callIniRet = IniRet.create()
             .appendRet(this.schema.isStatic ? 'Bjs.get.call(self.bjsClass, ' : 'bjsCall(').appendRet(`"${this.schema.name}"`)
-            .__.appendRet(anyParameter ? ', ' : '').append(this.getArgumentsListIniRet(methodContext)).appendRet(')')
+            .__.appendRet(anyParameter ? ', ' : '').append(this.getArgumentsListJsIniRet(methodContext)).appendRet(')')
         return returnTypeGen.getNativeReturnCode(returnTypeGen.getNativeIniRet(callIniRet, methodContext))
 
     }
 
-    getHostCode() {
+    getCode() {
         return CodeBlock.create()
             .append(this.getHeaderCode()).newLineIndenting()
             .append(this.getBodyCode()).newLineDeindenting()

@@ -17,7 +17,7 @@ class SwiftHostClassGenerator extends SwiftClassGenerator {
     getBodyCode() {
         return CodeBlock.create()
             .append(this.getClassParts().map(classPart =>
-                classPart.generator.swift.forHosting(this.schema).getHostCode().newLine()
+                classPart.generator.swift.forHosting(this.schema).getCode().newLine()
                     .newLine()))
     }
 

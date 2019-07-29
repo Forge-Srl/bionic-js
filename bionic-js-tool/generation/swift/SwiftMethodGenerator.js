@@ -8,31 +8,53 @@ class SwiftMethodGenerator extends CodeGenerator {
         Object.assign(this, {classSchema})
     }
 
+    get parameters() {
+        return this.schema.parameters
+    }
+
     get parametersGenerators() {
         if (!this._parametersGenerators) {
-            this._parametersGenerators = this.schema.parameters.map(par => par.generator.swift)
+            this._parametersGenerators = this.parameters.map(par => par.generator.swift)
         }
         return this._parametersGenerators
+    }
+
+    get returnTypeGenerator() {
+        return this.schema.returnType.generator.swift
     }
 
     getParametersStatements() {
         return this.parametersGenerators.map(paramGen => paramGen.getParameterStatement()).join(', ')
     }
 
-    getArgumentsListIniRet(context) {
-
+    getArgumentsListJsIniRet(context) {
         const argumentsJsIniRets = this.parametersGenerators.map(paramGen => paramGen.getJsIniRet(context))
 
-        const argumentsListIniRet = IniRet.create()
+        const argumentsListJsIniRet = IniRet.create()
         for (let argId = 0; argId < argumentsJsIniRets.length; argId++) {
-            const argIniRet = argumentsJsIniRets[argId]
-            argumentsListIniRet.appendIni(argIniRet.initializationCode)
-            argumentsListIniRet.appendRet(argIniRet.returningCode)
+            const argJsIniRet = argumentsJsIniRets[argId]
+            argumentsListJsIniRet.appendIni(argJsIniRet.initializationCode)
+            argumentsListJsIniRet.appendRet(argJsIniRet.returningCode)
             if (argId < argumentsJsIniRets.length - 1) {
-                argumentsListIniRet.appendRet(', ')
+                argumentsListJsIniRet.appendRet(', ')
             }
         }
-        return argumentsListIniRet
+        return argumentsListJsIniRet
+    }
+
+    getArgumentsListNativeIniRet(context, parametersShift = 0) {
+        const argumentsNativeIniRets = this.parametersGenerators.map(paramGen => paramGen.getNativeIniRet(context))
+
+        const argumentsListNativeIniRet = IniRet.create()
+        for (let argId = parametersShift; argId < argumentsNativeIniRets.length; argId++) {
+            const argNativeIniRet = argumentsNativeIniRets[argId]
+            argumentsListNativeIniRet.appendIni(argNativeIniRet.initializationCode)
+            argumentsListNativeIniRet.appendRet(argNativeIniRet.returningCode)
+            if (argId < argumentsNativeIniRets.length - 1) {
+                argumentsListNativeIniRet.appendRet(', ')
+            }
+        }
+        return argumentsListNativeIniRet
     }
 }
 

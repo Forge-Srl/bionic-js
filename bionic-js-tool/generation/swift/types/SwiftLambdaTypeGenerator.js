@@ -7,9 +7,13 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
         return this.schema.returnType.generator.swift
     }
 
+    get parameters() {
+        return this.schema.parameters
+    }
+
     getTypeStatement() {
-        const parametersStatements = this.schema.parameters
-            .map(parameter => parameter.generator.swift.getParameterStatement()).join(', ')
+        const parametersStatements = this.parameters.map(parameter =>
+            parameter.generator.swift.getParameterStatement()).join(', ')
         const returnTypeStatement = this.returnTypeGenerator.getTypeStatement()
 
         return `((${parametersStatements}) -> ${returnTypeStatement})?`
@@ -28,14 +32,12 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
     }
 
     getCallerWithNativeIniRet(jsFuncVar, context) {
-        const params = this.schema.parameters
-
         const callJsIniRet = IniRet.create()
             .appendRet(`Bjs.get.funcCall(${jsFuncVar}`)
 
-        for (let paramIndex = 0; paramIndex < params.length; paramIndex++) {
+        for (let paramIndex = 0; paramIndex < this.parameters.length; paramIndex++) {
 
-            const argumentTypeGenerator = params[paramIndex].type.generator.swift
+            const argumentTypeGenerator = this.parameters[paramIndex].type.generator.swift
             const argumentNativeIniRet = IniRet.create().appendRet(`$${paramIndex}`)
 
             callJsIniRet.appendRet(', ').append(argumentTypeGenerator.getJsIniRet(argumentNativeIniRet, context))
@@ -53,7 +55,7 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
                 ini.append(nativeFuncIniRet.initializationCode)
                     .append(`let ${nativeFuncVar} = `).append(nativeFuncIniRet.returningCode).newLine()
                     .append(`let ${jsFuncVar}: @convention(block) (`)
-                    .__.append(this.schema.parameters.map(param => param.type.generator.swift.getBlockTypeStatement()).join(', '))
+                    .__.append(this.parameters.map(param => param.type.generator.swift.getBlockTypeStatement()).join(', '))
                     .__.append(')').append(this.returnTypeGenerator.getBlockReturnTypeStatement())
                     .__.append(' = {').newLineIndenting()
                     .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithJsIniRet(nativeFuncVar, context))).newLineDeindenting()
@@ -65,16 +67,15 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
 
 
     getCallerWithJsIniRet(nativeFuncVar, context) {
-        const params = this.schema.parameters
-
+        const parameterCount = this.parameters.length
         const parametersIniRet = IniRet.create()
-        for (let paramIndex = 0; paramIndex < params.length; paramIndex++) {
+        for (let paramIndex = 0; paramIndex < parameterCount; paramIndex++) {
 
-            const argumentTypeGenerator = params[paramIndex].type.generator.swift
+            const argumentTypeGenerator = this.parameters[paramIndex].type.generator.swift
             const argumentJsIniRet = IniRet.create().appendRet(`$${paramIndex}`)
             parametersIniRet.append(argumentTypeGenerator.getNativeIniRet(argumentJsIniRet, context))
 
-            if (paramIndex < params.length - 1) {
+            if (paramIndex < parameterCount - 1) {
                 parametersIniRet.appendRet(', ')
             }
         }

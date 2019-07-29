@@ -4,9 +4,9 @@ const {CodeBlock} = require('../code/CodeBlock')
 
 class SwiftHostConstructorGenerator extends SwiftMethodGenerator {
 
-    getHostCode() {
+    getCode() {
         const constructorContext = new GenerationContext()
-        const argumentsListIniRet = this.getArgumentsListIniRet(constructorContext)
+        const argumentsListIniRet = this.getArgumentsListJsIniRet(constructorContext)
 
         return CodeBlock.create()
             .append(`convenience init(${this.getParametersStatements()}) {`).newLineIndenting()
