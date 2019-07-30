@@ -5,8 +5,8 @@ describe('SwiftHostMethodGenerator', () => {
     let Class, Method, Parameter, VoidType, BoolType, IntType, LambdaType, expectedHeader, expectedFooter
 
     function getCode(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters) {
-        const class1 = new Class('Class1', '', [new Method('method1', 'method description', isMethodStatic,
-            isMethodOverriding, methodReturnType, methodParameters)], [], [], '', '')
+        const class1 = new Class('Class1', '', [], [], [new Method('method1', 'method description', isMethodStatic,
+            isMethodOverriding, methodReturnType, methodParameters)], '', 'module/path')
         return class1.generator.swift.forHosting().getFiles()[0].content
     }
 
@@ -27,7 +27,7 @@ describe('SwiftHostMethodGenerator', () => {
             'import JavaScriptCore',
             'import Bjs',
             '',
-            'class Class1: BjsClass {',
+            'class Class1: BjsObject {',
             '    ']
 
         expectedFooter = [
@@ -37,7 +37,7 @@ describe('SwiftHostMethodGenerator', () => {
             '    }',
             '    ',
             '    override class var bjsModulePath: String {',
-            '        return ""',
+            '        return "module/path"',
             '    }',
             '}']
     })

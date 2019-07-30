@@ -2,62 +2,57 @@ const {SwiftMethodGenerator} = require('./SwiftMethodGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
 const {GenerationContext} = require('../code/GenerationContext')
 const {IniRet} = require('../code/IniRet')
+const {WrappedObjectType} = require('../../schema/types/WrappedObjectType')
+const {Parameter} = require('../../schema/Parameter')
 
 class SwiftWrapperMethodGenerator extends SwiftMethodGenerator {
 
-    /*
-
-    class func bjsStatic_sum() -> @convention(block) (JSValue, JSValue) -> JSValue {
-        return {
-            return Bjs.get.putPrimitive(ToyComponent1.sum(Bjs.get.getInt($0), Bjs.get.getInt($1)))
-        }
-    }
-
-     */
-
-    get returnTypeGenerator() {
-        return this.schema.returnType.generator.swift
-    }
-
-    get methodName() {
-        if (!this._methodName) {
+    get wrapperMethodName() {
+        if (!this._wrapperMethodName) {
             const staticMod = this.schema.isStatic ? 'Static' : ''
-            this._methodName = `bjs${staticMod}_${this.schema.name}`
+            this._wrapperMethodName = `bjs${staticMod}_${this.schema.name}`
         }
-        return this._methodName
+        return this._wrapperMethodName
+    }
+
+    get parameters() {
+        const firstParameter = new Parameter(new WrappedObjectType(), 'wrappedObj')
+        const otherParameters = super.parameters.map((parameter, index) =>
+            new Parameter(parameter.type, `$${index + 1}`, parameter.description))
+        return [firstParameter, ...otherParameters]
     }
 
     getWrapperExportLine() {
         return CodeBlock.create()
-            .append(`.exportFunction("${this.methodName}", ${this.methodName}())`)
+            .append(`.exportFunction("${this.wrapperMethodName}", ${this.wrapperMethodName}())`)
     }
 
-    getHeaderCode() {
-        const override_ = this.schema.isOverriding ? 'override ' : ''
-        const class_ = this.schema.isStatic ? 'class ' : ''
-        const returnTypeStatement = this.returnTypeGenerator.getNativeReturnTypeStatement()
-
+    getNativeMethodCall(argumentListCode) {
         return CodeBlock.create()
-            .append(`${override_}${class_}func ${this.schema.name}(`).append(this.getParametersStatements())
-            .__.append(`)${returnTypeStatement} {`)
-    }
-
-    getBodyCode() {
-        const methodContext = new GenerationContext()
-        const anyParameter = this.parameters.length
-        const returnTypeGen = this.returnTypeGenerator
-
-        const callIniRet = IniRet.create()
-            .appendRet(this.schema.isStatic ? 'Bjs.get.call(self.bjsClass, ' : 'bjsCall(').appendRet(`"${this.schema.name}"`)
-            .__.appendRet(anyParameter ? ', ' : '').append(this.getArgumentsListJsIniRet(methodContext)).appendRet(')')
-        return returnTypeGen.getNativeReturnCode(returnTypeGen.getNativeIniRet(callIniRet, methodContext))
-
+            .append(this.schema.isStatic ?
+                `${this.classSchema.name}.${this.schema.name}(` :
+                `Bjs.get.getWrapped($0, ${this.classSchema.name}.self)!.${this.schema.name}(`)
+            .append(argumentListCode).append(')')
     }
 
     getCode() {
+        const methodContext = new GenerationContext()
+        const argumentsListNativeIniRet = this.getArgumentsListNativeIniRet(methodContext, 1)
+
+        const callIniRet = IniRet.create()
+            .appendIni(argumentsListNativeIniRet.initializationCode)
+            .appendRet(this.getNativeMethodCall(argumentsListNativeIniRet.returningCode))
+
+        const lambdaReturnTypeGen = this.returnTypeGenerator
+        const lambdaCode = lambdaReturnTypeGen.getNativeReturnCode(lambdaReturnTypeGen.getJsIniRet(callIniRet, methodContext))
+
         return CodeBlock.create()
-            .append(this.getHeaderCode()).newLineIndenting()
-            .append(this.getBodyCode()).newLineDeindenting()
+            .append(`class func ${this.wrapperMethodName}() -> @convention(block) (`)
+            .__.append(this.parameters.map(param => param.type.generator.swift.getBlockTypeStatement()).join(', '))
+            .__.append(')').append(this.returnTypeGenerator.getBlockReturnTypeStatement()).append(' {').newLineIndenting()
+            .append('return {').newLineIndenting()
+            .append(lambdaCode).newLineDeindenting()
+            .append('}').newLineDeindenting()
             .append('}')
     }
 }

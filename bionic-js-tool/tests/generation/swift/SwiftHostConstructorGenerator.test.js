@@ -6,7 +6,7 @@ describe('SwiftHostConstructorGenerator', () => {
         expectedFooter
 
     function getCode(constructorParameters) {
-        const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], '', '')
+        const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], '', 'module/path')
         return class1.generator.swift.forHosting().getFiles()[0].content
     }
 
@@ -28,7 +28,7 @@ describe('SwiftHostConstructorGenerator', () => {
             'import JavaScriptCore',
             'import Bjs',
             '',
-            'class Class1: BjsClass {',
+            'class Class1: BjsObject {',
             '    ']
 
         expectedFooter = [
@@ -38,7 +38,7 @@ describe('SwiftHostConstructorGenerator', () => {
             '    }',
             '    ',
             '    override class var bjsModulePath: String {',
-            '        return ""',
+            '        return "module/path"',
             '    }',
             '}']
     })

@@ -23,7 +23,7 @@ describe('SwiftHostClassGenerator', () => {
             '']
 
         expectedClassDeclaration = [
-            'class Class1: BjsClass {',
+            'class Class1: BjsObject {',
             '    ']
 
         expectedFactoryMethod = [

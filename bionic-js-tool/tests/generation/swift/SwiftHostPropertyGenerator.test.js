@@ -32,7 +32,7 @@ describe('SwiftHostPropertyGenerator', () => {
             'import JavaScriptCore',
             'import Bjs',
             '',
-            'class Class1: BjsClass {',
+            'class Class1: BjsObject {',
             '    ']
 
         expectedFooter = [

@@ -18,8 +18,10 @@ class SwiftWrapperConstructorGenerator extends SwiftMethodGenerator {
     }
 
     get parameters() {
+        const parameters = super.parameters.map((parameter, index) =>
+            new Parameter(parameter.type, `$${index + 1}`, parameter.description))
         const firstParameter = new Parameter(new WrappedObjectType(), 'wrappedObj')
-        const otherParameters = super.parameters.length ? super.parameters : [new Parameter(new NativeObjectType(), 'nativeObj')]
+        const otherParameters = super.parameters.length ? parameters : [new Parameter(new NativeObjectType(), 'nativeObj')]
         return [firstParameter, ...otherParameters]
     }
 

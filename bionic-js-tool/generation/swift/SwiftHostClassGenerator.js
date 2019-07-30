@@ -4,7 +4,7 @@ const {CodeBlock} = require('../code/CodeBlock')
 class SwiftHostClassGenerator extends SwiftClassGenerator {
 
     getHeaderCode() {
-        const superClassName = this.schema.superClassName || 'BjsClass'
+        const superClassName = this.schema.superClassName || 'BjsObject'
 
         return CodeBlock.create()
             .append('import JavaScriptCore').newLine()
