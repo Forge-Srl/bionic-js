@@ -5,79 +5,98 @@ const {IniRet} = require('../code/IniRet')
 
 class SwiftWrapperPropertyGenerator extends CodeGenerator {
 
+    constructor(schema, classSchema) {
+        super(schema)
+        Object.assign(this, {classSchema})
+    }
+
+    get hasGetter() {
+        return this.schema.kinds.includes('get')
+    }
+
+    get hasSetter() {
+        return this.schema.kinds.includes('set')
+    }
+
     get typeGenerator() {
         return this.schema.type.generator.swift
     }
 
-    get propertyName() {
-        if (!this._propertyName) {
-            const staticMod = this.schema.isStatic ? 'Static' : ''
-            const kind = this.schema.kinds.includes('get') ? 'Get' : 'Set'
-            this._propertyName = `bjs${staticMod}${kind}_${this.schema.name}`
-        }
-        return this._propertyName
+    get getterWrapperMethodName() {
+        return this.getWrapperMethodName('Get')
     }
 
-    getWrapperExportLine() {
-        return CodeBlock.create()
-            .append(`.exportFunction("${this.propertyName}", ${this.propertyName}())`)
+    get setterWrapperMethodName() {
+        return this.getWrapperMethodName('Set')
     }
 
-    getHeaderCode() {
-        const override_ = this.schema.isOverriding ? 'override ' : ''
-        const class_ = this.schema.isStatic ? 'class ' : ''
-        const typeStatement = this.typeGenerator.getTypeStatement()
+    get wrapperExportLines() {
+        const exportLines = CodeBlock.create()
 
-        return CodeBlock.create()
-            .append(`${override_}${class_}var ${this.schema.name}:`).append(`${typeStatement} {`)
+        if (this.hasGetter)
+            exportLines.append(`.exportFunction("${this.getterWrapperMethodName}", ${this.getterWrapperMethodName}())`)
+
+        if (this.hasGetter && this.hasSetter)
+            exportLines.newLine()
+
+        if (this.hasSetter)
+            exportLines.append(`.exportFunction("${this.setterWrapperMethodName}", ${this.setterWrapperMethodName}())`)
+
+        return exportLines
+    }
+
+    get nativePropertyIniRet() {
+        return IniRet.create()
+            .appendRet(this.schema.isStatic ?
+                `${this.classSchema.name}.${this.schema.name}` :
+                `Bjs.get.getWrapped($0, ${this.classSchema.name}.self)!.${this.schema.name}`)
+    }
+
+    getWrapperMethodName(propertyModifier) {
+        const staticMod = this.schema.isStatic ? 'Static' : ''
+        return `bjs${staticMod}${propertyModifier}_${this.schema.name}`
     }
 
     getGetterCode() {
-        if (!this.schema.kinds.includes('get'))
+        if (!this.hasGetter)
             return null
-
-        const jsValueIniRet = IniRet.create()
-            .appendRet(this.schema.isStatic ? 'Bjs.get.getProperty(self.bjsClass, ' : 'bjsGetProperty(')
-            .__.appendRet(`"${this.schema.name}")`)
 
         const typeGen = this.typeGenerator
         const getterContext = new GenerationContext()
 
         return CodeBlock.create()
-            .append('get {').newLineIndenting()
-            .append(typeGen.getNativeReturnCode(typeGen.getNativeIniRet(jsValueIniRet, getterContext))).newLineDeindenting()
+            .append(`class func ${this.getterWrapperMethodName}() -> @convention(block) (JSValue) -> JSValue {`).newLineIndenting()
+            .append('return {').newLineIndenting()
+            .append(typeGen.getNativeReturnCode(typeGen.getJsIniRet(this.nativePropertyIniRet, getterContext))).newLineDeindenting()
+            .append('}').newLineDeindenting()
             .append('}')
     }
 
     getSetterCode() {
-        if (!this.schema.kinds.includes('set'))
+        if (!this.hasSetter)
             return null
 
-        const setterContext = new GenerationContext()
-        const jsValueIniRet = this.typeGenerator.getJsIniRet(IniRet.create().appendRet('newValue'), setterContext)
+        const getterContext = new GenerationContext()
+        const nativeValueIniRet = this.typeGenerator.getNativeIniRet(IniRet.create().appendRet('$1'), getterContext)
 
         return CodeBlock.create()
-            .append('set {').newLineIndenting()
-            .append(jsValueIniRet.initializationCode)
-            .append(this.schema.isStatic ? 'Bjs.get.setProperty(self.bjsClass, ' : 'bjsSetProperty(')
-            .__.append(`"${this.schema.name}", `).append(jsValueIniRet.returningCode).append(')').newLineDeindenting()
+            .append(`class func ${this.setterWrapperMethodName}() -> @convention(block) (JSValue, JSValue) -> Void {`)
+            .__.newLineIndenting()
+            .append('return {').newLineIndenting()
+            .append(nativeValueIniRet.initializationCode)
+            .append(this.nativePropertyIniRet.returningCode).append(' = ').append(nativeValueIniRet.returningCode).newLineDeindenting()
+            .append('}').newLineDeindenting()
             .append('}')
     }
 
     getCode() {
-        const getterCode = this.getGetterCode()
-        const setterCode = this.getSetterCode()
-
         const propertyCode = CodeBlock.create()
-            .append(this.getHeaderCode()).newLineIndenting()
-            .append(getterCode)
+            .append(this.getGetterCode())
 
-        if (getterCode && setterCode)
-            propertyCode.newLine()
+        if (this.hasGetter && this.hasSetter)
+            propertyCode.newLine().newLine()
 
-        return propertyCode.append(setterCode)
-            .newLineDeindenting()
-            .append('}')
+        return propertyCode.append(this.getSetterCode())
     }
 }
 

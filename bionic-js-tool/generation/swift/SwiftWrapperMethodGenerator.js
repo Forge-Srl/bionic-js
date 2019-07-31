@@ -7,6 +7,11 @@ const {Parameter} = require('../../schema/Parameter')
 
 class SwiftWrapperMethodGenerator extends SwiftMethodGenerator {
 
+    get wrapperExportLines() {
+        return CodeBlock.create()
+            .append(`.exportFunction("${this.wrapperMethodName}", ${this.wrapperMethodName}())`)
+    }
+
     get wrapperMethodName() {
         if (!this._wrapperMethodName) {
             const staticMod = this.schema.isStatic ? 'Static' : ''
@@ -20,11 +25,6 @@ class SwiftWrapperMethodGenerator extends SwiftMethodGenerator {
         const otherParameters = super.parameters.map((parameter, index) =>
             new Parameter(parameter.type, `$${index + 1}`, parameter.description))
         return [firstParameter, ...otherParameters]
-    }
-
-    getWrapperExportLine() {
-        return CodeBlock.create()
-            .append(`.exportFunction("${this.wrapperMethodName}", ${this.wrapperMethodName}())`)
     }
 
     getNativeMethodCall(argumentListCode) {

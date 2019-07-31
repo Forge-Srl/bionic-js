@@ -8,7 +8,7 @@ const {Parameter} = require('../../schema/Parameter')
 
 class SwiftWrapperConstructorGenerator extends SwiftMethodGenerator {
 
-    getWrapperExportLine() {
+    get wrapperExportLines() {
         return CodeBlock.create()
             .append('.exportBindFunction(bjsBind())')
     }

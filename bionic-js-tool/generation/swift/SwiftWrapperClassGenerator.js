@@ -37,7 +37,7 @@ class SwiftWrapperClassGenerator extends SwiftClassGenerator {
             .append('_ = nativeExports').newLineIndenting()
             .append(this.classPartsGenerators.map((generator, index, array) => {
                 const newLineIndentation = (index < array.length - 1) ? 0 : -2
-                return generator.getWrapperExportLine().newLineDeindenting(newLineIndentation)
+                return generator.wrapperExportLines.newLineDeindenting(newLineIndentation)
 
             }))
             .append('}')
