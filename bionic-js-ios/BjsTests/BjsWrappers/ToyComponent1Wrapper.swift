@@ -32,10 +32,16 @@ class ToyComponent1Wrapper: BjsNativeWrapper {
     
     class func bjsBind() -> @convention(block) (JSValue, JSValue, JSValue) -> Void {
         return {
+            /*
+               $0 is the JS wrapper object, always obtained passing "this" from the JS constructor
+               $1 can be either:
+               - the first JS constructor parameter, when the native object is instantiated in the JS side
+               - the native JS object, when the native object is instantiated in the native side (and then the putWrapped() call the JS wrapper constructor)
+            */
             Bjs.get.bindNative(Bjs.get.getBound($1, ToyComponent1.self) ?? ToyComponent1(Bjs.get.getString($1), Bjs.get.getString($2)), $0)
         }
     }
-    
+     
     class func bjsGet_number1() -> @convention(block) (JSValue) -> JSValue {
         return {
             return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, ToyComponent1.self)?.number1)
@@ -44,7 +50,7 @@ class ToyComponent1Wrapper: BjsNativeWrapper {
     
     class func bjsSet_number1() -> @convention(block) (JSValue, JSValue) -> Void {
         return {
-            _ = Bjs.get.getWrapped($0, ToyComponent1.self)?.number1 = Bjs.get.getInt($1)
+            _ = Bjs.get.getWrapped($0, ToyComponent1.self)!.number1 = Bjs.get.getInt($1)
         }
     }
     

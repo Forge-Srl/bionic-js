@@ -3,6 +3,15 @@ import Bjs
 
 class UserOfToyComponent1: BjsObject {
     
+    static var lastToy: ToyComponent1? {
+        get {
+            return Bjs.get.getWrapped(Bjs.get.getProperty(UserOfToyComponent1.bjsClass, "lastToy"), ToyComponent1.self)
+        }
+        set {
+            Bjs.get.setProperty(UserOfToyComponent1.bjsClass, "lastToy", Bjs.get.putWrapped(newValue, ToyComponent1Wrapper.self))
+        }
+    }
+    
     class func add(_ offset: Int?, _ int1: Int?, _ int2: Int?) -> Int? {
         return Bjs.get.getInt(Bjs.get.call(UserOfToyComponent1.bjsClass, "add", Bjs.get.putPrimitive(offset),
                                            Bjs.get.putPrimitive(int1), Bjs.get.putPrimitive(int2)))
@@ -17,6 +26,11 @@ class UserOfToyComponent1: BjsObject {
         return Bjs.get.getInt(Bjs.get.call(UserOfToyComponent1.bjsClass, "getSum",
                                            Bjs.get.putWrapped(toy1, ToyComponent1Wrapper.self),
                                            Bjs.get.putWrapped(toy2, ToyComponent1Wrapper.self)))
+    }
+    
+    class func isLastToy(_ toy: ToyComponent1?) -> Bool? {
+        return Bjs.get.getBool(Bjs.get.call(UserOfToyComponent1.bjsClass, "isLastToy",
+                                           Bjs.get.putWrapped(toy, ToyComponent1Wrapper.self)))
     }
     
     

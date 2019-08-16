@@ -27,6 +27,15 @@ class ToyComponent1Test: XCTestCase {
         XCTAssertEqual(wrapped2.getToySum(wrapped1), 10)
     }
     
+    func testFromJs_sameInstance() {
+        let toy = ToyComponent1("1", "2")
+        UserOfToyComponent1.lastToy = toy
+        XCTAssertEqual(UserOfToyComponent1.lastToy, toy)
+        
+        testExpectation = expectation(description: "")
+        wait(for: [testExpectation], timeout: 100)
+    }
+    
     func testDeallocation_instanceOnlyInJs() {
         
         allocationTestBegin()
@@ -40,9 +49,7 @@ class ToyComponent1Test: XCTestCase {
         
         allocationTestBegin()
         for _ in 1...objectsCount {
-            let toy = UserOfToyComponent1.getToy(1, 2)
-            XCTAssertEqual(toy?.number1String, "1")
-            XCTAssertEqual(toy?.number2String, "2")
+            _ = UserOfToyComponent1.getToy(1, 2)
         }
         allocationTestEnd()
     }
