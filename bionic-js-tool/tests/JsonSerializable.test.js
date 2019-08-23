@@ -21,6 +21,22 @@ describe('JsonSerializable', () => {
         expect(obj).toEqual(jsonObj)
     })
 
+    test('fromNullableObj', () => {
+
+        class SerializedObj extends JsonSerializable {
+        }
+
+        const jsonObj = {prop1: 'test1', prop2: 'test2'}
+        const obj = SerializedObj.fromNullableObj(jsonObj)
+
+        expect(obj).toBeInstanceOf(SerializedObj)
+        expect(obj).toEqual(jsonObj)
+
+        const objNull = SerializedObj.fromNullableObj(null)
+
+        expect(objNull).toBeNull()
+    })
+
     test('fromObjList', () => {
 
         class SerializedObj extends JsonSerializable {

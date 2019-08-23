@@ -4,6 +4,10 @@ class JsonSerializable {
         return Object.assign(new this(), obj)
     }
 
+    static fromNullableObj(obj) {
+        return obj === null ? null : this.fromObj(obj)
+    }
+
     static fromObjList(objList) {
         return objList.map(obj => this.fromObj(obj))
     }
@@ -12,7 +16,7 @@ class JsonSerializable {
         try {
             return this.fromObj(JSON.parse(json))
         } catch (error) {
-            throw new Error(`Cannot deserialize a ${this.name} from JSON:'${json}'`)
+            throw new SyntaxError(`Cannot deserialize a ${this.name} from JSON:'${json}'`)
         }
     }
 
@@ -20,7 +24,7 @@ class JsonSerializable {
         try {
             return this.fromObjList(JSON.parse(json))
         } catch (error) {
-            throw new Error(`Cannot deserialize a list of ${this.name} from JSON:'${json}'`)
+            throw new SyntaxError(`Cannot deserialize a list of ${this.name} from JSON:'${json}'`)
         }
     }
 
@@ -28,7 +32,7 @@ class JsonSerializable {
         try {
             return JSON.parse(json)
         } catch (error) {
-            throw new Error(`Cannot deserialize native JSON:'${json}'`)
+            throw new SyntaxError(`Cannot deserialize native JSON:'${json}'`)
         }
     }
 

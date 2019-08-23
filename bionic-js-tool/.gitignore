@@ -1,6 +1,6 @@
 # Custom
-bionic/testing-code/guest/package-lock.json
-bionic/testing-code/host
+testing-code/guest/package-lock.json
+testing-code/host
 
 # IntelliJ
 **/.idea/workspace.xml
