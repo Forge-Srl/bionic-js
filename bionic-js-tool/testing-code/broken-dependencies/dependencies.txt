@@ -1,0 +1,18 @@
+Dependencies tree:
+
+broken-dependencies 1.0
+| PRO
+|-> module-a 1.0
+|   | PRO
+|   |-> module-b 1.0
+|   ^   | PRO
+|       |-> [module-c 1.0]
+|       ^
+|-> module-b 2.0 
+|   module-c 1.0
+|   | PRO
+|   |-> [module-d 1.0]
+^   ^
+
+- module-c should not be in that path because is not a direct dependency of module-a, but it is perfectly allowed.
+- module-d is required by module-c but is missing.

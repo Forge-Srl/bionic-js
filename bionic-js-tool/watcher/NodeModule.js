@@ -16,7 +16,8 @@ class NodeModule {
             return candidateDependency
         }
         if (currentModule.moduleDir.absolutePath === rootModule.moduleDir.absolutePath) {
-            throw new Error(`Dependency "${dependencyName}" in module "${originalModule.moduleDir.relativePath}" cannot be resolved`)
+            throw new Error(`Dependency ${dependencyName} of module ${await originalModule.getName()} ` +
+                `(path "/${originalModule.moduleDir.relativePath}") cannot be resolved`)
         }
         const parentModule = new NodeModule(currentModule.moduleDir.dir.dir)
 
@@ -47,19 +48,34 @@ class NodeModule {
                 const fileContent = await this.packageFile.getContent()
                 this._packageObj = JSON.parse(fileContent)
             } catch (e) {
-
+                let error = new Error(`Cannot read package.json file in module "${this.moduleDir.path}"`)
+                error.innerError = e
+                throw error
             }
         }
         return this._packageObj
     }
 
+    async getName() {
+        if (!this._name) {
+            try {
+                let packageObj = await this.getPackageObj()
+                this._name = packageObj.name
+            } catch (e) {
+                throw new Error(`Invalid package.json file in module "${this.moduleDir.path}".\n${e.message}`)
+            }
+        }
+        return this._name
+    }
+
     async getShallowDependenciesNames() {
         if (!this._dependenciesNames) {
             try {
-                const dependencies = (await this.getPackageObj()).dependencies
+                let packageObj = await this.getPackageObj()
+                const dependencies = packageObj.dependencies
                 this._dependenciesNames = dependencies ? Object.keys(dependencies) : []
             } catch (e) {
-                throw new Error(`Cannot read package.json file in module "${this.moduleDir.path}"`)
+                throw new Error(`Invalid package.json file in module "${this.moduleDir.path}".\n${e.message}`)
             }
         }
         return this._dependenciesNames

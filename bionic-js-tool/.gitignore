@@ -1,12 +1,11 @@
 # Custom
-testing-code/guest/package-lock.json
 testing-code/host
 
 # IntelliJ
 **/.idea/workspace.xml
 
 # Node.js
-node_modules
+/node_modules
 
 # Coverages
 **/core/coverage

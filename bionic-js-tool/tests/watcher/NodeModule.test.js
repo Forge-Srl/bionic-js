@@ -29,7 +29,7 @@ describe('NodeModule', () => {
         const brokenModule = NodeModule.fromModulePath(path.resolve(__dirname, '../../testing-code/broken-dependencies'))
 
         await expect(brokenModule.getDependencies()).rejects
-            .toThrow('Dependency "module-b" in module "node_modules/module-c/node_modules/module-d" cannot be resolved')
+            .toThrow('Dependency module-d of module module-c (path "/node_modules/module-c") cannot be resolved')
     })
 
     test('getDependencies complex module', async () => {

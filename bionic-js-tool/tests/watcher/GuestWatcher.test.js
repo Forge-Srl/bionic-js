@@ -14,13 +14,13 @@ describe('GuestWatcher', () => {
     })
 
     const expectedDependencies = [
-        'node_modules/module-a/index.js',
+        'node_modules/module-a/ModuleA.js',
         'node_modules/module-a/package.json',
-        'node_modules/module-b/index.js',
+        'node_modules/module-b/ModuleB.js',
         'node_modules/module-b/package.json',
-        'node_modules/module-c/index.js',
+        'node_modules/module-c/ModuleC.js',
         'node_modules/module-c/package.json',
-        'node_modules/module-c/node_modules/module-b/index.js',
+        'node_modules/module-c/node_modules/module-b/ModuleB.js',
         'node_modules/module-c/node_modules/module-b/package.json',
     ]
 
