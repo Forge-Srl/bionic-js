@@ -10,7 +10,6 @@ describe('watcher integration', () => {
     })
 
     test('sync', async () => {
-        return
 
         let log = ''
         const bjsSync = new BjsSync(t.getModuleAbsolutePath('testing-code/bjs.config.js'), {logInfo: message => log += message})
