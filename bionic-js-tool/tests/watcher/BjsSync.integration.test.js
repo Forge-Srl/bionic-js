@@ -1,7 +1,8 @@
 const t = require('../test-utils')
 const path = require('path')
 
-describe('watcher integration', () => {
+
+describe('Bjs integration', () => {
 
     let BjsSync
 
@@ -12,8 +13,9 @@ describe('watcher integration', () => {
     test('sync', async () => {
 
         let log = ''
-        const bjsSync = new BjsSync(t.getModuleAbsolutePath('testing-code/bjs.config.js'), {logInfo: message => log += message})
+        const bjsSync = new BjsSync(t.getModuleAbsolutePath('testing-code/bjs.config.js'), {logInfo: message => log += `${message}\n`})
 
         await bjsSync.sync()
+        console.log('Sync log:\n\n' + log)
     })
 })

@@ -21,7 +21,6 @@ class ProgramExplorer extends JsExplorer {
     }
 
     depthSearch(node, matchFunction) {
-
         if (matchFunction(node))
             return [node]
 

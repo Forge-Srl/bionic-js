@@ -3,11 +3,12 @@ const {NODE_MODULES_DIR_NAME, PACKAGE_JSON_LOCK_FILE_NAME} = require('./NodeModu
 
 class Configuration {
 
-    constructor(stateFile, guestDir, guestIgnores, hostDir, packageDir) {
+    constructor(stateFile, guestDir, guestIgnores, hostDir, hostLanguage, packageDir) {
         this.stateFile = stateFile
         this.guestDir = guestDir
         this.guestIgnores = guestIgnores
         this.hostDir = hostDir
+        this.hostLanguage = hostLanguage
         this.packageDir = packageDir
     }
 
@@ -37,7 +38,8 @@ class Configuration {
             guestIgnores = guestIgnores.concat(config.guestIgnores)
 
         const stateFile = path.resolve(path.dirname(filePath), '.bjs-state.json')
-        return new Configuration(stateFile, config.guestDir, guestIgnores, config.hostDir, config.packageDir)
+        return new Configuration(stateFile, config.guestDir, guestIgnores, config.hostDir, config.hostLanguage,
+            config.packageDir)
     }
 
     static checkMandatoryProps(filePath, config, props) {

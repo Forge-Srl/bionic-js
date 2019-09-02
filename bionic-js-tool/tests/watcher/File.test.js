@@ -2,7 +2,7 @@ const t = require('../test-utils')
 
 describe('File', () => {
 
-    let fs, crypto, File, filePath, file, Directory
+    let fs, crypto, File, filePath, file
 
     beforeEach(() => {
         t.resetModulesCache()
@@ -13,50 +13,6 @@ describe('File', () => {
 
         filePath = '/dir1/dir2/filePath.js'
         file = new File(filePath, '/dir1')
-        Directory = t.requireModule('watcher/Directory').Directory
-    })
-
-    test('dir', () => {
-        const dir = file.dir
-        expect(dir).toBeInstanceOf(Directory)
-        expect(dir.path).toBe('/dir1/dir2')
-    })
-
-    test('name', () => {
-        expect(file.name).toBe('filePath')
-    })
-
-    test('ext', () => {
-        expect(file.ext).toBe('.js')
-    })
-
-    test('relativePath', () => {
-        expect(file.relativePath).toBe('dir2/filePath.js')
-    })
-
-    test('composeNewPath with new root dir and extension', async () => {
-        const result = await file.composeNewPath('/new/root/dir', '.new')
-        expect(result).toBe('/new/root/dir/dir2/filePath.new')
-    })
-
-    test('composeNewPath with new root dir', async () => {
-        const result = await file.composeNewPath('/new/root/dir')
-        expect(result).toBe('/new/root/dir/dir2/filePath.js')
-    })
-
-    test('isReadable', async () => {
-        fs.access.mockImplementationOnce(async (path, mode) => {
-            expect(path).toBe(filePath)
-            expect(mode).toBe(fs.orig.constants.F_OK | fs.orig.constants.R_OK)
-        })
-        expect(await file.isReadable()).toBe(true)
-    })
-
-    test('isReadable, not readable', async () => {
-        fs.access.mockImplementationOnce(async (path, mode) => {
-            throw Error('not readable!')
-        })
-        expect(await file.isReadable()).toBe(false)
     })
 
     test('getContent', async () => {

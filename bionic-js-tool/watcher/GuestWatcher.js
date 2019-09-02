@@ -1,13 +1,13 @@
 const {DirectoryWatcher} = require('./DirectoryWatcher')
-const {NodeModule} = require('./NodeModule')
 const {FilesFilter} = require('./FilesFilter')
-const {GuestFile} = require('./GuestFile')
+const {GuestFile, JSON_FILE_EXT, JS_FILE_EXT} = require('./GuestFile')
+const {NodeModule} = require('./NodeModule')
 const {GuestDependencyFileWalker} = require('./GuestDependencyFileWalker')
 
 class GuestWatcher extends DirectoryWatcher {
 
     static build(config) {
-        const guestFilesFilter = new FilesFilter(config.guestIgnores, GuestFile.extensions)
+        const guestFilesFilter = new FilesFilter(config.guestIgnores, [JSON_FILE_EXT, JS_FILE_EXT])
         return new GuestWatcher(config.guestDir, guestFilesFilter, file => GuestFile.fromFile(file))
     }
 

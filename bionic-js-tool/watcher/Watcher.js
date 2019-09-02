@@ -40,6 +40,7 @@ class Watcher {
 
     stop() {
         this.watchProcess.close()
+        this.watchProcess = undefined
     }
 
     fileDidAdd(file) {
