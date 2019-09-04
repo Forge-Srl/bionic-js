@@ -1,11 +1,11 @@
-const t = require('../test-utils')
+const t = require('../../test-utils')
 
 describe('@bionic tag parser', () => {
 
     let Parser
 
     beforeEach(() => {
-        Parser = t.requireModule('parser/Parser')
+        Parser = t.requireModule('parser/annotation/Parser')
     })
 
 
@@ -37,16 +37,16 @@ describe('@bionic tag parser', () => {
     const testParsingPrimitiveType = primitiveType =>
         testParsing(primitiveType, {typeInfo: {type: primitiveType}})
 
-    ['Any', 'Bool', 'Date', 'Float', 'Int', 'String', 'Void'].forEach(
-        type => test(`parse typeInfo > primitive > ${type}`, () => testParsingPrimitiveType(type)))
+            ['Any', 'Bool', 'Date', 'Float', 'Int', 'String', 'Void'].forEach(
+            type => test(`parse typeInfo > primitive > ${type}`, () => testParsingPrimitiveType(type)))
 
 
     test('parse typeInfo > array of string',
         () => testParsing('Array<String>', {
             typeInfo: {
                 type: 'Array',
-                elementType: {type: 'String'}
-            }
+                elementType: {type: 'String'},
+            },
         }))
 
     test('parse typeInfo > array of array of int',
@@ -55,17 +55,17 @@ describe('@bionic tag parser', () => {
                 type: 'Array',
                 elementType: {
                     type: 'Array',
-                    elementType: {type: 'Int'}
-                }
-            }
+                    elementType: {type: 'Int'},
+                },
+            },
         }))
 
     test('parse typeInfo > class',
         () => testParsing('MyClass', {
             typeInfo: {
                 type: 'Object',
-                className: 'MyClass'
-            }
+                className: 'MyClass',
+            },
         }))
 
 
@@ -73,8 +73,8 @@ describe('@bionic tag parser', () => {
         typeInfo: {
             type: 'Lambda',
             parameters: [],
-            returnType: {type: 'Void'}
-        }
+            returnType: {type: 'Void'},
+        },
     }
 
     test('parse typeInfo > void returning lambda', () => testParsing('() => Void', voidReturningLambda))
@@ -87,10 +87,10 @@ describe('@bionic tag parser', () => {
                 type: 'Lambda',
                 parameters: [
                     {name: 'par1', type: {type: 'Int'}},
-                    {name: 'par2', type: {type: 'Float'}}
+                    {name: 'par2', type: {type: 'Float'}},
                 ],
-                returnType: {type: 'Void'}
-            }
+                returnType: {type: 'Void'},
+            },
         }))
 
 
@@ -104,9 +104,9 @@ describe('@bionic tag parser', () => {
                             type: 'Lambda',
                             parameters: [],
                             returnType: {
-                                type: 'Void'
-                            }
-                        }
+                                type: 'Void',
+                            },
+                        },
                     },
                     {
                         type: {
@@ -117,19 +117,19 @@ describe('@bionic tag parser', () => {
                                     type: 'Lambda',
                                     parameters: [],
                                     returnType: {
-                                        type: 'Int'
-                                    }
-                                }
-                            }
-                        }
+                                        type: 'Int',
+                                    },
+                                },
+                            },
+                        },
                     },
                     {
                         type: {
                             type: 'Object',
-                            className: 'MyClass1'
+                            className: 'MyClass1',
                         },
-                        name: 'class1'
-                    }
+                        name: 'class1',
+                    },
                 ],
                 returnType: {
                     type: 'Lambda',
@@ -138,46 +138,53 @@ describe('@bionic tag parser', () => {
                         type: 'Array',
                         elementType: {
                             type: 'Object',
-                            className: 'MyClass2'
-                        }
-                    }
-                }
-            }
+                            className: 'MyClass2',
+                        },
+                    },
+                },
+            },
         }))
 
     test('parse method declaration > get',
         () => testParsing('get name', {
             kinds: ['get'],
             modifiers: [],
-            name: 'name'
+            name: 'name',
         }))
 
     test('parse method declaration > set',
         () => testParsing('set name', {
             kinds: ['set'],
             modifiers: [],
-            name: 'name'
+            name: 'name',
         }))
 
     test('parse method declaration > get + set',
         () => testParsing('get set name', {
             kinds: ['get', 'set'],
             modifiers: [],
-            name: 'name'
+            name: 'name',
+        }))
+
+    test('parse method declaration > set + get and kind name',
+        () => testParsing('   set  get set', {
+            kinds: ['get', 'set'],
+            modifiers: [],
+            name: 'set',
         }))
 
     test('parse method declaration > static + get + set',
         () => testParsing('static get set name', {
             kinds: ['get', 'set'],
             modifiers: ['static'],
-            name: 'name'
+            name: 'name',
         }))
 
     test('parse method declaration > static + async + get + set',
         () => testParsing('static async get set name', {
             kinds: ['get', 'set'],
             modifiers: ['static', 'async'],
-            name: 'name'
+            name: 'name',
         }))
 
     test('parse method declaration > static + async + get + set + typeInfo',
@@ -185,14 +192,25 @@ describe('@bionic tag parser', () => {
             kinds: ['get', 'set'],
             modifiers: ['static', 'async'],
             name: 'name',
-            typeInfo: {type:'Int'}
+            typeInfo: {type: 'Int'},
         }))
 
     test('parse method declaration > method',
         () => testParsing('method name', {
             kinds: ['method'],
             modifiers: [],
-            name: 'name'
+            name: 'name',
+        }))
+
+    test('parse method declaration > method with kind name + kind typeInfo',
+        () => testParsing('method method set', {
+            kinds: ['method'],
+            modifiers: [],
+            name: 'method',
+            typeInfo: {
+                className: 'set',
+                type: 'Object',
+            },
         }))
 
     test('parse method declaration > static + method + typeInfo',
@@ -200,6 +218,6 @@ describe('@bionic tag parser', () => {
             kinds: ['method'],
             modifiers: ['static'],
             name: 'name',
-            typeInfo: {type: 'Int'}
+            typeInfo: {type: 'Int'},
         }))
 })

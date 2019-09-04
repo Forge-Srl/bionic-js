@@ -3,7 +3,7 @@ const {GuestWatcher} = require('./GuestWatcher')
 const {Directory} = require('./Directory')
 const {PackageFile} = require('./PackageFile')
 const {HostFile} = require('./HostFile')
-const {ProgramExplorer} = require('../parser/explorers/ProgramExplorer')
+const {ModuleExplorer} = require('../parser/jsExplorer/ModuleExplorer')
 const parser = require('@babel/parser')
 
 class BjsSync {
@@ -14,8 +14,8 @@ class BjsSync {
 
     async getClassSchemas(guestFile) {
         const moduleSrc = await guestFile.getContent()
-        const programExplorer = new ProgramExplorer(parser.parse(moduleSrc, {sourceType: 'module'}))
-        const classSchemas = programExplorer.classes.map(classExplorer => classExplorer.schema)
+        const moduleExplorer = new ModuleExplorer(parser.parse(moduleSrc, {sourceType: 'module'}))
+        const classSchemas = moduleExplorer.classExplorers.map(classExplorer => classExplorer.schema)
         if (classSchemas.length > 1)
             throw new Error(`Cannot export more than one class from the module file ${guestFile.relativePath}`)
         return classSchemas

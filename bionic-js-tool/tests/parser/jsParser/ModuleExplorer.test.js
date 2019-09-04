@@ -1,15 +1,15 @@
 const t = require('../../test-utils')
 const parser = require('@babel/parser')
-const ProgramExplorer = t.requireModule('parser/explorers/ProgramExplorer').ProgramExplorer
-const ClassExplorer = t.requireModule('parser/explorers/ClassExplorer').ClassExplorer
+const ModuleExplorer = t.requireModule('parser/jsExplorer/ModuleExplorer').ModuleExplorer
+const ClassExplorer = t.requireModule('parser/jsExplorer/ClassExplorer').ClassExplorer
 
-describe('ProgramExplorer', () => {
+describe('ModuleExplorer', () => {
 
     function getExplorer(code) {
-        return new ProgramExplorer(parser.parse(code, {sourceType: 'module'}))
+        return new ModuleExplorer(parser.parse(code, {sourceType: 'module'}))
     }
 
-    test('classes', () => {
+    test('classExplorers', () => {
         const explorer = getExplorer(`
         // Comment 1
         export default class Class1 {
@@ -21,7 +21,7 @@ describe('ProgramExplorer', () => {
         } 
         /* Comment 4 */`)
 
-        const classes = explorer.classes
+        const classes = explorer.classExplorers
         expect(classes.length).toBe(1)
         expect(classes[0]).toBeInstanceOf(ClassExplorer)
         expect(classes[0].programComments.map(node => node.value)).toEqual(
@@ -29,39 +29,39 @@ describe('ProgramExplorer', () => {
     })
 
 
-    test('classesNodes', () => {
+    test('classNodes', () => {
         const explorer = getExplorer(`class Class1 {}`)
 
-        const classesNodes = explorer.classesNodes
-        expect(classesNodes.length).toBe(1)
-        expect(classesNodes[0].id.name).toBe('Class1')
+        const classNodes = explorer.classNodes
+        expect(classNodes.length).toBe(1)
+        expect(classNodes[0].id.name).toBe('Class1')
     })
 
-    test('classesNodes module.exports', () => {
+    test('classNodes module.exports', () => {
         const explorer = getExplorer(`module.exports = class Class1 {}`)
 
-        const classesNodes = explorer.classesNodes
-        expect(classesNodes.length).toBe(1)
-        expect(classesNodes[0].id.name).toBe('Class1')
+        const classNodes = explorer.classNodes
+        expect(classNodes.length).toBe(1)
+        expect(classNodes[0].id.name).toBe('Class1')
     })
 
-    test('classesNodes export', () => {
+    test('classNodes export', () => {
         const explorer = getExplorer(`export class Class1 {}`)
 
-        const classesNodes = explorer.classesNodes
-        expect(classesNodes.length).toBe(1)
-        expect(classesNodes[0].id.name).toBe('Class1')
+        const classNodes = explorer.classNodes
+        expect(classNodes.length).toBe(1)
+        expect(classNodes[0].id.name).toBe('Class1')
     })
 
-    test('classesNodes export default', () => {
+    test('classNodes export default', () => {
         const explorer = getExplorer(`export default class Class1 {}`)
 
-        const classesNodes = explorer.classesNodes
-        expect(classesNodes.length).toBe(1)
-        expect(classesNodes[0].id.name).toBe('Class1')
+        const classNodes = explorer.classNodes
+        expect(classNodes.length).toBe(1)
+        expect(classNodes[0].id.name).toBe('Class1')
     })
 
-    test('classesNodes multiple export', () => {
+    test('classNodes multiple export', () => {
         const explorer = getExplorer(`
             class Class1 {};
             export default class Class2 {}
@@ -76,7 +76,7 @@ describe('ProgramExplorer', () => {
             module.exports = class Class4 {};
         `)
 
-        const classesNodes = explorer.classesNodes
-        expect(classesNodes.map(node => node.id.name)).toEqual(['Class1', 'Class2', 'Class3', 'Class4'])
+        const classNodes = explorer.classNodes
+        expect(classNodes.map(node => node.id.name)).toEqual(['Class1', 'Class2', 'Class3', 'Class4'])
     })
 })

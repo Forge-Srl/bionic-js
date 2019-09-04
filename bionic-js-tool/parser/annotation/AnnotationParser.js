@@ -2,9 +2,12 @@ const Parser = require('./Parser')
 
 class AnnotationParser {
 
+    constructor(annotation) {
+        Object.assign(this, {annotation})
+    }
+
     get tags() {
         if (!this._tags) {
-
             this._tags = new Map()
             const tagsTexts = this.parseWithRule(this.annotation, 'CommentText')
             for (const tagText of tagsTexts) {
@@ -21,34 +24,8 @@ class AnnotationParser {
         return this._tags
     }
 
-    constructor(annotation) {
-        Object.assign(this, {annotation})
-    }
-
     parseWithRule(annotation, rule) {
         return Parser.parse(annotation, {startRule: rule})
-    }
-
-    static parse(annotation) {
-        const tagsTexts = this.parseWithRule(annotation, 'CommentText')
-        const parsedTags = []
-
-        for (const tagText of tagsTexts) {
-            const tag = this.parseWithRule(tagText, 'Tags')
-
-            let parsedValue
-            if (tag.bionic) {
-                parsedValue = this.parseWithRule(tagText, 'BionicTag')
-            } else if (tag.description) {
-                parsedValue = this.parseWithRule(tagText, 'DescriptionTag')
-            }
-
-            if (parsedValue) {
-                parsedTags.push(Object.assign(tag, {value: parsedValue}))
-            }
-        }
-
-        return parsedTags
     }
 }
 

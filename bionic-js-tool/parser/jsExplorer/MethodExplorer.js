@@ -7,12 +7,16 @@ const {Property} = require('../../schema/Property')
 
 class MethodExplorer extends JsExplorer {
 
+    get isToExport() {
+        return !!this.bionicTag
+    }
+
     get name() {
         return this.node.key.name
     }
 
-    get kind() {
-        return this.node.kind
+    get kinds() {
+        return [this.node.kind]
     }
 
     get static() {
@@ -27,20 +31,12 @@ class MethodExplorer extends JsExplorer {
         return this.node.async
     }
 
-    get parametersNodes() {
+    get parameterNodes() {
         return this.node.params
     }
 
-    get parameters() {
-        return this.parametersNodes.map(node => new ParameterExplorer(node))
-    }
-
-    get bionicTag() {
-        return this.annotationTags.get('BionicTag')
-    }
-
-    get description() {
-        return this.annotationTags.get('DescriptionTag') || ''
+    get parameterExplorers() {
+        return this.parameterNodes.map(node => new ParameterExplorer(node))
     }
 
     get type() {
@@ -50,25 +46,27 @@ class MethodExplorer extends JsExplorer {
         return this._type
     }
 
+    // TODO: remove
     get signature() {
         if (!(this.type instanceof LambdaType)) {
-            throw new Error('Method annotations should contain a lambda type definition like: () => Void')
+            throw new Error(`Method named "${this.name}" has an annotations without a lambda type definition`)
         }
         return this.type
     }
 
+    // TODO: remove
     get schema() {
         if (!this.bionicTag) {
             return null
         }
 
         if (!this._schema) {
-            if (this.kind === 'method') {
+            if (this.kinds[0] === 'method') {
                 this._schema = new Method(this.name, this.description, this.static, undefined,
                     this.signature.returnType, this.signature.parameters)
 
-            } else if (this.kind === 'get' || this.kind === 'set') {
-                this._schema = new Property(this.name, this.description, this.static, undefined, this.type, [this.kind])
+            } else if (this.kinds[0] === 'get' || this.kinds[0] === 'set') {
+                this._schema = new Property(this.name, this.description, this.static, undefined, this.type, this.kinds)
             }
         }
         return this._schema

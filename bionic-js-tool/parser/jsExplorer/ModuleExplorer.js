@@ -1,19 +1,19 @@
 const {JsExplorer} = require('./JsExplorer')
 const {ClassExplorer} = require('./ClassExplorer')
 
-class ProgramExplorer extends JsExplorer {
+class ModuleExplorer extends JsExplorer {
 
     constructor(node, modulePath) {
         super(node)
         Object.assign(this, {modulePath})
     }
 
-    get classes() {
-        return this.classesNodes.map(classNode => new ClassExplorer(classNode, this.node.comments))
+    get classNodes() {
+        return this.depthSearch(this.node, this.selectTypes('ClassExpression', 'ClassDeclaration'))
     }
 
-    get classesNodes() {
-        return this.depthSearch(this.node, this.selectTypes('ClassExpression', 'ClassDeclaration'))
+    get classExplorers() {
+        return this.classNodes.map(classNode => new ClassExplorer(classNode, this.node.comments))
     }
 
     selectTypes(...types) {
@@ -47,4 +47,4 @@ class ProgramExplorer extends JsExplorer {
     }
 }
 
-module.exports = {ProgramExplorer}
+module.exports = {ModuleExplorer}

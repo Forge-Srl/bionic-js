@@ -1,4 +1,4 @@
-const {AnnotationParser} = require('../AnnotationParser')
+const {AnnotationParser} = require('../annotation/AnnotationParser')
 
 class JsExplorer {
 
@@ -22,8 +22,15 @@ class JsExplorer {
         if (!this._tags) {
             this._tags = new AnnotationParser(this.topCommentText).tags
         }
-
         return this._tags
+    }
+
+    get bionicTag() {
+        return this.annotationTags.get('BionicTag')
+    }
+
+    get description() {
+        return this.annotationTags.get('DescriptionTag')
     }
 }
 

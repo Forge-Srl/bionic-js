@@ -1,11 +1,11 @@
-const t = require('../test-utils')
+const t = require('../../test-utils')
 
 describe('Comment text parser', () => {
 
     let Parser
 
     beforeEach(() => {
-        Parser = t.requireModule('parser/Parser')
+        Parser = t.requireModule('parser/annotation/Parser')
     })
 
     const testParsing = (annotation, expectedResult) => {

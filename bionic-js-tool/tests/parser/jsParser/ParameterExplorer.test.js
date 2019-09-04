@@ -1,6 +1,6 @@
 const t = require('../../test-utils')
 const parser = require('@babel/parser')
-const ParameterExplorer = t.requireModule('parser/explorers/ParameterExplorer').ParameterExplorer
+const ParameterExplorer = t.requireModule('parser/jsExplorer/ParameterExplorer').ParameterExplorer
 
 describe('ParameterExplorer', () => {
 
@@ -18,6 +18,16 @@ describe('ParameterExplorer', () => {
 
         const parameterName = explorer.name
         expect(parameterName).toBe('parameter1')
+    })
+
+    test('name of setter parameter', () => {
+        const explorer = getExplorer(`
+            class Class1 {
+                set setter(value) {}
+            }`)
+
+        const parameterName = explorer.name
+        expect(parameterName).toBe('value')
     })
 
     test('name of rest parameter', () => {

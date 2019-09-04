@@ -1,11 +1,11 @@
-const t = require('../test-utils')
+const t = require('../../test-utils')
 
 describe('@description tag parser', () => {
 
     let Parser
 
     beforeEach(() => {
-        Parser = t.requireModule('parser/Parser')
+        Parser = t.requireModule('parser/annotation/Parser')
     })
 
     const parse = input => Parser.parse(input, {startRule: 'DescriptionTag'})

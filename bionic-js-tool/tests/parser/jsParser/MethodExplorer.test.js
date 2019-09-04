@@ -1,7 +1,7 @@
 const t = require('../../test-utils')
 const parser = require('@babel/parser')
-const MethodExplorer = t.requireModule('parser/explorers/MethodExplorer').MethodExplorer
-const ParameterExplorer = t.requireModule('parser/explorers/ParameterExplorer').ParameterExplorer
+const MethodExplorer = t.requireModule('parser/jsExplorer/MethodExplorer').MethodExplorer
+const ParameterExplorer = t.requireModule('parser/jsExplorer/ParameterExplorer').ParameterExplorer
 const Parameter = t.requireModule('schema/Parameter').Parameter
 const Method = t.requireModule('schema/Method').Method
 const Property = t.requireModule('schema/Property').Property
@@ -28,6 +28,25 @@ describe('MethodExplorer', () => {
     })
 
 
+    test('bionicTag', () => {
+        const explorer = getExplorer('/* @bionic */ method1() {}')
+        expect(explorer.bionicTag).toEqual({})
+    })
+
+
+    test('isToExport', () => {
+        const explorer = new MethodExplorer()
+        t.mockGetter(explorer, 'bionicTag', () => ({}))
+        expect(explorer.isToExport).toEqual(true)
+    })
+
+    test('isToExport, not to export', () => {
+        const explorer = new MethodExplorer()
+        t.mockGetter(explorer, 'bionicTag', () => undefined)
+        expect(explorer.isToExport).toEqual(false)
+    })
+
+
     test('name of method', () => {
         const explorer = getExplorer('method1() {}')
         expect(explorer.name).toBe('method1')
@@ -39,19 +58,19 @@ describe('MethodExplorer', () => {
     })
 
 
-    test('kind of method', () => {
+    test('kinds of method', () => {
         const explorer = getExplorer('method1() {}')
-        expect(explorer.kind).toBe('method')
+        expect(explorer.kinds).toStrictEqual(['method'])
     })
 
     test('kind of constructor', () => {
         const explorer = getExplorer('constructor() {}')
-        expect(explorer.kind).toBe('constructor')
+        expect(explorer.kinds).toStrictEqual(['constructor'])
     })
 
     test('kind of setter', () => {
         const explorer = getExplorer('set setter1(value) {}')
-        expect(explorer.kind).toBe('set')
+        expect(explorer.kinds).toStrictEqual(['set'])
     })
 
 
@@ -88,37 +107,38 @@ describe('MethodExplorer', () => {
     })
 
 
-    test('parametersNodes of method', () => {
+    test('parameterNodes of method', () => {
         const explorer = getExplorer('method1(parameter1, parameter2) {}')
-        const parameters = explorer.parametersNodes
+        const parameters = explorer.parameterNodes
 
         expect(parameters.length).toBe(2)
         expect(parameters.map(par => par.name)).toEqual(['parameter1', 'parameter2'])
     })
 
-    test('parametersNodes of getter', () => {
+    test('parameterNodes of getter', () => {
         const explorer = getExplorer('get getter1() {}')
-        expect(explorer.parametersNodes.length).toBe(0)
+        expect(explorer.parameterNodes.length).toBe(0)
     })
 
 
     test('parameters of method', () => {
         const explorer = getExplorer('method1(parameter1, parameter2) {}')
-        const parameters = explorer.parameters
+        const parameterExplorers = explorer.parameterExplorers
 
-        expect(parameters.length).toBe(2)
-        expect(parameters[0]).toBeInstanceOf(ParameterExplorer)
-        expect(parameters[0].name).toBe('parameter1')
-    })
-
-    test('bionicTag', () => {
-        const explorer = getExplorer('/* @bionic */ method1() {}')
-        expect(explorer.bionicTag).toEqual({})
+        expect(parameterExplorers.length).toBe(2)
+        expect(parameterExplorers[0]).toBeInstanceOf(ParameterExplorer)
+        expect(parameterExplorers[0].name).toBe('parameter1')
+        expect(parameterExplorers[1].name).toBe('parameter2')
     })
 
     test('description', () => {
         const explorer = getExplorer('/* @desc desc */ method1() {}')
         expect(explorer.description).toEqual('desc')
+    })
+
+    test('description, not present', () => {
+        const explorer = getExplorer('method1() {}')
+        expect(explorer.description).toEqual(undefined)
     })
 
 
