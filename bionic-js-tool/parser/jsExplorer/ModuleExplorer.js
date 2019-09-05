@@ -13,7 +13,11 @@ class ModuleExplorer extends JsExplorer {
     }
 
     get classExplorers() {
-        return this.classNodes.map(classNode => new ClassExplorer(classNode, this.node.comments))
+        if (!this._classExplorers) {
+            this._classExplorers = this.classNodes.map(classNode => new ClassExplorer(classNode, this.node.comments))
+                .filter(classExplorer => classExplorer.isToExport)
+        }
+        return this._classExplorers
     }
 
     selectTypes(...types) {

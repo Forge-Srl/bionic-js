@@ -1,10 +1,10 @@
 const {JsExplorer} = require('./JsExplorer')
-const {MethodExplorer} = require('./MethodExplorer')
+const {MethodJsExplorer} = require('./MethodJsExplorer')
 const {Class} = require('../../schema/Class')
 const {Constructor} = require('../../schema/Constructor')
 const {Method} = require('../../schema/Method')
 const {Property} = require('../../schema/Property')
-const {MethodParser} = require('../annotation/MethodParser')
+const {MethodAnnotationExplorer} = require('./MethodAnnotationExplorer')
 
 class ClassExplorer extends JsExplorer {
 
@@ -33,12 +33,12 @@ class ClassExplorer extends JsExplorer {
         return this._methodNodes
     }
 
-    get methodExplorers() {
-        if (!this._methodExplorers) {
-            this._methodExplorers = this.methodNodes.map(methodNode => new MethodExplorer(methodNode))
-                .filter(methodExplorer => methodExplorer.isToExport)
+    get methodJsExplorers() {
+        if (!this._methodJsExplorers) {
+            this._methodJsExplorers = [...this.methodNodes.map(methodNode => new MethodJsExplorer(methodNode))
+                .filter(methodExplorer => methodExplorer.isToExport)]
         }
-        return this._methodExplorers
+        return this._methodJsExplorers
     }
 
     get innerComments() {
@@ -51,7 +51,7 @@ class ClassExplorer extends JsExplorer {
                 comment.start >= classBody.start && comment.end <= classBody.end
 
             const isCommentUnusedByMethods = comment =>
-                !this.methodExplorers.some(explorer => explorer.topComment.start === comment.start)
+                !this.methodJsExplorers.some(explorer => explorer.topComment.start === comment.start)
 
             this._innerComments = this.programComments.filter(comment => isCommentOutsideMethods(comment) &&
                 isCommentInsideClass(comment) && isCommentUnusedByMethods(comment)).map(node => node.value)
@@ -59,9 +59,13 @@ class ClassExplorer extends JsExplorer {
         return this._innerComments
     }
 
-    get methodParsers() {
-        return this.innerComments.map(comment => new MethodParser(comment))
-            .filter(annotationParser => annotationParser.bionicTag)
+    get methodExplorers() {
+        if (!this._methodExplorers) {
+            this._methodExplorers = [...this.methodJsExplorers,
+                ...this.innerComments.map(innerComment => new MethodAnnotationExplorer(innerComment))
+                    .filter(methodExplorer => methodExplorer.isToExport)]
+        }
+        return this._methodExplorers
     }
 
 

@@ -1,39 +1,43 @@
 const t = require('../../test-utils')
-const MethodParser = t.requireModule('parser/annotation/MethodParser').MethodParser
 
-describe('MethodParser', () => {
+describe('MethodAnnotationExplorer', () => {
 
-    let LambdaType
+    let LambdaType, MethodAnnotationExplorer
 
     beforeEach(() => {
         LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
+        MethodAnnotationExplorer = t.requireModule('parser/jsExplorer/MethodAnnotationExplorer').MethodAnnotationExplorer
     })
 
     test('bionicTag - no bionic tags', () => {
-        const bionicTag = new MethodParser('@unknown tag').bionicTag
+        const bionicTag = new MethodAnnotationExplorer('@unknown tag').bionicTag
         expect(bionicTag).toBe(undefined)
     })
 
     const annotation = '@bionic static get set method (Float) => Int'
 
     test('name', () => {
-        expect(new MethodParser(annotation).name).toBe('method')
+        expect(new MethodAnnotationExplorer(annotation).name).toBe('method')
     })
 
     test('kinds', () => {
-        expect(new MethodParser(annotation).kinds).toStrictEqual(['get', 'set'])
+        expect(new MethodAnnotationExplorer(annotation).kinds).toStrictEqual(['get', 'set'])
     })
 
     test('static', () => {
-        expect(new MethodParser(annotation).static).toBe(true)
+        expect(new MethodAnnotationExplorer(annotation).static).toBe(true)
+    })
+
+    test('generator', () => {
+        expect(new MethodAnnotationExplorer().generator).toBe(false)
     })
 
     test('async', () => {
-        expect(new MethodParser(annotation).async).toBe(false)
+        expect(new MethodAnnotationExplorer(annotation).async).toBe(false)
     })
 
     test('type', () => {
-        const type = new MethodParser(annotation).type
+        const type = new MethodAnnotationExplorer(annotation).type
         expect(type).toBeInstanceOf(LambdaType)
         expect(type).toEqual({
             parameters: [{type: {typeName: 'Float'}}],
@@ -43,7 +47,7 @@ describe('MethodParser', () => {
     })
 
     test('signature', () => {
-        const parser = new MethodParser(annotation)
+        const parser = new MethodAnnotationExplorer(annotation)
         const lambdaType = new LambdaType()
         t.mockGetter(parser, 'type', () => lambdaType)
 
@@ -51,7 +55,7 @@ describe('MethodParser', () => {
     })
 
     test('signature, type is not a lambda', () => {
-        const parser = new MethodParser(annotation)
+        const parser = new MethodAnnotationExplorer(annotation)
         const notLambdaType = 'not a lambda'
         t.mockGetter(parser, 'name', () => 'methodName')
         t.mockGetter(parser, 'type', () => notLambdaType)

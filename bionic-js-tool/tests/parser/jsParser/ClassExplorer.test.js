@@ -1,7 +1,7 @@
 const t = require('../../test-utils')
 const parser = require('@babel/parser')
 const ClassExplorer = t.requireModule('parser/jsExplorer/ClassExplorer').ClassExplorer
-const MethodExplorer = t.requireModule('parser/jsExplorer/MethodExplorer').MethodExplorer
+const MethodJsExplorer = t.requireModule('parser/jsExplorer/MethodJsExplorer').MethodJsExplorer
 const Constructor = t.requireModule('schema/Constructor').Constructor
 const Property = t.requireModule('schema/Property').Property
 const Method = t.requireModule('schema/Method').Method
@@ -89,11 +89,7 @@ describe('ClassExplorer', () => {
         const methodNodes = explorer.methodNodes
         expect(methodNodes.map(node => node.key.name)).toEqual(['constructor', 'method1', 'getter1', 'setter1', 'method2',
             'getter2', 'setter2'])
-    })
 
-    test('methodNodes singleton', () => {
-        const explorer = getExplorer(methodNodesTestCode)
-        const methodNodes = explorer.methodNodes
         expect(explorer.methodNodes).toBe(methodNodes)
     })
 
@@ -102,24 +98,44 @@ describe('ClassExplorer', () => {
             class Class1 {
                 // @bionic
                 constructor() {}
+                
+                /* @bionic get getter Int */
+                // comment to exclude the following method
                 method1() {}
+                
+                // @desc description of nothing
+                // @unknown tag
+                
                 // @bionic
                 method2() {}
+                // @bionic method method3 () => Void
             }`
+
+    test('methodJsExplorers', () => {
+        const explorer = getExplorer(methodExplorersTestCode)
+
+        const methodJsExplorers = explorer.methodJsExplorers
+        expect(methodJsExplorers[0]).toBeInstanceOf(MethodJsExplorer)
+        expect(methodJsExplorers.map(method => method.name)).toEqual(['constructor', 'method2'])
+
+        expect(explorer.methodJsExplorers).toBe(methodJsExplorers)
+    })
 
     test('methodExplorers', () => {
         const explorer = getExplorer(methodExplorersTestCode)
 
         const methodExplorers = explorer.methodExplorers
-        expect(methodExplorers[0]).toBeInstanceOf(MethodExplorer)
-        expect(methodExplorers.map(method => method.name)).toEqual(['constructor', 'method2'])
+        expect(methodExplorers[0]).toBeInstanceOf(MethodJsExplorer)
+        expect(methodExplorers.map(method => method.name)).toEqual(['constructor', 'method2', 'getter', 'method3'])
+
+        expect(explorer.methodExplorers).toBe(methodExplorers)
     })
 
-    test('methodExplorers singleton', () => {
-        const explorer = getExplorer(methodExplorersTestCode)
+    test('methodExplorers, no methods', () => {
+        const explorer = getExplorer('class Class1 {}')
 
         const methodExplorers = explorer.methodExplorers
-        expect(explorer.methodExplorers).toBe(methodExplorers)
+        expect(methodExplorers.map(method => method.name)).toEqual([])
     })
 
 
@@ -136,11 +152,7 @@ describe('ClassExplorer', () => {
         const innerComments = explorer.innerComments
 
         expect(innerComments).toEqual([' Inner annotation 1', ' Inner annotation 2 ', ' Inner annotation 3'])
-    })
 
-    test('innerComments singleton', () => {
-        const explorer = getExplorer(innerCommentsTestCode)
-        const innerComments = explorer.innerComments
         expect(explorer.innerComments).toBe(innerComments)
     })
 
@@ -181,31 +193,6 @@ describe('ClassExplorer', () => {
         expect(innerComments).toEqual([' Inner annotation 1 ', ' @bionic Inner annotation 2',
             ' @bionic Inner annotation 3', ' Inner annotation 4', ' @bionic another\n inner annotation '])
     })
-
-    test('methodParsers - no bionic tags', () => {
-        const explorer = getExplorer(`
-            class Class1  {
-                /* @description my description */
-                // @unknown tag
-                /* harmless comment */
-            }`)
-
-        expect(explorer.methodParsers).toStrictEqual([])
-    })
-
-    test('methodParsers - some bionic tags', () => {
-        const explorer = getExplorer(`
-            class Class1  {
-                /* @description my description */
-                // @bionic
-                /* harmless comment */
-                // @bionic static get set getter Int
-            }`)
-
-        const parsersAnnotations = explorer.methodParsers.map(parser => parser.annotation)
-        expect(parsersAnnotations).toStrictEqual([' @bionic', ' @bionic static get set getter Int'])
-    })
-
 
     test('methodsSchemas', () => {
         const explorer = new ClassExplorer()

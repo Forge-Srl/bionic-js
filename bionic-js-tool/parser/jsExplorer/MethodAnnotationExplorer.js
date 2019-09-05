@@ -1,14 +1,18 @@
-const {AnnotationParser} = require('./AnnotationParser')
+const {AnnotationParser} = require('../annotation/AnnotationParser')
 const {Type} = require('../../schema/types/Type')
 const {LambdaType} = require('../../schema/types/LambdaType')
 
-class MethodParser extends AnnotationParser {
+class MethodAnnotationExplorer extends AnnotationParser {
 
     get bionicTag() {
         if (!this._bionicTag) {
             this._bionicTag = this.tags.get('BionicTag')
         }
         return this._bionicTag
+    }
+
+    get isToExport() {
+        return !!this.bionicTag
     }
 
     get name() {
@@ -23,6 +27,10 @@ class MethodParser extends AnnotationParser {
         return this.bionicTag.modifiers.includes('static')
     }
 
+    get generator() {
+        return false
+    }
+
     get async() {
         return this.bionicTag.modifiers.includes('async')
     }
@@ -34,6 +42,7 @@ class MethodParser extends AnnotationParser {
         return this._type
     }
 
+    // TODO: remove!
     get signature() {
         if (!(this.type instanceof LambdaType)) {
             throw new Error(`Method named "${this.name}" has an annotations without a lambda type definition`)
@@ -42,4 +51,4 @@ class MethodParser extends AnnotationParser {
     }
 }
 
-module.exports = {MethodParser}
+module.exports = {MethodAnnotationExplorer}

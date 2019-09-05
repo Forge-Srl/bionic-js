@@ -6,21 +6,36 @@ class ClassSchemaCreator {
         Object.assign(this, {classExplorer})
     }
 
-    async getSchema(parsingSession) {
-        const methodExplorers = this.classExplorer.methodExplorers
-        const methodParsers = this.classExplorer.methodParsers
+    get name() {
+        return this.classExplorer.name
+    }
 
-        const methodsNames = [...new Set([
-            ...methodExplorers.map(explorer => explorer.name),
-            ...methodParsers.map(parser => parser.name),
-        ])]
+    get modulePath() {
+        return this.classExplorer.modulePath
+    }
 
-        const methodSchemaCreators = methodsNames.map(methodName => new MethodSchemaCreator(
-            methodExplorers.filter(methodExplorer => methodExplorer.name === methodName),
-            methodParsers.filter(methodParser => methodParser.name === methodName),
-        ))
+    getSuperClassesSchemaCreators(classSchemaCreators, hierarchySet = new Set()) {
+        const superClassName = this.classExplorer.superClassName
+        if (hierarchySet.has(classSchemaCreators)) {
+            throw new Error(`Class "${this.name}" extends super class "${superClassName}" but this generate an` +
+                'inheritance cycle (e.g. A extends B, B extends A)')
+        }
+        const superClassSchemaCreator = classSchemaCreators.get(superClassName)
+        if (superClassSchemaCreator) {
+            hierarchySet.add(superClassName)
+            return [superClassSchemaCreator,
+                superClassSchemaCreator.getSuperClassesSchemaCreators(classSchemaCreators, hierarchySet)]
+        } else {
+            return []
+        }
+    }
 
-        return methodSchemaCreators.map(schemaCreator => schemaCreator.getSchema(parsingSession))
+    getSchema(classSchemaCreators) {
+        const methodNames = [...new Set(this.classExplorer.methodExplorers.map(methodExplorer => methodExplorer.name))]
+
+        return methodNames.map(methodName => new MethodSchemaCreator(
+            this.classExplorer.methodExplorers.filter(methodExplorer => methodExplorer.name === methodName),
+        ).getSchema(classSchemaCreators))
     }
 }
 

@@ -1,6 +1,6 @@
 const t = require('../../test-utils')
 const parser = require('@babel/parser')
-const MethodExplorer = t.requireModule('parser/jsExplorer/MethodExplorer').MethodExplorer
+const MethodJsExplorer = t.requireModule('parser/jsExplorer/MethodJsExplorer').MethodJsExplorer
 const ParameterExplorer = t.requireModule('parser/jsExplorer/ParameterExplorer').ParameterExplorer
 const Parameter = t.requireModule('schema/Parameter').Parameter
 const Method = t.requireModule('schema/Method').Method
@@ -11,12 +11,12 @@ const LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
 const ArrayType = t.requireModule('schema/types/ArrayType').ArrayType
 const ObjectType = t.requireModule('schema/types/ObjectType').ObjectType
 
-describe('MethodExplorer', () => {
+describe('MethodJsExplorer', () => {
 
     function getExplorer(classBody) {
         const code = `class Class1 {${classBody}}`
         const classNode = parser.parse(code, {sourceType: 'module'}).program.body[0]
-        return new MethodExplorer(classNode.body.body[0])
+        return new MethodJsExplorer(classNode.body.body[0])
     }
 
     test('annotation', () => {
@@ -35,13 +35,13 @@ describe('MethodExplorer', () => {
 
 
     test('isToExport', () => {
-        const explorer = new MethodExplorer()
+        const explorer = new MethodJsExplorer()
         t.mockGetter(explorer, 'bionicTag', () => ({}))
         expect(explorer.isToExport).toEqual(true)
     })
 
     test('isToExport, not to export', () => {
-        const explorer = new MethodExplorer()
+        const explorer = new MethodJsExplorer()
         t.mockGetter(explorer, 'bionicTag', () => undefined)
         expect(explorer.isToExport).toEqual(false)
     })
@@ -142,9 +142,8 @@ describe('MethodExplorer', () => {
     })
 
 
-    const typeAnnotation = '/* @bionic (par1: Int) */ method1() {}'
+    const typeAnnotation = '/* @bionic (par1: Int) */ method1(par1) {}'
     const expectedType = new LambdaType(new VoidType(), [new Parameter(new IntType(), 'par1', undefined)])
-
     test('type', () => {
         const explorer = getExplorer(typeAnnotation)
         const actualType = explorer.type
@@ -152,6 +151,28 @@ describe('MethodExplorer', () => {
         expect(actualType).toEqual(expectedType)
         expect(explorer.type).toBe(actualType)
     })
+
+    test('type, annotated parameters more than js parameters', () => {
+        const explorer = getExplorer('/* @bionic (par1: Int) */ method1() {}')
+        expect(() => explorer.type).toThrow('Parameter of method "method1" mismatch from those declared in the annotation')
+    })
+
+    test('type, annotated parameters less than js parameters', () => {
+        const explorer = getExplorer('/* @bionic () */ method1(par1) {}')
+        expect(() => explorer.type).toThrow('Parameter of method "method1" mismatch from those declared in the annotation')
+    })
+
+    test('type, annotated parameters with names different from js parameters', () => {
+        const explorer = getExplorer('/* @bionic (par1: Int) */ method1(par2) {}')
+        expect(() => explorer.type).toThrow('Parameter of method "method1" mismatch from those declared in the annotation')
+    })
+
+    test('type, annotated parameters with names in different order from js parameters', () => {
+        const explorer = getExplorer('/* @bionic (par1: Int, par2: Int) */ method1(par2, par1) {}')
+        expect(() => explorer.type).toThrow('Parameter of method "method1" mismatch from those declared in the annotation')
+    })
+
+
 
     test('signature', () => {
         const explorer = getExplorer(typeAnnotation)

@@ -5,7 +5,7 @@ const {LambdaType} = require('../../schema/types/LambdaType')
 const {Method} = require('../../schema/Method')
 const {Property} = require('../../schema/Property')
 
-class MethodExplorer extends JsExplorer {
+class MethodJsExplorer extends JsExplorer {
 
     get isToExport() {
         return !!this.bionicTag
@@ -42,6 +42,17 @@ class MethodExplorer extends JsExplorer {
     get type() {
         if (!this._type) {
             this._type = Type.fromObj(this.bionicTag.typeInfo)
+
+            if (this._type instanceof LambdaType) {
+                const lambdaParameters = this._type.parameters
+                const parametersNamesFromJs = this.parameterExplorers.map(explorer => explorer.name)
+
+                if (lambdaParameters.length !== parametersNamesFromJs.length ||
+                    lambdaParameters.some((parameter, index) => parametersNamesFromJs[index] !== parameter.name)) {
+
+                    throw new Error(`Parameter of method "${this.name}" mismatch from those declared in the annotation`)
+                }
+            }
         }
         return this._type
     }
@@ -73,4 +84,4 @@ class MethodExplorer extends JsExplorer {
     }
 }
 
-module.exports = {MethodExplorer}
+module.exports = {MethodJsExplorer}
