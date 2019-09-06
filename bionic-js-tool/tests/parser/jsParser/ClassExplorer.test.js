@@ -60,15 +60,15 @@ describe('ClassExplorer', () => {
         expect(className).toBe('Class1')
     })
 
-    test('superClassName', () => {
-        const explorer = getExplorer(`class C extends SuperClass {}`)
-        const className = explorer.superClassName
-        expect(className).toBe('SuperClass')
+    test('superclassName', () => {
+        const explorer = getExplorer(`class C extends Superclass {}`)
+        const className = explorer.superclassName
+        expect(className).toBe('Superclass')
     })
 
-    test('superClassName with no super class', () => {
+    test('superclassName with no superclass', () => {
         const explorer = getExplorer(`class Class1 {}`)
-        const className = explorer.superClassName
+        const className = explorer.superclassName
         expect(className).toBe(null)
     })
 
@@ -213,12 +213,12 @@ describe('ClassExplorer', () => {
         t.mockGetter(explorer, 'name', () => 'ClassName')
         t.mockGetter(explorer, 'description', () => 'class desc')
         t.mockGetter(explorer, 'bionicTag', () => null)
-        t.mockGetter(explorer, 'superClassName', () => 'SuperClassName')
+        t.mockGetter(explorer, 'superclassName', () => 'SuperclassName')
         t.mockGetter(explorer, 'modulePath', () => 'module path')
 
         const actualClass = explorer.schema
         expect(actualClass).toEqual(new Class('ClassName', 'class desc', [constructor], [property1, property2],
-            [method1, method2], 'SuperClassName', 'module path'))
+            [method1, method2], 'SuperclassName', 'module path'))
     })
 
     test('schema, only class bionic tag', () => {
@@ -228,12 +228,12 @@ describe('ClassExplorer', () => {
         t.mockGetter(explorer, 'name', () => 'ClassName')
         t.mockGetter(explorer, 'description', () => 'class desc')
         t.mockGetter(explorer, 'bionicTag', () => ({}))
-        t.mockGetter(explorer, 'superClassName', () => 'SuperClassName')
+        t.mockGetter(explorer, 'superclassName', () => 'SuperclassName')
         t.mockGetter(explorer, 'modulePath', () => 'module path')
 
         const actualClass = explorer.schema
         expect(actualClass).toEqual(new Class('ClassName', 'class desc', [], [],
-            [], 'SuperClassName', 'module path'))
+            [], 'SuperclassName', 'module path'))
     })
 
     test('schema, not exported', () => {

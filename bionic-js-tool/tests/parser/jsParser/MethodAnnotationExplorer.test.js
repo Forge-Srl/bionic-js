@@ -24,16 +24,16 @@ describe('MethodAnnotationExplorer', () => {
         expect(new MethodAnnotationExplorer(annotation).kinds).toStrictEqual(['get', 'set'])
     })
 
-    test('static', () => {
-        expect(new MethodAnnotationExplorer(annotation).static).toBe(true)
+    test('isStatic', () => {
+        expect(new MethodAnnotationExplorer(annotation).isStatic).toBe(true)
     })
 
-    test('generator', () => {
-        expect(new MethodAnnotationExplorer().generator).toBe(false)
+    test('isGenerator', () => {
+        expect(new MethodAnnotationExplorer().isGenerator).toBe(false)
     })
 
-    test('async', () => {
-        expect(new MethodAnnotationExplorer(annotation).async).toBe(false)
+    test('isAsync', () => {
+        expect(new MethodAnnotationExplorer(annotation).isAsync).toBe(false)
     })
 
     test('type', () => {

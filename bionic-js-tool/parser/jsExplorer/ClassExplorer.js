@@ -21,9 +21,9 @@ class ClassExplorer extends JsExplorer {
         return this.node.id.name
     }
 
-    get superClassName() {
-        const superClassNode = this.node.superClass
-        return superClassNode ? superClassNode.name : null
+    get superclassName() {
+        const superclassNode = this.node.superclass
+        return superclassNode ? superclassNode.name : null
     }
 
     get methodNodes() {
@@ -85,7 +85,7 @@ class ClassExplorer extends JsExplorer {
         const constructors = this.methodsSchemas.filter(method => method instanceof Constructor)
         const properties = this.methodsSchemas.filter(method => method instanceof Property)
         const methods = this.methodsSchemas.filter(method => method instanceof Method)
-        return new Class(this.name, this.description, constructors, properties, methods, this.superClassName,
+        return new Class(this.name, this.description, constructors, properties, methods, this.superclassName,
             this.modulePath)
     }
 }

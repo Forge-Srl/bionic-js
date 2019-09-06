@@ -4,13 +4,13 @@ const {CodeBlock} = require('../code/CodeBlock')
 class SwiftHostClassGenerator extends SwiftClassGenerator {
 
     getHeaderCode() {
-        const superClassName = this.schema.superClassName || 'BjsObject'
+        const superclassName = this.schema.superclassName || 'BjsObject'
 
         return CodeBlock.create()
             .append('import JavaScriptCore').newLine()
             .append('import Bjs').newLine()
             .newLine()
-            .append(`class ${this.schema.name}: ${superClassName} {`).newLineIndenting()
+            .append(`class ${this.schema.name}: ${superclassName} {`).newLineIndenting()
             .newLine()
     }
 
@@ -22,7 +22,7 @@ class SwiftHostClassGenerator extends SwiftClassGenerator {
     }
 
     getFooterCode() {
-        const override = !!this.schema.superClassName ? 'override ' : ''
+        const override = !!this.schema.superclassName ? 'override ' : ''
 
         return CodeBlock.create()
             .append(`${override}class func bjsFactory(_ jsObject: JSValue) -> ${this.schema.name} {`).newLineIndenting()

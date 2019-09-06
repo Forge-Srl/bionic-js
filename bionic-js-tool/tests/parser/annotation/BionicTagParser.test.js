@@ -8,7 +8,6 @@ describe('@bionic tag parser', () => {
         Parser = t.requireModule('parser/annotation/Parser')
     })
 
-
     const parse = (input) => Parser.parse(input, {startRule: 'BionicTag'})
 
     test('parse another tag', () => {

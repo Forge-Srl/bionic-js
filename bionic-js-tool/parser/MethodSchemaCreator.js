@@ -5,8 +5,8 @@ const {LambdaType} = require('../schema/types/LambdaType')
 
 class MethodSchemaCreator {
 
-    constructor(methodExplorers) {
-        Object.assign(this, {methodExplorers})
+    constructor(methodExplorers, superclassSchemaStack) {
+        Object.assign(this, {methodExplorers, superclassSchemaStack})
     }
 
     get name() {
@@ -14,14 +14,14 @@ class MethodSchemaCreator {
     }
 
     get description() {
-        return this.methodExplorers.find(accessor => accessor.description !== undefined) || ''
+        return this.methodExplorers.find(explorer => explorer.description !== undefined).description || ''
     }
 
     get kinds() {
         if (!this._kinds) {
-            const kinds = new Set(this.methodExplorers.flatMap(accessor => accessor.kinds))
+            const kinds = new Set(this.methodExplorers.flatMap(explorer => explorer.kinds))
 
-            if (kinds.has('constructor') && (kinds.has('method') || kinds.has('get') || kinds.has('set')))
+            if (this.name === 'constructor' && (kinds.has('method') || kinds.has('get') || kinds.has('set')))
                 throw new Error(`"constructor" cannot be used as a name in a method/getter/setter annotation`)
 
             if (kinds.has('method') && (kinds.has('get') || kinds.has('set')))
@@ -32,23 +32,23 @@ class MethodSchemaCreator {
         return this._kinds
     }
 
-    get static() {
+    get isStatic() {
         if (!this._static) {
-            const statics = new Set(this.methodExplorers.flatMap(accessor => accessor.static))
+            const statics = new Set(this.methodExplorers.flatMap(explorer => explorer.isStatic))
 
             if (statics.has(true) && statics.has(false))
                 throw new Error(`"${this.name}" cannot be static and non-static in the same class`)
 
-            this._static = this.methodExplorers[0].static
+            this._static = this.methodExplorers[0].isStatic
         }
         return this._static
     }
 
     get type() {
         if (!this._type) {
-            const types = this.methodExplorers.filter(accessor => accessor.type !== undefined)
+            const types = this.methodExplorers.filter(explorer => explorer.type !== undefined).map(explorer => explorer.type)
             if (types.some(type => !type.isEqualTo(types[0])))
-                throw new Error(`getter and setter "${this.name}" must have the same type`)
+                throw new Error(`"${this.name}" is annotated multiple times with different types`)
             this._type = types[0]
         }
         return this._type
@@ -64,17 +64,38 @@ class MethodSchemaCreator {
         return this._methodSignature
     }
 
-    getSchema(classSchemaCreators) {
+    get constructorSchema() {
+        return new Constructor(this.description, this.methodSignature.parameters)
+    }
 
+    get methodSchema() {
+        if (this.superclassSchemaStack.some(schema => schema.methods.some(method =>
+            method.name === this.name && method.isStatic === this.isStatic))) {
+            throw new Error(`method "${this.name}" was already exported in superclass`)
+        }
+
+        return new Method(this.name, this.description, this.isStatic, false, this.methodSignature.returnType,
+            this.methodSignature.parameters)
+    }
+
+    get propertySchema() {
+        if (this.superclassSchemaStack.some(schema => schema.properties.some(property =>
+            property.name === this.name && property.isStatic === this.isStatic))) {
+            throw new Error(`property "${this.name}" was already exported in superclass`)
+        }
+
+        return new Property(this.name, this.description, this.isStatic, false, this.type, this.kinds)
+    }
+
+    get schema() {
         if (this.kinds.has('constructor')) {
-            return new Constructor(this.description, this.methodSignature.parameters)
+            return this.constructorSchema
 
         } else if (this.kinds.has('method')) {
-            return new Method(this.name, this.description, this.static, undefined,
-                this.methodSignature.returnType, this.methodSignature.parameters)
+            return this.methodSchema
 
-        } else if (this.kinds[0] === 'get' || this.kinds[0] === 'set') {
-            return new Property(this.name, this.description, this.static, undefined, this.type, this.kinds)
+        } else if (this.kinds.has('get') || this.kinds.has('set')) {
+            return this.propertySchema
         }
     }
 }

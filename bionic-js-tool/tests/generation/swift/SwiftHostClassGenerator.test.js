@@ -5,8 +5,8 @@ describe('SwiftHostClassGenerator', () => {
     let Class, Constructor, Property, Method, IntType,
         expectedImports, expectedClassDeclaration, expectedFactoryMethod, expectedModulePathVar
 
-    function getCode(constructors, properties, methods, superClassName = '') {
-        const class1 = new Class('Class1', 'class description', constructors, properties, methods, superClassName, 'module/path')
+    function getCode(constructors, properties, methods, superclassName = '') {
+        const class1 = new Class('Class1', 'class description', constructors, properties, methods, superclassName, 'module/path')
         return class1.generator.swift.forHosting().getFiles()[0].content
     }
 
@@ -50,11 +50,11 @@ describe('SwiftHostClassGenerator', () => {
     })
 
     test('empty class with inheritance', () => {
-        const code = getCode([], [], [], 'SuperClass')
+        const code = getCode([], [], [], 'Superclass')
 
         t.expectCode(code,
             ...expectedImports,
-            'class Class1: SuperClass {',
+            'class Class1: Superclass {',
             '    ',
             '    override class func bjsFactory(_ jsObject: JSValue) -> Class1 {',
             '        return Class1(jsObject)',

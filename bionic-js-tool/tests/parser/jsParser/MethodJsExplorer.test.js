@@ -76,34 +76,34 @@ describe('MethodJsExplorer', () => {
 
     test('static of static method', () => {
         const explorer = getExplorer('static method1() {}')
-        expect(explorer.static).toBe(true)
+        expect(explorer.isStatic).toBe(true)
     })
 
     test('static of getter', () => {
         const explorer = getExplorer('get getter1() {}')
-        expect(explorer.static).toBe(false)
+        expect(explorer.isStatic).toBe(false)
     })
 
 
     test('generator of generator method', () => {
         const explorer = getExplorer('* generator1() {}')
-        expect(explorer.generator).toBe(true)
+        expect(explorer.isGenerator).toBe(true)
     })
 
     test('generator of method', () => {
         const explorer = getExplorer('method1() {}')
-        expect(explorer.generator).toBe(false)
+        expect(explorer.isGenerator).toBe(false)
     })
 
 
-    test('async of async method', () => {
+    test('isAsync of async method', () => {
         const explorer = getExplorer('async async1() {}')
-        expect(explorer.async).toBe(true)
+        expect(explorer.isAsync).toBe(true)
     })
 
-    test('async of method', () => {
+    test('isAsync of method', () => {
         const explorer = getExplorer('method1() {}')
-        expect(explorer.async).toBe(false)
+        expect(explorer.isAsync).toBe(false)
     })
 
 

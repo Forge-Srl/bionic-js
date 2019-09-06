@@ -23,15 +23,15 @@ class MethodAnnotationExplorer extends AnnotationParser {
         return this.bionicTag.kinds
     }
 
-    get static() {
+    get isStatic() {
         return this.bionicTag.modifiers.includes('static')
     }
 
-    get generator() {
+    get isGenerator() {
         return false
     }
 
-    get async() {
+    get isAsync() {
         return this.bionicTag.modifiers.includes('async')
     }
 

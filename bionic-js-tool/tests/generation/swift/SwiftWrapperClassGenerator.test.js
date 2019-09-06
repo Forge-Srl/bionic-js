@@ -4,8 +4,8 @@ describe('SwiftWrapperClassGenerator', () => {
 
     let Class, Constructor, Property, Method, IntType, expectedHeader
 
-    function getCode(constructors, properties, methods, superClassName = '') {
-        const class1 = new Class('Class1', 'class description', constructors, properties, methods, superClassName, 'module/path')
+    function getCode(constructors, properties, methods, superclassName = '') {
+        const class1 = new Class('Class1', 'class description', constructors, properties, methods, superclassName, 'module/path')
         return class1.generator.swift.forWrapping().getFiles()[0].content
     }
 
@@ -46,7 +46,7 @@ describe('SwiftWrapperClassGenerator', () => {
 
     test('empty class without inheritance', () => expectEmptyClass(getCode([], [], [])))
 
-    test('empty class with inheritance', () => expectEmptyClass(getCode([], [], [], 'SuperClass')))
+    test('empty class with inheritance', () => expectEmptyClass(getCode([], [], [], 'Superclass')))
 
     test('class parts order', () => {
         const intType = new IntType()

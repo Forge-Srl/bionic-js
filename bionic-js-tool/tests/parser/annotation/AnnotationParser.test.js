@@ -1,7 +1,12 @@
 const t = require('../../test-utils')
-const AnnotationParser = t.requireModule('parser/annotation/AnnotationParser').AnnotationParser
 
 describe('AnnotationParser', () => {
+
+    let AnnotationParser
+
+    beforeEach(() => {
+        AnnotationParser = t.requireModule('parser/annotation/AnnotationParser').AnnotationParser
+    })
 
     const testAnnotation = (annotation, expectedTags) => {
         const parser = new AnnotationParser(annotation)

@@ -19,15 +19,15 @@ class MethodJsExplorer extends JsExplorer {
         return [this.node.kind]
     }
 
-    get static() {
+    get isStatic() {
         return this.node.static
     }
 
-    get generator() {
+    get isGenerator() {
         return this.node.generator
     }
 
-    get async() {
+    get isAsync() {
         return this.node.async
     }
 
@@ -73,11 +73,11 @@ class MethodJsExplorer extends JsExplorer {
 
         if (!this._schema) {
             if (this.kinds[0] === 'method') {
-                this._schema = new Method(this.name, this.description, this.static, undefined,
+                this._schema = new Method(this.name, this.description, this.isStatic, undefined,
                     this.signature.returnType, this.signature.parameters)
 
             } else if (this.kinds[0] === 'get' || this.kinds[0] === 'set') {
-                this._schema = new Property(this.name, this.description, this.static, undefined, this.type, this.kinds)
+                this._schema = new Property(this.name, this.description, this.isStatic, undefined, this.type, this.kinds)
             }
         }
         return this._schema

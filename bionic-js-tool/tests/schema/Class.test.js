@@ -32,13 +32,13 @@ describe('Class', () => {
                 name: 'method', description: 'method desc', isStatic: false, isOverriding: false,
                 returnType: {type: 'Void'}, parameters: [],
             }],
-            superClassName: 'SuperClass', modulePath: '../filePath',
+            superclassName: 'Superclass', modulePath: '../filePath',
         }
         const clazz = Class.fromObj(classObj)
 
         const expectedClass = new Class('Class', 'Class desc', [new Constructor('constructor desc', [])],
             [new Property('getter', 'getter desc', false, false, new IntType(), ['get'])],
-            [new Method('method', 'method desc', false, false, new VoidType(), [])], 'SuperClass', '../filePath')
+            [new Method('method', 'method desc', false, false, new VoidType(), [])], 'Superclass', '../filePath')
 
         expect(clazz).toBeInstanceOf(Class)
         expect(clazz.constructors[0]).toBeInstanceOf(Constructor)
