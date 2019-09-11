@@ -2,6 +2,7 @@ const t = require('../../test-utils')
 const parser = require('@babel/parser')
 const ClassExplorer = t.requireModule('parser/jsExplorer/ClassExplorer').ClassExplorer
 const MethodJsExplorer = t.requireModule('parser/jsExplorer/MethodJsExplorer').MethodJsExplorer
+const MethodAnnotationExplorer = t.requireModule('parser/jsExplorer/MethodAnnotationExplorer').MethodAnnotationExplorer
 const Constructor = t.requireModule('schema/Constructor').Constructor
 const Property = t.requireModule('schema/Property').Property
 const Method = t.requireModule('schema/Method').Method
@@ -125,8 +126,11 @@ describe('ClassExplorer', () => {
         const explorer = getExplorer(methodExplorersTestCode)
 
         const methodExplorers = explorer.methodExplorers
-        expect(methodExplorers[0]).toBeInstanceOf(MethodJsExplorer)
         expect(methodExplorers.map(method => method.name)).toEqual(['constructor', 'method2', 'getter', 'method3'])
+        expect(methodExplorers[0]).toBeInstanceOf(MethodJsExplorer)
+        expect(methodExplorers[1]).toBeInstanceOf(MethodJsExplorer)
+        expect(methodExplorers[2]).toBeInstanceOf(MethodAnnotationExplorer)
+        expect(methodExplorers[3]).toBeInstanceOf(MethodAnnotationExplorer)
 
         expect(explorer.methodExplorers).toBe(methodExplorers)
     })

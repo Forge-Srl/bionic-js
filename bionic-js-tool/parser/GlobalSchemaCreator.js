@@ -13,17 +13,17 @@ class GlobalSchemaCreator {
     }
 
     async getClassSchemas() {
-        const creatorsMap = new Map()
+        const classSchemaCreators = new Map()
         for (const creator of await this.getClassSchemaCreators()) {
-            const alreadyExistentCreator = creatorsMap.has(creator.name)
+            const alreadyExistentCreator = classSchemaCreators.get(creator.name)
             if (alreadyExistentCreator) {
-                new Error(`Class ${creator.name} in module "${creator.modulePath}" was already` +
+                throw new Error(`Class ${creator.name} in module "${creator.modulePath}" was already` +
                     `exported in module "${alreadyExistentCreator.modulePath}"`)
             }
-            creatorsMap.set(creator.name, creator)
+            classSchemaCreators.set(creator.name, creator)
         }
 
-        return [...creatorsMap.values()].map(creator => creator.getSchema(creatorsMap))
+        return [...classSchemaCreators.values()].map(creator => creator.getSchema(classSchemaCreators))
     }
 }
 

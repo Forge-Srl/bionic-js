@@ -173,7 +173,7 @@ describe('MethodSchemaCreator', () => {
         expect(schemaCreator.schema).toBe('constructorSchema')
     })
 
-    test('method, constructor', () => {
+    test('schema, method', () => {
         const schemaCreator = new MethodSchemaCreator()
         t.mockGetter(schemaCreator, 'kinds', () => new Set(['method']))
         t.mockGetter(schemaCreator, 'methodSchema', () => 'methodSchema')
@@ -181,7 +181,7 @@ describe('MethodSchemaCreator', () => {
         expect(schemaCreator.schema).toBe('methodSchema')
     })
 
-    test('propertySchema, getter', () => {
+    test('schema, getter', () => {
         const schemaCreator = new MethodSchemaCreator()
         t.mockGetter(schemaCreator, 'kinds', () => new Set(['get']))
         t.mockGetter(schemaCreator, 'propertySchema', () => 'propertySchema')
@@ -189,7 +189,7 @@ describe('MethodSchemaCreator', () => {
         expect(schemaCreator.schema).toBe('propertySchema')
     })
 
-    test('propertySchema, setter', () => {
+    test('schema, setter', () => {
         const schemaCreator = new MethodSchemaCreator()
         t.mockGetter(schemaCreator, 'kinds', () => new Set(['set']))
         t.mockGetter(schemaCreator, 'propertySchema', () => 'propertySchema')

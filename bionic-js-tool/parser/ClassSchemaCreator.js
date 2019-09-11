@@ -20,28 +20,27 @@ class ClassSchemaCreator {
             return superclassSchemaStack
         }
 
-        if (superclassSchemaStack.some(schema => schema.name === this.name)) {
-            throw new Error(`class "${this.name}" extends superclass "${superclassName}" but this generate an` +
+        if (superclassSchemaStack.some(schema => schema.name === superclassName)) {
+            throw new Error(`class "${this.name}" extends superclass "${superclassName}" but this generates an ` +
                 'inheritance cycle (e.g. A extends B, B extends A)')
         }
 
         const superclassSchemaCreator = classSchemaCreators.get(superclassName)
         if (!superclassSchemaCreator) {
-            throw new Error(`class "${this.name}" extends a superclass "${superclassName}" that is not exported` +
-                '(e.g. flag it with a "@bionic" annotation)')
+            throw new Error(`class "${this.name}" extends a superclass "${superclassName}" that has not been exported`)
         }
 
-        return [...superclassSchemaStack, superclassSchemaCreator.getSchema(classSchemaCreators, superclassSchemaStack)]
+        return [superclassSchemaCreator.getSchema(classSchemaCreators, superclassSchemaStack), ...superclassSchemaStack]
     }
 
     getSchema(classSchemaCreators, superclassSchemaStack = []) {
         if (!this._schema) {
             const methodNames = [...new Set(this.classExplorer.methodExplorers.map(methodExplorer => methodExplorer.name))]
 
-            const superclassSchemaStack = this.getSuperclassSchemaStack(classSchemaCreators, superclassSchemaStack)
+            const newSuperclassSchemaStack = this.getSuperclassSchemaStack(classSchemaCreators, superclassSchemaStack)
             const methodSchemas = methodNames.map(methodName => new MethodSchemaCreator(
                 this.classExplorer.methodExplorers.filter(methodExplorer => methodExplorer.name === methodName),
-                superclassSchemaStack,
+                newSuperclassSchemaStack,
             ).getSchema())
 
             this._schema = new Class(
