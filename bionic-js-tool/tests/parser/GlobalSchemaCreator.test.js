@@ -35,7 +35,7 @@ describe('GlobalSchemaCreator', () => {
         schemaCreator.getClassSchemaCreators = async () =>
             [{name: 'name1', modulePath: 'path1'}, {name: 'name1', modulePath: 'path2'}]
 
-        await expect(schemaCreator.getClassSchemas()).rejects.toEqual(new Error('Class name1 in module "path2" was alreadyexported in module "path1"'))
+        await expect(schemaCreator.getClassSchemas()).rejects.toThrow('Class name1 in module "path2" was alreadyexported in module "path1"')
     })
 
     test('getClassSchemas', async () => {

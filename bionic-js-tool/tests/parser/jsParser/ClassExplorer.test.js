@@ -63,8 +63,7 @@ describe('ClassExplorer', () => {
 
     test('superclassName', () => {
         const explorer = getExplorer(`class C extends Superclass {}`)
-        const className = explorer.superclassName
-        expect(className).toBe('Superclass')
+        expect(explorer.superclassName).toBe('Superclass')
     })
 
     test('superclassName with no superclass', () => {

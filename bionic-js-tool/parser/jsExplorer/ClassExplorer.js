@@ -22,7 +22,7 @@ class ClassExplorer extends JsExplorer {
     }
 
     get superclassName() {
-        const superclassNode = this.node.superclass
+        const superclassNode = this.node.superClass
         return superclassNode ? superclassNode.name : null
     }
 

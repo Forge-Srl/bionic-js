@@ -20,7 +20,7 @@ class ModuleSchemaCreator {
     async getClassSchemaCreators() {
         const classExplorers = (await this.getModuleExplorer()).classExplorers
         if (classExplorers.length > 1) {
-            throw new Error(`cannot export more than one class from a single module file ${this.guestFile.relativePath}`)
+            throw new Error(`cannot export more than one class from the module "${this.guestFile.relativePath}"`)
         }
         return classExplorers.map(classExplorer => new ClassSchemaCreator(classExplorer))
     }
