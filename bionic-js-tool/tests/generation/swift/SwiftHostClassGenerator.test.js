@@ -7,7 +7,7 @@ describe('SwiftHostClassGenerator', () => {
 
     function getCode(constructors, properties, methods, superclassName = '') {
         const class1 = new Class('Class1', 'class description', constructors, properties, methods, superclassName, 'module/path')
-        return class1.generator.swift.forHosting().getFiles()[0].content
+        return class1.generator.swift.forHosting().getSource()
     }
 
     beforeEach(() => {

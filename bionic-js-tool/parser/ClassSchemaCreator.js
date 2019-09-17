@@ -41,7 +41,7 @@ class ClassSchemaCreator {
             const methodSchemas = methodNames.map(methodName => new MethodSchemaCreator(
                 this.classExplorer.methodExplorers.filter(methodExplorer => methodExplorer.name === methodName),
                 newSuperclassSchemaStack,
-            ).getSchema())
+            ).schema)
 
             this._schema = new Class(
                 this.name,

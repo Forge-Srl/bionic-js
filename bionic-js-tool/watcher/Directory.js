@@ -22,11 +22,11 @@ class Directory extends BaseFile {
         try {
             await mkdirp(this.path)
         } catch (error) {
-            throw new Error(`Cannot create directory "${this.path}"\n${error.stack}`)
+            throw new Error(`cannot create directory "${this.path}"\n${error.stack}`)
         }
 
         if (!await this.isReadableAndWritable())
-            throw new Error(`Directory "${this.path}" has no RW permissions`)
+            throw new Error(`directory "${this.path}" has no RW permissions`)
     }
 
     async delete() {

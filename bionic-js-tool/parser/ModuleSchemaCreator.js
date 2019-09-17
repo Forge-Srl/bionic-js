@@ -11,8 +11,12 @@ class ModuleSchemaCreator {
     async getModuleExplorer() {
         if (!this._moduleExplorer) {
             const moduleSrc = await this.guestFile.getContent()
-            const parsedNode = parser.parse(moduleSrc, {sourceType: 'module'})
-            this._moduleExplorer = new ModuleExplorer(parsedNode, this.guestFile.relativePath)
+            try {
+                const parsedNode = parser.parse(moduleSrc, {sourceType: 'module'})
+                this._moduleExplorer = new ModuleExplorer(parsedNode, this.guestFile.relativePath)
+            } catch (error) {
+                throw new Error(`parsing error in file "${this.guestFile.relativePath}": ${error}`)
+            }
         }
         return this._moduleExplorer
     }

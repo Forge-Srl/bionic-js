@@ -45,7 +45,7 @@ class MethodAnnotationExplorer extends AnnotationParser {
     // TODO: remove!
     get signature() {
         if (!(this.type instanceof LambdaType)) {
-            throw new Error(`Method named "${this.name}" has an annotations without a lambda type definition`)
+            throw new Error(`method named "${this.name}" has an annotations without a lambda type definition`)
         }
         return this.type
     }

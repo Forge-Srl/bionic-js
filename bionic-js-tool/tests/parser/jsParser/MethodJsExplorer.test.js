@@ -152,33 +152,45 @@ describe('MethodJsExplorer', () => {
         expect(explorer.type).toBe(actualType)
     })
 
+    const typeMixedAnnotation = '/* @bionic (Int, par2: Int) */ method1(par1, par2) {}'
+    const expectedMixedType = new LambdaType(new VoidType(), [
+        new Parameter(new IntType(), 'par1', undefined),
+        new Parameter(new IntType(), 'par2', undefined),
+    ])
+    test('type, annotation with mixed parameter definitions', () => {
+        const explorer = getExplorer(typeMixedAnnotation)
+        const actualType = explorer.type
+
+        expect(actualType).toEqual(expectedMixedType)
+        expect(explorer.type).toBe(actualType)
+    })
+
     test('type, annotated parameters more than js parameters', () => {
         const explorer = getExplorer('/* @bionic (par1: Int) */ method1() {}')
-        expect(() => explorer.type).toThrow('Parameter of method "method1" mismatch from those declared in the annotation')
+        expect(() => explorer.type).toThrow('parameter of method "method1" mismatch from those declared in the annotation')
     })
 
     test('type, annotated parameters less than js parameters', () => {
         const explorer = getExplorer('/* @bionic () */ method1(par1) {}')
-        expect(() => explorer.type).toThrow('Parameter of method "method1" mismatch from those declared in the annotation')
+        expect(() => explorer.type).toThrow('parameter of method "method1" mismatch from those declared in the annotation')
     })
 
     test('type, annotated parameters with names different from js parameters', () => {
         const explorer = getExplorer('/* @bionic (par1: Int) */ method1(par2) {}')
-        expect(() => explorer.type).toThrow('Parameter of method "method1" mismatch from those declared in the annotation')
+        expect(() => explorer.type).toThrow('parameter of method "method1" mismatch from those declared in the annotation')
     })
 
     test('type, annotated parameters with names in different order from js parameters', () => {
         const explorer = getExplorer('/* @bionic (par1: Int, par2: Int) */ method1(par2, par1) {}')
-        expect(() => explorer.type).toThrow('Parameter of method "method1" mismatch from those declared in the annotation')
+        expect(() => explorer.type).toThrow('parameter of method "method1" mismatch from those declared in the annotation')
     })
 
 
-
     test('signature', () => {
-        const explorer = getExplorer(typeAnnotation)
+        const explorer = getExplorer(typeMixedAnnotation)
         const actualSignature = explorer.signature
 
-        expect(actualSignature).toEqual(expectedType)
+        expect(actualSignature).toEqual(expectedMixedType)
         expect(explorer.signature).toBe(actualSignature)
     })
 

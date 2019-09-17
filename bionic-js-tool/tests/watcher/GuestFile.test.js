@@ -10,7 +10,7 @@ describe('GuestFile', () => {
         GuestFile = t.requireModule('watcher/GuestFile').GuestFile
     })
 
-    const isHostExportableCases = [
+    const isExportableCases = [
         {path: 'dir1/file.js', hostPath: 'dir1', result: true},
         {path: 'dir1\\file.js', hostPath: 'dir1', result: true},
         {path: 'dir1/sub1/file.js', hostPath: 'dir1', result: true},
@@ -25,11 +25,11 @@ describe('GuestFile', () => {
         {path: 'dir1\\node_modules\\lib1', hostPath: 'dir1', result: false},
     ]
 
-    for (const testCase of isHostExportableCases) {
-        test('isHostExportable ' + testCase.path, () => {
+    for (const testCase of isExportableCases) {
+        test('isExportable ' + testCase.path, () => {
 
             const guestFile = new GuestFile(testCase.path, testCase.hostPath)
-            expect(guestFile.isHostExportable).toBe(testCase.result)
+            expect(guestFile.isExportable).toBe(testCase.result)
         })
     }
 })

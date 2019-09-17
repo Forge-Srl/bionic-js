@@ -7,7 +7,7 @@ describe('SwiftWrapperConstructorGenerator', () => {
 
     function getCode(constructorParameters) {
         const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], '', 'module/path')
-        return class1.generator.swift.forWrapping().getFiles()[0].content
+        return class1.generator.swift.forWrapping().getSource()
     }
 
     function newParam(type, name) {

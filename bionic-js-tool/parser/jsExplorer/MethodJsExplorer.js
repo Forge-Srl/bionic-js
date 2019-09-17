@@ -48,10 +48,12 @@ class MethodJsExplorer extends JsExplorer {
                 const parametersNamesFromJs = this.parameterExplorers.map(explorer => explorer.name)
 
                 if (lambdaParameters.length !== parametersNamesFromJs.length ||
-                    lambdaParameters.some((parameter, index) => parametersNamesFromJs[index] !== parameter.name)) {
+                    lambdaParameters.some((parameter, index) => parameter.name && parametersNamesFromJs[index] !== parameter.name)) {
 
-                    throw new Error(`Parameter of method "${this.name}" mismatch from those declared in the annotation`)
+                    throw new Error(`parameter of method "${this.name}" mismatch from those declared in the annotation`)
                 }
+
+                this._type.parameters = lambdaParameters.map((parameter, index) => Object.assign(parameter, {name: parametersNamesFromJs[index]}))
             }
         }
         return this._type
@@ -60,7 +62,7 @@ class MethodJsExplorer extends JsExplorer {
     // TODO: remove
     get signature() {
         if (!(this.type instanceof LambdaType)) {
-            throw new Error(`Method named "${this.name}" has an annotations without a lambda type definition`)
+            throw new Error(`method named "${this.name}" has an annotations without a lambda type definition`)
         }
         return this.type
     }

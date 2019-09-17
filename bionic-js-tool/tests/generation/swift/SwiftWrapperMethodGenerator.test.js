@@ -7,7 +7,7 @@ describe('SwiftWrapperMethodGenerator', () => {
     function getCode(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters) {
         const class1 = new Class('Class1', '', [], [], [new Method('method1', 'method description', isMethodStatic,
             isMethodOverriding, methodReturnType, methodParameters)], '', 'module/path')
-        return class1.generator.swift.forWrapping().getFiles()[0].content
+        return class1.generator.swift.forWrapping().getSource()
     }
 
     function newParam(type, name) {

@@ -8,7 +8,7 @@ describe('SwiftWrapperPropertyGenerator', () => {
     function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set']) {
         const class1 = new Class('Class1', '', [], [new Property('property1', 'property description', isPropertyStatic,
             isPropertyOverriding, propertyType, propertyKinds)], [], '', 'module/path')
-        return class1.generator.swift.forWrapping().getFiles()[0].content
+        return class1.generator.swift.forWrapping().getSource()
     }
 
     function getFunctionsExportCode(instanceExports = [], staticExports = []) {

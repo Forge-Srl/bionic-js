@@ -4,7 +4,7 @@ class Guest3 {
         Object.assign(this, {guestName})
     }
     
-    // @bionic String
+    // @bionic () => String
     whoIs() {
         return `${this.guestName} is my guest!`
     }

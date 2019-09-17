@@ -14,7 +14,7 @@ class GuestFile extends File {
         super(path, guestDirPath)
     }
 
-    get isHostExportable() {
+    get isExportable() {
         if (this.ext !== JS_FILE_EXT)
             return false
 

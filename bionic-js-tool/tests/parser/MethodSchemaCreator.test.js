@@ -148,7 +148,7 @@ describe('MethodSchemaCreator', () => {
         t.mockGetter(schemaCreator, 'description', () => 'description')
         t.mockGetter(schemaCreator, 'isStatic', () => true)
         t.mockGetter(schemaCreator, 'type', () => 'type')
-        t.mockGetter(schemaCreator, 'kinds', () => ['kind'])
+        t.mockGetter(schemaCreator, 'kinds', () => new Set(['kind']))
 
         expect(schemaCreator.propertySchema).toStrictEqual(new Property('property1', 'description', true, false,
             'type', ['kind']))
@@ -157,10 +157,7 @@ describe('MethodSchemaCreator', () => {
     test('propertySchema, another property in hierarchy', () => {
         const schemaCreator = new MethodSchemaCreator(null, [{properties: [{name: 'property1', isStatic: true}]}])
         t.mockGetter(schemaCreator, 'name', () => 'property1')
-        t.mockGetter(schemaCreator, 'description', () => 'description')
         t.mockGetter(schemaCreator, 'isStatic', () => true)
-        t.mockGetter(schemaCreator, 'type', () => 'type')
-        t.mockGetter(schemaCreator, 'kinds', () => ['kind'])
 
         expect(() => schemaCreator.propertySchema).toThrow('property "property1" was already exported in superclass')
     })

@@ -70,7 +70,7 @@ class CodeBlock {
         } else if (obj.appendToBuilder) {
             return this.appendCodeElement(obj)
         } else {
-            throw new Error('Object cannot be appended')
+            throw new Error('object cannot be appended')
         }
     }
 

@@ -16,7 +16,7 @@ class AnnotationParser {
                     continue
 
                 if (this._tags.get(tag)) {
-                    throw new Error(`The tag "${tag}" was inserted more than one time in the annotation`)
+                    throw new Error(`the tag "${tag}" was inserted more than one time in the annotation`)
                 }
                 this._tags.set(tag, this.parseWithRule(tagText, tag))
             }

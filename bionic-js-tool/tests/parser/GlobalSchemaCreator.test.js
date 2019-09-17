@@ -14,11 +14,15 @@ describe('GlobalSchemaCreator', () => {
 
     test('getClassSchemaCreators', async () => {
 
-        const schemaCreator = new GlobalSchemaCreator(['guestFile1', 'guestFile2'])
+    })
+
+    test('getClassSchemaCreators', async () => {
+
+        const schemaCreator = new GlobalSchemaCreator([{path: 'guestFile1'}, {path: 'guestFile2'}])
 
         ModuleSchemaCreator.mockImplementationOnce(guestFile => {
             expect(guestFile).toBe('guestFile1')
-            return {getClassSchemaCreators: async () => 'Guest1Schema'}
+            return {getClassSchemaCreators: async () => ({name: 'Guest1Schema'})}
         })
 
         ModuleSchemaCreator.mockImplementationOnce(guestFile => {

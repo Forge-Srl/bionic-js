@@ -16,7 +16,7 @@ class NodeModule {
             return candidateDependency
         }
         if (currentModule.moduleDir.absolutePath === rootModule.moduleDir.absolutePath) {
-            throw new Error(`Dependency ${dependencyName} of module ${await originalModule.getName()} ` +
+            throw new Error(`dependency ${dependencyName} of module ${await originalModule.getName()} ` +
                 `(path "/${originalModule.moduleDir.relativePath}") cannot be resolved`)
         }
         const parentModule = new NodeModule(currentModule.moduleDir.dir.dir)
@@ -62,7 +62,7 @@ class NodeModule {
                 let packageObj = await this.getPackageObj()
                 this._name = packageObj.name
             } catch (e) {
-                throw new Error(`Invalid package.json file in module "${this.moduleDir.path}".\n${e.message}`)
+                throw new Error(`invalid package.json file in module "${this.moduleDir.path}".\n${e.message}`)
             }
         }
         return this._name
@@ -75,7 +75,7 @@ class NodeModule {
                 const dependencies = packageObj.dependencies
                 this._dependenciesNames = dependencies ? Object.keys(dependencies) : []
             } catch (e) {
-                throw new Error(`Invalid package.json file in module "${this.moduleDir.path}".\n${e.message}`)
+                throw new Error(`invalid package.json file in module "${this.moduleDir.path}".\n${e.message}`)
             }
         }
         return this._dependenciesNames

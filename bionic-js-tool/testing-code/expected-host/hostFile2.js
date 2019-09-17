@@ -12,7 +12,7 @@ class JsonSerializable {
         try {
             return this.fromObj(JSON.parse(json))
         } catch (error) {
-            throw new Error(`Cannot deserialize a ${this.name} from JSON:'${json}'`)
+            throw new Error(`deserializing a ${this.name} from JSON:'${json}'`)
         }
     }
 
@@ -20,7 +20,7 @@ class JsonSerializable {
         try {
             return JSON.parse(json).map(obj => this.fromObj(obj))
         } catch (error) {
-            throw new Error(`Cannot deserialize a list of ${this.name} from JSON:'${json}'`)
+            throw new Error(`cannot deserialize a list of ${this.name} from JSON:'${json}'`)
         }
     }
 
@@ -28,7 +28,7 @@ class JsonSerializable {
         try {
             return JSON.parse(json)
         } catch (error) {
-            throw new Error(`Cannot deserialize native JSON:'${json}'`)
+            throw new Error(`cannot deserialize native JSON:'${json}'`)
         }
     }
 

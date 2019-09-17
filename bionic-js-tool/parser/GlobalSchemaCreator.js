@@ -6,24 +6,50 @@ class GlobalSchemaCreator {
         Object.assign(this, {guestFiles})
     }
 
-    async getClassSchemaCreators() {
-        const classSchemaCreatorsPromises = this.guestFiles.map(
-            guestFile => new ModuleSchemaCreator(guestFile).getClassSchemaCreators())
-        return (await Promise.all(classSchemaCreatorsPromises)).flat()
+    get classSchemaCreatorPromises() {
+        return this.guestFiles.filter(guestFile => guestFile.isExportable)
+            .map(guestFile =>
+                (async () => {
+                    const classSchemaCreator = (await new ModuleSchemaCreator(guestFile).getClassSchemaCreators())[0]
+                    return classSchemaCreator ? {guestFile, classSchemaCreator} : undefined
+                })(),
+            )
     }
 
-    async getClassSchemas() {
-        const classSchemaCreators = new Map()
-        for (const creator of await this.getClassSchemaCreators()) {
-            const alreadyExistentCreator = classSchemaCreators.get(creator.name)
-            if (alreadyExistentCreator) {
-                throw new Error(`Class ${creator.name} in module "${creator.modulePath}" was already` +
-                    `exported in module "${alreadyExistentCreator.modulePath}"`)
-            }
-            classSchemaCreators.set(creator.name, creator)
-        }
+    async getGuestFilesWithSchemaCreators() {
+        if (!this._guestFilesWithSchemaCreators) {
+            this._guestFilesWithSchemaCreators = (await Promise.all(this.classSchemaCreatorPromises)).filter(entry => entry)
 
-        return [...classSchemaCreators.values()].map(creator => creator.getSchema(classSchemaCreators))
+            const schemaCreatorsMap = new Map()
+            this._guestFilesWithSchemaCreators.map(entry => entry.classSchemaCreator).forEach(schemaCreator => {
+
+                const alreadyExistentCreator = schemaCreatorsMap.get(schemaCreator.name)
+                if (alreadyExistentCreator) {
+                    throw new Error(`class ${schemaCreator.name} in module "${schemaCreator.modulePath}" was already` +
+                        `exported in module "${alreadyExistentCreator.modulePath}"`)
+                }
+                schemaCreatorsMap.set(schemaCreator.name, schemaCreator)
+            })
+        }
+        return this._guestFilesWithSchemaCreators
+    }
+
+    async getGuestFilesWithSchemas() {
+        const guestFilesWithSchemaCreators = await this.getGuestFilesWithSchemaCreators()
+        const classSchemaCreators = new Map(guestFilesWithSchemaCreators.map(guestFileWithCreator =>
+            [guestFileWithCreator.classSchemaCreator.name, guestFileWithCreator.classSchemaCreator]))
+
+        return guestFilesWithSchemaCreators.map(guestFileWithCreator => {
+                try {
+                    return {
+                        guestFile: guestFileWithCreator.guestFile,
+                        schema: guestFileWithCreator.classSchemaCreator.getSchema(classSchemaCreators),
+                    }
+                } catch (error) {
+                    throw new Error(`extracting schema from class "${guestFileWithCreator.guestFile.path}"\n${error}`)
+                }
+            },
+        )
     }
 }
 

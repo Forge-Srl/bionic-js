@@ -14,7 +14,8 @@ class MethodSchemaCreator {
     }
 
     get description() {
-        return this.methodExplorers.find(explorer => explorer.description !== undefined).description || ''
+        const methodExplorerWithDescription = this.methodExplorers.find(explorer => explorer.description)
+        return methodExplorerWithDescription ? methodExplorerWithDescription.description : ''
     }
 
     get kinds() {
@@ -84,7 +85,7 @@ class MethodSchemaCreator {
             throw new Error(`property "${this.name}" was already exported in superclass`)
         }
 
-        return new Property(this.name, this.description, this.isStatic, false, this.type, this.kinds)
+        return new Property(this.name, this.description, this.isStatic, false, this.type, [...this.kinds])
     }
 
     get schema() {

@@ -7,7 +7,7 @@ class JsonFile extends File {
         try {
             return JSON.parse(content)
         } catch (error) {
-            throw new Error(`Error parsing json file "${this.path}"\n${error.stack}`)
+            throw new Error(`parsing json file "${this.path}"\n${error.stack}`)
         }
     }
 }

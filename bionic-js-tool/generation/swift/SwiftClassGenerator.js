@@ -1,6 +1,5 @@
 const {CodeGenerator} = require('../CodeGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
-const {CodeFile} = require('../CodeFile')
 
 class SwiftClassGenerator extends CodeGenerator {
 
@@ -34,13 +33,13 @@ class SwiftClassGenerator extends CodeGenerator {
         ]
     }
 
-    getFiles() {
+    getSource() {
         const code = CodeBlock.create()
             .append(this.getHeaderCode())
             .append(this.getBodyCode())
             .append(this.getFooterCode())
 
-        return [new CodeFile(this.schema.name + '.swift', code.getString())]
+        return code.getString()
     }
 }
 

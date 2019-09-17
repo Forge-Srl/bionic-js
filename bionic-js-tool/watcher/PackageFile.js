@@ -19,7 +19,7 @@ class PackageFile extends File {
         try {
             guestFileContent = await this.guestFile.getContent()
         } catch (error) {
-            throw new Error(`Error reading guest code file "${this.guestFile.path}"\n${error.stack}`)
+            throw new Error(`reading guest code file "${this.guestFile.path}"\n${error.stack}`)
         }
 
         const packageFileContent = guestFileContent
@@ -27,7 +27,7 @@ class PackageFile extends File {
         try {
             await this.setContent(packageFileContent)
         } catch (error) {
-            throw new Error(`Error writing package file "${this.path}"\n${error.stack}`)
+            throw new Error(`writing package file "${this.path}"\n${error.stack}`)
         }
     }
 }

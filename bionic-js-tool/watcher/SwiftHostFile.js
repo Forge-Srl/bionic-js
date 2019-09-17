@@ -1,4 +1,5 @@
 const {HostFile} = require('./HostFile')
+const {SwiftHostClassGenerator} = require('../generation/swift/SwiftHostClassGenerator')
 
 class SwiftHostFile extends HostFile {
 
@@ -6,15 +7,15 @@ class SwiftHostFile extends HostFile {
         return new SwiftHostFile(guestFile.composeNewPath(hostDirPath, '.swift'), hostDirPath, guestFile)
     }
 
-    async generate() {
+    async generate(schema) {
         await this.dir.ensureExists()
 
-        const hostFileContent = `/* Swift file for ${this.guestFile.relativePath}... */`
+        const hostFileContent = new SwiftHostClassGenerator(schema).getSource()
 
         try {
-            await this.setContent(hostFileContent)
+            return await this.setContent(hostFileContent)
         } catch (error) {
-            throw new Error(`Error writing host file "${this.guestFile.relativePath}"\n${error.stack}`)
+            throw new Error(`writing host file "${this.guestFile.relativePath}"\n${error.stack}`)
         }
     }
 }

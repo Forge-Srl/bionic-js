@@ -216,7 +216,7 @@ function peg$parse(input, options) {
       peg$c46 = peg$classExpectation([["a", "z"]], false, true),
       peg$c47 = function() {
           const loc = location().start
-          throw new Error(`Line ${loc.line}, column ${loc.column}: Identifiers cannot start with digits.`)
+          throw new Error(`line ${loc.line}, column ${loc.column}: Identifiers cannot start with digits.`)
         },
       peg$c48 = peg$otherExpectation("type definition"),
       peg$c49 = function(arrayType) {
@@ -310,7 +310,7 @@ function peg$parse(input, options) {
 
   if ("startRule" in options) {
     if (!(options.startRule in peg$startRuleFunctions)) {
-      throw new Error("Can't start parsing from rule \"" + options.startRule + "\".");
+      throw new Error("can't start parsing from rule \"" + options.startRule + "\".");
     }
 
     peg$startRuleFunction = peg$startRuleFunctions[options.startRule];

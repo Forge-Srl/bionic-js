@@ -9,11 +9,6 @@ class Guest1 {
      */
 
     // @bionic get name String
-
-    // @bionic String
-    static get hello() {
-        return 'Hello bionic!'
-    }
     
     // @bionic () => Int
     static answerToQuestionOfLife() {

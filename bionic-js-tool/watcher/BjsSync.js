@@ -1,15 +1,17 @@
+const {NullLog} = require('./NullLog')
 const {Configuration} = require('./Configuration')
 const {GuestWatcher} = require('./GuestWatcher')
 const {Directory} = require('./Directory')
 const {PackageFile} = require('./PackageFile')
 const {HostFile} = require('./HostFile')
 const {ModuleExplorer} = require('../parser/jsExplorer/ModuleExplorer')
+const {GlobalSchemaCreator} = require('../parser/GlobalSchemaCreator')
 const parser = require('@babel/parser')
 
 class BjsSync {
 
-    constructor(configurationPath, logger) {
-        Object.assign(this, {configurationPath, logger})
+    constructor(configurationPath, log = new NullLog()) {
+        Object.assign(this, {configurationPath, log})
     }
 
     async getClassSchemas(guestFile) {
@@ -17,7 +19,7 @@ class BjsSync {
         const moduleExplorer = new ModuleExplorer(parser.parse(moduleSrc, {sourceType: 'module'}))
         const classSchemas = moduleExplorer.classExplorers.map(classExplorer => classExplorer.schema)
         if (classSchemas.length > 1)
-            throw new Error(`Cannot export more than one class from the module file ${guestFile.relativePath}`)
+            throw new Error(`cannot export more than one class from the module file ${guestFile.relativePath}`)
         return classSchemas
     }
 
@@ -32,37 +34,32 @@ class BjsSync {
     }
 
     async syncHostFiles(hostDirPath, hostLanguage, guestFiles) {
+        const globalSchemaCreator = new GlobalSchemaCreator(guestFiles)
+
         const hostDir = new Directory(hostDirPath)
-        this.logInfo(`Deleting host dir: "${hostDir.path}"`)
+        this.log.info(`Deleting host dir: "${hostDir.path}"`)
         await hostDir.delete()
 
-        const hostFiles = guestFiles
-            .filter(guestFile => guestFile.isHostExportable)
-            .map(guestFile => HostFile.build(guestFile, hostDir.path, hostLanguage))
+        this.log.info(`Extracting schemas from guest files`)
+        const guestFilesWithSchemas = await globalSchemaCreator.getGuestFilesWithSchemas()
 
-        await Promise.all(hostFiles.map(hostFile => {
-            this.logInfo(`Generating "${hostFile.path}"`)
-            return hostFile.generate()
+        await Promise.all(guestFilesWithSchemas.map(guestFileWithSchema => {
+            const hostFile = HostFile.build(guestFileWithSchema.guestFile, hostDir.path, hostLanguage)
+            this.log.info(`Generating "${hostFile.path}"`)
+            return hostFile.generate(guestFileWithSchema.schema)
         }))
     }
 
     async syncPackageFiles(packageDirPath, guestFiles) {
         const packageDir = new Directory(packageDirPath)
-        this.logInfo(`Deleting package dir: "${packageDir.path}"`)
+        this.log.info(`Deleting package dir: "${packageDir.path}"`)
         await packageDir.delete()
 
         const packageFiles = guestFiles.map(guestFile => PackageFile.build(guestFile, packageDir.path))
         await Promise.all(packageFiles.map(packageFile => {
-            this.logInfo(`Copying "${packageFile.path}"`)
+            this.log.info(`Copying "${packageFile.path}"`)
             return packageFile.generate()
         }))
-    }
-
-    logInfo(message) {
-        if (!this.logger)
-            return
-
-        this.logger.logInfo(message)
     }
 }
 

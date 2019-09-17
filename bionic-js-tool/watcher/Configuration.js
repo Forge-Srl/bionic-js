@@ -18,7 +18,7 @@ class Configuration {
         try {
             config = require(filePath)
         } catch (error) {
-            throw new Error(`Cannot parse the config file "${filePath}".\n${error.stack}`)
+            throw new Error(`cannot parse the config file "${filePath}".\n${error.stack}`)
         }
 
         this.checkMandatoryProps(filePath, config, {
@@ -45,7 +45,7 @@ class Configuration {
     static checkMandatoryProps(filePath, config, props) {
         for (const prop in props) {
             if (!config.hasOwnProperty(prop))
-                throw new Error(`The property "${prop}" is not defined in the configuration file "${filePath}"`)
+                throw new Error(`the property "${prop}" is not defined in the configuration file "${filePath}"`)
         }
     }
 }

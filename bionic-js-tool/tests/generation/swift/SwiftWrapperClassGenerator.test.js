@@ -6,7 +6,7 @@ describe('SwiftWrapperClassGenerator', () => {
 
     function getCode(constructors, properties, methods, superclassName = '') {
         const class1 = new Class('Class1', 'class description', constructors, properties, methods, superclassName, 'module/path')
-        return class1.generator.swift.forWrapping().getFiles()[0].content
+        return class1.generator.swift.forWrapping().getSource()
     }
 
     beforeEach(() => {
