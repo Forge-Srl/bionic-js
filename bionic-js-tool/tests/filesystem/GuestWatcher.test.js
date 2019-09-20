@@ -6,7 +6,7 @@ describe('GuestWatcher', () => {
     let watcher
 
     beforeEach(() => {
-        const GuestWatcher = t.requireModule('watcher/GuestWatcher').GuestWatcher
+        const GuestWatcher = t.requireModule('filesystem/GuestWatcher').GuestWatcher
         const guestDir = path.resolve(__dirname, '../../testing-code/guest')
         const config = {guestDir, guestIgnores: ['node_modules']}
 

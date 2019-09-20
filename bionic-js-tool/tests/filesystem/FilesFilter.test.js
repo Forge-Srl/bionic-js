@@ -7,9 +7,9 @@ describe('FilesFilter', () => {
 
     beforeEach(() => {
 
-        FilesFilter = t.requireModule('watcher/FilesFilter').FilesFilter
+        FilesFilter = t.requireModule('filesystem/FilesFilter').FilesFilter
 
-        const File = t.requireModule('watcher/File').File
+        const File = t.requireModule('filesystem/File').File
         file = new File(filePath, '/dir1')
     })
 

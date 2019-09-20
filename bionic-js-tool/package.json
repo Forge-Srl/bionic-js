@@ -17,7 +17,7 @@
     "/generation",
     "/parser",
     "/schema",
-    "/watcher"
+    "/filesystem"
   ],
   "dependencies": {
     "@babel/parser": "*",

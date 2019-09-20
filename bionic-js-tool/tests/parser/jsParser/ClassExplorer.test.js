@@ -11,28 +11,9 @@ const Class = t.requireModule('schema/Class').Class
 
 describe('ClassExplorer', () => {
 
-    test('topCommentText', () => {
-        const explorer = getExplorer(
-            '// Skipped annotation\n' +
-            '/*\n' +
-            ' * Last\n' +
-            ' * annotation\n' +
-            ' */\n' +
-            'class Class1 {}')
-        const topCommentText = explorer.topCommentText
-        expect(topCommentText).toBe('\n * Last\n * annotation\n ')
-    })
-
-    test('bionicTag', () => {
-        const explorer = getExplorer('// @bionic \nclass Class1 {}')
-        expect(explorer.bionicTag).toEqual({})
-    })
-
-
     function getExplorer(code) {
         const file = parser.parse(code, {sourceType: 'module'})
         return new ClassExplorer(file.program.body[0], file.comments)
-
     }
 
     test('isToExport, nothing to export', () => {

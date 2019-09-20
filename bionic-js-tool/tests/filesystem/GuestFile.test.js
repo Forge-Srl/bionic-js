@@ -7,7 +7,7 @@ describe('GuestFile', () => {
     beforeEach(() => {
         t.resetModulesCache()
 
-        GuestFile = t.requireModule('watcher/GuestFile').GuestFile
+        GuestFile = t.requireModule('filesystem/GuestFile').GuestFile
     })
 
     const isExportableCases = [

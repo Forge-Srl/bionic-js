@@ -6,7 +6,7 @@ describe('NodeModule', () => {
     let NodeModule
 
     beforeEach(() => {
-        NodeModule = t.requireModule('watcher/NodeModule').NodeModule
+        NodeModule = t.requireModule('filesystem/NodeModule').NodeModule
     })
 
     test('getDependencies path not existent', async () => {

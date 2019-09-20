@@ -1,6 +1,6 @@
 const path = require('path')
-const {ConsoleLog} = require('./ConsoleLog')
 const {BjsSync} = require('./BjsSync')
+const {ConsoleLog} = require('./ConsoleLog')
 
 async function main() {
     const args = process.argv.slice(2)

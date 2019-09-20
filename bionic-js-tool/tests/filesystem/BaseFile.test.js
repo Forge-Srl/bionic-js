@@ -7,12 +7,12 @@ describe('BaseFile', () => {
     beforeEach(() => {
         t.resetModulesCache()
 
-        fs = t.mockAndRequireModule('watcher/async/fs')
-        BaseFile = t.requireModule('watcher/BaseFile').BaseFile
+        fs = t.mockAndRequireModule('filesystem/async/fs')
+        BaseFile = t.requireModule('filesystem/BaseFile').BaseFile
 
         filePath = '/dir1/dir2/filePath.js'
         baseFile = new BaseFile(filePath, '/dir1')
-        Directory = t.requireModule('watcher/Directory').Directory
+        Directory = t.requireModule('filesystem/Directory').Directory
     })
 
     test('dir', () => {

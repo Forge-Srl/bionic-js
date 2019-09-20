@@ -3,8 +3,8 @@ const t = require('../test-utils')
 describe('PackageFile', () => {
 
     test('build', () => {
-        const File = t.requireModule('watcher/File').File
-        const PackageFile = t.requireModule('watcher/PackageFile').PackageFile
+        const File = t.requireModule('filesystem/File').File
+        const PackageFile = t.requireModule('filesystem/PackageFile').PackageFile
 
         const guestFile = new File('/guest/dir/files/code.js', '/guest/dir')
         const packageDirPath = '/package/dir'

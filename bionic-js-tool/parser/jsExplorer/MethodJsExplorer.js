@@ -2,8 +2,6 @@ const {JsExplorer} = require('./JsExplorer')
 const {ParameterExplorer} = require('./ParameterExplorer')
 const {Type} = require('../../schema/types/Type')
 const {LambdaType} = require('../../schema/types/LambdaType')
-const {Method} = require('../../schema/Method')
-const {Property} = require('../../schema/Property')
 
 class MethodJsExplorer extends JsExplorer {
 
@@ -57,32 +55,6 @@ class MethodJsExplorer extends JsExplorer {
             }
         }
         return this._type
-    }
-
-    // TODO: remove
-    get signature() {
-        if (!(this.type instanceof LambdaType)) {
-            throw new Error(`method named "${this.name}" has an annotations without a lambda type definition`)
-        }
-        return this.type
-    }
-
-    // TODO: remove
-    get schema() {
-        if (!this.bionicTag) {
-            return null
-        }
-
-        if (!this._schema) {
-            if (this.kinds[0] === 'method') {
-                this._schema = new Method(this.name, this.description, this.isStatic, undefined,
-                    this.signature.returnType, this.signature.parameters)
-
-            } else if (this.kinds[0] === 'get' || this.kinds[0] === 'set') {
-                this._schema = new Property(this.name, this.description, this.isStatic, undefined, this.type, this.kinds)
-            }
-        }
-        return this._schema
     }
 }
 

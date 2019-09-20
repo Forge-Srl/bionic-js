@@ -30,7 +30,7 @@ class JsExplorer {
     }
 
     get description() {
-        return this.annotationTags.get('DescriptionTag')
+        return this.annotationTags.get('DescriptionTag') || ''
     }
 }
 

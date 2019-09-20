@@ -28,12 +28,6 @@ describe('MethodJsExplorer', () => {
     })
 
 
-    test('bionicTag', () => {
-        const explorer = getExplorer('/* @bionic */ method1() {}')
-        expect(explorer.bionicTag).toEqual({})
-    })
-
-
     test('isToExport', () => {
         const explorer = new MethodJsExplorer()
         t.mockGetter(explorer, 'bionicTag', () => ({}))
@@ -129,16 +123,6 @@ describe('MethodJsExplorer', () => {
         expect(parameterExplorers[0]).toBeInstanceOf(ParameterExplorer)
         expect(parameterExplorers[0].name).toBe('parameter1')
         expect(parameterExplorers[1].name).toBe('parameter2')
-    })
-
-    test('description', () => {
-        const explorer = getExplorer('/* @desc desc */ method1() {}')
-        expect(explorer.description).toEqual('desc')
-    })
-
-    test('description, not present', () => {
-        const explorer = getExplorer('method1() {}')
-        expect(explorer.description).toEqual(undefined)
     })
 
 

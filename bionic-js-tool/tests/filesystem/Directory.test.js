@@ -7,11 +7,11 @@ describe('Directory', () => {
     beforeEach(() => {
         t.resetModulesCache()
 
-        Directory = t.requireModule('watcher/Directory').Directory
+        Directory = t.requireModule('filesystem/Directory').Directory
         dirPath = '/dir1/dir2/dir3'
         directory = new Directory(dirPath, '/dir1')
 
-        File = t.requireModule('watcher/File').File
+        File = t.requireModule('filesystem/File').File
     })
 
     test('getSubFile', () => {
