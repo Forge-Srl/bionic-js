@@ -44,11 +44,11 @@ class NodeModule {
 
     async getPackageObj() {
         if (!this._packageObj) {
+            const fileContent = await this.packageFile.getContent()
             try {
-                const fileContent = await this.packageFile.getContent()
                 this._packageObj = JSON.parse(fileContent)
             } catch (e) {
-                let error = new Error(`Cannot read package.json file in module "${this.moduleDir.path}"`)
+                const error = new Error(`parsing package.json file in module "${this.moduleDir.path}"`)
                 error.innerError = e
                 throw error
             }
@@ -58,25 +58,15 @@ class NodeModule {
 
     async getName() {
         if (!this._name) {
-            try {
-                let packageObj = await this.getPackageObj()
-                this._name = packageObj.name
-            } catch (e) {
-                throw new Error(`invalid package.json file in module "${this.moduleDir.path}".\n${e.message}`)
-            }
+            this._name = (await this.getPackageObj()).name
         }
         return this._name
     }
 
     async getShallowDependenciesNames() {
         if (!this._dependenciesNames) {
-            try {
-                let packageObj = await this.getPackageObj()
-                const dependencies = packageObj.dependencies
-                this._dependenciesNames = dependencies ? Object.keys(dependencies) : []
-            } catch (e) {
-                throw new Error(`invalid package.json file in module "${this.moduleDir.path}".\n${e.message}`)
-            }
+            const dependencies = (await this.getPackageObj()).dependencies
+            this._dependenciesNames = dependencies ? Object.keys(dependencies) : []
         }
         return this._dependenciesNames
     }

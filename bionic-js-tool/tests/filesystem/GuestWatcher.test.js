@@ -35,6 +35,7 @@ describe('GuestWatcher', () => {
     const expectedGuestFiles = [
         ...expectedDependencies,
         'Guest1.js', 'package.json', 'libs/Guest2.js', 'libs/Guest3.js', 'tests/guest1-test.js',
+        'native/Native1.js', 'native/Fuel.js'
     ]
 
     test('getInitialFiles', async () => {

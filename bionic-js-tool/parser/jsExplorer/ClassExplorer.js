@@ -37,6 +37,15 @@ class ClassExplorer extends JsExplorer {
         return this._methodJsExplorers
     }
 
+    get methodExplorers() {
+        if (!this._methodExplorers) {
+            this._methodExplorers = [...this.methodJsExplorers,
+                ...this.innerComments.map(innerComment => new MethodAnnotationExplorer(innerComment))
+                    .filter(methodExplorer => methodExplorer.isToExport)]
+        }
+        return this._methodExplorers
+    }
+
     get innerComments() {
         if (!this._innerComments) {
             const isCommentOutsideMethods = comment =>
@@ -53,15 +62,6 @@ class ClassExplorer extends JsExplorer {
                 isCommentInsideClass(comment) && isCommentUnusedByMethods(comment)).map(node => node.value)
         }
         return this._innerComments
-    }
-
-    get methodExplorers() {
-        if (!this._methodExplorers) {
-            this._methodExplorers = [...this.methodJsExplorers,
-                ...this.innerComments.map(innerComment => new MethodAnnotationExplorer(innerComment))
-                    .filter(methodExplorer => methodExplorer.isToExport)]
-        }
-        return this._methodExplorers
     }
 }
 

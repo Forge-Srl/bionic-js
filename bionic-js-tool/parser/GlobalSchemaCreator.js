@@ -6,7 +6,7 @@ class GlobalSchemaCreator {
         Object.assign(this, {guestFiles})
     }
 
-    get classSchemaCreatorPromises() {
+    get getGuestFilesWithSchemaCreatorsPromises() {
         return this.guestFiles.filter(guestFile => guestFile.isExportable)
             .map(guestFile =>
                 (async () => {
@@ -18,18 +18,20 @@ class GlobalSchemaCreator {
 
     async getGuestFilesWithSchemaCreators() {
         if (!this._guestFilesWithSchemaCreators) {
-            this._guestFilesWithSchemaCreators = (await Promise.all(this.classSchemaCreatorPromises)).filter(entry => entry)
+            const guestFilesWithSchemaCreators = (await Promise.all(this.getGuestFilesWithSchemaCreatorsPromises))
+                .filter(entry => entry)
 
             const schemaCreatorsMap = new Map()
-            this._guestFilesWithSchemaCreators.map(entry => entry.classSchemaCreator).forEach(schemaCreator => {
+            guestFilesWithSchemaCreators.map(entry => entry.classSchemaCreator).forEach(schemaCreator => {
 
                 const alreadyExistentCreator = schemaCreatorsMap.get(schemaCreator.name)
                 if (alreadyExistentCreator) {
-                    throw new Error(`class ${schemaCreator.name} in module "${schemaCreator.modulePath}" was already` +
+                    throw new Error(`class ${schemaCreator.name} in module "${schemaCreator.modulePath}" was already ` +
                         `exported in module "${alreadyExistentCreator.modulePath}"`)
                 }
                 schemaCreatorsMap.set(schemaCreator.name, schemaCreator)
             })
+            this._guestFilesWithSchemaCreators = guestFilesWithSchemaCreators
         }
         return this._guestFilesWithSchemaCreators
     }
@@ -46,7 +48,8 @@ class GlobalSchemaCreator {
                         schema: guestFileWithCreator.classSchemaCreator.getSchema(classSchemaCreators),
                     }
                 } catch (error) {
-                    throw new Error(`extracting schema from class "${guestFileWithCreator.guestFile.path}"\n${error}`)
+                    throw new Error(`extracting schema from class ${guestFileWithCreator.classSchemaCreator.name} ` +
+                        `in module "${guestFileWithCreator.guestFile.path}"\n${error}`)
                 }
             },
         )

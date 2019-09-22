@@ -8,7 +8,7 @@ class File extends BaseFile {
         try {
             return await fs.readFile(this.path, utf8)
         } catch (error) {
-            throw Object.assign(new Error(`Error reading file "${this.path}"`), {innerError: error})
+            throw Object.assign(new Error(`reading the file "${this.path}"`), {innerError: error})
         }
     }
 

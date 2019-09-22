@@ -3,11 +3,6 @@ const parser = require('@babel/parser')
 const ClassExplorer = t.requireModule('parser/jsExplorer/ClassExplorer').ClassExplorer
 const MethodJsExplorer = t.requireModule('parser/jsExplorer/MethodJsExplorer').MethodJsExplorer
 const MethodAnnotationExplorer = t.requireModule('parser/jsExplorer/MethodAnnotationExplorer').MethodAnnotationExplorer
-const Constructor = t.requireModule('schema/Constructor').Constructor
-const Property = t.requireModule('schema/Property').Property
-const Method = t.requireModule('schema/Method').Method
-
-const Class = t.requireModule('schema/Class').Class
 
 describe('ClassExplorer', () => {
 
@@ -176,56 +171,5 @@ describe('ClassExplorer', () => {
         const innerComments = explorer.innerComments
         expect(innerComments).toEqual([' Inner annotation 1 ', ' @bionic Inner annotation 2',
             ' @bionic Inner annotation 3', ' Inner annotation 4', ' @bionic another\n inner annotation '])
-    })
-
-    test('methodsSchemas', () => {
-        const explorer = new ClassExplorer()
-
-        t.mockGetter(explorer, 'methodExplorers', () => [{schema: 'schema1'}, {schema: 'schema2'}])
-        expect(explorer.methodsSchemas).toEqual(['schema1', 'schema2'])
-    })
-
-    test('schema, no class bionic tag', () => {
-        const explorer = new ClassExplorer()
-        const constructor = new Constructor()
-        const method1 = new Method()
-        const method2 = new Method()
-        const property1 = new Property()
-        const property2 = new Property()
-
-        t.mockGetter(explorer, 'methodsSchemas', () => [constructor, method1, method2, property1, property2])
-        t.mockGetter(explorer, 'name', () => 'ClassName')
-        t.mockGetter(explorer, 'description', () => 'class desc')
-        t.mockGetter(explorer, 'bionicTag', () => null)
-        t.mockGetter(explorer, 'superclassName', () => 'SuperclassName')
-        t.mockGetter(explorer, 'modulePath', () => 'module path')
-
-        const actualClass = explorer.schema
-        expect(actualClass).toEqual(new Class('ClassName', 'class desc', [constructor], [property1, property2],
-            [method1, method2], 'SuperclassName', 'module path'))
-    })
-
-    test('schema, only class bionic tag', () => {
-        const explorer = new ClassExplorer()
-
-        t.mockGetter(explorer, 'methodsSchemas', () => [])
-        t.mockGetter(explorer, 'name', () => 'ClassName')
-        t.mockGetter(explorer, 'description', () => 'class desc')
-        t.mockGetter(explorer, 'bionicTag', () => ({}))
-        t.mockGetter(explorer, 'superclassName', () => 'SuperclassName')
-        t.mockGetter(explorer, 'modulePath', () => 'module path')
-
-        const actualClass = explorer.schema
-        expect(actualClass).toEqual(new Class('ClassName', 'class desc', [], [],
-            [], 'SuperclassName', 'module path'))
-    })
-
-    test('schema, not exported', () => {
-        const explorer = new ClassExplorer()
-
-        t.mockGetter(explorer, 'methodsSchemas', () => [])
-        t.mockGetter(explorer, 'bionicTag', () => undefined)
-
-        expect(explorer.schema).toBe(null)
     })
 })

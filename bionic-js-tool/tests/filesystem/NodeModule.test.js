@@ -13,23 +13,25 @@ describe('NodeModule', () => {
         const moduleDirPath = path.resolve(__dirname, '../../testing-code/fake')
         const brokenModule = NodeModule.fromModulePath(moduleDirPath)
 
+        const expectedFile = path.resolve(moduleDirPath, 'package.json')
         await expect(brokenModule.getDependencies()).rejects
-            .toThrow(`Cannot read package.json file in module "${moduleDirPath}"`)
+            .toThrow(`reading the file "${expectedFile}"`)
     })
 
     test('getDependencies path is a file', async () => {
         const moduleDirPath = path.resolve(__dirname, '../../testing-code/bjs.config.js')
         const brokenModule = NodeModule.fromModulePath(moduleDirPath)
 
+        const expectedFile = path.resolve(moduleDirPath, 'package.json')
         await expect(brokenModule.getDependencies()).rejects
-            .toThrow(`Cannot read package.json file in module "${moduleDirPath}"`)
+            .toThrow(`reading the file "${expectedFile}"`)
     })
 
     test('getDependencies complex module with broken dependencies', async () => {
         const brokenModule = NodeModule.fromModulePath(path.resolve(__dirname, '../../testing-code/broken-dependencies'))
 
         await expect(brokenModule.getDependencies()).rejects
-            .toThrow('Dependency module-d of module module-c (path "/node_modules/module-c") cannot be resolved')
+            .toThrow('dependency module-d of module module-c (path "/node_modules/module-c") cannot be resolved')
     })
 
     test('getDependencies complex module', async () => {

@@ -78,21 +78,21 @@ describe('ClassSchemaCreator', () => {
         MethodSchemaCreator.mockImplementationOnce((methodExplorers, superclassSchemaStack) => {
             expect(methodExplorers).toStrictEqual([constructorExplorer])
             expect(superclassSchemaStack).toBe('superclassSchemaStack')
-            return {getSchema: () => constructorSchema}
+            return {schema: constructorSchema}
         })
 
         const methodSchema = new Method()
         MethodSchemaCreator.mockImplementationOnce((methodExplorers, superclassSchemaStack) => {
             expect(methodExplorers).toStrictEqual([methodExplorer])
             expect(superclassSchemaStack).toBe('superclassSchemaStack')
-            return {getSchema: () => methodSchema}
+            return {schema: methodSchema}
         })
 
         const getterSchema = new Property()
         MethodSchemaCreator.mockImplementationOnce((methodExplorers, superclassSchemaStack) => {
             expect(methodExplorers).toStrictEqual([getterExplorer1, getterExplorer2])
             expect(superclassSchemaStack).toBe('superclassSchemaStack')
-            return {getSchema: () => getterSchema}
+            return {schema: getterSchema}
         })
 
         const classSchema = classSchemaCreator.getSchema('classSchemaCreators', 'superclassSchemaStack')

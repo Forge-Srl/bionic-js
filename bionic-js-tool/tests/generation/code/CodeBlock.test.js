@@ -179,7 +179,7 @@ describe('CodeBlock', () => {
 
     test('append a non appendable object', () => {
 
-        expect(() => codeBlock.append({})).toThrow('Object cannot be appended')
+        expect(() => codeBlock.append({})).toThrow('object cannot be appended')
     })
 
     test('__', () => {
