@@ -6,7 +6,7 @@ class Vehicle {
         this.maxSpeed = maxSpeed
     }
 
-    // @bionic get weight Float
+    // @bionic get set weight Float
     // @bionic get seats Int
     // @bionic get maxSpeed Int
 
@@ -17,10 +17,6 @@ class Vehicle {
     // @bionic String
     get description() {
         return `This ${this.name} has ${this.seats} seats, it weighs ${this.weight} kg, can reach ${this.maxSpeed} km/h`
-    }
-
-    get canTravelInTheSpace() {
-        return false
     }
 }
 

@@ -1,10 +1,8 @@
-const path = require('path')
 const {NODE_MODULES_DIR_NAME, PACKAGE_JSON_LOCK_FILE_NAME} = require('./NodeModule')
 
 class Configuration {
 
-    constructor(stateFile, guestDir, guestIgnores, guestNativeDir, hostDir, hostLanguage, packageDir) {
-        this.stateFile = stateFile
+    constructor(guestDir, guestIgnores, guestNativeDir, hostDir, hostLanguage, packageDir) {
         this.guestDir = guestDir
         this.guestIgnores = guestIgnores
         this.guestNativeDir = guestNativeDir
@@ -19,7 +17,8 @@ class Configuration {
         try {
             config = require(filePath)
         } catch (error) {
-            throw new Error(`cannot parse the config file "${filePath}".\n${error.stack}`)
+            error.message = `parsing the config file "${filePath}"\n${error.message}`
+            throw error
         }
 
         this.checkMandatoryProps(filePath, config, {
@@ -38,8 +37,7 @@ class Configuration {
         if (config.guestIgnores)
             guestIgnores = guestIgnores.concat(config.guestIgnores)
 
-        const stateFile = path.resolve(path.dirname(filePath), '.bjs-state.json')
-        return new Configuration(stateFile, config.guestDir, guestIgnores, config.guestNativeDir, config.hostDir,
+        return new Configuration(config.guestDir, guestIgnores, config.guestNativeDir, config.hostDir,
             config.hostLanguage, config.packageDir)
     }
 

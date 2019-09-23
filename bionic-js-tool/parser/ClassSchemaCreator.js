@@ -38,19 +38,25 @@ class ClassSchemaCreator {
             const methodNames = [...new Set(this.classExplorer.methodExplorers.map(methodExplorer => methodExplorer.name))]
 
             const newSuperclassSchemaStack = this.getSuperclassSchemaStack(classSchemaCreators, superclassSchemaStack)
-            const methodSchemas = methodNames.map(methodName => new MethodSchemaCreator(
-                this.classExplorer.methodExplorers.filter(methodExplorer => methodExplorer.name === methodName),
-                newSuperclassSchemaStack,
-            ).schema)
 
-            this._schema = new Class(
-                this.name,
-                this.classExplorer.description,
-                methodSchemas.filter(method => method instanceof Constructor),
-                methodSchemas.filter(method => method instanceof Property),
-                methodSchemas.filter(method => method instanceof Method),
-                this.classExplorer.superclassName,
-                this.classExplorer.modulePath)
+            try {
+                const methodSchemas = methodNames.map(methodName => new MethodSchemaCreator(
+                    this.classExplorer.methodExplorers.filter(methodExplorer => methodExplorer.name === methodName),
+                    newSuperclassSchemaStack,
+                ).schema)
+
+                this._schema = new Class(
+                    this.name,
+                    this.classExplorer.description,
+                    methodSchemas.filter(method => method instanceof Constructor),
+                    methodSchemas.filter(method => method instanceof Property),
+                    methodSchemas.filter(method => method instanceof Method),
+                    this.classExplorer.superclassName,
+                    this.classExplorer.modulePath)
+            } catch (error) {
+                error.message = `extracting schema from class ${this.name} in module "${this.classExplorer.modulePath}"\n${error.message}`
+                throw error
+            }
         }
         return this._schema
     }

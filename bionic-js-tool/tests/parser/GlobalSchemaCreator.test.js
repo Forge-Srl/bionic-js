@@ -99,21 +99,4 @@ describe('GlobalSchemaCreator', () => {
             {guestFile: 'guestFile2', schema: 'Class2-schema'},
         ])
     })
-
-    test('getGuestFilesWithSchemas, getSchema error', async () => {
-        const schemaCreator = new GlobalSchemaCreator()
-        const classSchemaCreator1 = {
-            name: 'Class1', getSchema: () => {
-                throw new Error('problem in getSchema()')
-            },
-        }
-        schemaCreator.getGuestFilesWithSchemaCreators = async () => [
-            {guestFile: {path: '/guestFile'}, classSchemaCreator: classSchemaCreator1},
-        ]
-
-        await expect(schemaCreator.getGuestFilesWithSchemas()).rejects.toThrow(
-            'extracting schema from class Class1 in module "/guestFile"\n' +
-            'Error: problem in getSchema()')
-    })
-
 })

@@ -42,14 +42,9 @@ class GlobalSchemaCreator {
             [guestFileWithCreator.classSchemaCreator.name, guestFileWithCreator.classSchemaCreator]))
 
         return guestFilesWithSchemaCreators.map(guestFileWithCreator => {
-                try {
-                    return {
-                        guestFile: guestFileWithCreator.guestFile,
-                        schema: guestFileWithCreator.classSchemaCreator.getSchema(classSchemaCreators),
-                    }
-                } catch (error) {
-                    throw new Error(`extracting schema from class ${guestFileWithCreator.classSchemaCreator.name} ` +
-                        `in module "${guestFileWithCreator.guestFile.path}"\n${error}`)
+                return {
+                    guestFile: guestFileWithCreator.guestFile,
+                    schema: guestFileWithCreator.classSchemaCreator.getSchema(classSchemaCreators),
                 }
             },
         )

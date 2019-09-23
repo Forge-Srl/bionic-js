@@ -6,7 +6,11 @@ const {IniRet} = require('../code/IniRet')
 class SwiftHostPropertyGenerator extends CodeGenerator {
 
     get typeGenerator() {
-        return this.schema.type.generator.swift
+        try {
+            return this.schema.type.generator.swift
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     getHeaderCode() {

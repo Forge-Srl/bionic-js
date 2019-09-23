@@ -1,19 +1,13 @@
-const {Car} = require('./Car')
-const {GasStation} = require('./native/GasStation')
+const {MotorVehicle} = require('./libs/MotorVehicle')
 
-class TeslaRoadster extends Car {
+class TeslaRoadster extends MotorVehicle {
 
     constructor() {
-        super(1140, 2, 201, 392, 300)
+        super(1140, 2, 201, 'electricity', 392, 300)
     }
 
     get name() {
         return 'Tesla Roadster'
-    }
-
-    // @bionic String
-    static get gasStation() {
-        return new GasStation('electricity')
     }
 
     // @bionic Bool

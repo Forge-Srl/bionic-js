@@ -15,7 +15,8 @@ class SwiftHostFile extends HostFile {
         try {
             return await this.setContent(hostFileContent)
         } catch (error) {
-            throw new Error(`writing host file "${this.guestFile.relativePath}"\n${error.stack}`)
+            error.message = `writing host file "${this.guestFile.relativePath}"\n${error.message}`
+            throw error
         }
     }
 }

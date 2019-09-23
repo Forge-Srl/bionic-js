@@ -70,8 +70,7 @@ class MethodSchemaCreator {
     }
 
     get methodSchema() {
-        if (this.superclassSchemaStack.some(schema => schema.methods.some(method =>
-            method.name === this.name && method.isStatic === this.isStatic))) {
+        if (this.superclassSchemaStack.some(schema => schema.methods.some(method => method.name === this.name))) {
             throw new Error(`method "${this.name}" was already exported in superclass`)
         }
 
@@ -80,8 +79,7 @@ class MethodSchemaCreator {
     }
 
     get propertySchema() {
-        if (this.superclassSchemaStack.some(schema => schema.properties.some(property =>
-            property.name === this.name && property.isStatic === this.isStatic))) {
+        if (this.superclassSchemaStack.some(schema => schema.properties.some(property => property.name === this.name))) {
             throw new Error(`property "${this.name}" was already exported in superclass`)
         }
 

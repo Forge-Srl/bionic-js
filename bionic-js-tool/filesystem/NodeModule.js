@@ -47,9 +47,8 @@ class NodeModule {
             const fileContent = await this.packageFile.getContent()
             try {
                 this._packageObj = JSON.parse(fileContent)
-            } catch (e) {
-                const error = new Error(`parsing package.json file in module "${this.moduleDir.path}"`)
-                error.innerError = e
+            } catch (error) {
+                error.message = `parsing package.json file in module "${this.moduleDir.path}"\n${error.message}`
                 throw error
             }
         }

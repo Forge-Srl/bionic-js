@@ -25,6 +25,14 @@ describe('File', () => {
         expect(fs.readFile).toBeCalledWith(filePath, 'utf8')
     })
 
+    test('getContent, error', async () => {
+        fs.readFile.mockImplementationOnce(async () => {
+            throw new Error('inner error')
+        })
+
+        await expect(file.getContent()).rejects.toThrow('reading the file "/dir1/dir2/filePath.js"\ninner error')
+    })
+
     test('setContent', async () => {
         fs.writeFile.mockImplementationOnce(async () => {
         })

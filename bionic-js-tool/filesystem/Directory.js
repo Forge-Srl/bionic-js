@@ -22,7 +22,8 @@ class Directory extends BaseFile {
         try {
             await mkdirp(this.path)
         } catch (error) {
-            throw new Error(`cannot create directory "${this.path}"\n${error.stack}`)
+            error.message = `cannot create directory "${this.path}"\n${error.message}`
+            throw error
         }
 
         if (!await this.isReadableAndWritable())

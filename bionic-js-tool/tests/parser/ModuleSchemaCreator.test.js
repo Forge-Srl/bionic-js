@@ -30,6 +30,17 @@ describe('ModuleSchemaCreator', () => {
         expect(await schemaCreator.getModuleExplorer()).toBe(explorer)
     })
 
+    test('getModuleExplorer, parsing error', async () => {
+        const guestFile = {getContent: async () => 'jsContent', relativePath: 'relativePath'}
+        const schemaCreator = new ModuleSchemaCreator(guestFile)
+
+        parser.parse = () => {
+            throw new Error('inner error')
+        }
+
+        await expect(schemaCreator.getModuleExplorer()).rejects.toThrow('parsing the file "relativePath"\ninner error')
+    })
+
     test('getClassSchemaCreators, more class explorers', async () => {
         const guestFile = {relativePath: 'relativePath'}
         const schemaCreator = new ModuleSchemaCreator(guestFile)

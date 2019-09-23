@@ -1,21 +1,19 @@
-const {Vehicle} = require('./Veichle')
-const {Engine} = require('./Engine')
+const {Vehicle} = require('./Vehicle')
+const {Engine} = require('../native/Engine')
 
 class MotorVehicle extends Vehicle {
 
-    constructor(weight, seats, maxSpeed, maxRange, currentRange) {
+    constructor(weight, seats, maxSpeed, fuelType, maxRange, currentRange) {
         super(weight, seats, maxSpeed)
+        this.engine = new Engine(fuelType)
         this.maxRange = maxRange
         this.currentRange = currentRange
-        this.engine = new Engine()
-        this.observers = []
     }
 
-    // @bionic get maxRange Float
-    // @bionic get currentRange Float
+    // @bionic get engine Engine
 
     get description() {
-        return `${super.description}, it has ${this.maxRange} km of range`
+        return `${super.description}, it has an engine powered by ${this.engine.fuelType} with ${this.maxRange} km of range`
     }
 
     // @bionic Bool
@@ -23,25 +21,16 @@ class MotorVehicle extends Vehicle {
         return this.currentRange < 100
     }
 
-    // @bionic () => String
-    powerOn() {
-        this.engine.powerOn()
-        this.notifyEngineObservers()
-    }
-
-    // @bionic () => String
-    powerOff() {
-        this.engine.powerOff()
-        this.notifyEngineObservers()
-    }
-
-    notifyEngineObservers() {
-        return this.observers.forEach(observer => observer(this.engine.state))
+    // @bionic () => Float
+    refuel() {
+        const missingRange = this.maxRange - this.currentRange
+        this.currentRange = this.maxRange
+        return this.engine.fuelCost * missingRange
     }
 
     // @bionic (() => String)
     watchEngine(observer) {
-        this.observers.push(observer)
+        this.engine.watch(observer)
     }
 }
 

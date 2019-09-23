@@ -64,7 +64,7 @@ describe('ClassSchemaCreator', () => {
             name: 'Class1',
             description: 'Description',
             superclassName: 'SuperclassName',
-            modulePath: 'ModulePath',
+            modulePath: '/module/path',
             methodExplorers: [constructorExplorer, methodExplorer, getterExplorer1, getterExplorer2],
         })
 
@@ -103,8 +103,27 @@ describe('ClassSchemaCreator', () => {
         expect(classSchema.methods).toStrictEqual([methodSchema])
         expect(classSchema.properties).toStrictEqual([getterSchema])
         expect(classSchema.superclassName).toStrictEqual('SuperclassName')
-        expect(classSchema.modulePath).toStrictEqual('ModulePath')
+        expect(classSchema.modulePath).toStrictEqual('/module/path')
 
         expect(classSchemaCreator.getSchema()).toBe(classSchema)
+    })
+
+    test('getSchema, error getting schema', () => {
+        const constructorExplorer = {name: 'constructor'}
+
+        const classSchemaCreator = new ClassSchemaCreator({
+            name: 'Class1',
+            modulePath: '/module/path',
+            methodExplorers: [constructorExplorer],
+        })
+
+        classSchemaCreator.getSuperclassSchemaStack = () => 'superclassSchemaStack'
+
+        MethodSchemaCreator.mockImplementationOnce(() => {
+            throw new Error('inner error')
+        })
+
+        expect(() => classSchemaCreator.getSchema('classSchemaCreators', 'superclassSchemaStack'))
+            .toThrow('extracting schema from class Class1 in module "/module/path"\ninner error')
     })
 })

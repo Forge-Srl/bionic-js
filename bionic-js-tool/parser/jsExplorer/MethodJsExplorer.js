@@ -2,11 +2,12 @@ const {JsExplorer} = require('./JsExplorer')
 const {ParameterExplorer} = require('./ParameterExplorer')
 const {Type} = require('../../schema/types/Type')
 const {LambdaType} = require('../../schema/types/LambdaType')
+const {VoidType} = require('../../schema/types/VoidType')
 
 class MethodJsExplorer extends JsExplorer {
 
     get isToExport() {
-        return !!this.bionicTag
+        return (!!this.bionicTag) && (!this.bionicTag.name || this.bionicTag.name === this.name)
     }
 
     get name() {
@@ -39,11 +40,22 @@ class MethodJsExplorer extends JsExplorer {
 
     get type() {
         if (!this._type) {
-            this._type = Type.fromObj(this.bionicTag.typeInfo)
 
-            if (this._type instanceof LambdaType) {
-                const lambdaParameters = this._type.parameters
-                const parametersNamesFromJs = this.parameterExplorers.map(explorer => explorer.name)
+            const parametersNamesFromJs = this.parameterExplorers.map(explorer => explorer.name)
+            const typeInfo = this.bionicTag.typeInfo
+
+            let type
+            if (!typeInfo && this.kinds.includes('method') && parametersNamesFromJs.length === 0) {
+                type = new LambdaType(new VoidType(), [])
+            } else {
+                if (!typeInfo) {
+                    throw new Error(`missing type info annotation in method "${this.name}"`)
+                }
+                type = Type.fromObj(typeInfo)
+            }
+
+            if (type instanceof LambdaType) {
+                const lambdaParameters = type.parameters
 
                 if (lambdaParameters.length !== parametersNamesFromJs.length ||
                     lambdaParameters.some((parameter, index) => parameter.name && parametersNamesFromJs[index] !== parameter.name)) {
@@ -51,8 +63,9 @@ class MethodJsExplorer extends JsExplorer {
                     throw new Error(`parameter of method "${this.name}" mismatch from those declared in the annotation`)
                 }
 
-                this._type.parameters = lambdaParameters.map((parameter, index) => Object.assign(parameter, {name: parametersNamesFromJs[index]}))
+                type.parameters = lambdaParameters.map((parameter, index) => Object.assign(parameter, {name: parametersNamesFromJs[index]}))
             }
+            this._type = type
         }
         return this._type
     }

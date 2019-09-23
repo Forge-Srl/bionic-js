@@ -3,13 +3,9 @@ const parser = require('@babel/parser')
 const MethodJsExplorer = t.requireModule('parser/jsExplorer/MethodJsExplorer').MethodJsExplorer
 const ParameterExplorer = t.requireModule('parser/jsExplorer/ParameterExplorer').ParameterExplorer
 const Parameter = t.requireModule('schema/Parameter').Parameter
-const Method = t.requireModule('schema/Method').Method
-const Property = t.requireModule('schema/Property').Property
 const IntType = t.requireModule('schema/types/IntType').IntType
 const VoidType = t.requireModule('schema/types/VoidType').VoidType
 const LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
-const ArrayType = t.requireModule('schema/types/ArrayType').ArrayType
-const ObjectType = t.requireModule('schema/types/ObjectType').ObjectType
 
 describe('MethodJsExplorer', () => {
 
@@ -37,6 +33,20 @@ describe('MethodJsExplorer', () => {
     test('isToExport, not to export', () => {
         const explorer = new MethodJsExplorer()
         t.mockGetter(explorer, 'bionicTag', () => undefined)
+        expect(explorer.isToExport).toEqual(false)
+    })
+
+    test('isToExport, matching annotated name', () => {
+        const explorer = new MethodJsExplorer()
+        t.mockGetter(explorer, 'bionicTag', () => ({name: 'method1'}))
+        t.mockGetter(explorer, 'name', () => 'method1')
+        expect(explorer.isToExport).toEqual(true)
+    })
+
+    test('isToExport, mismatching annotated name', () => {
+        const explorer = new MethodJsExplorer()
+        t.mockGetter(explorer, 'bionicTag', () => ({name: 'method1'}))
+        t.mockGetter(explorer, 'name', () => 'method2')
         expect(explorer.isToExport).toEqual(false)
     })
 
@@ -126,27 +136,49 @@ describe('MethodJsExplorer', () => {
     })
 
 
-    const typeAnnotation = '/* @bionic (par1: Int) */ method1(par1) {}'
-    const expectedType = new LambdaType(new VoidType(), [new Parameter(new IntType(), 'par1', undefined)])
-    test('type', () => {
-        const explorer = getExplorer(typeAnnotation)
+    test('type, method', () => {
+        const explorer = getExplorer('/* @bionic (par1: Int) */ method1(par1) {}')
         const actualType = explorer.type
 
-        expect(actualType).toEqual(expectedType)
+        expect(actualType).toEqual(new LambdaType(new VoidType(), [new Parameter(new IntType(), 'par1', undefined)]))
         expect(explorer.type).toBe(actualType)
     })
 
-    const typeMixedAnnotation = '/* @bionic (Int, par2: Int) */ method1(par1, par2) {}'
-    const expectedMixedType = new LambdaType(new VoidType(), [
-        new Parameter(new IntType(), 'par1', undefined),
-        new Parameter(new IntType(), 'par2', undefined),
-    ])
-    test('type, annotation with mixed parameter definitions', () => {
-        const explorer = getExplorer(typeMixedAnnotation)
+    test('type, method with sparse parameter definitions in annotation', () => {
+        const explorer = getExplorer('/* @bionic (Int, par2: Int) */ method1(par1, par2) {}')
         const actualType = explorer.type
 
-        expect(actualType).toEqual(expectedMixedType)
+        expect(actualType).toEqual(new LambdaType(new VoidType(), [
+            new Parameter(new IntType(), 'par1', undefined),
+            new Parameter(new IntType(), 'par2', undefined),
+        ]))
         expect(explorer.type).toBe(actualType)
+    })
+
+    test('type, getter', () => {
+        const explorer = getExplorer('/* @bionic Int */ get getter1() {}')
+        const actualType = explorer.type
+
+        expect(actualType).toEqual(new IntType())
+        expect(explorer.type).toBe(actualType)
+    })
+
+    test('type, method with void annotation', () => {
+        const explorer = getExplorer('/* @bionic */ method1() {}')
+        const actualType = explorer.type
+
+        expect(actualType).toEqual(new LambdaType(new VoidType(), []))
+        expect(explorer.type).toBe(actualType)
+    })
+
+    test('type, missing type info from getter', () => {
+        const explorer = getExplorer('/* @bionic */ get getter1() {}')
+        expect(() => explorer.type).toThrow('missing type info annotation in method "getter1"')
+    })
+
+    test('type, missing type info from method', () => {
+        const explorer = getExplorer('/* @bionic */ method1(par1) {}')
+        expect(() => explorer.type).toThrow('missing type info annotation in method "method1"')
     })
 
     test('type, annotated parameters more than js parameters', () => {

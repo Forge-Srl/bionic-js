@@ -122,7 +122,7 @@ describe('MethodSchemaCreator', () => {
     })
 
     test('methodSchema', () => {
-        const schemaCreator = new MethodSchemaCreator(null, [{methods: [{name: 'method1', isStatic: false}]}])
+        const schemaCreator = new MethodSchemaCreator(null, [{methods: []}])
         t.mockGetter(schemaCreator, 'name', () => 'method1')
         t.mockGetter(schemaCreator, 'description', () => 'description')
         t.mockGetter(schemaCreator, 'isStatic', () => true)
@@ -133,7 +133,7 @@ describe('MethodSchemaCreator', () => {
     })
 
     test('methodSchema, another method in hierarchy', () => {
-        const schemaCreator = new MethodSchemaCreator(null, [{methods: [{name: 'method1', isStatic: true}]}])
+        const schemaCreator = new MethodSchemaCreator(null, [{methods: [{name: 'method1', isStatic: false}]}])
         t.mockGetter(schemaCreator, 'name', () => 'method1')
         t.mockGetter(schemaCreator, 'description', () => 'description')
         t.mockGetter(schemaCreator, 'isStatic', () => true)
@@ -143,7 +143,7 @@ describe('MethodSchemaCreator', () => {
     })
 
     test('propertySchema', () => {
-        const schemaCreator = new MethodSchemaCreator(null, [{properties: [{name: 'property1', isStatic: false}]}])
+        const schemaCreator = new MethodSchemaCreator(null, [{properties: []}])
         t.mockGetter(schemaCreator, 'name', () => 'property1')
         t.mockGetter(schemaCreator, 'description', () => 'description')
         t.mockGetter(schemaCreator, 'isStatic', () => true)
@@ -155,7 +155,7 @@ describe('MethodSchemaCreator', () => {
     })
 
     test('propertySchema, another property in hierarchy', () => {
-        const schemaCreator = new MethodSchemaCreator(null, [{properties: [{name: 'property1', isStatic: true}]}])
+        const schemaCreator = new MethodSchemaCreator(null, [{properties: [{name: 'property1', isStatic: false}]}])
         t.mockGetter(schemaCreator, 'name', () => 'property1')
         t.mockGetter(schemaCreator, 'isStatic', () => true)
 

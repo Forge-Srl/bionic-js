@@ -15,7 +15,8 @@ class ModuleSchemaCreator {
                 const parsedNode = parser.parse(moduleSrc, {sourceType: 'module'})
                 this._moduleExplorer = new ModuleExplorer(parsedNode, this.guestFile.relativePath)
             } catch (error) {
-                throw new Error(`parsing error in file "${this.guestFile.relativePath}": ${error}`)
+                error.message = `parsing the file "${this.guestFile.relativePath}"\n${error.message}`
+                throw error
             }
         }
         return this._moduleExplorer
