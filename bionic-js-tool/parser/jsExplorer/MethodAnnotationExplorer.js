@@ -36,7 +36,12 @@ class MethodAnnotationExplorer extends AnnotationParser {
 
     get type() {
         if (!this._type) {
-            this._type = Type.fromObj(this.bionicTag.typeInfo)
+            try {
+                this._type = Type.fromObj(this.bionicTag.typeInfo)
+            } catch (error) {
+                error.message = `missing type definition from annotation "${this.annotation.trim()}"\n${error.message}`
+                throw error
+            }
         }
         return this._type
     }

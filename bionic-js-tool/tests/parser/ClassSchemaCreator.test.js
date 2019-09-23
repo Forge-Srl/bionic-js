@@ -20,6 +20,10 @@ describe('ClassSchemaCreator', () => {
         expect(new ClassSchemaCreator({name: 'Class1'}).name).toBe('Class1')
     })
 
+    test('modulePath', () => {
+        expect(new ClassSchemaCreator({modulePath: '/modulePath'}).modulePath).toBe('/modulePath')
+    })
+
     test('getSuperclassSchemaStack, no superclass', () => {
         const classSchemaCreator = new ClassSchemaCreator({superclassName: null})
         const superclassSchemaStack = ['schema']

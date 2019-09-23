@@ -47,6 +47,7 @@ class MethodSchemaCreator {
 
     get type() {
         if (!this._type) {
+            // TODO: può succedere che type !== undefined???
             const types = this.methodExplorers.filter(explorer => explorer.type !== undefined).map(explorer => explorer.type)
             if (types.some(type => !type.isEqualTo(types[0])))
                 throw new Error(`"${this.name}" is annotated multiple times with different types`)

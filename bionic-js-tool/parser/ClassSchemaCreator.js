@@ -14,6 +14,10 @@ class ClassSchemaCreator {
         return this.classExplorer.name
     }
 
+    get modulePath() {
+        return this.classExplorer.modulePath
+    }
+
     getSuperclassSchemaStack(classSchemaCreators, superclassSchemaStack) {
         const superclassName = this.classExplorer.superclassName
         if (!superclassName) {
@@ -35,11 +39,9 @@ class ClassSchemaCreator {
 
     getSchema(classSchemaCreators, superclassSchemaStack = []) {
         if (!this._schema) {
-            const methodNames = [...new Set(this.classExplorer.methodExplorers.map(methodExplorer => methodExplorer.name))]
-
-            const newSuperclassSchemaStack = this.getSuperclassSchemaStack(classSchemaCreators, superclassSchemaStack)
-
             try {
+                const methodNames = [...new Set(this.classExplorer.methodExplorers.map(methodExplorer => methodExplorer.name))]
+                const newSuperclassSchemaStack = this.getSuperclassSchemaStack(classSchemaCreators, superclassSchemaStack)
                 const methodSchemas = methodNames.map(methodName => new MethodSchemaCreator(
                     this.classExplorer.methodExplorers.filter(methodExplorer => methodExplorer.name === methodName),
                     newSuperclassSchemaStack,
@@ -52,9 +54,9 @@ class ClassSchemaCreator {
                     methodSchemas.filter(method => method instanceof Property),
                     methodSchemas.filter(method => method instanceof Method),
                     this.classExplorer.superclassName,
-                    this.classExplorer.modulePath)
+                    this.modulePath)
             } catch (error) {
-                error.message = `extracting schema from class ${this.name} in module "${this.classExplorer.modulePath}"\n${error.message}`
+                error.message = `extracting schema from class ${this.name} in module "${this.modulePath}"\n${error.message}`
                 throw error
             }
         }

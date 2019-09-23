@@ -61,7 +61,7 @@ BionicTag
   }
 
 MethodDefinition 'method definition'
-  = modifiers: (__ MethodModifier)* kinds: (__ MethodKinds) __ name: Identifier {
+  = modifiers: (__ MethodModifier)* kinds: (__ MethodKinds) _ name: Identifier {
     return asg({name}, {modifiers:modifiers.map(m => m[1])}, {kinds: kinds[1]})
   }
 
@@ -69,10 +69,10 @@ MethodModifier 'method modifier'
   = 'static' / 'async'
 
 MethodKinds 'method kinds'
-  = ('get'__'set' / 'set'__'get') {return ['get', 'set']} /
-    'get' {return ['get']} /
-    'set' {return ['set']} /
-    'method' {return ['method']}
+  = ('get'__'set'SpaceOrNewLine / 'set'__'get'SpaceOrNewLine) {return ['get', 'set']} /
+    'get'SpaceOrNewLine {return ['get']} /
+    'set'SpaceOrNewLine {return ['set']} /
+    'method'SpaceOrNewLine {return ['method']}
 
 Identifier 'identifier'
   = left: $([_a-z]i+ ([0-9] / [a-z]i)*)

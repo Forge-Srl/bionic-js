@@ -1,11 +1,11 @@
 class ConsoleLog {
 
     info(message) {
-        console.log(message)
+        process.stdout.write(`${message}\n`)
     }
 
     error(error) {
-        console.error(error)
+        process.stdout.write(`\x1b[31m${error}\x1b[0m\n`)
     }
 }
 

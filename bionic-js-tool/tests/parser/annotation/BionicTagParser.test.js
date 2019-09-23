@@ -165,6 +165,20 @@ describe('@bionic tag parser', () => {
             name: 'name',
         }))
 
+    test('parse method declaration > get and kind name',
+        () => testParsing('get setter', {
+            kinds: ['get'],
+            modifiers: [],
+            name: 'setter',
+        }))
+
+    test('parse method declaration > set and kind name',
+        () => testParsing('set getter', {
+            kinds: ['set'],
+            modifiers: [],
+            name: 'getter',
+        }))
+
     test('parse method declaration > set + get and kind name',
         () => testParsing('   set  get set', {
             kinds: ['get', 'set'],

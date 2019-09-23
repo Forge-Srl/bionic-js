@@ -10,7 +10,12 @@ class ClassExplorer extends JsExplorer {
     }
 
     get isToExport() {
-        return !!(this.bionicTag || this.methodExplorers.find(methodExplorer => methodExplorer.bionicTag))
+        try {
+            return !!(this.bionicTag || this.methodExplorers.find(methodExplorer => methodExplorer.bionicTag))
+        } catch (error) {
+            error.message = `parsing annotations of class "${this.name}" in module "${this.modulePath}"\n${error.message}`
+            throw error
+        }
     }
 
     get name() {
