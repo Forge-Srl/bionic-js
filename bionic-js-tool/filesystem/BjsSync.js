@@ -20,7 +20,7 @@ class BjsSync {
             const guestFiles = await guestWatcher.getInitialFiles()
 
             const guestFilesWithSchemas = await this.processGuestFiles(guestFiles)
-            await this.syncHostFiles(config.hostDir, config.hostLanguage, guestFilesWithSchemas)
+            await this.syncHostFiles(config.hostDir, config.guestNativeDir, config.hostLanguage, guestFilesWithSchemas)
             await this.syncPackageFiles(config.packageDir, guestFilesWithSchemas)
         } catch (error) {
             this.log.error(error)
@@ -37,7 +37,7 @@ class BjsSync {
         return guestFilesWithSchemas
     }
 
-    async syncHostFiles(hostDirPath, hostLanguage, guestFilesWithSchemas) {
+    async syncHostFiles(hostDirPath, guestNativeDirPath, hostLanguage, guestFilesWithSchemas) {
         const hostDir = new Directory(hostDirPath)
         this.log.info(`Processing host files dir "${hostDir.path}"`)
 
@@ -47,7 +47,7 @@ class BjsSync {
         this.log.info(` Generating host files...`)
         await Promise.all(guestFilesWithSchemas.map(guestFileWithSchema => {
 
-            const hostFile = HostFile.build(guestFileWithSchema.guestFile, hostDir.path, hostLanguage)
+            const hostFile = HostFile.build(guestFileWithSchema.guestFile, hostDirPath, guestNativeDirPath, hostLanguage)
             this.log.info(`  ${hostFile.relativePath}`)
             return hostFile.generate(guestFileWithSchema.schema)
         }))

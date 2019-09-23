@@ -47,6 +47,24 @@ describe('BaseFile', () => {
         expect(result).toBe('/new/root/dir/dir2/filePath.js')
     })
 
+    const isInsideDirCases = [
+        {path: '/dir1', pathSegments: ['/dir1'], result: true},
+        {path: '/dir1', pathSegments: ['/dir2'], result: false},
+        {path: '/dir1/file.js', pathSegments: ['/dir1'], result: true},
+        {path: '/dir1/dir2/file.js', pathSegments: ['/', 'dir1', 'dir2'], result: true},
+        {path: '/dir1/dir2/file.js', pathSegments: ['/'], result: true},
+        {path: '/dir1/dir2/file.js', pathSegments: ['/', 'dir1', 'dir3'], result: false},
+        {path: '/dir1/dir2', pathSegments: ['/dir2'], result: false},
+        {path: '/dir1/dir2/../file.js', pathSegments: ['/', 'dir1'], result: true},
+        {path: '/dir1/dir2/file.js', pathSegments: ['/', 'dir2', '..', 'dir1'], result: true},
+    ]
+    for (const testCase of isInsideDirCases) {
+        test('isInsideDir ' + testCase.path, () => {
+            baseFile = new BaseFile(testCase.path)
+            expect(baseFile.isInsideDir(...testCase.pathSegments)).toBe(testCase.result)
+        })
+    }
+
     test('exists', async () => {
         fs.access.mockImplementationOnce(async (path, mode) => {
             expect(path).toBe(filePath)

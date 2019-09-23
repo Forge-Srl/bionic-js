@@ -1,7 +1,7 @@
 class DebugLog {
 
     info(message) {
-        console.info(message)
+        process.stdout.write(message + '\n')
     }
 
     error(error) {

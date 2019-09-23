@@ -36,6 +36,12 @@ class BaseFile {
         })
     }
 
+    isInsideDir(...dirPathSegments) {
+        const nodeModulesDir = path.resolve(...dirPathSegments)
+        const nodeModulesRelativePath = path.relative(nodeModulesDir, this.absolutePath)
+        return nodeModulesRelativePath.match(/^\.\.[\/\\]/) === null
+    }
+
     async exists() {
         return this.checkAccess(fs.orig.constants.F_OK)
     }
