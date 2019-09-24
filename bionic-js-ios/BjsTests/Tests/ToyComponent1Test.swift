@@ -28,12 +28,10 @@ class ToyComponent1Test: XCTestCase {
     }
     
     func testFromJs_sameInstance() {
+        
         let toy = ToyComponent1("1", "2")
         UserOfToyComponent1.lastToy = toy
         XCTAssertEqual(UserOfToyComponent1.lastToy, toy)
-        
-        testExpectation = expectation(description: "")
-        wait(for: [testExpectation], timeout: 100)
     }
     
     func testDeallocation_instanceOnlyInJs() {
