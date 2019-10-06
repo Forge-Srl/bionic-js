@@ -36,9 +36,9 @@
 		C5966C9C2349378F00EE670C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C5966C9E2349378F00EE670C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C5B809FD2349FE28002FD95C /* HostProjectTarget2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostProjectTarget2.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C5B809FE2349FE28002FD95C /* HostProject copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "HostProject copy-Info.plist"; path = "/Users/marcovanetti/Repos/bionic-js-tool/testing-code/swift/project-with-host-files/HostProject copy-Info.plist"; sourceTree = "<absolute>"; };
+		C5B809FE2349FE28002FD95C /* HostProjectTarget2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = HostProjectTarget2.plist; path = "/Users/marcovanetti/Repos/bionic-js-tool/testing-code/swift/project-with-host-files/HostProjectTarget2.plist"; sourceTree = "<absolute>"; };
 		C5B80A0C2349FF10002FD95C /* HostProjectTarget3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostProjectTarget3.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C5B80A0D2349FF10002FD95C /* HostProjectTarget2 copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "HostProjectTarget2 copy-Info.plist"; path = "/Users/marcovanetti/Repos/bionic-js-tool/testing-code/swift/project-with-host-files/HostProjectTarget2 copy-Info.plist"; sourceTree = "<absolute>"; };
+		C5B80A0D2349FF10002FD95C /* HostProjectTarget3.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = HostProjectTarget3.plist; path = "/Users/marcovanetti/Repos/bionic-js-tool/testing-code/swift/project-with-host-files/HostProjectTarget3.plist"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,8 +71,8 @@
 			children = (
 				C5966C8F2349378B00EE670C /* HostProject */,
 				C5966C8E2349378B00EE670C /* Products */,
-				C5B809FE2349FE28002FD95C /* HostProject copy-Info.plist */,
-				C5B80A0D2349FF10002FD95C /* HostProjectTarget2 copy-Info.plist */,
+				C5B809FE2349FE28002FD95C /* HostProjectTarget2.plist */,
+				C5B80A0D2349FF10002FD95C /* HostProjectTarget3.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -433,7 +433,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = "HostProject copy-Info.plist";
+				INFOPLIST_FILE = HostProjectTarget2.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -452,7 +452,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = "HostProject copy-Info.plist";
+				INFOPLIST_FILE = HostProjectTarget2.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -471,7 +471,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = "HostProjectTarget2 copy-Info.plist";
+				INFOPLIST_FILE = HostProjectTarget3.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -490,7 +490,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = "HostProjectTarget2 copy-Info.plist";
+				INFOPLIST_FILE = HostProjectTarget3.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
