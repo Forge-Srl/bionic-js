@@ -6,7 +6,10 @@ module.exports = {
     guestDir: localPath('guest'),
     guestIgnores: ['/tests'],
     guestNativeDir: localPath('guest/native'),
-    packageDir: localPath('host/package'),
-    hostDir: localPath('host'),
-    hostLanguage: 'swift'
+    hostTargets: {
+        hostLanguage: 'swift',
+        hostDir: localPath('host'),
+        packageDir: localPath('host/package'),
+        xcodeProjectPath: localPath('host/HostProject.xcodeproj'),
+    },
 }
