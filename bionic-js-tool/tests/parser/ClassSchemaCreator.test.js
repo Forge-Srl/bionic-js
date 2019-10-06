@@ -27,23 +27,23 @@ describe('ClassSchemaCreator', () => {
     test('getSuperclassSchemaStack, no superclass', () => {
         const classSchemaCreator = new ClassSchemaCreator({superclassName: null})
         const superclassSchemaStack = ['schema']
-        expect(classSchemaCreator.getSuperclassSchemaStack(null, superclassSchemaStack)).toBe(superclassSchemaStack)
+
+        const fakeCreators = {
+            get: superclassName => {
+                expect(superclassName).toBe(null)
+                return undefined
+            },
+        }
+        expect(classSchemaCreator.getSuperclassSchemaStack(fakeCreators, superclassSchemaStack)).toBe(superclassSchemaStack)
     })
 
     test('getSuperclassSchemaStack, inheritance cycle', () => {
         const classSchemaCreator = new ClassSchemaCreator({name: 'Class1', superclassName: 'SuperClass1'})
-
         const superclassSchemaStack = [{name: 'SuperClass1'}]
-        expect(() => classSchemaCreator.getSuperclassSchemaStack(null, superclassSchemaStack))
+
+        const fakeCreators = {get: () => 'superclassSchemaCreator'}
+        expect(() => classSchemaCreator.getSuperclassSchemaStack(fakeCreators, superclassSchemaStack))
             .toThrow('class "Class1" extends superclass "SuperClass1" but this generates an inheritance cycle (e.g. A extends B, B extends A)')
-    })
-
-    test('getSuperclassSchemaStack, superclass not exported', () => {
-        const classSchemaCreator = new ClassSchemaCreator({name: 'Class1', superclassName: 'SuperClass1'})
-
-        const classSchemaCreators = new Map()
-        expect(() => classSchemaCreator.getSuperclassSchemaStack(classSchemaCreators, []))
-            .toThrow('class "Class1" extends a superclass "SuperClass1" that has not been exported')
     })
 
     test('getSuperclassSchemaStack', () => {
@@ -72,8 +72,15 @@ describe('ClassSchemaCreator', () => {
             methodExplorers: [constructorExplorer, methodExplorer, getterExplorer1, getterExplorer2],
         })
 
+        const fakeCreators = {
+            get: superclassName => {
+                expect(superclassName).toBe('SuperclassName')
+                return {name: 'SuperclassNameFromCreator'}
+            },
+        }
+
         classSchemaCreator.getSuperclassSchemaStack = (classSchemaCreators, superclassSchemaStack) => {
-            expect(classSchemaCreators).toBe('classSchemaCreators')
+            expect(classSchemaCreators).toBe(fakeCreators)
             expect(superclassSchemaStack).toBe('superclassSchemaStack')
             return 'superclassSchemaStack'
         }
@@ -99,17 +106,43 @@ describe('ClassSchemaCreator', () => {
             return {schema: getterSchema}
         })
 
-        const classSchema = classSchemaCreator.getSchema('classSchemaCreators', 'superclassSchemaStack')
+        const classSchema = classSchemaCreator.getSchema(fakeCreators, 'superclassSchemaStack')
         expect(classSchema).toBeInstanceOf(Class)
         expect(classSchema.name).toBe('Class1')
         expect(classSchema.description).toBe('Description')
         expect(classSchema.constructors).toStrictEqual([constructorSchema])
         expect(classSchema.methods).toStrictEqual([methodSchema])
         expect(classSchema.properties).toStrictEqual([getterSchema])
-        expect(classSchema.superclassName).toStrictEqual('SuperclassName')
+        expect(classSchema.superclassName).toStrictEqual('SuperclassNameFromCreator')
         expect(classSchema.modulePath).toStrictEqual('/module/path')
 
         expect(classSchemaCreator.getSchema()).toBe(classSchema)
+    })
+
+    test('getSchema, superclass not exported', () => {
+        const classSchemaCreator = new ClassSchemaCreator({
+            name: 'Class1',
+            description: 'Description',
+            superclassName: 'SuperclassName',
+            modulePath: '/module/path',
+            methodExplorers: [],
+        })
+
+        const fakeCreators = {
+            get: superclassName => {
+                expect(superclassName).toBe('SuperclassName')
+                return undefined
+            },
+        }
+
+        classSchemaCreator.getSuperclassSchemaStack = (classSchemaCreators, superclassSchemaStack) => {
+            expect(classSchemaCreators).toBe(fakeCreators)
+            expect(superclassSchemaStack).toBe('superclassSchemaStack')
+            return 'superclassSchemaStack'
+        }
+
+        const classSchema = classSchemaCreator.getSchema(fakeCreators, 'superclassSchemaStack')
+        expect(classSchema.superclassName).toBe(null)
     })
 
     test('getSchema, error getting schema', () => {

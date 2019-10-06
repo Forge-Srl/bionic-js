@@ -1,5 +1,6 @@
 const {DebugLog} = require('./DebugLog')
 const {Configuration} = require('./Configuration')
+const {HostProject} = require('./HostProject')
 const {GuestWatcher} = require('./GuestWatcher')
 const {GlobalSchemaCreator} = require('../parser/GlobalSchemaCreator')
 const {Directory} = require('./Directory')
@@ -14,14 +15,18 @@ class BjsSync {
 
     async sync() {
         try {
-            const config = await Configuration.fromPath(this.configurationPath)
-
-            const guestWatcher = await GuestWatcher.build(config)
-            const guestFiles = await guestWatcher.getInitialFiles()
-
+            const config = Configuration.fromPath(this.configurationPath)
+            const guestFiles = await GuestWatcher.build(config).getInitialFiles()
             const guestFilesWithSchemas = await this.processGuestFiles(guestFiles)
-            await this.syncHostFiles(config.hostDir, config.guestNativeDir, config.hostLanguage, guestFilesWithSchemas)
-            await this.syncPackageFiles(config.packageDir, guestFilesWithSchemas)
+
+            for (const targetConfig of config.hostTargets) {
+
+                const hostProject = HostProject.build(targetConfig)
+                await this.syncHostFiles(targetConfig, hostProject, guestFilesWithSchemas)
+                await this.syncPackageFiles(targetConfig, hostProject, guestFilesWithSchemas)
+                await hostProject.save()
+            }
+
         } catch (error) {
             this.log.error(error)
         }
@@ -37,35 +42,36 @@ class BjsSync {
         return guestFilesWithSchemas
     }
 
-    async syncHostFiles(hostDirPath, guestNativeDirPath, hostLanguage, guestFilesWithSchemas) {
-        const hostDir = new Directory(hostDirPath)
+    async syncHostFiles(targetConfig, hostProject, guestFilesWithSchemas) {
+        const hostDir = new Directory(targetConfig.hostDir)
         this.log.info(`Processing host files dir "${hostDir.path}"`)
 
         this.log.info(` Deleting files\n`)
-        await hostDir.delete()
+        await hostProject.cleanHostDir(hostDir)
 
         this.log.info(` Generating host files...`)
         await Promise.all(guestFilesWithSchemas.map(guestFileWithSchema => {
 
-            const hostFile = HostFile.build(guestFileWithSchema.guestFile, hostDirPath, guestNativeDirPath, hostLanguage)
+            const hostFile = HostFile.build(guestFileWithSchema.guestFile, targetConfig)
             this.log.info(`  ${hostFile.relativePath}`)
-            return hostFile.generate(guestFileWithSchema.schema)
+            return hostFile.generate(guestFileWithSchema.schema, hostProject)
         }))
         this.log.info(' ...done\n')
     }
 
-    async syncPackageFiles(packageDirPath, guestFilesWithSchemas) {
-        const packageDir = new Directory(packageDirPath)
+    async syncPackageFiles(targetConfig, hostProject, guestFilesWithSchemas) {
+        const packageDir = new Directory(targetConfig.packageDir)
         this.log.info(`Processing package files dir "${packageDir.path}"`)
 
         this.log.info(` Deleting files\n`)
-        await packageDir.delete()
+        await hostProject.cleanPackageDir(packageDir)
 
-        this.log.info(' Copying package files...')
+        this.log.info(' Generating package files...')
         await Promise.all(guestFilesWithSchemas.map(guestFileWithSchema => {
+
             const packageFile = PackageFile.build(guestFileWithSchema.guestFile, packageDir.path)
             this.log.info(`  ${packageFile.relativePath}`)
-            return packageFile.generate()
+            return packageFile.generate(hostProject)
         }))
         this.log.info(' ...done\n')
     }

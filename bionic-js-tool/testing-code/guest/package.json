@@ -2,7 +2,7 @@
   "name": "guest-code",
   "version": "1.0",
   "description": "BionicJS guest code example",
-  "author": "Forge srl",
+  "author": "Marco Vanetti",
   "license": "SEE LICENSE IN license.txt",
   "private": true,
   "main": "Guest1.js",

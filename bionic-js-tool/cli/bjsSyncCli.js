@@ -1,9 +1,10 @@
 const path = require('path')
 const {BjsSync} = require('../filesystem/BjsSync')
-const {ConsoleLog} = require('./ConsoleLog')
+//const {ConsoleLog} = require('./ConsoleLog')
+const {DebugLog} = require('../filesystem/DebugLog')
 
 async function main() {
-    const consoleLog = new ConsoleLog()
+    const consoleLog = new DebugLog()
 
     const args = process.argv.slice(2)
     if (args.length === 0 || args[0].trim() === '') {

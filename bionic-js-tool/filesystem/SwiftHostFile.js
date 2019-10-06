@@ -4,30 +4,26 @@ const {SwiftWrapperClassGenerator} = require('../generation/swift/SwiftWrapperCl
 
 class SwiftHostFile extends HostFile {
 
-    static build(guestFile, hostDirPath, guestNativeDirPath) {
-        return new SwiftHostFile(guestFile.composeNewPath(hostDirPath, '.swift'), hostDirPath, guestNativeDirPath, guestFile)
+    static build(guestFile, config) {
+        const isNativeWrapper = guestFile.isInsideDir(config.guestNativeDir)
+        const newFileName = `${guestFile.name}${isNativeWrapper ? 'Wrapper' : ''}`
+        return new SwiftHostFile(guestFile.composeNewPath(config.hostDir, newFileName, '.swift'), config.hostDir,
+            guestFile, isNativeWrapper)
     }
 
-    async generate(schema) {
-        await this.dir.ensureExists()
-
-        const hostFileGenerator = this.guestFile.isInsideDir(this.guestNativeDirPath) ?
-            new SwiftWrapperClassGenerator(schema) : new SwiftHostClassGenerator(schema)
+    async generate(schema, hostProject) {
+        const hostFileGenerator = this.isNativeWrapper ? new SwiftWrapperClassGenerator(schema) :
+            new SwiftHostClassGenerator(schema)
 
         let hostFileContent
         try {
             hostFileContent = hostFileGenerator.getSource()
         } catch (error) {
-            error.message = `generating code in host file "${this.relativePath}"\n${error.message}`
+            error.message = `generating host code from guest file "${this.guestFile.relativePath}"\n${error.message}`
             throw error
         }
 
-        try {
-            return await this.setContent(hostFileContent)
-        } catch (error) {
-            error.message = `writing host file "${this.relativePath}"\n${error.message}`
-            throw error
-        }
+        await hostProject.setHostFileContent(this, hostFileContent)
     }
 }
 

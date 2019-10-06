@@ -20,7 +20,9 @@ class ClassSchemaCreator {
 
     getSuperclassSchemaStack(classSchemaCreators, superclassSchemaStack) {
         const superclassName = this.classExplorer.superclassName
-        if (!superclassName) {
+
+        const superclassSchemaCreator = classSchemaCreators.get(superclassName)
+        if (!superclassSchemaCreator) {
             return superclassSchemaStack
         }
 
@@ -28,12 +30,6 @@ class ClassSchemaCreator {
             throw new Error(`class "${this.name}" extends superclass "${superclassName}" but this generates an ` +
                 'inheritance cycle (e.g. A extends B, B extends A)')
         }
-
-        const superclassSchemaCreator = classSchemaCreators.get(superclassName)
-        if (!superclassSchemaCreator) {
-            throw new Error(`class "${this.name}" extends a superclass "${superclassName}" that has not been exported`)
-        }
-
         return [superclassSchemaCreator.getSchema(classSchemaCreators, superclassSchemaStack), ...superclassSchemaStack]
     }
 
@@ -47,13 +43,16 @@ class ClassSchemaCreator {
                     newSuperclassSchemaStack,
                 ).schema)
 
+                const superclassSchemaCreator = classSchemaCreators.get(this.classExplorer.superclassName)
+                const superclassName = superclassSchemaCreator ? superclassSchemaCreator.name : null
+
                 this._schema = new Class(
                     this.name,
                     this.classExplorer.description,
                     methodSchemas.filter(method => method instanceof Constructor),
                     methodSchemas.filter(method => method instanceof Property),
                     methodSchemas.filter(method => method instanceof Method),
-                    this.classExplorer.superclassName,
+                    superclassName,
                     this.modulePath)
             } catch (error) {
                 error.message = `extracting schema from class ${this.name} in module "${this.modulePath}"\n${error.message}`

@@ -2,16 +2,15 @@ const {File} = require('./File')
 
 class HostFile extends File {
 
-    static build(guestFile, hostDirPath, guestNativeDirPath, language) {
-        const languageCode = language.charAt(0).toUpperCase() + language.slice(1)
-        const exportFieldName = `${languageCode}HostFile`
+    static build(guestFile, config) {
+        const exportFieldName = `${config.hostLanguage}HostFile`
         const LanguageHostFile = require(`./${exportFieldName}`)[exportFieldName]
-        return LanguageHostFile.build(guestFile, hostDirPath, guestNativeDirPath)
+        return LanguageHostFile.build(guestFile, config)
     }
 
-    constructor(path, hostDirPath, guestNativeDirPath, guestFile) {
-        super(path, hostDirPath)
-        Object.assign(this, {guestNativeDirPath, guestFile})
+    constructor(path, hostDir, guestFile, isNativeWrapper) {
+        super(path, hostDir)
+        Object.assign(this, {guestFile, isNativeWrapper})
     }
 }
 

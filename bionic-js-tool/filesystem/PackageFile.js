@@ -12,25 +12,18 @@ class PackageFile extends File {
         return new PackageFile(packageFilePath, packageDirPath, guestFile)
     }
 
-    async generate() {
-        await this.dir.ensureExists()
-
+    async generate(hostProject) {
         let guestFileContent
         try {
             guestFileContent = await this.guestFile.getContent()
         } catch (error) {
-            error.message = `reading guest code file "${this.guestFile.path}"\n${error.message}`
+            error.message = `reading guest code file "${this.guestFile.relativePath}"\n${error.message}`
             throw error
         }
 
         const packageFileContent = guestFileContent
 
-        try {
-            await this.setContent(packageFileContent)
-        } catch (error) {
-            error.message = `writing package file "${this.path}"\n${error.message}`
-            throw error
-        }
+        await hostProject.setPackageFileContent(this, packageFileContent)
     }
 }
 

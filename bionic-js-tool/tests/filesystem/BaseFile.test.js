@@ -37,9 +37,14 @@ describe('BaseFile', () => {
         expect(baseFile.relativePath).toBe('dir2/filePath.js')
     })
 
-    test('composeNewPath with new root dir and extension', async () => {
-        const result = await baseFile.composeNewPath('/new/root/dir', '.new')
-        expect(result).toBe('/new/root/dir/dir2/filePath.new')
+    test('composeNewPath with new root dir, name and extension', async () => {
+        const result = await baseFile.composeNewPath('/new/root/dir', 'newName', '.new')
+        expect(result).toBe('/new/root/dir/dir2/newName.new')
+    })
+
+    test('composeNewPath with new root dir and name', async () => {
+        const result = await baseFile.composeNewPath('/new/root/dir', 'newName')
+        expect(result).toBe('/new/root/dir/dir2/newName.js')
     })
 
     test('composeNewPath with new root dir', async () => {

@@ -2,7 +2,7 @@
   "name": "broken-dependencies",
   "version": "1.0",
   "description": "modules with broken dependencies",
-  "author": "Forge srl",
+  "author": "Marco Vanetti",
   "license": "SEE LICENSE IN license.txt",
   "private": true,
   "main": "index.js",

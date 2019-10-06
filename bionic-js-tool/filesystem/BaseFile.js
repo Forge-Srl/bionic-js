@@ -28,10 +28,10 @@ class BaseFile {
         return path.relative(this.rootDirPath, this.path)
     }
 
-    composeNewPath(newRootDirPath, newExtension) {
+    composeNewPath(newRootDirPath, newName, newExtension) {
         return path.format({
             dir: path.resolve(newRootDirPath, path.dirname(this.relativePath)),
-            name: this.name,
+            name: newName !== undefined ? newName : this.name,
             ext: newExtension !== undefined ? newExtension : this.ext,
         })
     }
