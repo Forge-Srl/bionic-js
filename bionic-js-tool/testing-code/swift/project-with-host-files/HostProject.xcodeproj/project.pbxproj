@@ -24,6 +24,25 @@
 		C5B80A072349FF10002FD95C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5966C992349378F00EE670C /* Preview Assets.xcassets */; };
 		C5B80A082349FF10002FD95C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5966C962349378F00EE670C /* Assets.xcassets */; };
 		C5B80A0E2349FF52002FD95C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5966C902349378B00EE670C /* AppDelegate.swift */; };
+		C5B80A24234A1A0E002FD95C /* FerrariCalifornia.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A15234A1A0E002FD95C /* FerrariCalifornia.swift */; };
+		C5B80A25234A1A0E002FD95C /* FerrariCalifornia.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A15234A1A0E002FD95C /* FerrariCalifornia.swift */; };
+		C5B80A26234A1A0E002FD95C /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A17234A1A0E002FD95C /* Vehicle.swift */; };
+		C5B80A27234A1A0E002FD95C /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A17234A1A0E002FD95C /* Vehicle.swift */; };
+		C5B80A28234A1A0E002FD95C /* MotorVehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A18234A1A0E002FD95C /* MotorVehicle.swift */; };
+		C5B80A29234A1A0E002FD95C /* MotorVehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A18234A1A0E002FD95C /* MotorVehicle.swift */; };
+		C5B80A2A234A1A0E002FD95C /* TeslaRoadster.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A19234A1A0E002FD95C /* TeslaRoadster.swift */; };
+		C5B80A2B234A1A0E002FD95C /* TeslaRoadster.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A19234A1A0E002FD95C /* TeslaRoadster.swift */; };
+		C5B80A36234A1A0E002FD95C /* EngineWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A23234A1A0E002FD95C /* EngineWrapper.swift */; };
+		C5B80A37234A1A0E002FD95C /* EngineWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A23234A1A0E002FD95C /* EngineWrapper.swift */; };
+		C5B80A39234A1A8B002FD95C /* package.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C5B80A38234A1A8B002FD95C /* package.bundle */; };
+		C5B80A3A234A1A8B002FD95C /* package.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C5B80A38234A1A8B002FD95C /* package.bundle */; };
+		C5B80A40234A1B19002FD95C /* Bjs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5B80A3F234A1B19002FD95C /* Bjs.framework */; };
+		C5B80A41234A1B19002FD95C /* Bjs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5B80A3F234A1B19002FD95C /* Bjs.framework */; };
+		C5B80A43234A1BED002FD95C /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A42234A1BED002FD95C /* Engine.swift */; };
+		C5B80A44234A1BED002FD95C /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A42234A1BED002FD95C /* Engine.swift */; };
+		C5B80A47234A860A002FD95C /* target1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C5B80A46234A860A002FD95C /* target1.plist */; };
+		C5B80A49234A8612002FD95C /* target2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C5B80A48234A8612002FD95C /* target2.plist */; };
+		C5B80A4B234A861C002FD95C /* target3.plist in Resources */ = {isa = PBXBuildFile; fileRef = C5B80A4A234A861C002FD95C /* target3.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,11 +53,19 @@
 		C5966C962349378F00EE670C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C5966C992349378F00EE670C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C5966C9C2349378F00EE670C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		C5966C9E2349378F00EE670C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C5B809FD2349FE28002FD95C /* HostProjectTarget2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostProjectTarget2.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C5B809FE2349FE28002FD95C /* HostProjectTarget2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = HostProjectTarget2.plist; path = "/Users/marcovanetti/Repos/bionic-js-tool/testing-code/swift/project-with-host-files/HostProjectTarget2.plist"; sourceTree = "<absolute>"; };
 		C5B80A0C2349FF10002FD95C /* HostProjectTarget3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostProjectTarget3.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C5B80A0D2349FF10002FD95C /* HostProjectTarget3.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = HostProjectTarget3.plist; path = "/Users/marcovanetti/Repos/bionic-js-tool/testing-code/swift/project-with-host-files/HostProjectTarget3.plist"; sourceTree = "<absolute>"; };
+		C5B80A15234A1A0E002FD95C /* FerrariCalifornia.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FerrariCalifornia.swift; sourceTree = "<group>"; };
+		C5B80A17234A1A0E002FD95C /* Vehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vehicle.swift; sourceTree = "<group>"; };
+		C5B80A18234A1A0E002FD95C /* MotorVehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotorVehicle.swift; sourceTree = "<group>"; };
+		C5B80A19234A1A0E002FD95C /* TeslaRoadster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeslaRoadster.swift; sourceTree = "<group>"; };
+		C5B80A23234A1A0E002FD95C /* EngineWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineWrapper.swift; sourceTree = "<group>"; };
+		C5B80A38234A1A8B002FD95C /* package.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = package.bundle; sourceTree = "<group>"; };
+		C5B80A3F234A1B19002FD95C /* Bjs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bjs.framework; sourceTree = "<group>"; };
+		C5B80A42234A1BED002FD95C /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
+		C5B80A46234A860A002FD95C /* target1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = target1.plist; sourceTree = "<group>"; };
+		C5B80A48234A8612002FD95C /* target2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = target2.plist; sourceTree = "<group>"; };
+		C5B80A4A234A861C002FD95C /* target3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = target3.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5B80A40234A1B19002FD95C /* Bjs.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5B80A41234A1B19002FD95C /* Bjs.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,8 +100,6 @@
 			children = (
 				C5966C8F2349378B00EE670C /* HostProject */,
 				C5966C8E2349378B00EE670C /* Products */,
-				C5B809FE2349FE28002FD95C /* HostProjectTarget2.plist */,
-				C5B80A0D2349FF10002FD95C /* HostProjectTarget3.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -89,12 +116,16 @@
 		C5966C8F2349378B00EE670C /* HostProject */ = {
 			isa = PBXGroup;
 			children = (
+				C5B80A11234A19AF002FD95C /* Bjs */,
 				C5966C902349378B00EE670C /* AppDelegate.swift */,
+				C5B80A42234A1BED002FD95C /* Engine.swift */,
 				C5966C922349378B00EE670C /* SceneDelegate.swift */,
 				C5966C942349378B00EE670C /* ContentView.swift */,
 				C5966C962349378F00EE670C /* Assets.xcassets */,
+				C5B80A46234A860A002FD95C /* target1.plist */,
+				C5B80A48234A8612002FD95C /* target2.plist */,
+				C5B80A4A234A861C002FD95C /* target3.plist */,
 				C5966C9B2349378F00EE670C /* LaunchScreen.storyboard */,
-				C5966C9E2349378F00EE670C /* Info.plist */,
 				C5966C982349378F00EE670C /* Preview Content */,
 			);
 			path = HostProject;
@@ -106,6 +137,44 @@
 				C5966C992349378F00EE670C /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		C5B80A11234A19AF002FD95C /* Bjs */ = {
+			isa = PBXGroup;
+			children = (
+				C5B80A3F234A1B19002FD95C /* Bjs.framework */,
+				C5B80A14234A19DB002FD95C /* host */,
+			);
+			name = Bjs;
+			sourceTree = "<group>";
+		};
+		C5B80A14234A19DB002FD95C /* host */ = {
+			isa = PBXGroup;
+			children = (
+				C5B80A38234A1A8B002FD95C /* package.bundle */,
+				C5B80A15234A1A0E002FD95C /* FerrariCalifornia.swift */,
+				C5B80A16234A1A0E002FD95C /* libs */,
+				C5B80A22234A1A0E002FD95C /* native */,
+				C5B80A19234A1A0E002FD95C /* TeslaRoadster.swift */,
+			);
+			path = host;
+			sourceTree = "<group>";
+		};
+		C5B80A16234A1A0E002FD95C /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				C5B80A17234A1A0E002FD95C /* Vehicle.swift */,
+				C5B80A18234A1A0E002FD95C /* MotorVehicle.swift */,
+			);
+			path = libs;
+			sourceTree = "<group>";
+		};
+		C5B80A22234A1A0E002FD95C /* native */ = {
+			isa = PBXGroup;
+			children = (
+				C5B80A23234A1A0E002FD95C /* EngineWrapper.swift */,
+			);
+			path = native;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -202,8 +271,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5B80A47234A860A002FD95C /* target1.plist in Resources */,
 				C5966C9D2349378F00EE670C /* LaunchScreen.storyboard in Resources */,
 				C5966C9A2349378F00EE670C /* Preview Assets.xcassets in Resources */,
+				C5B80A39234A1A8B002FD95C /* package.bundle in Resources */,
 				C5966C972349378F00EE670C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -212,8 +283,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5B80A49234A8612002FD95C /* target2.plist in Resources */,
 				C5B809F72349FE28002FD95C /* LaunchScreen.storyboard in Resources */,
 				C5B809F82349FE28002FD95C /* Preview Assets.xcassets in Resources */,
+				C5B80A3A234A1A8B002FD95C /* package.bundle in Resources */,
 				C5B809F92349FE28002FD95C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -223,6 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5B80A062349FF10002FD95C /* LaunchScreen.storyboard in Resources */,
+				C5B80A4B234A861C002FD95C /* target3.plist in Resources */,
 				C5B80A072349FF10002FD95C /* Preview Assets.xcassets in Resources */,
 				C5B80A082349FF10002FD95C /* Assets.xcassets in Resources */,
 			);
@@ -236,7 +310,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5966C912349378B00EE670C /* AppDelegate.swift in Sources */,
+				C5B80A24234A1A0E002FD95C /* FerrariCalifornia.swift in Sources */,
+				C5B80A2A234A1A0E002FD95C /* TeslaRoadster.swift in Sources */,
+				C5B80A28234A1A0E002FD95C /* MotorVehicle.swift in Sources */,
 				C5966C932349378B00EE670C /* SceneDelegate.swift in Sources */,
+				C5B80A36234A1A0E002FD95C /* EngineWrapper.swift in Sources */,
+				C5B80A26234A1A0E002FD95C /* Vehicle.swift in Sources */,
+				C5B80A43234A1BED002FD95C /* Engine.swift in Sources */,
 				C5966C952349378B00EE670C /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -246,7 +326,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5B809F22349FE28002FD95C /* AppDelegate.swift in Sources */,
+				C5B80A25234A1A0E002FD95C /* FerrariCalifornia.swift in Sources */,
+				C5B80A2B234A1A0E002FD95C /* TeslaRoadster.swift in Sources */,
+				C5B80A29234A1A0E002FD95C /* MotorVehicle.swift in Sources */,
 				C5B809F32349FE28002FD95C /* SceneDelegate.swift in Sources */,
+				C5B80A37234A1A0E002FD95C /* EngineWrapper.swift in Sources */,
+				C5B80A27234A1A0E002FD95C /* Vehicle.swift in Sources */,
+				C5B80A44234A1BED002FD95C /* Engine.swift in Sources */,
 				C5B809F42349FE28002FD95C /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -395,7 +481,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = HostProject/Info.plist;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/HostProject/frameworks",
+					"$(PROJECT_DIR)/HostProject",
+				);
+				INFOPLIST_FILE = HostProject/target1.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -414,7 +505,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = HostProject/Info.plist;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/HostProject/frameworks",
+					"$(PROJECT_DIR)/HostProject",
+				);
+				INFOPLIST_FILE = HostProject/target1.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -433,7 +529,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = HostProjectTarget2.plist;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/HostProject/frameworks",
+					"$(PROJECT_DIR)/HostProject",
+				);
+				INFOPLIST_FILE = HostProject/target2.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -452,7 +553,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = HostProjectTarget2.plist;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/HostProject/frameworks",
+					"$(PROJECT_DIR)/HostProject",
+				);
+				INFOPLIST_FILE = HostProject/target2.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -471,7 +577,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = HostProjectTarget3.plist;
+				INFOPLIST_FILE = HostProject/target3.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -490,7 +596,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = HostProjectTarget3.plist;
+				INFOPLIST_FILE = HostProject/target3.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
