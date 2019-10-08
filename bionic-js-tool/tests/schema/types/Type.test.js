@@ -9,6 +9,19 @@ describe('Type', () => {
         TypeGeneratorFactory = t.requireModule('generation/factory/TypeGeneratorFactory').TypeGeneratorFactory
     })
 
+    test('fromObj String', () => {
+        const instance = Type.fromObj({type: 'String'})
+        const StringType = t.requireModule('schema/types/StringType').StringType
+        expect(instance).toBeInstanceOf(StringType)
+    })
+
+    test('fromObj Class', () => {
+        const instance = Type.fromObj({type: 'Object', className: 'MyName'})
+        const ObjectType = t.requireModule('schema/types/ObjectType').ObjectType
+        expect(instance).toBeInstanceOf(ObjectType)
+        expect(instance.className).toBe('MyName')
+    })
+
     test('isValid', () => {
         expect(type.isValid).toEqual({validity: true, error: null})
     })
@@ -33,16 +46,8 @@ describe('Type', () => {
         expect(testType.toString()).toBe('test...')
     })
 
-    test('fromObj String', () => {
-        const instance = Type.fromObj({type: 'String'})
-        const StringType = t.requireModule('schema/types/StringType').StringType
-        expect(instance).toBeInstanceOf(StringType)
-    })
+    test('resolveNativeType', () => {
+        expect(type.resolveNativeType()).toBe(type)
 
-    test('fromObj Class', () => {
-        const instance = Type.fromObj({type: 'Object', className: 'MyName'})
-        const ObjectType = t.requireModule('schema/types/ObjectType').ObjectType
-        expect(instance).toBeInstanceOf(ObjectType)
-        expect(instance.className).toBe('MyName')
     })
 })

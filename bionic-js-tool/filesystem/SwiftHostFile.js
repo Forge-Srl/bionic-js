@@ -4,15 +4,13 @@ const {SwiftWrapperClassGenerator} = require('../generation/swift/SwiftWrapperCl
 
 class SwiftHostFile extends HostFile {
 
-    static build(guestFile, config) {
-        const isNativeWrapper = guestFile.isInsideDir(config.guestNativeDir)
-        const newFileName = `${guestFile.name}${isNativeWrapper ? 'Wrapper' : ''}`
-        return new SwiftHostFile(guestFile.composeNewPath(config.hostDir, newFileName, '.swift'), config.hostDir,
-            guestFile, isNativeWrapper)
+    static build(guestFile, targetConfig) {
+        const newFileName = `${guestFile.name}${guestFile.isNative ? 'Wrapper' : ''}`
+        return new SwiftHostFile(guestFile.composeNewPath(targetConfig.hostDir, newFileName, '.swift'), targetConfig.hostDir, guestFile)
     }
 
     async generate(schema, hostProject) {
-        const hostFileGenerator = this.isNativeWrapper ? new SwiftWrapperClassGenerator(schema) :
+        const hostFileGenerator = this.this.guestFile.isNative ? new SwiftWrapperClassGenerator(schema) :
             new SwiftHostClassGenerator(schema)
 
         let hostFileContent

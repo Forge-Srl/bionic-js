@@ -5,8 +5,8 @@ const {LambdaType} = require('../schema/types/LambdaType')
 
 class MethodSchemaCreator {
 
-    constructor(methodExplorers, superclassSchemaStack) {
-        Object.assign(this, {methodExplorers, superclassSchemaStack})
+    constructor(methodExplorers, context) {
+        Object.assign(this, {methodExplorers, context})
     }
 
     get name() {
@@ -47,11 +47,10 @@ class MethodSchemaCreator {
 
     get type() {
         if (!this._type) {
-            // TODO: può succedere che type !== undefined???
-            const types = this.methodExplorers.filter(explorer => explorer.type !== undefined).map(explorer => explorer.type)
+            const types = this.methodExplorers.map(explorer => explorer.type)
             if (types.some(type => !type.isEqualTo(types[0])))
                 throw new Error(`"${this.name}" is annotated multiple times with different types`)
-            this._type = types[0]
+            this._type = types[0].resolveNativeType(this.context.jsModuleNames, this.context.nativeModuleNames)
         }
         return this._type
     }
@@ -71,7 +70,7 @@ class MethodSchemaCreator {
     }
 
     get methodSchema() {
-        if (this.superclassSchemaStack.some(schema => schema.methods.some(method => method.name === this.name))) {
+        if (this.context.superclassMethodNames.has(this.name)) {
             throw new Error(`method "${this.name}" was already exported in superclass`)
         }
 
@@ -80,7 +79,7 @@ class MethodSchemaCreator {
     }
 
     get propertySchema() {
-        if (this.superclassSchemaStack.some(schema => schema.properties.some(property => property.name === this.name))) {
+        if (this.context.superclassPropertyNames.has(this.name)) {
             throw new Error(`property "${this.name}" was already exported in superclass`)
         }
 

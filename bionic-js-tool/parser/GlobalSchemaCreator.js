@@ -6,48 +6,35 @@ class GlobalSchemaCreator {
         Object.assign(this, {guestFiles})
     }
 
-    get getGuestFilesWithSchemaCreatorsPromises() {
+    get moduleCreatorPromises() {
         return this.guestFiles.filter(guestFile => guestFile.isExportable)
-            .map(guestFile =>
-                (async () => {
-                    const classSchemaCreator = (await new ModuleSchemaCreator(guestFile).getClassSchemaCreators())[0]
-                    return classSchemaCreator ? {guestFile, classSchemaCreator} : undefined
-                })(),
-            )
+            .map(guestFile => ModuleSchemaCreator.build(guestFile))
     }
 
-    async getGuestFilesWithSchemaCreators() {
-        if (!this._guestFilesWithSchemaCreators) {
-            const guestFilesWithSchemaCreators = (await Promise.all(this.getGuestFilesWithSchemaCreatorsPromises))
-                .filter(entry => entry)
+    async getModuleCreators() {
+        if (!this._moduleCreators) {
+            const moduleCreators = (await Promise.all(this.moduleCreatorPromises)).filter(moduleCreator => moduleCreator.exporting)
+            const processedModules = new Map()
 
-            const schemaCreatorsMap = new Map()
-            guestFilesWithSchemaCreators.map(entry => entry.classSchemaCreator).forEach(schemaCreator => {
-
-                const alreadyExistentCreator = schemaCreatorsMap.get(schemaCreator.name)
-                if (alreadyExistentCreator) {
-                    throw new Error(`class ${schemaCreator.name} in module "${schemaCreator.modulePath}" was already ` +
-                        `exported in module "${alreadyExistentCreator.modulePath}"`)
+            moduleCreators.forEach(moduleCreator => {
+                const alreadyExistentModule = processedModules.get(moduleCreator.name)
+                if (alreadyExistentModule) {
+                    throw new Error(`class ${moduleCreator.name} in module "${moduleCreator.path}" was already ` +
+                        `exported in module "${alreadyExistentModule.path}"`)
                 }
-                schemaCreatorsMap.set(schemaCreator.name, schemaCreator)
+                processedModules.set(moduleCreator.name, moduleCreator)
             })
-            this._guestFilesWithSchemaCreators = guestFilesWithSchemaCreators
+            this._moduleCreators = moduleCreators
         }
-        return this._guestFilesWithSchemaCreators
+        return this._moduleCreators
     }
 
-    async getGuestFilesWithSchemas() {
-        const guestFilesWithSchemaCreators = await this.getGuestFilesWithSchemaCreators()
-        const classSchemaCreators = new Map(guestFilesWithSchemaCreators.map(guestFileWithCreator =>
-            [guestFileWithCreator.classSchemaCreator.name, guestFileWithCreator.classSchemaCreator]))
-
-        return guestFilesWithSchemaCreators.map(guestFileWithCreator => {
-                return {
-                    guestFile: guestFileWithCreator.guestFile,
-                    schema: guestFileWithCreator.classSchemaCreator.getSchema(classSchemaCreators),
-                }
-            },
-        )
+    async getGuestFileSchemas() {
+        const moduleCreators = await this.getModuleCreators()
+        return moduleCreators.map(moduleCreator => ({
+            guestFile: moduleCreator.guestFile,
+            schema: moduleCreator.getSchema(moduleCreators),
+        }))
     }
 }
 

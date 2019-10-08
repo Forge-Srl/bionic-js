@@ -23,6 +23,15 @@ class ObjectType extends Type {
     toString() {
         return this.className
     }
+
+    resolveNativeType(jsClasses, nativeClasses) {
+        if (nativeClasses.has(this.className)) {
+            return new (require('./WrappedObjectType').WrappedObjectType)(this.className)
+        } else if (!jsClasses.has(this.className)) {
+            return new (require('./NativeObjectType').NativeObjectType)(this.className)
+        }
+        return this
+    }
 }
 
 module.exports = {ObjectType}

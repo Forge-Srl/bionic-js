@@ -17,13 +17,13 @@ class BjsSync {
         try {
             const config = Configuration.fromPath(this.configurationPath)
             const guestFiles = await GuestWatcher.build(config).getInitialFiles()
-            const guestFilesWithSchemas = await this.processGuestFiles(guestFiles)
+            const guestFilesSchemas = await this.getGuestFileSchemas(guestFiles)
 
             for (const targetConfig of config.hostTargets) {
 
                 const hostProject = HostProject.build(targetConfig)
-                await this.syncHostFiles(targetConfig, hostProject, guestFilesWithSchemas)
-                await this.syncPackageFiles(targetConfig, hostProject, guestFilesWithSchemas)
+                await this.syncHostFiles(targetConfig, hostProject, guestFilesSchemas)
+                await this.syncPackageFiles(targetConfig, hostProject, guestFilesSchemas)
                 await hostProject.save()
             }
 
@@ -32,17 +32,17 @@ class BjsSync {
         }
     }
 
-    async processGuestFiles(guestFiles) {
+    async getGuestFileSchemas(guestFiles) {
         this.log.info('Processing guest files')
 
         this.log.info(' Extracting schemas from guest files...')
         const globalSchemaCreator = new GlobalSchemaCreator(guestFiles)
-        const guestFilesWithSchemas = await globalSchemaCreator.getGuestFilesWithSchemas()
+        const guestFileSchemas = await globalSchemaCreator.getGuestFileSchemas()
         this.log.info(' ...done\n')
-        return guestFilesWithSchemas
+        return guestFileSchemas
     }
 
-    async syncHostFiles(targetConfig, hostProject, guestFilesWithSchemas) {
+    async syncHostFiles(targetConfig, hostProject, guestFilesSchemas) {
         const hostDir = new Directory(targetConfig.hostDir)
         this.log.info(`Processing host files dir "${hostDir.path}"`)
 
@@ -50,16 +50,16 @@ class BjsSync {
         await hostProject.cleanHostDir(hostDir)
 
         this.log.info(` Generating host files...`)
-        await Promise.all(guestFilesWithSchemas.map(guestFileWithSchema => {
+        await Promise.all(guestFilesSchemas.map(guestFileSchema => {
 
-            const hostFile = HostFile.build(guestFileWithSchema.guestFile, targetConfig)
+            const hostFile = HostFile.build(guestFileSchema.guestFile, targetConfig)
             this.log.info(`  ${hostFile.relativePath}`)
-            return hostFile.generate(guestFileWithSchema.schema, hostProject)
+            return hostFile.generate(guestFileSchema.schema, hostProject)
         }))
         this.log.info(' ...done\n')
     }
 
-    async syncPackageFiles(targetConfig, hostProject, guestFilesWithSchemas) {
+    async syncPackageFiles(targetConfig, hostProject, guestFilesSchemas) {
         const packageDir = new Directory(targetConfig.packageDir)
         this.log.info(`Processing package files dir "${packageDir.path}"`)
 
@@ -67,9 +67,9 @@ class BjsSync {
         await hostProject.cleanPackageDir(packageDir)
 
         this.log.info(' Generating package files...')
-        await Promise.all(guestFilesWithSchemas.map(guestFileWithSchema => {
+        await Promise.all(guestFilesSchemas.map(guestFileSchema => {
 
-            const packageFile = PackageFile.build(guestFileWithSchema.guestFile, packageDir.path)
+            const packageFile = PackageFile.build(guestFileSchema.guestFile, packageDir.path)
             this.log.info(`  ${packageFile.relativePath}`)
             return packageFile.generate(hostProject)
         }))

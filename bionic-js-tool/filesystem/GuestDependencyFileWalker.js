@@ -5,9 +5,9 @@ const {NODE_MODULES_DIR_NAME} = require('./NodeModule')
 
 class GuestDependencyFileWalker extends DirectoryWatcher {
 
-    static build(nodeModule, guestDirPath) {
+    static build(nodeModule, guestDirPath, guestNativeDirPath) {
         const guestFilesFilter = new FilesFilter([NODE_MODULES_DIR_NAME], [JSON_FILE_EXT, JS_FILE_EXT])
-        const fileFactory = file => new GuestFile(file.path, guestDirPath)
+        const fileFactory = file => new GuestFile(file.path, guestDirPath, guestNativeDirPath)
         return new GuestDependencyFileWalker(nodeModule.moduleDir.path, guestFilesFilter, fileFactory)
     }
 

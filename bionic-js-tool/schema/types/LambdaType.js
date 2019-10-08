@@ -21,7 +21,7 @@ class LambdaType extends Type {
         if (!isValid.validity) {
             return {
                 validity: false,
-                error: `invalid return type: ${isValid.error}`
+                error: `invalid return type: ${isValid.error}`,
             }
         }
         for (const parameter of this.parameters) {
@@ -29,7 +29,7 @@ class LambdaType extends Type {
             if (!isValid.validity) {
                 return {
                     validity: false,
-                    error: `invalid type for parameter:"${parameter.name}": ${isValid.error}`
+                    error: `invalid type for parameter:"${parameter.name}": ${isValid.error}`,
                 }
             }
         }
@@ -38,6 +38,11 @@ class LambdaType extends Type {
 
     toString() {
         return `(${this.parameters.map(par => par.type.toString()).join(', ')}) => ${this.returnType.toString()}`
+    }
+
+    resolveNativeType(jsClasses, nativeClasses) {
+        return new LambdaType(this.returnType.resolveNativeType(jsClasses, nativeClasses),
+            this.parameters.map(par => new Parameter(par.type.resolveNativeType(jsClasses, nativeClasses), par.name, par.description)))
     }
 }
 

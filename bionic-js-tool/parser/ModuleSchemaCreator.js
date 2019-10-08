@@ -4,30 +4,50 @@ const {ClassSchemaCreator} = require('./ClassSchemaCreator')
 
 class ModuleSchemaCreator {
 
-    constructor(guestFile) {
-        Object.assign(this, {guestFile})
+    static async build(guestFile) {
+        const moduleSrc = await guestFile.getContent()
+        try {
+            const parsedNode = parser.parse(moduleSrc, {sourceType: 'module'})
+            const classExplorers = new ModuleExplorer(parsedNode, guestFile.relativePath).classExplorers
+            return new ModuleSchemaCreator(guestFile, classExplorers)
+        } catch (error) {
+            error.message = `parsing the file "${guestFile.relativePath}"\n${error.message}`
+            throw error
+        }
     }
 
-    async getModuleExplorer() {
-        if (!this._moduleExplorer) {
-            const moduleSrc = await this.guestFile.getContent()
-            try {
-                const parsedNode = parser.parse(moduleSrc, {sourceType: 'module'})
-                this._moduleExplorer = new ModuleExplorer(parsedNode, this.guestFile.relativePath)
-            } catch (error) {
-                error.message = `parsing the file "${this.guestFile.relativePath}"\n${error.message}`
-                throw error
+    constructor(guestFile, classExplorers) {
+        Object.assign(this, {guestFile, classExplorers})
+    }
+
+    get exporting() {
+        return this.classExplorers.length > 0
+    }
+
+    get classSchemaCreator() {
+        if (!this._classSchemaCreator) {
+            if (this.classExplorers.length > 1) {
+                throw new Error(`cannot export more than one class from the module "${this.guestFile.relativePath}"`)
             }
+            this._classSchemaCreator = new ClassSchemaCreator(this.classExplorers[0])
         }
-        return this._moduleExplorer
+        return this._classSchemaCreator
     }
 
-    async getClassSchemaCreators() {
-        const classExplorers = (await this.getModuleExplorer()).classExplorers
-        if (classExplorers.length > 1) {
-            throw new Error(`cannot export more than one class from the module "${this.guestFile.relativePath}"`)
-        }
-        return classExplorers.map(classExplorer => new ClassSchemaCreator(classExplorer))
+    get name() {
+        return this.classSchemaCreator.name
+    }
+
+    get path() {
+        return this.guestFile.relativePath
+    }
+
+    get isNative() {
+        return this.guestFile.isNative
+    }
+
+    getSchema(moduleCreators) {
+        return this.classSchemaCreator.getSchema(moduleCreators)
     }
 }
 

@@ -20,12 +20,12 @@ class ArrayType extends Type {
         if (!(this.elementType instanceof Type))
             return {
                 validity: false,
-                error: 'element type is not a subclass of Type'
+                error: 'element type is not a subclass of Type',
             }
         if (this.elementType instanceof VoidType)
             return {
                 validity: false,
-                error: 'VoidType is not valid as element type'
+                error: 'VoidType is not valid as element type',
             }
         const elementTypeValidity = this.elementType.isValid
         if (!elementTypeValidity.validity)
@@ -36,6 +36,10 @@ class ArrayType extends Type {
 
     toString() {
         return `${ArrayType.typeName}<${this.elementType.toString()}>`
+    }
+
+    resolveNativeType(jsClasses, nativeClasses) {
+        return new ArrayType(this.elementType.resolveNativeType(jsClasses, nativeClasses))
     }
 }
 

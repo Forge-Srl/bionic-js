@@ -8,16 +8,23 @@ class GuestWatcher extends DirectoryWatcher {
 
     static build(config) {
         const guestFilesFilter = new FilesFilter(config.guestIgnores, [JSON_FILE_EXT, JS_FILE_EXT])
-        return new GuestWatcher(config.guestDir, guestFilesFilter, file => GuestFile.fromFile(file))
+        return new GuestWatcher(config.guestDir, guestFilesFilter, config.guestNativeDir)
+    }
+
+    constructor(rootDir, filesFilter, guestNativeDir) {
+        super(rootDir, filesFilter, file => GuestFile.fromFile(file, guestNativeDir))
+        Object.assign(this, {guestNativeDir})
     }
 
     async getDependenciesFiles() {
-        const dependencies = await NodeModule.fromModulePath(this.directory).getDependencies()
-        return (await Promise.all(dependencies.map(dep => GuestDependencyFileWalker.build(dep, this.directory).getFiles()))).flat()
+        const depModules = await NodeModule.fromModulePath(this.directory).getDependencies()
+        const depFilesPromises = depModules.map(depModule => GuestDependencyFileWalker.build(depModule, this.directory, this.guestNativeDir).getFiles())
+        return (await Promise.all(depFilesPromises)).flat()
     }
 
     async getInitialFiles() {
-        return (await Promise.all([super.getInitialFiles(), this.getDependenciesFiles()])).flat()
+        const guestFiles = (await Promise.all([super.getInitialFiles(), this.getDependenciesFiles()])).flat()
+        return [...new Map(guestFiles.map(guestFile => [guestFile.absolutePath, guestFile])).values()]
     }
 }
 

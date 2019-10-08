@@ -1,7 +1,12 @@
 const t = require('../../test-utils')
-const LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
 
 describe('LambdaType', () => {
+    let LambdaType, Parameter
+
+    beforeEach(() => {
+        LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
+        Parameter = t.requireModule('schema/Parameter').Parameter
+    })
 
     test('typeName', () => {
         expect(LambdaType.typeName).toBe('Lambda')
@@ -12,8 +17,8 @@ describe('LambdaType', () => {
             returnType: {type: 'String'},
             parameters: [
                 {type: {type: 'Int'}, name: 'par1', description: 'desc1'},
-                {type: {type: 'Any'}, name: 'par2', description: 'desc2'}
-            ]
+                {type: {type: 'Any'}, name: 'par2', description: 'desc2'},
+            ],
         })
 
         expect(lambdaType).toBeInstanceOf(LambdaType)
@@ -47,11 +52,11 @@ describe('LambdaType', () => {
     test('is valid and all is valid', () => {
         const lambdaType = new LambdaType(
             {isValid: {validity: true}},
-            [{type: {isValid: {validity: true}}}, {type: {isValid: {validity: true}}}]
+            [{type: {isValid: {validity: true}}}, {type: {isValid: {validity: true}}}],
         )
         expect(lambdaType.isValid).toEqual({
             validity: true,
-            error: null
+            error: null,
         })
     })
 
@@ -60,14 +65,14 @@ describe('LambdaType', () => {
             {
                 isValid: {
                     validity: false,
-                    error: 'return type error...'
-                }
+                    error: 'return type error...',
+                },
             },
-            [{type: {isValid: {validity: true}}}, {type: {isValid: {validity: true}}}]
+            [{type: {isValid: {validity: true}}}, {type: {isValid: {validity: true}}}],
         )
         expect(lambdaType.isValid).toEqual({
             validity: false,
-            error: 'invalid return type: return type error...'
+            error: 'invalid return type: return type error...',
         })
     })
 
@@ -79,23 +84,45 @@ describe('LambdaType', () => {
                 type: {
                     isValid: {
                         validity: false,
-                        error: 'param type error...'
-                    }
-                }
-            }, {type: {isValid: {validity: true}}}]
+                        error: 'param type error...',
+                    },
+                },
+            }, {type: {isValid: {validity: true}}}],
         )
         expect(lambdaType.isValid).toEqual({
             validity: false,
-            error: 'invalid type for parameter:"param name...": param type error...'
+            error: 'invalid type for parameter:"param name...": param type error...',
         })
     })
 
     test('toString', () => {
         const lambdaType = new LambdaType(
             {toString: () => 'RetType'},
-            [{type: {toString: () => 'Par1Type'}}, {type: {toString: () => 'Par2Type'}}]
+            [{type: {toString: () => 'Par1Type'}}, {type: {toString: () => 'Par2Type'}}],
         )
 
         expect(lambdaType.toString()).toBe('(Par1Type, Par2Type) => RetType')
+    })
+
+    test('resolveNativeType, primitive type', () => {
+        const returnType = {
+            resolveNativeType: (jsClasses, nativeClasses) => {
+                expect(jsClasses).toBe('jsClasses')
+                expect(nativeClasses).toBe('nativeClasses')
+                return 'nativeReturnType'
+            },
+        }
+
+        const paramType = {
+            resolveNativeType: (jsClasses, nativeClasses) => {
+                expect(jsClasses).toBe('jsClasses')
+                expect(nativeClasses).toBe('nativeClasses')
+                return 'nativeParamType'
+            },
+        }
+
+        const lambdaType = new LambdaType(returnType, [new Parameter(paramType)])
+        expect(lambdaType.resolveNativeType('jsClasses', 'nativeClasses')).toStrictEqual(
+            new LambdaType('nativeReturnType', [new Parameter('nativeParamType')]))
     })
 })

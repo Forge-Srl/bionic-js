@@ -1,11 +1,17 @@
 const t = require('../../test-utils')
 
 describe('ArrayType', () => {
-    let ArrayType, IntType
+    let ArrayType
 
     beforeEach(() => {
         ArrayType = t.requireModule('schema/types/ArrayType').ArrayType
-        IntType = t.requireModule('schema/types/IntType').IntType
+    })
+
+    test('fromObj', () => {
+        const arrayType = ArrayType.fromObj({elementType: {type: 'String'}})
+        expect(arrayType).toBeInstanceOf(ArrayType)
+        const StringType = t.requireModule('schema/types/StringType').StringType
+        expect(arrayType.elementType).toBeInstanceOf(StringType)
     })
 
     test('constructor', () => {
@@ -59,7 +65,7 @@ describe('ArrayType', () => {
     })
 
     test('toString', () => {
-        let arrayType = new ArrayType({toString: () => "elementType..."})
+        let arrayType = new ArrayType({toString: () => 'elementType...'})
         expect(arrayType.toString()).toBe('Array<elementType...>')
     })
 
@@ -67,10 +73,15 @@ describe('ArrayType', () => {
         expect(ArrayType.typeName).toBe('Array')
     })
 
-    test('fromObj', () => {
-        const arrayType = ArrayType.fromObj({elementType: {type: 'String'}})
-        expect(arrayType).toBeInstanceOf(ArrayType)
-        const StringType = t.requireModule('schema/types/StringType').StringType
-        expect(arrayType.elementType).toBeInstanceOf(StringType)
+    test('resolveNativeType, primitive type', () => {
+        const elementType = {
+            resolveNativeType: (jsClasses, nativeClasses) => {
+                expect(jsClasses).toBe('jsClasses')
+                expect(nativeClasses).toBe('nativeClasses')
+                return 'nativeType'
+            },
+        }
+        const arrayType = new ArrayType(elementType)
+        expect(arrayType.resolveNativeType('jsClasses', 'nativeClasses')).toStrictEqual(new ArrayType('nativeType'))
     })
 })

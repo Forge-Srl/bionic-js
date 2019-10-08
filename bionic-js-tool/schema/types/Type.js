@@ -4,6 +4,10 @@ const getTypeClasses = require('./getTypeClasses')
 
 class Type extends JsonSerializable {
 
+    static fromObj(obj) {
+        return getTypeClasses()[obj.type].fromObj(obj)
+    }
+
     constructor() {
         super()
         Object.assign(this, {typeName: this.constructor.typeName})
@@ -21,8 +25,8 @@ class Type extends JsonSerializable {
         return this.constructor.typeName
     }
 
-    static fromObj(obj) {
-        return getTypeClasses()[obj.type].fromObj(obj)
+    resolveNativeType(jsClasses, nativeClasses) {
+        return this
     }
 }
 
