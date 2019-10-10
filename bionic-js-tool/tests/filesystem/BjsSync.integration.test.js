@@ -9,6 +9,8 @@ describe('Bjs integration', () => {
         DebugLog = t.requireModule('filesystem/DebugLog').DebugLog
     })
 
+    /*
+
     test('sync', async () => {
         const bjsSync = new BjsSync(t.getModuleAbsolutePath('testing-code/bjs.config.js'), new DebugLog())
         await bjsSync.sync()
@@ -41,4 +43,6 @@ describe('Bjs integration', () => {
         fs.writeFileSync('/users/marcovanetti/Repos/lunch-ios/project_mod.pbxproj', projectParser.writeSync())
         console.log('end')
     })
+
+     */
 })

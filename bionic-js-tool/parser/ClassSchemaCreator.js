@@ -26,11 +26,11 @@ class ClassSchemaCreator {
         return this._schema
     }
 
-    buildSchema(moduleCreatorsMap, superclassSchemas) {
+    buildSchema(moduleCreatorsMap, currentSuperclassSchemas) {
         if (!this._schema) {
             try {
                 const methodNames = [...new Set(this.classExplorer.methodExplorers.map(methodExplorer => methodExplorer.name))]
-                const superclassSchemas = this.buildSuperclassSchemas(moduleCreatorsMap, superclassSchemas)
+                const superclassSchemas = this.buildSuperclassSchemas(moduleCreatorsMap, currentSuperclassSchemas)
                 const methodCreatorContext = this.buildMethodCreatorContext(moduleCreatorsMap, superclassSchemas)
                 const methodSchemas = methodNames.map(methodName => new MethodSchemaCreator(
                     this.classExplorer.methodExplorers.filter(methodExplorer => methodExplorer.name === methodName),
@@ -56,19 +56,19 @@ class ClassSchemaCreator {
         return this._schema
     }
 
-    buildSuperclassSchemas(moduleCreatorsMap, superclassSchemas) {
+    buildSuperclassSchemas(moduleCreatorsMap, currentSuperclassSchemas) {
         const superclassName = this.classExplorer.superclassName
 
         const superclassModuleCreator = moduleCreatorsMap.get(superclassName)
         if (!superclassModuleCreator) {
-            return superclassSchemas
+            return currentSuperclassSchemas
         }
 
-        if (superclassSchemas.some(schema => schema.name === superclassName)) {
+        if (currentSuperclassSchemas.some(schema => schema.name === superclassName)) {
             throw new Error(`class "${this.name}" extends superclass "${superclassName}" but this generates an ` +
                 'inheritance cycle (e.g. A extends B, B extends A)')
         }
-        return [superclassModuleCreator.buildSchema(moduleCreatorsMap, superclassSchemas), ...superclassSchemas]
+        return [superclassModuleCreator.buildSchema(moduleCreatorsMap, currentSuperclassSchemas), ...currentSuperclassSchemas]
     }
 
     buildMethodCreatorContext(moduleCreatorsMap, superclassSchemas) {

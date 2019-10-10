@@ -1,5 +1,5 @@
 const xcode = require('xcode')
-const {File} = require('./File')
+const path = require('path')
 
 class XcodeHostProject {
 
@@ -7,26 +7,20 @@ class XcodeHostProject {
         Object.assign(this, {targetConfig})
     }
 
-    async getProjectFileData() {
-        return await (new File(this.targetConfig.xcodeProjectPath).getContent())
-    }
-
-    async getProject() {
+    get project() {
         if (!this._project) {
-            const project = xcode.project()
-            project.hash = project.parser.parse(await this.getProjectFileData())
-            this._project = project
+            this._project = xcode.project(path.resolve(this.targetConfig.xcodeProjectPath, 'project.pbxproj')).parseSync()
         }
         return this._project
     }
 
-    async getMainGroup() {
-        return (await this.getProject()).getFirstProject().firstProject.mainGroup
+    get mainGroup() {
+        return this.project().getFirstProject().firstProject.mainGroup
     }
 
-    async findVirtualGroup(targetVirtualPath, rootGroup, exploredPath = []) {
+    findVirtualGroup(targetVirtualPath, rootGroup, exploredPath = []) {
         if (!rootGroup) {
-            rootGroup = await this.getMainGroup()
+            rootGroup = this.mainGroup
         }
         if (!Array.isArray(targetVirtualPath)) {
             targetVirtualPath = targetVirtualPath.split('/').filter(part => part !== '')
@@ -36,7 +30,7 @@ class XcodeHostProject {
             return null
 
         for (const child of rootGroup.children) {
-            const childGroup = (await this.getProject()).getPBXGroupByKey(child.value)
+            const childGroup = this.project.getPBXGroupByKey(child.value)
             if (!childGroup)
                 continue
             const pathPart = childGroup.path ? [childGroup.path] : []
@@ -53,7 +47,7 @@ class XcodeHostProject {
     }
 
     async cleanHostDir(hostDir, rootGroup) {
-        const projectGroup = await this.findVirtualGroup(hostDir.relativePath)
+        const projectGroup = this.findVirtualGroup(hostDir.relativePath)
         if (!projectGroup) {
             await this.xcodeProject.createGroup(hostDir.relativePath)
         }

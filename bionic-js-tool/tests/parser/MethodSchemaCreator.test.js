@@ -20,6 +20,7 @@ describe('MethodSchemaCreator', () => {
         expect(new MethodSchemaCreator([{description: undefined}, {description: 'desc'}]).description).toBe('desc')
     })
 
+
     test('kinds, only getter', () => {
         const methodSchemaCreator = new MethodSchemaCreator([{kinds: ['get']}, {kinds: ['get']}])
         const kinds = methodSchemaCreator.kinds
@@ -54,6 +55,7 @@ describe('MethodSchemaCreator', () => {
         expect(() => new MethodSchemaCreator([{name: 'constructor', kinds: ['method']}]).kinds).toThrow(expectedError)
     })
 
+
     test('isStatic, static', () => {
         const methodSchemaCreator = new MethodSchemaCreator([{isStatic: true}, {isStatic: true}])
         const isStatic = methodSchemaCreator.isStatic
@@ -73,19 +75,31 @@ describe('MethodSchemaCreator', () => {
             .toThrow('"method1" cannot be static and non-static in the same class')
     })
 
-    test('type, only one type', () => {
-        const type1 = {isEqualTo: () => true}
 
-        const methodSchemaCreator = new MethodSchemaCreator([{type: undefined}, {type: type1}])
+    test('type', () => {
+
+        const methodCreatorContext = {
+            jsModuleNames: 'jsModuleNames',
+            nativeModuleNames: 'nativeModuleNames',
+        }
+        const nativeType = {native: 'type'}
+        const type1 = {
+            isEqualTo: () => true,
+            resolveNativeType: (jsModuleNames, nativeModuleNames) => {
+                expect(jsModuleNames).toBe('jsModuleNames')
+                expect(nativeModuleNames).toBe('nativeModuleNames')
+                return nativeType
+            },
+        }
+        const type2 = {isEqualTo: () => true}
+        const methodExplorers = [{type: type1}, {type: type2}]
+
+        const methodSchemaCreator = new MethodSchemaCreator(methodExplorers, methodCreatorContext)
+
         const type = methodSchemaCreator.type
 
-        expect(type).toBe(type1)
-        expect(methodSchemaCreator.type).toBe(type)
-    })
-
-    test('type, same type repeated', () => {
-        const type1 = {isEqualTo: () => true}
-        expect(new MethodSchemaCreator([{type: type1}, {type: type1}]).type).toBe(type1)
+        expect(type).toBe(nativeType)
+        expect(methodSchemaCreator.type).toBe(nativeType)
     })
 
     test('type, different types', () => {
@@ -94,6 +108,7 @@ describe('MethodSchemaCreator', () => {
         expect(() => new MethodSchemaCreator([{name: 'method1', type: type1}, {type: type2}]).type)
             .toThrow('"method1" is annotated multiple times with different types')
     })
+
 
     test('methodSignature', () => {
         const methodSchemaCreator = new MethodSchemaCreator()
@@ -113,6 +128,7 @@ describe('MethodSchemaCreator', () => {
         expect(() => methodSchemaCreator.methodSignature).toThrow('method "method1" annotation has not a lambda type definition')
     })
 
+
     test('constructorSchema', () => {
         const schemaCreator = new MethodSchemaCreator()
         t.mockGetter(schemaCreator, 'description', () => 'description')
@@ -121,8 +137,10 @@ describe('MethodSchemaCreator', () => {
         expect(schemaCreator.constructorSchema).toStrictEqual(new Constructor('description', 'parameters'))
     })
 
+
     test('methodSchema', () => {
-        const schemaCreator = new MethodSchemaCreator(null, [{methods: []}])
+        const methodCreatorContext = {superclassMethodNames: new Set()}
+        const schemaCreator = new MethodSchemaCreator(null, methodCreatorContext)
         t.mockGetter(schemaCreator, 'name', () => 'method1')
         t.mockGetter(schemaCreator, 'description', () => 'description')
         t.mockGetter(schemaCreator, 'isStatic', () => true)
@@ -133,7 +151,8 @@ describe('MethodSchemaCreator', () => {
     })
 
     test('methodSchema, another method in hierarchy', () => {
-        const schemaCreator = new MethodSchemaCreator(null, [{methods: [{name: 'method1', isStatic: false}]}])
+        const methodCreatorContext = {superclassMethodNames: new Set(['method1'])}
+        const schemaCreator = new MethodSchemaCreator(null, methodCreatorContext)
         t.mockGetter(schemaCreator, 'name', () => 'method1')
         t.mockGetter(schemaCreator, 'description', () => 'description')
         t.mockGetter(schemaCreator, 'isStatic', () => true)
@@ -142,8 +161,10 @@ describe('MethodSchemaCreator', () => {
         expect(() => schemaCreator.methodSchema).toThrow('method "method1" was already exported in superclass')
     })
 
+
     test('propertySchema', () => {
-        const schemaCreator = new MethodSchemaCreator(null, [{properties: []}])
+        const methodCreatorContext = {superclassPropertyNames: new Set()}
+        const schemaCreator = new MethodSchemaCreator(null, methodCreatorContext)
         t.mockGetter(schemaCreator, 'name', () => 'property1')
         t.mockGetter(schemaCreator, 'description', () => 'description')
         t.mockGetter(schemaCreator, 'isStatic', () => true)
@@ -155,12 +176,14 @@ describe('MethodSchemaCreator', () => {
     })
 
     test('propertySchema, another property in hierarchy', () => {
-        const schemaCreator = new MethodSchemaCreator(null, [{properties: [{name: 'property1', isStatic: false}]}])
+        const methodCreatorContext = {superclassPropertyNames: new Set(['property1'])}
+        const schemaCreator = new MethodSchemaCreator(null, methodCreatorContext)
         t.mockGetter(schemaCreator, 'name', () => 'property1')
         t.mockGetter(schemaCreator, 'isStatic', () => true)
 
         expect(() => schemaCreator.propertySchema).toThrow('property "property1" was already exported in superclass')
     })
+
 
     test('schema, constructor', () => {
         const schemaCreator = new MethodSchemaCreator()
