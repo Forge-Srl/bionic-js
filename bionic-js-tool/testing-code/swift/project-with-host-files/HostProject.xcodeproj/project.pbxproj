@@ -11,17 +11,14 @@
 		C5966C932349378B00EE670C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5966C922349378B00EE670C /* SceneDelegate.swift */; };
 		C5966C952349378B00EE670C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5966C942349378B00EE670C /* ContentView.swift */; };
 		C5966C972349378F00EE670C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5966C962349378F00EE670C /* Assets.xcassets */; };
-		C5966C9A2349378F00EE670C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5966C992349378F00EE670C /* Preview Assets.xcassets */; };
 		C5966C9D2349378F00EE670C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5966C9B2349378F00EE670C /* LaunchScreen.storyboard */; };
 		C5B809F22349FE28002FD95C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5966C902349378B00EE670C /* AppDelegate.swift */; };
 		C5B809F32349FE28002FD95C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5966C922349378B00EE670C /* SceneDelegate.swift */; };
 		C5B809F42349FE28002FD95C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5966C942349378B00EE670C /* ContentView.swift */; };
 		C5B809F72349FE28002FD95C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5966C9B2349378F00EE670C /* LaunchScreen.storyboard */; };
-		C5B809F82349FE28002FD95C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5966C992349378F00EE670C /* Preview Assets.xcassets */; };
 		C5B809F92349FE28002FD95C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5966C962349378F00EE670C /* Assets.xcassets */; };
 		C5B80A032349FF10002FD95C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5966C942349378B00EE670C /* ContentView.swift */; };
 		C5B80A062349FF10002FD95C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5966C9B2349378F00EE670C /* LaunchScreen.storyboard */; };
-		C5B80A072349FF10002FD95C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5966C992349378F00EE670C /* Preview Assets.xcassets */; };
 		C5B80A082349FF10002FD95C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5966C962349378F00EE670C /* Assets.xcassets */; };
 		C5B80A0E2349FF52002FD95C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5966C902349378B00EE670C /* AppDelegate.swift */; };
 		C5B80A24234A1A0E002FD95C /* FerrariCalifornia.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A15234A1A0E002FD95C /* FerrariCalifornia.swift */; };
@@ -48,10 +45,9 @@
 /* Begin PBXFileReference section */
 		C5966C8D2349378B00EE670C /* HostProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5966C902349378B00EE670C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C5966C922349378B00EE670C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		C5966C922349378B00EE670C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = socecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		C5966C942349378B00EE670C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C5966C962349378F00EE670C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C5966C992349378F00EE670C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C5966C9C2349378F00EE670C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C5B809FD2349FE28002FD95C /* HostProjectTarget2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostProjectTarget2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5B80A0C2349FF10002FD95C /* HostProjectTarget3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostProjectTarget3.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -116,6 +112,7 @@
 		C5966C8F2349378B00EE670C /* HostProject */ = {
 			isa = PBXGroup;
 			children = (
+				C5CE054823546844009E64CC /* Group1 */,
 				C5B80A11234A19AF002FD95C /* Bjs */,
 				C5966C902349378B00EE670C /* AppDelegate.swift */,
 				C5B80A42234A1BED002FD95C /* Engine.swift */,
@@ -126,17 +123,8 @@
 				C5B80A48234A8612002FD95C /* target2.plist */,
 				C5B80A4A234A861C002FD95C /* target3.plist */,
 				C5966C9B2349378F00EE670C /* LaunchScreen.storyboard */,
-				C5966C982349378F00EE670C /* Preview Content */,
 			);
 			path = HostProject;
-			sourceTree = "<group>";
-		};
-		C5966C982349378F00EE670C /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				C5966C992349378F00EE670C /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		C5B80A11234A19AF002FD95C /* Bjs */ = {
@@ -176,6 +164,22 @@
 			);
 			path = native;
 			sourceTree = "<group>";
+		};
+		C5CE054823546844009E64CC /* Group1 */ = {
+			isa = PBXGroup;
+			children = (
+				C5CE054923546895009E64CC /* WrongLocationGroup */,
+			);
+			name = Group1;
+			sourceTree = "<group>";
+		};
+		C5CE054923546895009E64CC /* WrongLocationGroup */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = WrongLocationGroup;
+			path = HostProject;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -273,7 +277,6 @@
 			files = (
 				C5B80A47234A860A002FD95C /* target1.plist in Resources */,
 				C5966C9D2349378F00EE670C /* LaunchScreen.storyboard in Resources */,
-				C5966C9A2349378F00EE670C /* Preview Assets.xcassets in Resources */,
 				C5B80A39234A1A8B002FD95C /* package.bundle in Resources */,
 				C5966C972349378F00EE670C /* Assets.xcassets in Resources */,
 			);
@@ -285,7 +288,6 @@
 			files = (
 				C5B80A49234A8612002FD95C /* target2.plist in Resources */,
 				C5B809F72349FE28002FD95C /* LaunchScreen.storyboard in Resources */,
-				C5B809F82349FE28002FD95C /* Preview Assets.xcassets in Resources */,
 				C5B80A3A234A1A8B002FD95C /* package.bundle in Resources */,
 				C5B809F92349FE28002FD95C /* Assets.xcassets in Resources */,
 			);
@@ -297,7 +299,6 @@
 			files = (
 				C5B80A062349FF10002FD95C /* LaunchScreen.storyboard in Resources */,
 				C5B80A4B234A861C002FD95C /* target3.plist in Resources */,
-				C5B80A072349FF10002FD95C /* Preview Assets.xcassets in Resources */,
 				C5B80A082349FF10002FD95C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -479,7 +480,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -503,7 +503,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -527,7 +526,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -551,7 +549,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -575,7 +572,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = HostProject/target3.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -594,7 +590,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"HostProject/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = HostProject/target3.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

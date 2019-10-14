@@ -1,10 +1,14 @@
 const xcode = require('xcode')
 const path = require('path')
+const SOURCE_FILE_TYPE = 'sourcecode.swift'
+const BUNDLE_FILE_TYPE = 'wrapper.plug-in'
+const {File} = require('./File')
+const {Directory} = require('./Directory')
 
 class XcodeHostProject {
 
-    constructor(targetConfig) {
-        Object.assign(this, {targetConfig})
+    constructor(targetConfig, log) {
+        Object.assign(this, {targetConfig, log})
     }
 
     get project() {
@@ -15,42 +19,128 @@ class XcodeHostProject {
     }
 
     get mainGroup() {
-        return this.project().getFirstProject().firstProject.mainGroup
+        const mainGroupKey = this.project.getFirstProject().firstProject.mainGroup
+        return this.getGroupByKey(mainGroupKey)
     }
 
-    findVirtualGroup(targetVirtualPath, rootGroup, exploredPath = []) {
-        if (!rootGroup) {
-            rootGroup = this.mainGroup
+    buildNode(node, comment, fatherGroup) {
+        if (node) {
+            node = Object.assign({}, node)
+            node.relativePathParts = [...(fatherGroup ? fatherGroup.relativePathParts : []), ...(node.path ? [node.path] : [])]
+            node.relativePath = node.relativePathParts.join('/')
+            node.debugLocation = `${fatherGroup ? fatherGroup.debugLocation + '/' : ''}${comment ? comment : 'Project'}`
+            node.fileType = node.explicitFileType || node.lastKnownFileType
+            if (node.sourceTree !== '"<group>"') {
+                this.log.warning(`"${node.debugLocation}": file location attribute is not "Relative to Group", this config `
+                    + 'is not supported so the file will be skipped')
+                return null
+            }
         }
-        if (!Array.isArray(targetVirtualPath)) {
-            targetVirtualPath = targetVirtualPath.split('/').filter(part => part !== '')
-        }
+        return node
+    }
 
-        if (rootGroup.children.length === 0)
-            return null
+    getGroupByKey(key, fatherGroup) {
+        const group = this.project.getPBXGroupByKey(key)
+        const comment = this.project.getPBXGroupByKey(`${key}_comment`)
+        return this.buildNode(group, comment, fatherGroup)
+    }
+
+    getFileByKey(key, fatherGroup) {
+        const file = this.project.pbxFileReferenceSection()[key]
+        const comment = this.project.pbxFileReferenceSection()[`${key}_comment`]
+        return this.buildNode(file, comment, fatherGroup)
+    }
+
+    findGroupByDirPath(dirPath, rootGroup = this.mainGroup) {
+        if (!Array.isArray(dirPath)) {
+            dirPath = dirPath.split('/').filter(part => part.trim() !== '')
+        }
 
         for (const child of rootGroup.children) {
-            const childGroup = this.project.getPBXGroupByKey(child.value)
+            const childGroup = this.getGroupByKey(child.value, rootGroup)
             if (!childGroup)
                 continue
-            const pathPart = childGroup.path ? [childGroup.path] : []
 
-            const currentPath = [...exploredPath, ...pathPart]
-            if (currentPath.join('/') === targetVirtualPath.join('/'))
-                return {group: childGroup, key: child.value}
+            if (childGroup.relativePath === dirPath.join('/'))
+                return childGroup
 
-            const targetGroup = this.findVirtualGroup(targetVirtualPath, childGroup, currentPath)
+            const targetGroup = this.findGroupByDirPath(dirPath, childGroup)
             if (targetGroup)
                 return targetGroup
         }
         return null
     }
 
-    async cleanHostDir(hostDir, rootGroup) {
-        const projectGroup = this.findVirtualGroup(hostDir.relativePath)
-        if (!projectGroup) {
-            await this.xcodeProject.createGroup(hostDir.relativePath)
+    getFiles(group) {
+        let files = []
+        for (const child of group.children) {
+            const childGroup = this.getGroupByKey(child.value, group)
+            const childFile = this.getFileByKey(child.value)
+
+            if (childGroup) {
+                files = [...files, ...this.getFiles(childGroup)]
+            } else if (childFile) {
+                files = [...files, childFile]
+            }
         }
+        return files
+    }
+
+    deleteFiles(files) {
+        for (const file of files) {
+            if (file.fileType === BUNDLE_FILE_TYPE) {
+                new Directory(file.)
+            } else {
+                throw new Error(`The file "${fatherGroup.relativePath}/${file.path}" is not a source file and cannot be deleted`)
+            }
+        }
+
+    }
+
+    emptyGroup(group, targetGroup = group) {
+
+        const files = this.getFiles(group)
+        const notSourceFiles = files.filter(file => file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE)
+        if (notSourceFiles.length) {
+            const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
+            this.log.error(`${fileNames} not supported.\nOnly source files and bundles can be deleted.`)
+            return
+        }
+        this.deleteFiles(file)
+
+
+        for (const child of group.children) {
+            const childGroup = this.getGroupByKey(child.value, group)
+            const childFile = this.getFileByKey(child.value)
+
+            if (childGroup) {
+                this.emptyGroup(childGroup, targetGroup)
+            } else if (childFile) {
+                this.deleteFile(childFile, group)
+            }
+        }
+
+        if (group === targetGroup)
+            return
+
+        if (group.name) {
+            this.deleteEmptyVirtualGroup(group)
+        } else if (group.path) {
+            this.deleteEmptyDirGroup(group)
+        }
+    }
+
+    deleteEmptyVirtualGroup(group) {
+        this.log.info(`deleting virtual group: ${group.name}`)
+    }
+
+    deleteEmptyDirGroup(group) {
+        this.log.info(`deleting dir group: ${group.relativePath}`)
+    }
+
+
+    deleteSourceFile(sourceFile, fatherGroup) {
+        this.log.info(`deleting source file: "${fatherGroup.relativePath}/${sourceFile.path}"`)
     }
 
     async ensureGroupExists(targetPath, rootGroup) {
