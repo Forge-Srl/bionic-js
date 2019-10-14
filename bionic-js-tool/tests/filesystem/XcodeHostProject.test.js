@@ -1,8 +1,4 @@
 const t = require('../test-utils')
-const path = require('path')
-const os = require('os')
-const fs = require('fs')
-const rimraf = require('rimraf')
 
 describe('XcodeHostProject', () => {
 
@@ -13,13 +9,6 @@ describe('XcodeHostProject', () => {
         const DebugLog = t.requireModule('filesystem/DebugLog').DebugLog
         log = new DebugLog()
     })
-
-    const getTempDir = () => {
-        const tempDir = path.resolve(os.tmpdir(), 'js-tests')
-        rimraf.sync(tempDir)
-        fs.mkdirSync(tempDir)
-        return tempDir
-    }
 
     const getProjectWithoutHostFiles = () => {
         const projectWithoutHostFilesPath = t.getModuleAbsolutePath('testing-code/swift/project-without-host-files/HostProject.xcodeproj')
@@ -163,12 +152,7 @@ describe('XcodeHostProject', () => {
     test('getFiles', () => {
         const xcodeProject = getProjectWithHostFiles()
         const group = {
-            'children': [
-                {
-                    'value': 'C5B80A11234A19AF002FD95C',
-                    'comment': 'Bjs',
-                },
-            ],
+            'children': [{'value': 'C5B80A11234A19AF002FD95C', 'comment': 'Bjs'}],
             'path': 'HostProject',
             'sourceTree': '"<group>"',
             'relativePathParts': ['HostProject'],
@@ -183,8 +167,16 @@ describe('XcodeHostProject', () => {
 
     test('emptyGroup', () => {
         const xcodeProject = getProjectWithHostFiles()
+        xcodeProject.deleteFiles = () => throw new Error()
         const hostGroup = xcodeProject.findGroupByDirPath('HostProject/host')
 
         xcodeProject.emptyGroup(hostGroup)
+    })
+
+    test('removePbxGroup', async () => {
+        const xcodeProject = getProjectWithHostFiles()
+        xcodeProject.project.removePbxGroup('merda')
+        await xcodeProject.save()
+
     })
 })

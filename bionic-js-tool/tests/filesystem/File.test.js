@@ -1,4 +1,5 @@
 const t = require('../test-utils')
+const {getTempDirPath, getTempFilePath} = require('./tempDir')
 
 describe('File', () => {
 
@@ -58,6 +59,8 @@ describe('File', () => {
     })
 
     test('getHash real hashes', async () => {
+        t.resetModulesCache()
+
         jest.unmock('crypto')
         const File = t.requireModule('filesystem/file').File
         const file = new File()
@@ -75,5 +78,16 @@ describe('File', () => {
         expect(result1).toBe(result3)
 
         expect(file.getContent).toBeCalledTimes(3)
+    })
+
+    test('delete', async () => {
+        t.resetModulesCache()
+
+        t.requireModule('filesystem/async/fs')
+        const File = t.requireModule('filesystem/file').File
+        const file = new File(getTempFilePath(getTempDirPath(true), 'tempFile.txt'))
+        expect(await file.exists()).toBe(false)
+        await file.setContent('fileContent')
+        expect(await file.exists()).toBe(true)
     })
 })

@@ -11,9 +11,13 @@ class XcodeHostProject {
         Object.assign(this, {targetConfig, log})
     }
 
+    get projectFilePath() {
+        return path.resolve(this.targetConfig.xcodeProjectPath, 'project.pbxproj')
+    }
+
     get project() {
         if (!this._project) {
-            this._project = xcode.project(path.resolve(this.targetConfig.xcodeProjectPath, 'project.pbxproj')).parseSync()
+            this._project = xcode.project(this.projectFilePath).parseSync()
         }
         return this._project
     }
@@ -86,61 +90,55 @@ class XcodeHostProject {
         return files
     }
 
-    deleteFiles(files) {
-        for (const file of files) {
-            if (file.fileType === BUNDLE_FILE_TYPE) {
-                new Directory(file.)
-            } else {
-                throw new Error(`The file "${fatherGroup.relativePath}/${file.path}" is not a source file and cannot be deleted`)
-            }
-        }
-
+    async save() {
+        const projectFile = new File(this.projectFilePath, this.targetConfig.xcodeProjectDir)
+        await projectFile.setContent(this.project.writeSync())
     }
 
-    emptyGroup(group, targetGroup = group) {
+    async deleteFiles(files) {
+        const deletePromises = files.forEach(file => {
+            const filePath = path.resolve(this.targetConfig.xcodeProjectDir, file.relativePath)
+            if (file.fileType === BUNDLE_FILE_TYPE) {
+                const bundleDir = new Directory(filePath, this.targetConfig.xcodeProjectDir)
+                return bundleDir.delete()
+            } else {
+                const file = new File(filePath, this.targetConfig.xcodeProjectDir)
+                return file.delete()
+            }
+        })
+        await Promise.all(deletePromises)
+    }
 
-        const files = this.getFiles(group)
-        const notSourceFiles = files.filter(file => file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE)
-        if (notSourceFiles.length) {
-            const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
-            this.log.error(`${fileNames} not supported.\nOnly source files and bundles can be deleted.`)
-            return
+    async emptyGroup(group, targetGroup = group) {
+
+        if (group === targetGroup) {
+            const files = this.getFiles(group)
+            const notSourceFiles = files.filter(file => file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE)
+            if (notSourceFiles.length) {
+                const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
+                this.log.error(`${fileNames} not supported. Only source files and bundles can be deleted.`)
+                return
+            }
+            await this.deleteFiles(files)
         }
-        this.deleteFiles(file)
-
 
         for (const child of group.children) {
             const childGroup = this.getGroupByKey(child.value, group)
-            const childFile = this.getFileByKey(child.value)
-
             if (childGroup) {
                 this.emptyGroup(childGroup, targetGroup)
-            } else if (childFile) {
-                this.deleteFile(childFile, group)
             }
         }
 
         if (group === targetGroup)
             return
 
-        if (group.name) {
-            this.deleteEmptyVirtualGroup(group)
-        } else if (group.path) {
-            this.deleteEmptyDirGroup(group)
+        this.project.removePbxGroup(group)
+        if (group.path) {
+            const dirPath = path.resolve(this.targetConfig.xcodeProjectDir, group.relativePath)
+            const groupDir = new Directory(dirPath, this.targetConfig.xcodeProjectDir)
+            await groupDir.delete()
         }
-    }
-
-    deleteEmptyVirtualGroup(group) {
-        this.log.info(`deleting virtual group: ${group.name}`)
-    }
-
-    deleteEmptyDirGroup(group) {
-        this.log.info(`deleting dir group: ${group.relativePath}`)
-    }
-
-
-    deleteSourceFile(sourceFile, fatherGroup) {
-        this.log.info(`deleting source file: "${fatherGroup.relativePath}/${sourceFile.path}"`)
+        this.project
     }
 
     async ensureGroupExists(targetPath, rootGroup) {

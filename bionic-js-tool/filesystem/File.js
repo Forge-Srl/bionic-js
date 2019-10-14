@@ -22,6 +22,10 @@ class File extends BaseFile {
         const hash = crypto.createHash(sha256)
         return hash.update(fileContent).digest(hex)
     }
+
+    async delete() {
+        await fs.unlink(this.path)
+    }
 }
 
 module.exports = {File}

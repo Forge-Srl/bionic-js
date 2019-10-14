@@ -1,3 +1,5 @@
+const path = require('path')
+
 class ConfigurationHostTarget {
 
     static fromTargetObj(targetObj, path) {
@@ -37,6 +39,13 @@ class ConfigurationHostTarget {
             this._xcodeProjectPath = this.targetObj.xcodeProjectPath
         }
         return this._xcodeProjectPath
+    }
+
+    get xcodeProjectDir() {
+        if (!this._xcodeProjectDir) {
+            this._xcodeProjectDir = path.parse(this.xcodeProjectPath).dir
+        }
+        return this._xcodeProjectDir
     }
 
     get compileTargets() {
