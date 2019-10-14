@@ -224,10 +224,6 @@ class XcodeHostProject {
             throw error
         }
     }
-
-    async save() {
-        fs.writeFile(this.projectPath, (await this.getProject()).writeSync())
-    }
 }
 
 module.exports = {XcodeHostProject}
