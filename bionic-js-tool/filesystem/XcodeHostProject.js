@@ -1,7 +1,7 @@
 const xcode = require('xcode')
 const path = require('path')
 const SOURCE_FILE_TYPE = 'sourcecode.swift'
-const BUNDLE_FILE_TYPE = 'wrapper.plug-in'
+const BUNDLE_FILE_TYPE = '"wrapper.plug-in"'
 const {File} = require('./File')
 const {Directory} = require('./Directory')
 
@@ -80,7 +80,7 @@ class XcodeHostProject {
         let files = []
         for (const child of group.children) {
             const childGroup = this.getGroupByKey(child.value, group)
-            const childFile = this.getFileByKey(child.value)
+            const childFile = this.getFileByKey(child.value, group)
 
             if (childGroup) {
                 files = [...files, ...this.getFiles(childGroup)]
@@ -91,20 +91,22 @@ class XcodeHostProject {
         return files
     }
 
-    async save() {
-        const projectFile = new File(this.projectFilePath, this.targetConfig.xcodeProjectDir)
-        await projectFile.setContent(this.project.writeSync())
-    }
 
     async deleteFiles(files) {
-        const deletePromises = files.forEach(file => {
+        const deletePromises = files.map(file => {
             const filePath = path.resolve(this.targetConfig.xcodeProjectDir, file.relativePath)
             if (file.fileType === BUNDLE_FILE_TYPE) {
                 const bundleDir = new Directory(filePath, this.targetConfig.xcodeProjectDir)
-                return bundleDir.delete()
+                return async () => {
+                    if (await bundleDir.exists())
+                        await bundleDir.delete()
+                }
             } else {
                 const file = new File(filePath, this.targetConfig.xcodeProjectDir)
-                return file.delete()
+                return async () => {
+                    if (await file.exists())
+                        await file.delete()
+                }
             }
         })
         await Promise.all(deletePromises)
@@ -131,7 +133,7 @@ class XcodeHostProject {
 
         this.project.removePbxGroup(group)
         await this.removeGroupDirectory(group)
-        this.project
+        await this.save()
     }
 
     checkFilesToDelete(files) {
@@ -158,6 +160,11 @@ class XcodeHostProject {
             const groupDir = new Directory(dirPath, this.targetConfig.xcodeProjectDir)
             await groupDir.delete()
         }
+    }
+
+    async save() {
+        const projectFile = new File(this.projectFilePath, this.targetConfig.xcodeProjectDir)
+        await projectFile.setContent(this.project.writeSync())
     }
 
     async ensureGroupExists(targetPath, rootGroup) {

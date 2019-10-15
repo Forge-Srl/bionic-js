@@ -2,23 +2,24 @@ const t = require('../test-utils')
 
 describe('XcodeHostProject', () => {
 
-    let XcodeHostProject, log
+    let XcodeHostProject, ConfigurationHostTarget, log
 
     beforeEach(() => {
         XcodeHostProject = t.requireModule('filesystem/XcodeHostProject').XcodeHostProject
+        ConfigurationHostTarget = t.requireModule('filesystem/ConfigurationHostTarget').ConfigurationHostTarget
         const DebugLog = t.requireModule('filesystem/DebugLog').DebugLog
         log = new DebugLog()
     })
 
     const getProjectWithoutHostFiles = () => {
         const projectWithoutHostFilesPath = t.getModuleAbsolutePath('testing-code/swift/project-without-host-files/HostProject.xcodeproj')
-        const targetConfig = {xcodeProjectPath: projectWithoutHostFilesPath}
+        const targetConfig = new ConfigurationHostTarget({xcodeProjectPath: projectWithoutHostFilesPath})
         return new XcodeHostProject(targetConfig, log)
     }
 
     const getProjectWithHostFiles = () => {
         const projectWithtHostFilesPath = t.getModuleAbsolutePath('testing-code/swift/project-with-host-files/HostProject.xcodeproj')
-        const targetConfig = {xcodeProjectPath: projectWithtHostFilesPath}
+        const targetConfig = new ConfigurationHostTarget({xcodeProjectPath: projectWithtHostFilesPath})
         return new XcodeHostProject(targetConfig, log)
     }
 
@@ -173,7 +174,7 @@ describe('XcodeHostProject', () => {
         xcodeProject.emptyGroup(hostGroup)
     })
 
-    test('removePbxGroup', async () => {
+    test('emptyGroup integration', async () => {
         const xcodeProject = getProjectWithHostFiles()
         const hostGroup = xcodeProject.findGroupByDirPath('HostProject/host')
         await xcodeProject.emptyGroup(hostGroup)
