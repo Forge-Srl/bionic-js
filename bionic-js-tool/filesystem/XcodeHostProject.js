@@ -125,6 +125,7 @@ class XcodeHostProject {
         for (const child of group.children) {
             const childGroup = this.getGroupByKey(child.value, group)
             if (childGroup) {
+                // Togliere il child direttamente e poi togliere anche il gruppo :(((((
                 this.emptyGroup(childGroup, targetGroup)
             }
         }
@@ -139,6 +140,10 @@ class XcodeHostProject {
             await groupDir.delete()
         }
         this.project
+    }
+
+    removePbxGroupChild(fatherKey, childKey) {
+        this.project.getPBXGroupByKey(fatherKey)
     }
 
     async ensureGroupExists(targetPath, rootGroup) {

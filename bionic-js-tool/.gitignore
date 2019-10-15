@@ -12,5 +12,5 @@ testing-code/host
 **/parser/coverage
 
 #Xcode
-xcuserdata/
+**/xcuserdata
 Bjs.framework
