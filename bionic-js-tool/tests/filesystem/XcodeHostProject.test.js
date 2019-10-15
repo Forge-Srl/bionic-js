@@ -175,7 +175,9 @@ describe('XcodeHostProject', () => {
 
     test('removePbxGroup', async () => {
         const xcodeProject = getProjectWithHostFiles()
-        xcodeProject.project.removePbxGroup('Bjs')
+        const hostGroup = xcodeProject.findGroupByDirPath('HostProject/host')
+        await xcodeProject.emptyGroup(hostGroup)
+
         await xcodeProject.save()
 
     })

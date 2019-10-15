@@ -27,9 +27,10 @@ class XcodeHostProject {
         return this.getGroupByKey(mainGroupKey)
     }
 
-    buildNode(node, comment, fatherGroup) {
+    buildNode(node, key, comment, fatherGroup) {
         if (node) {
             node = Object.assign({}, node)
+            node.key = key
             node.relativePathParts = [...(fatherGroup ? fatherGroup.relativePathParts : []), ...(node.path ? [node.path] : [])]
             node.relativePath = node.relativePathParts.join('/')
             node.debugLocation = `${fatherGroup ? fatherGroup.debugLocation + '/' : ''}${comment ? comment : 'Project'}`
@@ -46,13 +47,13 @@ class XcodeHostProject {
     getGroupByKey(key, fatherGroup) {
         const group = this.project.getPBXGroupByKey(key)
         const comment = this.project.getPBXGroupByKey(`${key}_comment`)
-        return this.buildNode(group, comment, fatherGroup)
+        return this.buildNode(group, key, comment, fatherGroup)
     }
 
     getFileByKey(key, fatherGroup) {
         const file = this.project.pbxFileReferenceSection()[key]
         const comment = this.project.pbxFileReferenceSection()[`${key}_comment`]
-        return this.buildNode(file, comment, fatherGroup)
+        return this.buildNode(file, key, comment, fatherGroup)
     }
 
     findGroupByDirPath(dirPath, rootGroup = this.mainGroup) {
@@ -113,19 +114,14 @@ class XcodeHostProject {
 
         if (group === targetGroup) {
             const files = this.getFiles(group)
-            const notSourceFiles = files.filter(file => file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE)
-            if (notSourceFiles.length) {
-                const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
-                this.log.error(`${fileNames} not supported. Only source files and bundles can be deleted.`)
-                return
-            }
+            this.checkFilesToDelete(files)
             await this.deleteFiles(files)
         }
 
         for (const child of group.children) {
             const childGroup = this.getGroupByKey(child.value, group)
             if (childGroup) {
-                // Togliere il child direttamente e poi togliere anche il gruppo :(((((
+                this.removePbxGroupChild(group, childGroup)
                 this.emptyGroup(childGroup, targetGroup)
             }
         }
@@ -134,16 +130,34 @@ class XcodeHostProject {
             return
 
         this.project.removePbxGroup(group)
+        await this.removeGroupDirectory(group)
+        this.project
+    }
+
+    checkFilesToDelete(files) {
+        const notSourceFiles = files.filter(file => file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE)
+        if (notSourceFiles.length) {
+            const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
+            throw new Error(`${fileNames} not supported. Only source files and bundles can be deleted.`)
+        }
+    }
+
+    removePbxGroupChild(father, childGroup) {
+        const pbxGroup = this.project.getPBXGroupByKey(father.key)
+        delete pbxGroup.children[childGroup.key]
+    }
+
+    removePbxGroup(group) {
+        const pbxGroup = this.project.this.hash.project.objects['PBXGroup']
+        delete pbxGroup[group.key]
+    }
+
+    async removeGroupDirectory(group) {
         if (group.path) {
             const dirPath = path.resolve(this.targetConfig.xcodeProjectDir, group.relativePath)
             const groupDir = new Directory(dirPath, this.targetConfig.xcodeProjectDir)
             await groupDir.delete()
         }
-        this.project
-    }
-
-    removePbxGroupChild(fatherKey, childKey) {
-        this.project.getPBXGroupByKey(fatherKey)
     }
 
     async ensureGroupExists(targetPath, rootGroup) {
