@@ -60,5 +60,7 @@ describe('Directory', () => {
         expect(await file1.exists()).toBe(false)
         expect(await subDir.exists()).toBe(false)
         expect(await file2.exists()).toBe(false)
+
+        const workIfNotExistent = await tempDir.delete()
     })
 })

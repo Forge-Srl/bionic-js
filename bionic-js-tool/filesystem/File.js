@@ -24,7 +24,11 @@ class File extends BaseFile {
     }
 
     async delete() {
-        await fs.unlink(this.path)
+        if (await this.exists()) {
+            await fs.unlink(this.path)
+            return true
+        }
+        return false
     }
 }
 

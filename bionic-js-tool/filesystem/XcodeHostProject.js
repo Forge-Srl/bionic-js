@@ -97,16 +97,10 @@ class XcodeHostProject {
             const filePath = path.resolve(this.targetConfig.xcodeProjectDir, file.relativePath)
             if (file.fileType === BUNDLE_FILE_TYPE) {
                 const bundleDir = new Directory(filePath, this.targetConfig.xcodeProjectDir)
-                return async () => {
-                    if (await bundleDir.exists())
-                        await bundleDir.delete()
-                }
+                return bundleDir.delete()
             } else {
                 const file = new File(filePath, this.targetConfig.xcodeProjectDir)
-                return async () => {
-                    if (await file.exists())
-                        await file.delete()
-                }
+                return file.delete()
             }
         })
         await Promise.all(deletePromises)
@@ -122,16 +116,19 @@ class XcodeHostProject {
 
         for (const child of group.children) {
             const childGroup = this.getGroupByKey(child.value, group)
+            const childFile = this.getFileByKey(child.value, group)
             if (childGroup) {
                 this.removePbxGroupChild(group, childGroup)
                 this.emptyGroup(childGroup, targetGroup)
+            } else if (childFile) {
+                this.removePbxGroupChild(group, childFile)
             }
         }
 
         if (group === targetGroup)
             return
 
-        this.project.removePbxGroup(group)
+        this.removePbxGroup(group)
         await this.removeGroupDirectory(group)
         await this.save()
     }
@@ -146,11 +143,11 @@ class XcodeHostProject {
 
     removePbxGroupChild(father, childGroup) {
         const pbxGroup = this.project.getPBXGroupByKey(father.key)
-        delete pbxGroup.children[childGroup.key]
+        pbxGroup.children = pbxGroup.children.filter(child => child.value !== childGroup.key)
     }
 
     removePbxGroup(group) {
-        const pbxGroup = this.project.this.hash.project.objects['PBXGroup']
+        const pbxGroup = this.project.hash.project.objects['PBXGroup']
         delete pbxGroup[group.key]
     }
 

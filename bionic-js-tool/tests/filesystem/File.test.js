@@ -80,7 +80,7 @@ describe('File', () => {
         expect(file.getContent).toBeCalledTimes(3)
     })
 
-    test('delete', async () => {
+    test('exists, delete', async () => {
         t.resetModulesCache()
 
         t.requireModule('filesystem/async/fs')
@@ -89,5 +89,10 @@ describe('File', () => {
         expect(await file.exists()).toBe(false)
         await file.setContent('fileContent')
         expect(await file.exists()).toBe(true)
+
+        expect(await file.delete()).toBe(true)
+        expect(await file.exists()).toBe(false)
+
+        expect(await file.delete()).toBe(false)
     })
 })

@@ -37,9 +37,6 @@
 		C5B80A41234A1B19002FD95C /* Bjs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5B80A3F234A1B19002FD95C /* Bjs.framework */; };
 		C5B80A43234A1BED002FD95C /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A42234A1BED002FD95C /* Engine.swift */; };
 		C5B80A44234A1BED002FD95C /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A42234A1BED002FD95C /* Engine.swift */; };
-		C5B80A47234A860A002FD95C /* target1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C5B80A46234A860A002FD95C /* target1.plist */; };
-		C5B80A49234A8612002FD95C /* target2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C5B80A48234A8612002FD95C /* target2.plist */; };
-		C5B80A4B234A861C002FD95C /* target3.plist in Resources */ = {isa = PBXBuildFile; fileRef = C5B80A4A234A861C002FD95C /* target3.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -242,7 +239,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1100;
-				LastUpgradeCheck = 1100;
+				LastUpgradeCheck = 1110;
 				ORGANIZATIONNAME = "Marco Vanetti";
 				TargetAttributes = {
 					C5966C8C2349378B00EE670C = {
@@ -275,7 +272,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C5B80A47234A860A002FD95C /* target1.plist in Resources */,
 				C5966C9D2349378F00EE670C /* LaunchScreen.storyboard in Resources */,
 				C5B80A39234A1A8B002FD95C /* package.bundle in Resources */,
 				C5966C972349378F00EE670C /* Assets.xcassets in Resources */,
@@ -286,7 +282,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C5B80A49234A8612002FD95C /* target2.plist in Resources */,
 				C5B809F72349FE28002FD95C /* LaunchScreen.storyboard in Resources */,
 				C5B80A3A234A1A8B002FD95C /* package.bundle in Resources */,
 				C5B809F92349FE28002FD95C /* Assets.xcassets in Resources */,
@@ -298,7 +293,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5B80A062349FF10002FD95C /* LaunchScreen.storyboard in Resources */,
-				C5B80A4B234A861C002FD95C /* target3.plist in Resources */,
 				C5B80A082349FF10002FD95C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
