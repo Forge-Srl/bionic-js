@@ -27,6 +27,18 @@ class XcodeHostProject {
         return this.getGroupByKey(mainGroupKey)
     }
 
+    get targetKeys() {
+        const targetKeys = []
+        const targetObjects = this.project.pbxNativeTargetSection()
+        for (const targetKey in targetObjects) {
+            const targetName = targetObjects[targetKey].name
+            if (targetName && this.targetConfig.compileTargets.includes(targetName)) {
+                targetKeys.push(targetKey)
+            }
+        }
+        return targetKeys
+    }
+
     buildNode(node, key, comment, fatherGroup) {
         if (node) {
             node = Object.assign({}, node)
@@ -105,13 +117,15 @@ class XcodeHostProject {
     }
 
     removePbxSourceFile(father, sourceFile) {
-        if (sourceFile.fileType === SOURCE_FILE_TYPE) {
-            const file = this.project.removeFile(sourceFile.path, father.key, null)
-            this.project.removeFromPbxBuildFileSection(file)
-            this.project.removeFromPbxSourcesBuildPhase(file)
-        } else {
-            const file = this.project.removeFile(sourceFile.path, father.key, null)
-            this.project.removeFromPbxBuildFileSection(file)
+        const file = this.project.removeFile(sourceFile.path, father.key, null)
+        this.project.removeFromPbxBuildFileSection(file)
+        for (const targetKey of this.targetKeys) {
+            file.target = targetKey
+            if (sourceFile.fileType === SOURCE_FILE_TYPE) {
+                this.project.removeFromPbxSourcesBuildPhase(file)
+            } else {
+                this.project.removeFromPbxResourcesBuildPhase(file)
+            }
         }
     }
 

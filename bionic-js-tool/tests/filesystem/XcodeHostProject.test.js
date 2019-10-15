@@ -13,13 +13,19 @@ describe('XcodeHostProject', () => {
 
     const getProjectWithoutHostFiles = () => {
         const projectWithoutHostFilesPath = t.getModuleAbsolutePath('testing-code/swift/project-without-host-files/HostProject.xcodeproj')
-        const targetConfig = new ConfigurationHostTarget({xcodeProjectPath: projectWithoutHostFilesPath})
+        const targetConfig = new ConfigurationHostTarget({
+            xcodeProjectPath: projectWithoutHostFilesPath,
+            compileTargets: ['HostProject', 'HostProjectTarget2'],
+        })
         return new XcodeHostProject(targetConfig, log)
     }
 
     const getProjectWithHostFiles = () => {
         const projectWithtHostFilesPath = t.getModuleAbsolutePath('testing-code/swift/project-with-host-files/HostProject.xcodeproj')
-        const targetConfig = new ConfigurationHostTarget({xcodeProjectPath: projectWithtHostFilesPath})
+        const targetConfig = new ConfigurationHostTarget({
+            xcodeProjectPath: projectWithtHostFilesPath,
+            compileTargets: ['HostProject', 'HostProjectTarget2'],
+        })
         return new XcodeHostProject(targetConfig, log)
     }
 
