@@ -91,6 +91,34 @@ class XcodeHostProject {
         return files
     }
 
+    checkFilesToDelete(files) {
+        const notSourceFiles = files.filter(file => file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE)
+        if (notSourceFiles.length) {
+            const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
+            throw new Error(`${fileNames} not supported. Only source files and bundles can be deleted.`)
+        }
+    }
+
+    removePbxGroupChild(father, childGroup) {
+        const pbxGroup = this.project.getPBXGroupByKey(father.key)
+        pbxGroup.children = pbxGroup.children.filter(child => child.value !== childGroup.key)
+    }
+
+    removePbxSourceFile(father, sourceFile) {
+        if (sourceFile.fileType === SOURCE_FILE_TYPE) {
+            const file = this.project.removeFile(sourceFile.path, father.key, null)
+            this.project.removeFromPbxBuildFileSection(file)
+            this.project.removeFromPbxSourcesBuildPhase(file)
+        } else {
+            const file = this.project.removeFile(sourceFile.path, father.key, null)
+            this.project.removeFromPbxBuildFileSection(file)
+        }
+    }
+
+    removePbxGroup(group) {
+        const pbxGroup = this.project.hash.project.objects['PBXGroup']
+        delete pbxGroup[group.key]
+    }
 
     async deleteFiles(files) {
         const deletePromises = files.map(file => {
@@ -122,6 +150,7 @@ class XcodeHostProject {
                 this.emptyGroup(childGroup, targetGroup)
             } else if (childFile) {
                 this.removePbxGroupChild(group, childFile)
+                this.removePbxSourceFile(group, childFile)
             }
         }
 
@@ -131,24 +160,6 @@ class XcodeHostProject {
         this.removePbxGroup(group)
         await this.removeGroupDirectory(group)
         await this.save()
-    }
-
-    checkFilesToDelete(files) {
-        const notSourceFiles = files.filter(file => file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE)
-        if (notSourceFiles.length) {
-            const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
-            throw new Error(`${fileNames} not supported. Only source files and bundles can be deleted.`)
-        }
-    }
-
-    removePbxGroupChild(father, childGroup) {
-        const pbxGroup = this.project.getPBXGroupByKey(father.key)
-        pbxGroup.children = pbxGroup.children.filter(child => child.value !== childGroup.key)
-    }
-
-    removePbxGroup(group) {
-        const pbxGroup = this.project.hash.project.objects['PBXGroup']
-        delete pbxGroup[group.key]
     }
 
     async removeGroupDirectory(group) {
@@ -179,10 +190,6 @@ class XcodeHostProject {
 
     /********/
 
-    async setHostFileContent() {
-    }
-
-
     async cleanPackageDir(packageDir) {
     }
 
@@ -191,35 +198,6 @@ class XcodeHostProject {
 
     /********/
 
-
-    async ensureHostDirExists(hostDir) {
-        const projectGroup = await this.xcodeProject.findGroup(hostDir.relativePath)
-        if (!projectGroup) {
-            await this.xcodeProject.createGroup(hostDir.relativePath)
-        }
-    }
-
-    async deleteHostDir(hostDir) {
-        const filesToDelete = []
-        const projectGroup = await this.xcodeProject.findGroup(hostDir.relativePath)
-        if (projectGroup) {
-            const groupFiles = await this.xcodeProject.getGroupFiles(projectGroup)
-            for (const groupFile of groupFiles) {
-                if (groupFile.sourceTree !== '<group>')
-                    throw new Error(`the file "${groupFile.name}" inside the host directory "${hostDir}" has the ` +
-                        'attribute Location (as reported in Xcode) different from "Relative to group": this is not ' +
-                        'supported; to solve this issue you can set this attribute back to "Relative to group" in ' +
-                        'the XCode project')
-
-                if (groupFile.path === undefined)
-                    throw new Error(`the group "${groupFile.name}" inside the host directory "${hostDir}" is without ` +
-                        'folder: this is not supported; to solve this issue you should delete this group from ' +
-                        'the XCode project')
-            }
-
-            await this.xcodeProject.deleteHostDir(hostDir.relativePath)
-        }
-    }
 
     async setHostFileContent(hostFile, content) {
         try {
