@@ -1,32 +1,40 @@
 const t = require('../test-utils')
+const {getTempDirPath} = require('./tempDir')
+const copydir = require('copy-dir')
+const path = require('path')
+const xcode = require('xcode')
 
 describe('XcodeHostProject', () => {
 
-    let XcodeHostProject, ConfigurationHostTarget, log
+    let XcodeHostProject, ConfigurationHostTarget, File, log, tempDirPath
 
     beforeEach(() => {
         XcodeHostProject = t.requireModule('filesystem/XcodeHostProject').XcodeHostProject
         ConfigurationHostTarget = t.requireModule('filesystem/ConfigurationHostTarget').ConfigurationHostTarget
+        File = t.requireModule('filesystem/File').File
         const DebugLog = t.requireModule('filesystem/DebugLog').DebugLog
         log = new DebugLog()
+        tempDirPath = getTempDirPath(true)
     })
 
-    const getProjectWithoutHostFiles = () => {
-        const projectWithoutHostFilesPath = t.getModuleAbsolutePath('testing-code/swift/project-without-host-files/HostProject.xcodeproj')
+    const getProject = (projectDir, projectFile, tempName) => {
+
+        const tempProjectDir = path.resolve(tempDirPath, tempName)
+        copydir.sync(projectDir, tempProjectDir, {utimes: true, mode: true, cover: true})
+        const projectPath = t.getModuleAbsolutePath(path.resolve(tempProjectDir, projectFile))
         const targetConfig = new ConfigurationHostTarget({
-            xcodeProjectPath: projectWithoutHostFilesPath,
+            xcodeProjectPath: projectPath,
             compileTargets: ['HostProject', 'HostProjectTarget2'],
         })
         return new XcodeHostProject(targetConfig, log)
     }
 
+    const getProjectWithoutHostFiles = () => {
+        return getProject('testing-code/swift/project-without-host-files/', 'HostProject.xcodeproj', 'without-host-files')
+    }
+
     const getProjectWithHostFiles = () => {
-        const projectWithtHostFilesPath = t.getModuleAbsolutePath('testing-code/swift/project-with-host-files/HostProject.xcodeproj')
-        const targetConfig = new ConfigurationHostTarget({
-            xcodeProjectPath: projectWithtHostFilesPath,
-            compileTargets: ['HostProject', 'HostProjectTarget2'],
-        })
-        return new XcodeHostProject(targetConfig, log)
+        return getProject('testing-code/swift/project-with-host-files/', 'HostProject.xcodeproj', 'with-host-files')
     }
 
     test('project', () => {
@@ -131,27 +139,24 @@ describe('XcodeHostProject', () => {
 
         expect(libsGroup.relativePath).toBe('HostProject')
         expect(libsGroup.debugLocation).toBe('Project/HostProject')
-        expect(libsGroup.children.length).toBe(10)
+        expect(libsGroup.children.length).toBe(11)
     })
 
     test('findGroupByDirPath, with groups with wrong location attribute', () => {
         const xcodeProject = getProjectWithHostFiles()
-        const libsGroup = xcodeProject.findGroupByDirPath('HostProject/host/libs')
+        const libsGroup = xcodeProject.findGroupByDirPath('HostProject/Group2')
 
         expect(log.warningLog).toBe('"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n')
 
-        expect(libsGroup.relativePath).toBe('HostProject/host/libs')
-        expect(libsGroup.debugLocation).toBe('Project/HostProject/Bjs/host/libs')
-        expect(libsGroup.children.length).toBe(2)
-        expect(libsGroup.children[0].comment).toBe('Vehicle.swift')
-        expect(libsGroup.children[1].comment).toBe('MotorVehicle.swift')
+        expect(libsGroup.relativePath).toBe('HostProject/Group2')
+        expect(libsGroup.debugLocation).toBe('Project/HostProject/Group1/Group2')
+        expect(libsGroup.children.length).toBe(1)
+        expect(libsGroup.children[0].comment).toBe('Group3')
     })
 
     test('findGroupByDirPath, no match', () => {
         const xcodeProject = getProjectWithoutHostFiles()
         const libsGroup = xcodeProject.findGroupByDirPath('HostProject/notFound')
-
-        expect(log.warningLog).toBe('')
 
         expect(libsGroup).toBe(null)
     })
@@ -172,20 +177,27 @@ describe('XcodeHostProject', () => {
             'Vehicle.swift', 'MotorVehicle.swift', 'EngineWrapper.swift', 'TeslaRoadster.swift'])
     })
 
-    test('emptyGroup', () => {
-        const xcodeProject = getProjectWithHostFiles()
-        xcodeProject.deleteFiles = () => null
-        const hostGroup = xcodeProject.findGroupByDirPath('HostProject/host')
+    test('emptyGroup', async () => {
+        const projectWithHostFiles = getProjectWithHostFiles()
+        const projectWithoutHostFiles = getProjectWithoutHostFiles()
 
-        xcodeProject.emptyGroup(hostGroup)
+        const hostGroup = projectWithHostFiles.findGroupByDirPath('HostProject/host')
+        await projectWithHostFiles.emptyGroup(hostGroup)
+        await projectWithHostFiles.save()
+
+        const freshLoadedprojectWithHostFiles = xcode.project(projectWithHostFiles.projectFilePath).parseSync()
+        const freshLoadedprojectWithoutHostFiles = xcode.project(projectWithoutHostFiles.projectFilePath).parseSync()
+
+        expect(freshLoadedprojectWithHostFiles.hash).toStrictEqual(freshLoadedprojectWithoutHostFiles.hash)
     })
 
-    test('emptyGroup integration', async () => {
-        const xcodeProject = getProjectWithHostFiles()
-        const hostGroup = xcodeProject.findGroupByDirPath('HostProject/host')
-        await xcodeProject.emptyGroup(hostGroup)
+    test('emptyGroup, wrong host directory', async () => {
+        const projectWithHostFiles = getProjectWithHostFiles()
 
-        await xcodeProject.save()
-
+        const wrongGroup = projectWithHostFiles.findGroupByDirPath('HostProject')
+        await expect(projectWithHostFiles.emptyGroup(wrongGroup)).rejects.toThrow('"HostProject/Bjs.framework", ' +
+            '"HostProject/SceneDelegate.swift", "HostProject/Assets.xcassets", "HostProject/target1.plist", ' +
+            '"HostProject/target2.plist", "HostProject/target3.plist" cannot be deleted: only source files and ' +
+            'bundles can be placed inside the host directory')
     })
 })

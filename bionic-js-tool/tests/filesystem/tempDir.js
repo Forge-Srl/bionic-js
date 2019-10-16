@@ -12,8 +12,4 @@ const getTempDirPath = (create = false) => {
     return tempPath
 }
 
-const getTempFilePath = (dirPath, fileName) => {
-    return path.resolve(dirPath, fileName)
-}
-
-module.exports = {getTempDirPath, getTempFilePath}
+module.exports = {getTempDirPath}

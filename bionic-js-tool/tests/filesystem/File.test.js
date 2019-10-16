@@ -1,5 +1,6 @@
 const t = require('../test-utils')
-const {getTempDirPath, getTempFilePath} = require('./tempDir')
+const path = require('path')
+const {getTempDirPath} = require('./tempDir')
 
 describe('File', () => {
 
@@ -85,7 +86,7 @@ describe('File', () => {
 
         t.requireModule('filesystem/async/fs')
         const File = t.requireModule('filesystem/file').File
-        const file = new File(getTempFilePath(getTempDirPath(true), 'tempFile.txt'))
+        const file = new File(path.resolve(getTempDirPath(true), 'tempFile.txt'))
         expect(await file.exists()).toBe(false)
         await file.setContent('fileContent')
         expect(await file.exists()).toBe(true)

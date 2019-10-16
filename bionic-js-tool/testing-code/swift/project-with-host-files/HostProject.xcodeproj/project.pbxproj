@@ -109,8 +109,8 @@
 		C5966C8F2349378B00EE670C /* HostProject */ = {
 			isa = PBXGroup;
 			children = (
-				C5CE054823546844009E64CC /* Group1 */,
 				C5B80A11234A19AF002FD95C /* Bjs */,
+				C5CE054823546844009E64CC /* Group1 */,
 				C5966C902349378B00EE670C /* AppDelegate.swift */,
 				C5B80A42234A1BED002FD95C /* Engine.swift */,
 				C5966C922349378B00EE670C /* SceneDelegate.swift */,
@@ -165,12 +165,28 @@
 		C5CE054823546844009E64CC /* Group1 */ = {
 			isa = PBXGroup;
 			children = (
-				C5CE054923546895009E64CC /* WrongLocationGroup */,
+				C5CE056023570B14009E64CC /* WrongLocationGroup */,
+				C5CE055E23570ABE009E64CC /* Group2 */,
 			);
 			name = Group1;
 			sourceTree = "<group>";
 		};
-		C5CE054923546895009E64CC /* WrongLocationGroup */ = {
+		C5CE055E23570ABE009E64CC /* Group2 */ = {
+			isa = PBXGroup;
+			children = (
+				C5CE055F23570AC4009E64CC /* Group3 */,
+			);
+			path = Group2;
+			sourceTree = "<group>";
+		};
+		C5CE055F23570AC4009E64CC /* Group3 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Group3;
+			sourceTree = "<group>";
+		};
+		C5CE056023570B14009E64CC /* WrongLocationGroup */ = {
 			isa = PBXGroup;
 			children = (
 			);

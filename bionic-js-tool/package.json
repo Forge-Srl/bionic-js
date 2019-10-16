@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "jest-cli": "*",
-    "pegjs": "*"
+    "pegjs": "*",
+    "copy-dir": "*"
   }
 }

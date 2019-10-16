@@ -28,15 +28,13 @@ class XcodeHostProject {
     }
 
     get targetKeys() {
-        const targetKeys = []
         const targetObjects = this.project.pbxNativeTargetSection()
-        for (const targetKey in targetObjects) {
-            const targetName = targetObjects[targetKey].name
-            if (targetName && this.targetConfig.compileTargets.includes(targetName)) {
-                targetKeys.push(targetKey)
-            }
-        }
-        return targetKeys
+        return Object.keys(targetObjects).filter(targetKey => this.targetConfig.compileTargets.includes(targetObjects[targetKey].name))
+    }
+
+    get allTargetKeys() {
+        const targetObjects = this.project.pbxNativeTargetSection()
+        return Object.keys(targetObjects).filter(targetKey => targetObjects[targetKey].name)
     }
 
     buildNode(node, key, comment, fatherGroup) {
@@ -103,11 +101,11 @@ class XcodeHostProject {
         return files
     }
 
-    checkFilesToDelete(files) {
+    checkHostFilesToDelete(files) {
         const notSourceFiles = files.filter(file => file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE)
         if (notSourceFiles.length) {
             const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
-            throw new Error(`${fileNames} not supported. Only source files and bundles can be deleted.`)
+            throw new Error(`${fileNames} cannot be deleted: only source files and bundles can be placed inside the host directory`)
         }
     }
 
@@ -119,7 +117,7 @@ class XcodeHostProject {
     removePbxSourceFile(father, sourceFile) {
         const file = this.project.removeFile(sourceFile.path, father.key, null)
         this.project.removeFromPbxBuildFileSection(file)
-        for (const targetKey of this.targetKeys) {
+        for (const targetKey of this.allTargetKeys) {
             file.target = targetKey
             if (sourceFile.fileType === SOURCE_FILE_TYPE) {
                 this.project.removeFromPbxSourcesBuildPhase(file)
@@ -132,6 +130,13 @@ class XcodeHostProject {
     removePbxGroup(group) {
         const pbxGroup = this.project.hash.project.objects['PBXGroup']
         delete pbxGroup[group.key]
+    }
+
+    async emptyDirectory(group) {
+        const directoryPath = path.resolve(this.targetConfig.xcodeProjectDir, group.relativePath)
+        const bundleDir = new Directory(directoryPath, this.targetConfig.xcodeProjectDir)
+        await bundleDir.delete()
+        await bundleDir.ensureExists()
     }
 
     async deleteFiles(files) {
@@ -152,8 +157,8 @@ class XcodeHostProject {
 
         if (group === targetGroup) {
             const files = this.getFiles(group)
-            this.checkFilesToDelete(files)
-            await this.deleteFiles(files)
+            this.checkHostFilesToDelete(files)
+            await this.emptyDirectory(group)
         }
 
         for (const child of group.children) {
@@ -173,7 +178,6 @@ class XcodeHostProject {
 
         this.removePbxGroup(group)
         await this.removeGroupDirectory(group)
-        await this.save()
     }
 
     async removeGroupDirectory(group) {
