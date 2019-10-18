@@ -5,8 +5,8 @@ const {Directory} = require('./Directory')
 
 class Watcher {
 
-    constructor(directory) {
-        Object.assign(this, {directory})
+    constructor(dirPath) {
+        Object.assign(this, {dirPath})
     }
 
     get started() {
@@ -28,12 +28,12 @@ class Watcher {
     }
 
     start() {
-        this.watchProcess = chokidar.watch(this.directory, this.options)
-            .on('add', path => this.fileDidAdd(new File(path, this.directory)))
-            .on('change', path => this.fileDidChange(new File(path, this.directory)))
-            .on('unlink', path => this.fileDidUnlink(new File(path, this.directory)))
-            .on('addDir', path => this.dirDidAdd(new Directory(path, this.directory)))
-            .on('unlinkDir', path => this.dirDidUnlink(new Directory(path, this.directory)))
+        this.watchProcess = chokidar.watch(this.dirPath, this.options)
+            .on('add', path => this.fileDidAdd(new File(path, this.dirPath)))
+            .on('change', path => this.fileDidChange(new File(path, this.dirPath)))
+            .on('unlink', path => this.fileDidUnlink(new File(path, this.dirPath)))
+            .on('addDir', path => this.dirDidAdd(new Directory(path, this.dirPath)))
+            .on('unlinkDir', path => this.dirDidUnlink(new Directory(path, this.dirPath)))
             .on('ready', () => this.didReady())
             .on('error', error => this.didReceiveError(error))
     }

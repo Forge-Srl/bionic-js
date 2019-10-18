@@ -1,5 +1,7 @@
 const {NODE_MODULES_DIR_NAME, PACKAGE_JSON_LOCK_FILE_NAME} = require('./NodeModule')
 const {ConfigurationHostTarget} = require('./ConfigurationHostTarget')
+const {BaseFile} = require('./BaseFile')
+const path = require('path')
 
 class Configuration {
 
@@ -12,7 +14,7 @@ class Configuration {
             throw error
         }
         const config = new Configuration(configObj, path)
-        config.checkMandatoryProps('guestDir', 'guestNativeDir', 'hostTargets')
+        config.checkMandatoryProps('guestDirPath', 'hostTargets')
         return config
     }
 
@@ -25,12 +27,18 @@ class Configuration {
         return `config file "${this.path}" ->`
     }
 
-    get guestDir() {
-        return this.configObj.guestDir
+    get guestDirPath() {
+        return this.configObj.guestDirPath
     }
 
-    get guestNativeDir() {
-        return this.configObj.guestNativeDir
+    get guestNativeDirPath() {
+        const nativeDirName = this.configObj.nativeDirName || 'native'
+        const guestNativeDirPath = path.resolve(this.guestDirPath, nativeDirName)
+        const guestNativeDir = new BaseFile(guestNativeDirPath)
+        if (!guestNativeDir.isInsideDir(this.guestDirPath)) {
+            throw new Error(`${this.errorLocationString} "nativeDirName" must be a directory inside "${this.guestDirPath}"`)
+        }
+        return guestNativeDirPath
     }
 
     get hostTargets() {
@@ -57,7 +65,6 @@ class Configuration {
 
             this._guestIgnores = guestIgnores
         }
-
         return this._guestIgnores
     }
 

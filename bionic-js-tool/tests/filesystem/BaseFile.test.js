@@ -21,6 +21,10 @@ describe('BaseFile', () => {
         expect(dir.path).toBe('/dir1/dir2')
     })
 
+    test('base', () => {
+        expect(baseFile.base).toBe('filePath.js')
+    })
+
     test('name', () => {
         expect(baseFile.name).toBe('filePath')
     })
@@ -35,6 +39,11 @@ describe('BaseFile', () => {
 
     test('relativePath', () => {
         expect(baseFile.relativePath).toBe('dir2/filePath.js')
+    })
+
+    test('relativePath, default rootDirPath', () => {
+        const baseFile = new BaseFile('/dir1/filePath.js')
+        expect(baseFile.relativePath).toBe('dir1/filePath.js')
     })
 
     test('composeNewPath with new root dir, name and extension', async () => {

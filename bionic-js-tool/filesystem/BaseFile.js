@@ -3,13 +3,17 @@ const fs = require('./async/fs')
 
 class BaseFile {
 
-    constructor(path, rootDirPath) {
+    constructor(path, rootDirPath = '/') {
         Object.assign(this, {path, rootDirPath})
     }
 
     get dir() {
         const {Directory} = require('./Directory')
         return new Directory(path.parse(this.path).dir, this.rootDirPath)
+    }
+
+    get base() {
+        return path.parse(this.path).base
     }
 
     get name() {

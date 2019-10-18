@@ -23,7 +23,7 @@ class PackageFile extends File {
 
         const packageFileContent = guestFileContent
 
-        await hostProject.setPackageFileContent(this, packageFileContent)
+        await hostProject.setPackageFileContent(this.relativePath, packageFileContent)
     }
 }
 

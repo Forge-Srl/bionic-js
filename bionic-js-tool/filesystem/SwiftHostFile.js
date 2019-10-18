@@ -6,7 +6,8 @@ class SwiftHostFile extends HostFile {
 
     static build(guestFile, targetConfig) {
         const newFileName = `${guestFile.name}${guestFile.isNative ? 'Wrapper' : ''}`
-        return new SwiftHostFile(guestFile.composeNewPath(targetConfig.hostDir, newFileName, '.swift'), targetConfig.hostDir, guestFile)
+        return new SwiftHostFile(guestFile.composeNewPath(targetConfig.hostDirPath, newFileName, '.swift'),
+            targetConfig.hostDirPath, guestFile)
     }
 
     async generate(schema, hostProject) {
@@ -21,7 +22,7 @@ class SwiftHostFile extends HostFile {
             throw error
         }
 
-        await hostProject.setHostFileContent(this, hostFileContent)
+        await hostProject.setHostFileContent(this.relativePath, hostFileContent)
     }
 }
 

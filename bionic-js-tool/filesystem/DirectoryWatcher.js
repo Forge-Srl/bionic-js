@@ -2,8 +2,8 @@ const {Watcher} = require('./Watcher')
 
 class DirectoryWatcher extends Watcher {
 
-    constructor(rootDir, filesFilter, fileFactory) {
-        super(rootDir)
+    constructor(dirPath, filesFilter, fileFactory) {
+        super(dirPath)
         Object.assign(this, {filesFilter, fileFactory})
 
         this.waitingForInitialFiles = true

@@ -133,31 +133,15 @@ class XcodeHostProject {
     }
 
     async emptyDirectory(group) {
-        const directoryPath = path.resolve(this.targetConfig.xcodeProjectDir, group.relativePath)
-        const bundleDir = new Directory(directoryPath, this.targetConfig.xcodeProjectDir)
+        const directoryPath = path.resolve(this.targetConfig.xcodeProjectDirPath, group.relativePath)
+        const bundleDir = new Directory(directoryPath, this.targetConfig.xcodeProjectDirPath)
         await bundleDir.delete()
         await bundleDir.ensureExists()
     }
 
-    async deleteFiles(files) {
-        const deletePromises = files.map(file => {
-            const filePath = path.resolve(this.targetConfig.xcodeProjectDir, file.relativePath)
-            if (file.fileType === BUNDLE_FILE_TYPE) {
-                const bundleDir = new Directory(filePath, this.targetConfig.xcodeProjectDir)
-                return bundleDir.delete()
-            } else {
-                const file = new File(filePath, this.targetConfig.xcodeProjectDir)
-                return file.delete()
-            }
-        })
-        await Promise.all(deletePromises)
-    }
-
     async emptyGroup(group, targetGroup = group) {
-
         if (group === targetGroup) {
-            const files = this.getFiles(group)
-            this.checkHostFilesToDelete(files)
+            this.checkHostFilesToDelete(this.getFiles(group))
             await this.emptyDirectory(group)
         }
 
@@ -182,42 +166,30 @@ class XcodeHostProject {
 
     async removeGroupDirectory(group) {
         if (group.path) {
-            const dirPath = path.resolve(this.targetConfig.xcodeProjectDir, group.relativePath)
-            const groupDir = new Directory(dirPath, this.targetConfig.xcodeProjectDir)
+            const dirPath = path.resolve(this.targetConfig.xcodeProjectDirPath, group.relativePath)
+            const groupDir = new Directory(dirPath, this.targetConfig.xcodeProjectDirPath)
             await groupDir.delete()
         }
     }
 
     async save() {
-        const projectFile = new File(this.projectFilePath, this.targetConfig.xcodeProjectDir)
+        const projectFile = new File(this.projectFilePath, this.targetConfig.xcodeProjectDirPath)
         await projectFile.setContent(this.project.writeSync())
     }
 
-    async ensureGroupExists(targetPath, rootGroup) {
-        if (!rootGroup) {
-            rootGroup = await this.getMainGroup()
-        }
-        if (!Array.isArray(targetPath)) {
-            targetPath = targetPath.split('/').filter(part => part !== '')
-        }
+    // Sync Interface
 
-        if (rootGroup.children.length === 0)
-            return null
+    async cleanHostDir(hostDirPath) {
+        const hostDirGroup = this.findGroupByDirPath(hostDirPath)
+        await this.emptyGroup(hostDirGroup)
     }
 
-
-    /********/
-
-    async cleanPackageDir(packageDir) {
+    async cleanPackageDir(packageDirPath) {
+        this.removePbxGroupChild(group, childFile)
+        this.removePbxSourceFile(group, childFile)
     }
 
-    async setPackageFileContent() {
-    }
-
-    /********/
-
-
-    async setHostFileContent(hostFile, content) {
+    async setHostFileContent(relativePath, hostFileContent) {
         try {
             await this.xcodeProject.createFile(hostFile, content, this.targetConfig.compileTargets)
             await hostFile.setContent(content)
@@ -227,15 +199,7 @@ class XcodeHostProject {
         }
     }
 
-    async ensurePackageDirExists(packageDir) {
-        await packageDir.ensureExists()
-    }
-
-    async deletePackageDir(packageDir) {
-        packageDir.delete()
-    }
-
-    async setPackageFileContent(packageFile, content) {
+    async setPackageFileContent(relativePath, hostFileContent) {
         try {
             await packageFile.setContent(content)
         } catch (error) {

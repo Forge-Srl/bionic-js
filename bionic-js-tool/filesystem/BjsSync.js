@@ -43,7 +43,7 @@ class BjsSync {
     }
 
     async syncHostFiles(targetConfig, hostProject, guestFilesSchemas) {
-        const hostDir = new Directory(targetConfig.hostDir)
+        const hostDir = new Directory(targetConfig.hostDirPath)
         this.log.info(`Processing host files dir "${hostDir.path}"`)
 
         this.log.info(` Deleting files\n`)
@@ -60,11 +60,8 @@ class BjsSync {
     }
 
     async syncPackageFiles(targetConfig, hostProject, guestFilesSchemas) {
-        const packageDir = new Directory(targetConfig.packageDir)
+        const packageDir = new Directory(targetConfig.hostDirPath).getSubDir(targetConfig.packageName)
         this.log.info(`Processing package files dir "${packageDir.path}"`)
-
-        this.log.info(` Deleting files\n`)
-        await hostProject.cleanPackageDir(packageDir)
 
         this.log.info(' Generating package files...')
         await Promise.all(guestFilesSchemas.map(guestFileSchema => {

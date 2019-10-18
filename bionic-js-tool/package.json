@@ -26,7 +26,8 @@
     "ignore": "*",
     "mkdirp": "*",
     "rimraf": "*",
-    "xcode": "*"
+    "xcode": "*",
+    "uuid": "*"
   },
   "devDependencies": {
     "jest-cli": "*",

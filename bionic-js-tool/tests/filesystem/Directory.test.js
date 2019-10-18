@@ -1,9 +1,8 @@
 const t = require('../test-utils')
-const {getTempDirPath} = require('./tempDir')
 
 describe('Directory', () => {
 
-    let File, dirPath, directory, Directory
+    let Directory, dirPath, directory, File
 
     beforeEach(() => {
         t.resetModulesCache()
@@ -33,34 +32,69 @@ describe('Directory', () => {
     })
 
     test('ensureExists, exists, delete', async () => {
-        const tempDir = new Directory(getTempDirPath())
-        expect(await tempDir.exists()).toBe(false)
-        await tempDir.ensureExists()
-        expect(await tempDir.exists()).toBe(true)
+        await Directory.runInTempDir(async tempDir => {
 
-        const file1 = tempDir.getSubFile('file1.txt')
-        expect(await file1.exists()).toBe(false)
-        await file1.setContent('file1')
-        expect(await file1.exists()).toBe(true)
-        expect(await file1.getContent()).toBe('file1')
+            const file1 = tempDir.getSubFile('file1.txt')
+            expect(await file1.exists()).toBe(false)
+            await file1.setContent('file1')
+            expect(await file1.exists()).toBe(true)
+            expect(await file1.getContent()).toBe('file1')
 
-        const subDir = tempDir.getSubDir('subDir')
-        expect(await subDir.exists()).toBe(false)
-        await subDir.ensureExists()
-        expect(await subDir.exists()).toBe(true)
+            const subDir = tempDir.getSubDir('subDir')
+            expect(await subDir.exists()).toBe(false)
+            await subDir.ensureExists()
+            expect(await subDir.exists()).toBe(true)
 
-        const file2 = subDir.getSubFile('file2.txt')
-        expect(await file2.exists()).toBe(false)
-        await file2.setContent('file2')
-        expect(await file2.exists()).toBe(true)
-        expect(await file2.getContent()).toBe('file2')
+            const file2 = subDir.getSubFile('file2.txt')
+            expect(await file2.exists()).toBe(false)
+            await file2.setContent('file2')
+            expect(await file2.exists()).toBe(true)
+            expect(await file2.getContent()).toBe('file2')
 
-        await tempDir.delete()
-        expect(await tempDir.exists()).toBe(false)
-        expect(await file1.exists()).toBe(false)
-        expect(await subDir.exists()).toBe(false)
-        expect(await file2.exists()).toBe(false)
+            await tempDir.delete()
+            expect(await tempDir.exists()).toBe(false)
+            expect(await file1.exists()).toBe(false)
+            expect(await subDir.exists()).toBe(false)
+            expect(await file2.exists()).toBe(false)
 
-        const workIfNotExistent = await tempDir.delete()
+            const workAlsoIfNotExistent = await tempDir.delete()
+        })
+    })
+
+    test('getFiles', async () => {
+        await Directory.runInTempDir(async tempDir => {
+            const dir1 = tempDir.getSubDir('dir1')
+            await dir1.ensureExists()
+
+            const files = await dir1.getFiles()
+            expect(files).toEqual([])
+
+            const file1 = dir1.getSubFile('file1.txt')
+            await file1.setContent('file1')
+            const dir2 = dir1.getSubDir('dir2')
+            await dir2.ensureExists()
+            const file2 = dir2.getSubFile('file2.txt')
+            await file2.setContent('file2')
+
+            const dir1Files = await dir1.getFiles()
+            expect(dir1Files.length).toBe(2)
+
+            const file1Result = dir1Files.find(file => file.base === 'file1.txt')
+            expect(file1Result).toBeInstanceOf(File)
+            expect(file1Result.base).toBe('file1.txt')
+            expect(await file1Result.getContent()).toBe('file1')
+
+            const dir2Result = dir1Files.find(file => file.base === 'dir2')
+            expect(dir2Result).toBeInstanceOf(Directory)
+            expect(dir2Result.base).toBe('dir2')
+
+            const dir2Files = await dir2Result.getFiles()
+            expect(dir2Files.length).toBe(1)
+
+            const file2Result = dir2Files.find(file => file.base === 'file2.txt')
+            expect(file2Result).toBeInstanceOf(File)
+            expect(file2Result.base).toBe('file2.txt')
+            expect(await file2Result.getContent()).toBe('file2')
+        })
     })
 })

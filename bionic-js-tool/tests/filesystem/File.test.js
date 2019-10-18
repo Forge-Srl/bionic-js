@@ -1,6 +1,4 @@
 const t = require('../test-utils')
-const path = require('path')
-const {getTempDirPath} = require('./tempDir')
 
 describe('File', () => {
 
@@ -83,17 +81,21 @@ describe('File', () => {
 
     test('exists, delete', async () => {
         t.resetModulesCache()
+        jest.unmock('crypto')
 
         t.requireModule('filesystem/async/fs')
-        const File = t.requireModule('filesystem/file').File
-        const file = new File(path.resolve(getTempDirPath(true), 'tempFile.txt'))
-        expect(await file.exists()).toBe(false)
-        await file.setContent('fileContent')
-        expect(await file.exists()).toBe(true)
+        const Directory = t.requireModule('filesystem/Directory').Directory
 
-        expect(await file.delete()).toBe(true)
-        expect(await file.exists()).toBe(false)
+        await Directory.runInTempDir(async tempDir => {
+            const file = tempDir.getSubFile('tempFile.txt')
+            expect(await file.exists()).toBe(false)
+            await file.setContent('fileContent')
+            expect(await file.exists()).toBe(true)
 
-        expect(await file.delete()).toBe(false)
+            expect(await file.delete()).toBe(true)
+            expect(await file.exists()).toBe(false)
+
+            expect(await file.delete()).toBe(false)
+        })
     })
 })

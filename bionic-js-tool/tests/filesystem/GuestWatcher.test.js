@@ -3,13 +3,13 @@ const path = require('path')
 
 describe('GuestWatcher', () => {
 
-    let guestDir, guestNativeDir, GuestFile, watcher
+    let guestDirPath, guestNativeDirPath, GuestFile, watcher
 
     beforeEach(() => {
         const GuestWatcher = t.requireModule('filesystem/GuestWatcher').GuestWatcher
-        guestDir = path.resolve(__dirname, '../../testing-code/guest')
-        guestNativeDir = path.resolve(__dirname, '../../testing-code/guest/native')
-        const config = {guestDir, guestNativeDir, guestIgnores: ['node_modules']}
+        guestDirPath = path.resolve(__dirname, '../../testing-code/guest')
+        guestNativeDirPath = path.resolve(__dirname, '../../testing-code/guest/native')
+        const config = {guestDirPath, guestNativeDirPath, guestIgnores: ['node_modules']}
 
         GuestFile = t.requireModule('filesystem/GuestFile').GuestFile
         watcher = GuestWatcher.build(config)
@@ -30,8 +30,8 @@ describe('GuestWatcher', () => {
         const dependenciesFiles = await watcher.getDependenciesFiles()
         dependenciesFiles.forEach(dependencyFile => {
             expect(dependencyFile).toBeInstanceOf(GuestFile)
-            expect(dependencyFile.rootDirPath).toBe(guestDir)
-            expect(dependencyFile.guestNativeDirPath).toBe(guestNativeDir)
+            expect(dependencyFile.rootDirPath).toBe(guestDirPath)
+            expect(dependencyFile.guestNativeDirPath).toBe(guestNativeDirPath)
         })
         const dependenciesPaths = dependenciesFiles.map(guestFile => guestFile.relativePath)
 
@@ -50,8 +50,8 @@ describe('GuestWatcher', () => {
         const guestFiles = await watcher.getInitialFiles()
         guestFiles.forEach(guestFile => {
             expect(guestFile).toBeInstanceOf(GuestFile)
-            expect(guestFile.rootDirPath).toBe(guestDir)
-            expect(guestFile.guestNativeDirPath).toBe(guestNativeDir)
+            expect(guestFile.rootDirPath).toBe(guestDirPath)
+            expect(guestFile.guestNativeDirPath).toBe(guestNativeDirPath)
         })
         const guestPaths = guestFiles.map(guestFile => guestFile.relativePath)
 
