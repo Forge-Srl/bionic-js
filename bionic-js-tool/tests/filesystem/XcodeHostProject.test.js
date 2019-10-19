@@ -26,7 +26,6 @@ describe('XcodeHostProject', () => {
             })
             await codeUsingProject(new XcodeHostProject(targetConfig, log))
         })
-
     }
 
     const getProjectWithoutHostFiles = async codeUsingProject => {
@@ -48,7 +47,6 @@ describe('XcodeHostProject', () => {
         await getProjectWithoutHostFiles(async xcodeProject => {
             const mainGroup = xcodeProject.mainGroup
 
-            expect(mainGroup.relativePathParts).toStrictEqual([])
             expect(mainGroup.relativePath).toBe('')
             expect(mainGroup.debugLocation).toBe('Project')
 
@@ -63,7 +61,6 @@ describe('XcodeHostProject', () => {
         await getProjectWithHostFiles(async xcodeProject => {
             const group = xcodeProject.getGroupByKey('C5B80A14234A19DB002FD95C')
 
-            expect(group.relativePathParts).toStrictEqual(['host'])
             expect(group.relativePath).toBe('host')
             expect(group.debugLocation).toBe('host')
         })
@@ -72,11 +69,10 @@ describe('XcodeHostProject', () => {
     test('getGroupByKey, with fatherGroup', async () => {
         await getProjectWithHostFiles(async xcodeProject => {
             const group = xcodeProject.getGroupByKey('C5B80A14234A19DB002FD95C', {
-                relativePathParts: ['father', 'path'],
+                relativePath: 'father//path',
                 debugLocation: 'debugLocation',
             })
 
-            expect(group.relativePathParts).toStrictEqual(['father', 'path', 'host'])
             expect(group.relativePath).toBe('father/path/host')
             expect(group.debugLocation).toBe('debugLocation/host')
         })
@@ -86,7 +82,6 @@ describe('XcodeHostProject', () => {
         await getProjectWithHostFiles(async xcodeProject => {
             const group = xcodeProject.getGroupByKey('C5B80A11234A19AF002FD95C')
 
-            expect(group.relativePathParts).toStrictEqual([])
             expect(group.relativePath).toBe('')
             expect(group.debugLocation).toBe('Bjs')
         })
@@ -95,11 +90,10 @@ describe('XcodeHostProject', () => {
     test('getGroupByKey, virtual group with fatherGroup', async () => {
         await getProjectWithHostFiles(async xcodeProject => {
             const group = xcodeProject.getGroupByKey('C5B80A11234A19AF002FD95C', {
-                relativePathParts: ['father', 'path'],
+                relativePath: 'father/path',
                 debugLocation: 'debugLocation',
             })
 
-            expect(group.relativePathParts).toStrictEqual(['father', 'path'])
             expect(group.relativePath).toBe('father/path')
             expect(group.debugLocation).toBe('debugLocation/Bjs')
         })
@@ -109,7 +103,6 @@ describe('XcodeHostProject', () => {
         await getProjectWithHostFiles(async xcodeProject => {
             const file = xcodeProject.getFileByKey('C5B80A18234A1A0E002FD95C')
 
-            expect(file.relativePathParts).toStrictEqual(['MotorVehicle.swift'])
             expect(file.relativePath).toBe('MotorVehicle.swift')
             expect(file.debugLocation).toBe('MotorVehicle.swift')
             expect(file.fileType).toBe('sourcecode.swift')
@@ -128,11 +121,10 @@ describe('XcodeHostProject', () => {
     test('getFileByKey, with fatherGroup', async () => {
         await getProjectWithHostFiles(async xcodeProject => {
             const file = xcodeProject.getFileByKey('C5B80A18234A1A0E002FD95C', {
-                relativePathParts: ['father', 'path'],
+                relativePath: 'father/path',
                 debugLocation: 'debugLocation',
             })
 
-            expect(file.relativePathParts).toStrictEqual(['father', 'path', 'MotorVehicle.swift'])
             expect(file.relativePath).toBe('father/path/MotorVehicle.swift')
             expect(file.debugLocation).toBe('debugLocation/MotorVehicle.swift')
             expect(file.fileType).toBe('sourcecode.swift')
@@ -189,11 +181,10 @@ describe('XcodeHostProject', () => {
         })
     })
 
-    test('emptyGroup', async () => {
+    test('cleanHostDir', async () => {
         await getProjectWithHostFiles(async projectWithHostFiles => {
             await getProjectWithoutHostFiles(async projectWithoutHostFiles => {
-                const hostGroup = projectWithHostFiles.findGroupByDirPath('HostProject/host')
-                await projectWithHostFiles.emptyGroup(hostGroup)
+                await projectWithHostFiles.cleanHostDir('HostProject/host')
                 await projectWithHostFiles.save()
 
                 const freshLoadedProjectWithHostFiles = xcode.project(projectWithHostFiles.projectFilePath).parseSync()
@@ -204,29 +195,21 @@ describe('XcodeHostProject', () => {
         })
     })
 
-    test('emptyGroup, wrong host directory', async () => {
+    test('cleanHostDir, wrong host directory', async () => {
         await getProjectWithHostFiles(async xcodeProject => {
-            const wrongGroup = xcodeProject.findGroupByDirPath('HostProject')
-            await expect(xcodeProject.emptyGroup(wrongGroup)).rejects.toThrow('"HostProject/Bjs.framework", ' +
+            await expect(xcodeProject.cleanHostDir('HostProject')).rejects.toThrow('"HostProject/Bjs.framework", ' +
                 '"HostProject/SceneDelegate.swift", "HostProject/Assets.xcassets", "HostProject/target1.plist", ' +
                 '"HostProject/target2.plist", "HostProject/target3.plist" cannot be deleted: only source files and ' +
                 'bundles can be placed inside the host directory')
         })
     })
 
-    test('emptyGroup, package directory', async () => {
-        await getProjectWithHostFiles(async projectWithHostFiles => {
-            await getProjectWithoutHostFiles(async projectWithoutHostFiles => {
 
-                const hostGroup = projectWithHostFiles.findGroupByDirPath('HostProject/host/package.bundle')
-                await projectWithHostFiles.emptyGroup(hostGroup)
-                await projectWithHostFiles.save()
-
-                const freshLoadedProjectWithHostFiles = xcode.project(projectWithHostFiles.projectFilePath).parseSync()
-                const freshLoadedProjectWithoutHostFiles = xcode.project(projectWithoutHostFiles.projectFilePath).parseSync()
-
-                expect(freshLoadedProjectWithHostFiles.hash).toStrictEqual(freshLoadedProjectWithoutHostFiles.hash)
-            })
+    test('ensureGroupExists', async () => {
+        await getProjectWithoutHostFiles(async xcodeProject => {
+            await xcodeProject.ensureGroupExists('HostProject/host/uno/due')
+            await xcodeProject.save()
+            console.log(xcodeProject.project.filepath)
         })
     })
 })
