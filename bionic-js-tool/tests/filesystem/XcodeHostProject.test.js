@@ -15,36 +15,39 @@ describe('XcodeHostProject', () => {
         log = new DebugLog()
     })
 
-    const getProject = async (projectDirName, projectFile, tempName, codeUsingProject) => {
+    const getProject = async (projectDirName, codeUsingProject) => {
         await Directory.runInTempDir(async tempDir => {
             const projectDir = new Directory(__dirname).getSubDir(`../../testing-code/swift/${projectDirName}/`)
-            const tempProjectDir = tempDir.getSubDir(tempName)
-            copydir.sync(projectDir.absolutePath, tempProjectDir.absolutePath, {utimes: true, mode: true, cover: true})
+            copydir.sync(projectDir.absolutePath, tempDir.absolutePath, {utimes: true, mode: true, cover: true})
             const targetConfig = new ConfigurationHostTarget({
-                xcodeProjectPath: tempProjectDir.getSubFile(projectFile).absolutePath,
+                xcodeProjectPath: tempDir.getSubFile('HostProject.xcodeproj').absolutePath,
                 compileTargets: ['HostProject', 'HostProjectTarget2'],
             })
             await codeUsingProject(new XcodeHostProject(targetConfig, log))
         })
     }
 
-    const getProjectWithoutHostFiles = async codeUsingProject => {
-        return getProject('project-without-host-files', 'HostProject.xcodeproj', 'without-host-files', codeUsingProject)
+    const getProjectWithoutHost = async codeUsingProject => {
+        return getProject('project-without-host', codeUsingProject)
     }
 
     const getProjectWithHostFiles = async codeUsingProject => {
-        return getProject('project-with-host-files', 'HostProject.xcodeproj', 'with-host-files', codeUsingProject)
+        return getProject('project-with-host-files', codeUsingProject)
+    }
+
+    const getProjectWithHostDirs = async codeUsingProject => {
+        return getProject('project-with-host-dirs', codeUsingProject)
     }
 
     test('project', async () => {
-        await getProjectWithoutHostFiles(async xcodeProject => {
+        await getProjectWithoutHost(async xcodeProject => {
             const project = xcodeProject.project
             expect(project.hash.project.rootObject).toBe('C5966C852349378B00EE670C')
         })
     })
 
     test('mainGroup', async () => {
-        await getProjectWithoutHostFiles(async xcodeProject => {
+        await getProjectWithoutHost(async xcodeProject => {
             const mainGroup = xcodeProject.mainGroup
 
             expect(mainGroup.relativePath).toBe('')
@@ -132,7 +135,7 @@ describe('XcodeHostProject', () => {
     })
 
     test('findGroupByDirPath', async () => {
-        await getProjectWithoutHostFiles(async xcodeProject => {
+        await getProjectWithoutHost(async xcodeProject => {
             const libsGroup = xcodeProject.findGroupByDirPath('HostProject')
 
             expect(log.warningLog).toBe('')
@@ -157,7 +160,7 @@ describe('XcodeHostProject', () => {
     })
 
     test('findGroupByDirPath, no match', async () => {
-        await getProjectWithoutHostFiles(async xcodeProject => {
+        await getProjectWithoutHost(async xcodeProject => {
             const libsGroup = xcodeProject.findGroupByDirPath('HostProject/notFound')
 
             expect(libsGroup).toBe(null)
@@ -182,15 +185,14 @@ describe('XcodeHostProject', () => {
     })
 
     test('cleanHostDir', async () => {
-        await getProjectWithHostFiles(async projectWithHostFiles => {
-            await getProjectWithoutHostFiles(async projectWithoutHostFiles => {
+        await getProjectWithoutHost(async projectWithoutHost => {
+            await getProjectWithHostFiles(async projectWithHostFiles => {
                 await projectWithHostFiles.cleanHostDir('HostProject/host')
                 await projectWithHostFiles.save()
 
                 const freshLoadedProjectWithHostFiles = xcode.project(projectWithHostFiles.projectFilePath).parseSync()
-                const freshLoadedProjectWithoutHostFiles = xcode.project(projectWithoutHostFiles.projectFilePath).parseSync()
 
-                expect(freshLoadedProjectWithHostFiles.hash).toStrictEqual(freshLoadedProjectWithoutHostFiles.hash)
+                expect(freshLoadedProjectWithHostFiles.hash).toStrictEqual(projectWithoutHost.project.hash)
             })
         })
     })
@@ -206,10 +208,27 @@ describe('XcodeHostProject', () => {
 
 
     test('ensureGroupExists', async () => {
-        await getProjectWithoutHostFiles(async xcodeProject => {
-            await xcodeProject.ensureGroupExists('HostProject/host/uno/due')
-            await xcodeProject.save()
-            console.log(xcodeProject.project.filepath)
+        await getProjectWithHostDirs(async projectWithHostDirs => {
+            await getProjectWithoutHost(async projectWithoutHost => {
+                expect(projectWithoutHost.project.generateUuid().length).toBe(24)
+                projectWithoutHost.project.generateUuid = t.mockFn()
+                projectWithoutHost.project.generateUuid.mockReturnValueOnce('C5B80A16234A1A0E002FD95C')
+                projectWithoutHost.project.generateUuid.mockReturnValueOnce('C5B80A22234A1A0E002FD95C')
+
+                await projectWithoutHost.ensureGroupExists('HostProject/host/libs')
+                await projectWithoutHost.ensureGroupExists('HostProject/host/native')
+                await projectWithoutHost.save()
+
+                let freshLoadedProjectWithoutHost = xcode.project(projectWithoutHost.projectFilePath).parseSync()
+                expect(freshLoadedProjectWithoutHost.hash).toStrictEqual(projectWithHostDirs.project.hash)
+
+                await projectWithoutHost.ensureGroupExists('HostProject/host')
+                await projectWithoutHost.ensureGroupExists('HostProject')
+                await projectWithoutHost.save()
+
+                freshLoadedProjectWithoutHost = xcode.project(projectWithoutHost.projectFilePath).parseSync()
+                expect(freshLoadedProjectWithoutHost.hash).toStrictEqual(projectWithHostDirs.project.hash)
+            })
         })
     })
 })
