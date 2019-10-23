@@ -47,7 +47,7 @@ class BjsSync {
         this.log.info(`Processing host files dir "${hostDir.path}"`)
 
         this.log.info(` Deleting files\n`)
-        await hostProject.cleanHostDir(hostDir)
+        await hostProject.cleanHostDir()
 
         this.log.info(` Generating host files...`)
         await Promise.all(guestFilesSchemas.map(guestFileSchema => {

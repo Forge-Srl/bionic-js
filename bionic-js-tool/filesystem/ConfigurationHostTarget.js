@@ -23,8 +23,12 @@ class ConfigurationHostTarget {
         return hostLanguage.charAt(0).toUpperCase() + hostLanguage.slice(1)
     }
 
+    get hostDirName() {
+        return this.targetObj.hostDirName || 'Bjs'
+    }
+
     get hostDirPath() {
-        const hostDirPath = path.resolve(this.xcodeProjectDirPath, this.targetObj.hostDirName || 'Bjs')
+        const hostDirPath = path.resolve(this.xcodeProjectDirPath, this.hostDirName)
         const hostDir = new BaseFile(hostDirPath)
         if (!hostDir.isInsideDir(this.xcodeProjectDirPath)) {
             throw new Error(`${this.errorLocationString} "hostDirName" must be a directory inside "${this.xcodeProjectDirPath}"`)
@@ -54,6 +58,10 @@ class ConfigurationHostTarget {
 
     get xcodeProjectDirPath() {
         return path.parse(this.xcodeProjectPath).dir
+    }
+
+    get xcodeProjectFilePath() {
+        return path.resolve(this.xcodeProjectPath, 'project.pbxproj')
     }
 
     get compileTargets() {
