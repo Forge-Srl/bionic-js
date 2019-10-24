@@ -186,12 +186,12 @@ describe('ClassSchemaCreator', () => {
         const classSchemaCreator = new ClassSchemaCreator({name: 'Class1', superclassName: 'SuperClass1'})
 
         const currentSuperclassSchemas = ['ClassSchema1', 'ClassSchema2']
-        const superclassModuleCreator = {buildSchema: t.mockFn(() => 'SuperClassSchema')}
+        const superclassModuleCreator = {classSchemaCreator: {buildSchema: t.mockFn(() => 'SuperClassSchema')}}
         const moduleCreatorsMap = new Map([['SuperClass1', superclassModuleCreator]])
 
         const schemaStack = classSchemaCreator.buildSuperclassSchemas(moduleCreatorsMap, currentSuperclassSchemas)
         expect(schemaStack).toStrictEqual(['SuperClassSchema', 'ClassSchema1', 'ClassSchema2'])
-        expect(superclassModuleCreator.buildSchema).toBeCalledWith(moduleCreatorsMap, currentSuperclassSchemas)
+        expect(superclassModuleCreator.classSchemaCreator.buildSchema).toBeCalledWith(moduleCreatorsMap, currentSuperclassSchemas)
     })
 
     test('buildMethodCreatorContext', () => {

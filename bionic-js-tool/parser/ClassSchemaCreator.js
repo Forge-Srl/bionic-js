@@ -68,7 +68,7 @@ class ClassSchemaCreator {
             throw new Error(`class "${this.name}" extends superclass "${superclassName}" but this generates an ` +
                 'inheritance cycle (e.g. A extends B, B extends A)')
         }
-        return [superclassModuleCreator.buildSchema(moduleCreatorsMap, currentSuperclassSchemas), ...currentSuperclassSchemas]
+        return [superclassModuleCreator.classSchemaCreator.buildSchema(moduleCreatorsMap, currentSuperclassSchemas), ...currentSuperclassSchemas]
     }
 
     buildMethodCreatorContext(moduleCreatorsMap, superclassSchemas) {

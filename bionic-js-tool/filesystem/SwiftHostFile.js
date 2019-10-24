@@ -11,7 +11,7 @@ class SwiftHostFile extends HostFile {
     }
 
     async generate(schema, hostProject) {
-        const hostFileGenerator = this.this.guestFile.isNative ? new SwiftWrapperClassGenerator(schema) :
+        const hostFileGenerator = this.guestFile.isNative ? new SwiftWrapperClassGenerator(schema) :
             new SwiftHostClassGenerator(schema)
 
         let hostFileContent

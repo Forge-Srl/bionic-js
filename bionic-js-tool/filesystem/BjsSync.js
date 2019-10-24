@@ -1,5 +1,4 @@
 const {DebugLog} = require('./DebugLog')
-const {Configuration} = require('./Configuration')
 const {HostProject} = require('./HostProject')
 const {GuestWatcher} = require('./GuestWatcher')
 const {GlobalSchemaCreator} = require('../parser/GlobalSchemaCreator')
@@ -9,19 +8,17 @@ const {PackageFile} = require('./PackageFile')
 
 class BjsSync {
 
-    constructor(configurationPath, log = new DebugLog()) {
-        Object.assign(this, {configurationPath, log})
+    constructor(configuration, log = new DebugLog()) {
+        Object.assign(this, {configuration, log})
     }
 
     async sync() {
         try {
-            const config = Configuration.fromPath(this.configurationPath)
-            const guestFiles = await GuestWatcher.build(config).getInitialFiles()
+            const guestFiles = await GuestWatcher.build(this.configuration).getInitialFiles()
             const guestFilesSchemas = await this.getGuestFileSchemas(guestFiles)
 
-            for (const targetConfig of config.hostTargets) {
-
-                const hostProject = HostProject.build(targetConfig)
+            for (const targetConfig of this.configuration.hostTargets) {
+                const hostProject = HostProject.build(targetConfig, this.log)
                 await this.syncHostFiles(targetConfig, hostProject, guestFilesSchemas)
                 await this.syncPackageFiles(targetConfig, hostProject, guestFilesSchemas)
                 await hostProject.save()

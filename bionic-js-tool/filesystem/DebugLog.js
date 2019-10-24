@@ -15,6 +15,7 @@ class DebugLog {
     }
 
     error(message) {
+        message = message.stack ? message.stack : message
         this.errorLog += message + '\n'
         process.stdout.write(`\x1b[31m${message}\x1b[0m\n`)
     }
