@@ -228,6 +228,13 @@ describe('XcodeHostProject', () => {
         })
     })
 
+    test('cleanHostDir, host directory not existent', async () => {
+        await getProjectWithHostFiles(async xcodeProject => {
+            t.mockGetter(xcodeProject.targetConfig, 'hostDirName', () => 'notExistingDir')
+            await expect(xcodeProject.cleanHostDir())
+        })
+    })
+
     test('cleanHostDir, wrong host directory', async () => {
         await getProjectWithHostFiles(async xcodeProject => {
             t.mockGetter(xcodeProject.targetConfig, 'hostDirName', () => 'HostProject')

@@ -177,7 +177,8 @@ class XcodeHostProject {
 
     async cleanHostDir() {
         const hostDirGroup = this.getGroupByDirPath(this.targetConfig.hostDirName)
-        await this.emptyGroup(hostDirGroup)
+        if (hostDirGroup)
+            await this.emptyGroup(hostDirGroup)
     }
 
     /** ADD THINGS */

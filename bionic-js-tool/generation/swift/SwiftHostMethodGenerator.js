@@ -2,6 +2,7 @@ const {SwiftMethodGenerator} = require('./SwiftMethodGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
 const {GenerationContext} = require('../code/GenerationContext')
 const {IniRet} = require('../code/IniRet')
+const {SwiftKeywords} = require('./SwiftKeywords')
 
 class SwiftHostMethodGenerator extends SwiftMethodGenerator {
 
@@ -11,7 +12,7 @@ class SwiftHostMethodGenerator extends SwiftMethodGenerator {
         const returnTypeStatement = this.returnTypeGenerator.getNativeReturnTypeStatement()
 
         return CodeBlock.create()
-            .append(`${override_}${class_}func ${this.schema.name}(`).append(this.getParametersStatements())
+            .append(`${override_}${class_}func ${SwiftKeywords.getSafeIdentifier(this.schema.name)}(`).append(this.getParametersStatements())
             .__.append(`)${returnTypeStatement} {`)
     }
 

@@ -50,4 +50,9 @@ describe('MethodAnnotationExplorer', () => {
             typeName: 'Lambda',
         })
     })
+
+    test('type of a method without parameter names', () => {
+        expect(() => new MethodAnnotationExplorer('@bionic method name (Int) => Void').type)
+            .toThrow('parameters of method "name" must have names')
+    })
 })

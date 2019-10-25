@@ -57,7 +57,7 @@ class MethodJsExplorer extends JsExplorer {
             if (type instanceof LambdaType) {
                 const lambdaParameters = type.parameters
 
-                if (lambdaParameters.length !== parametersNamesFromJs.length ||
+                if (lambdaParameters.length > parametersNamesFromJs.length ||
                     lambdaParameters.some((parameter, index) => parameter.name && parametersNamesFromJs[index] !== parameter.name)) {
 
                     throw new Error(`parameter of method "${this.name}" mismatch from those declared in the annotation`)

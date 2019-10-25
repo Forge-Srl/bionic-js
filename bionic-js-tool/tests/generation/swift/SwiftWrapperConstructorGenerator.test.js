@@ -58,6 +58,20 @@ describe('SwiftWrapperConstructorGenerator', () => {
             '}')
     })
 
+    test('no default constructor', () => {
+        const code = new Class('Class1', '', [], [], [], '', 'module/path').generator.swift.forWrapping().getSource()
+
+        t.expectCode(code,
+            ...expectedHeader,
+            ...functionsExportCode,
+            '    class func bjsBind() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '        return {',
+            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self), $0)',
+            '        }',
+            '    }',
+            '}')
+    })
+
     test('single primitive', () => {
         const intPar = newParam(new IntType(), 'intParam')
 

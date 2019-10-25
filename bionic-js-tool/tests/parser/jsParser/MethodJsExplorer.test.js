@@ -171,6 +171,14 @@ describe('MethodJsExplorer', () => {
         expect(explorer.type).toBe(actualType)
     })
 
+    test('type, annotated parameters less than js parameters', () => {
+        const explorer = getExplorer('/* @bionic () */ method1(par1) {}')
+        const actualType = explorer.type
+
+        expect(actualType).toEqual(new LambdaType(new VoidType(), []))
+        expect(explorer.type).toBe(actualType)
+    })
+
     test('type, missing type info from getter', () => {
         const explorer = getExplorer('/* @bionic */ get getter1() {}')
         expect(() => explorer.type).toThrow('missing type info annotation in method "getter1"')
@@ -183,11 +191,6 @@ describe('MethodJsExplorer', () => {
 
     test('type, annotated parameters more than js parameters', () => {
         const explorer = getExplorer('/* @bionic (par1: Int) */ method1() {}')
-        expect(() => explorer.type).toThrow('parameter of method "method1" mismatch from those declared in the annotation')
-    })
-
-    test('type, annotated parameters less than js parameters', () => {
-        const explorer = getExplorer('/* @bionic () */ method1(par1) {}')
         expect(() => explorer.type).toThrow('parameter of method "method1" mismatch from those declared in the annotation')
     })
 

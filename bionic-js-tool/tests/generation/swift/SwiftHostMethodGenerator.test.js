@@ -4,8 +4,8 @@ describe('SwiftHostMethodGenerator', () => {
 
     let Class, Method, Parameter, VoidType, BoolType, IntType, LambdaType, expectedHeader, expectedFooter
 
-    function getCode(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters) {
-        const class1 = new Class('Class1', '', [], [], [new Method('method1', 'method description', isMethodStatic,
+    function getCode(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters, methodName = 'method1') {
+        const class1 = new Class('Class1', '', [], [], [new Method(methodName, 'method description', isMethodStatic,
             isMethodOverriding, methodReturnType, methodParameters)], '', 'module/path')
         return class1.generator.swift.forHosting().getSource()
     }
@@ -49,6 +49,17 @@ describe('SwiftHostMethodGenerator', () => {
             ...expectedHeader,
             '    func method1() {',
             '        _ = bjsCall("method1")',
+            '    }',
+            ...expectedFooter)
+    })
+
+    test('void return, reserved keyword', () => {
+        const code = getCode(false, false, new VoidType(), [], 'default')
+
+        t.expectCode(code,
+            ...expectedHeader,
+            '    func `default`() {',
+            '        _ = bjsCall("default")',
             '    }',
             ...expectedFooter)
     })

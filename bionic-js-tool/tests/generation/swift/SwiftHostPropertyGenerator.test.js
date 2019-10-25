@@ -5,8 +5,9 @@ describe('SwiftHostPropertyGenerator', () => {
     let Class, Property, Parameter, AnyType, ArrayType, BoolType, DateType, FloatType, IntType, LambdaType,
         NativeObjectType, ObjectType, StringType, VoidType, WrappedObjectType, expectedHeader, expectedFooter
 
-    function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set']) {
-        const class1 = new Class('Class1', '', [], [new Property('property1', 'property description', isPropertyStatic,
+    function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set'],
+                     propertyName = 'property1') {
+        const class1 = new Class('Class1', '', [], [new Property(propertyName, 'property description', isPropertyStatic,
             isPropertyOverriding, propertyType, propertyKinds)], [], '', '')
         return class1.generator.swift.forHosting().getSource()
     }
@@ -55,6 +56,19 @@ describe('SwiftHostPropertyGenerator', () => {
             '    class var property1:Int? {',
             '        get {',
             '            return Bjs.get.getInt(Bjs.get.getProperty(self.bjsClass, "property1"))',
+            '        }',
+            '    }',
+            ...expectedFooter)
+    })
+
+    test('IntType, only getter, reserved keyword', () => {
+        const code = getCode(new IntType(), false, false, ['get'], 'default')
+
+        t.expectCode(code,
+            ...expectedHeader,
+            '    var `default`:Int? {',
+            '        get {',
+            '            return Bjs.get.getInt(bjsGetProperty("default"))',
             '        }',
             '    }',
             ...expectedFooter)

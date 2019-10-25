@@ -2,15 +2,12 @@ const {CodeGenerator} = require('../CodeGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
 const {GenerationContext} = require('../code/GenerationContext')
 const {IniRet} = require('../code/IniRet')
+const {SwiftKeywords} = require('./SwiftKeywords')
 
 class SwiftHostPropertyGenerator extends CodeGenerator {
 
     get typeGenerator() {
-        try {
-            return this.schema.type.generator.swift
-        } catch (error) {
-            console.log(error)
-        }
+        return this.schema.type.generator.swift
     }
 
     getHeaderCode() {
@@ -19,7 +16,7 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
         const typeStatement = this.typeGenerator.getTypeStatement()
 
         return CodeBlock.create()
-            .append(`${override_}${class_}var ${this.schema.name}:`).append(`${typeStatement} {`)
+            .append(`${override_}${class_}var ${SwiftKeywords.getSafeIdentifier(this.schema.name)}:`).append(`${typeStatement} {`)
     }
 
     getGetterCode() {

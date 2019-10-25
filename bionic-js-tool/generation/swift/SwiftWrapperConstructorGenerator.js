@@ -29,6 +29,11 @@ class SwiftWrapperConstructorGenerator extends SwiftMethodGenerator {
         const constructorContext = new GenerationContext()
         const parametersToSkip = super.parameters.length ? 1 : 2
         const argumentsListNativeIniRet = this.getArgumentsListNativeIniRet(constructorContext, parametersToSkip)
+        const defaultConstructor = CodeBlock.create()
+        if (!!this.classSchema.constructors.length) {
+            defaultConstructor
+                .append(` ?? ${this.classSchema.name}(`).append(argumentsListNativeIniRet.returningCode).append(')')
+        }
 
         return CodeBlock.create()
             .append('class func bjsBind() -> @convention(block) (')
@@ -36,8 +41,9 @@ class SwiftWrapperConstructorGenerator extends SwiftMethodGenerator {
             .__.append(')').append(this.returnTypeGenerator.getBlockReturnTypeStatement()).append(' {').newLineIndenting()
             .append('return {').newLineIndenting()
             .append(argumentsListNativeIniRet.initializationCode)
-            .append(`Bjs.get.bindNative(Bjs.get.getBound($1, ${this.classSchema.name}.self) ?? ${this.classSchema.name}(`)
-            .append(argumentsListNativeIniRet.returningCode).append('), $0)').newLineDeindenting()
+            .append(`Bjs.get.bindNative(Bjs.get.getBound($1, ${this.classSchema.name}.self)`)
+            .append(defaultConstructor)
+            .append(', $0)').newLineDeindenting()
             .append('}').newLineDeindenting()
             .append('}')
     }

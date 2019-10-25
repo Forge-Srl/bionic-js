@@ -7,8 +7,7 @@
   "private": true,
   "scripts": {
     "test": "jest",
-    "compile-parser": "node node_modules/pegjs/bin/pegjs --allowed-start-rules \"CommentText, Tags, BionicTag, DescriptionTag\" -o parser/annotation/Parser.js parser/annotation/pegjsSrc/Parser.pegjs",
-    "export-lunch-ios": "node cli/bjsSyncCli.js ../lunch-ios/bjs.config.js"
+    "compile-parser": "node node_modules/pegjs/bin/pegjs --allowed-start-rules \"CommentText, Tags, BionicTag, DescriptionTag\" -o parser/annotation/Parser.js parser/annotation/pegjsSrc/Parser.pegjs"
   },
   "jest-comment": "the transform:{} config is to disable transpillation and avoid problems while debugging async code",
   "jest": {
