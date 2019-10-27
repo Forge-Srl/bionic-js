@@ -53,7 +53,7 @@ describe('SwiftWrapperPropertyGenerator', () => {
         expectedBindFunction = [
             '    class func bjsBind() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
-            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(), $0)',
+            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self), $0)',
             '        }',
             '    }']
     })

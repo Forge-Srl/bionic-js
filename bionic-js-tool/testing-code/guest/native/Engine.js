@@ -21,7 +21,7 @@ class Engine {
     powerOff() {
     }
 
-    // @bionic method watch (() => String)
+    // @bionic method watch (callback: () => String)
 }
 
 module.exports = {Engine}

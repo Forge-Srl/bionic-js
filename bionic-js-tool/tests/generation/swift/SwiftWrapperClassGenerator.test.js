@@ -4,8 +4,8 @@ describe('SwiftWrapperClassGenerator', () => {
 
     let Class, Constructor, Property, Method, IntType, expectedHeader
 
-    function getCode(constructors, properties, methods, superclassName = '') {
-        const class1 = new Class('Class1', 'class description', constructors, properties, methods, superclassName, 'module/path')
+    function getCode(properties, methods, superclassName = '') {
+        const class1 = new Class('Class1', 'class description', [new Constructor('desc', [])], properties, methods, superclassName, 'module/path')
         return class1.generator.swift.forWrapping().getSource()
     }
 
@@ -44,14 +44,13 @@ describe('SwiftWrapperClassGenerator', () => {
             '}')
     }
 
-    test('empty class without inheritance', () => expectEmptyClass(getCode([], [], [])))
+    test('empty class without inheritance', () => expectEmptyClass(getCode([], [])))
 
-    test('empty class with inheritance', () => expectEmptyClass(getCode([], [], [], 'Superclass')))
+    test('empty class with inheritance', () => expectEmptyClass(getCode([], [], 'Superclass')))
 
     test('class parts order', () => {
         const intType = new IntType()
 
-        const constructors = [new Constructor('desc', [])]
         const properties = [
             new Property('instanceProperty1', 'desc', false, false, intType, ['get', 'set']),
             new Property('staticProperty1', 'desc', true, false, intType, ['get', 'set']),
@@ -64,7 +63,7 @@ describe('SwiftWrapperClassGenerator', () => {
             new Method('instanceMethod2', 'desc', false, false, intType, []),
             new Method('staticMethod2', 'desc', true, false, intType, []),
         ]
-        const code = getCode(constructors, properties, methods)
+        const code = getCode(properties, methods)
 
         const expectedFunctionsExport = [
             '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) {',

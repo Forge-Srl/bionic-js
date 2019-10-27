@@ -25,13 +25,18 @@ class SwiftWrapperConstructorGenerator extends SwiftMethodGenerator {
         return [firstParameter, ...otherParameters]
     }
 
+    get isUserDefinedConstructor() {
+        return !!this.classSchema.constructors.length
+    }
+
     getCode() {
         const constructorContext = new GenerationContext()
         const parametersToSkip = super.parameters.length ? 1 : 2
         const argumentsListNativeIniRet = this.getArgumentsListNativeIniRet(constructorContext, parametersToSkip)
-        const defaultConstructor = CodeBlock.create()
-        if (!!this.classSchema.constructors.length) {
-            defaultConstructor
+
+        const userDefinedConstructorCall = CodeBlock.create()
+        if (this.isUserDefinedConstructor) {
+            userDefinedConstructorCall
                 .append(` ?? ${this.classSchema.name}(`).append(argumentsListNativeIniRet.returningCode).append(')')
         }
 
@@ -42,7 +47,7 @@ class SwiftWrapperConstructorGenerator extends SwiftMethodGenerator {
             .append('return {').newLineIndenting()
             .append(argumentsListNativeIniRet.initializationCode)
             .append(`Bjs.get.bindNative(Bjs.get.getBound($1, ${this.classSchema.name}.self)`)
-            .append(defaultConstructor)
+            .append(userDefinedConstructorCall)
             .append(', $0)').newLineDeindenting()
             .append('}').newLineDeindenting()
             .append('}')
