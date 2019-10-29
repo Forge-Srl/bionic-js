@@ -151,7 +151,7 @@ describe('SwiftHostMethodGenerator', () => {
         const code = getScaffold(false, false, new VoidType(), [])
 
         t.expectCode(code,
-            'class Class1',
+            'class Class1 {',
             '    ',
             '    func method1() {',
             '        ',
@@ -163,7 +163,7 @@ describe('SwiftHostMethodGenerator', () => {
         const code = getScaffold(false, false, new VoidType(), [], 'throws')
 
         t.expectCode(code,
-            'class Class1',
+            'class Class1 {',
             '    ',
             '    func `throws`() {',
             '        ',
@@ -176,7 +176,7 @@ describe('SwiftHostMethodGenerator', () => {
         const code = getScaffold(true, true, voidLambda, [newParam(voidLambda, 'voidLambda')])
 
         t.expectCode(code,
-            'class Class1',
+            'class Class1 {',
             '    ',
             '    override class func method1(_ voidLambda: (() -> Void)?) -> (() -> Void)? {',
             '        ',

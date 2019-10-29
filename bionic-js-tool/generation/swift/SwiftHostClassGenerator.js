@@ -39,7 +39,7 @@ class SwiftHostClassGenerator extends SwiftClassGenerator {
         const superclass = this.schema.superclassName
         const classParts = this.getClassParts()
         const scaffoldCode = CodeBlock.create()
-            .append(`class ${this.schema.name}${superclass ? `: ${superclass}` : ''}`).newLineIndenting()
+            .append(`class ${this.schema.name}${superclass ? `: ${superclass}` : ''} {`).newLineIndenting()
 
         if (classParts.length)
             scaffoldCode.newLine()

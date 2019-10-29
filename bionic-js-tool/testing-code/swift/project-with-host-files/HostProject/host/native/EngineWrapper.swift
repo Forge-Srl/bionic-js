@@ -51,7 +51,7 @@ class EngineWrapper: BjsNativeWrapper {
 
 /* Engine class scaffold:
 
-class Engine
+class Engine {
     
     var fuelType:String? {
         get {

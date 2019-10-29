@@ -222,7 +222,7 @@ describe('SwiftHostConstructorGenerator', () => {
         const code = getScaffold([])
 
         t.expectCode(code,
-            'class Class1',
+            'class Class1 {',
             '    ',
             '    init() {',
             '        ',
@@ -235,7 +235,7 @@ describe('SwiftHostConstructorGenerator', () => {
         const code = getScaffold([intPar])
 
         t.expectCode(code,
-            'class Class1',
+            'class Class1 {',
             '    ',
             '    init(_ intParam: Int?) {',
             '        ',

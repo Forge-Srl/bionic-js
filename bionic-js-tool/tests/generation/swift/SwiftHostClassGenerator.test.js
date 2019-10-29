@@ -155,7 +155,7 @@ describe('SwiftHostClassGenerator', () => {
         const scaffold = getScaffold([], [], [])
 
         t.expectCode(scaffold,
-            'class Class1',
+            'class Class1 {',
             '    ',
             '}')
     })
@@ -164,7 +164,7 @@ describe('SwiftHostClassGenerator', () => {
         const scaffold = getScaffold([], [], [], 'Superclass')
 
         t.expectCode(scaffold,
-            'class Class1: Superclass',
+            'class Class1: Superclass {',
             '    ',
             '}')
     })
@@ -188,7 +188,7 @@ describe('SwiftHostClassGenerator', () => {
         const code = getScaffold(constructors, properties, methods)
 
         t.expectCode(code,
-            'class Class1',
+            'class Class1 {',
             '    ',
             '    class var staticProperty1:Int? {',
             '        get {',

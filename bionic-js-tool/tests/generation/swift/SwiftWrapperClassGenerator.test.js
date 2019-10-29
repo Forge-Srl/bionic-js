@@ -219,7 +219,7 @@ describe('SwiftWrapperClassGenerator', () => {
             '',
             '/* Class1 class scaffold:',
             '',
-            'class Class1: SuperClass',
+            'class Class1: SuperClass {',
             '    ',
             '    init() {',
             '        ',
