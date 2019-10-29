@@ -5,13 +5,6 @@ describe('SwiftHostPropertyGenerator', () => {
     let Class, Property, Parameter, AnyType, ArrayType, BoolType, DateType, FloatType, IntType, LambdaType,
         NativeObjectType, ObjectType, StringType, VoidType, WrappedObjectType, expectedHeader, expectedFooter
 
-    function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set'],
-                     propertyName = 'property1') {
-        const class1 = new Class('Class1', '', [], [new Property(propertyName, 'property description', isPropertyStatic,
-            isPropertyOverriding, propertyType, propertyKinds)], [], '', '')
-        return class1.generator.swift.forHosting().getSource()
-    }
-
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
         Property = t.requireModule('schema/Property').Property
@@ -47,6 +40,13 @@ describe('SwiftHostPropertyGenerator', () => {
             '    }',
             '}']
     })
+
+    function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set'],
+                     propertyName = 'property1') {
+        const class1 = new Class('Class1', '', [], [new Property(propertyName, 'property description', isPropertyStatic,
+            isPropertyOverriding, propertyType, propertyKinds)], [], '', '')
+        return class1.generator.swift.forHosting().getSource()
+    }
 
     test('IntType, only getter, static', () => {
         const code = getCode(new IntType(), true, false, ['get'])
@@ -292,5 +292,87 @@ describe('SwiftHostPropertyGenerator', () => {
             '        }',
             '    }',
             ...expectedFooter)
+    })
+
+    test('IntType, only getter, reserved keyword', () => {
+        const code = getCode(new IntType(), false, false, ['get'], 'default')
+
+        t.expectCode(code,
+            ...expectedHeader,
+            '    var `default`:Int? {',
+            '        get {',
+            '            return Bjs.get.getInt(bjsGetProperty("default"))',
+            '        }',
+            '    }',
+            ...expectedFooter)
+    })
+
+    test('IntType, scaffold, only setter, static', () => {
+        const code = getScaffold(new IntType(), true, false, ['set'])
+
+        t.expectCode(code,
+            'class Class1',
+            '    ',
+            '    class var property1:Int? {',
+            '        set {',
+            '            ',
+            '        }',
+            '    }',
+            '}')
+    })
+
+
+    function getScaffold(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set'],
+                         propertyName = 'property1') {
+        const class1 = new Class('Class1', '', [], [new Property(propertyName, 'property description', isPropertyStatic,
+            isPropertyOverriding, propertyType, propertyKinds)], [], '', '')
+        return class1.generator.swift.forHosting().getScaffold()
+    }
+
+    test('IntType, scaffold, overriding, only getter', () => {
+        const code = getScaffold(new IntType(), false, true, ['get'])
+
+        t.expectCode(code,
+            'class Class1',
+            '    ',
+            '    override var property1:Int? {',
+            '        get {',
+            '            ',
+            '        }',
+            '    }',
+            '}')
+    })
+
+    test('LambdaType, scaffold, overriding, reserved keyword, only setter', () => {
+        const voidLambda = new LambdaType(new VoidType(), [])
+        const voidLambdaParam = new Parameter(voidLambda, 'voidLambda')
+        const code = getScaffold(new LambdaType(voidLambda, [voidLambdaParam]), false, false, ['set'], 'return')
+
+        t.expectCode(code,
+            'class Class1',
+            '    ',
+            '    var `return`:((_ voidLambda: (() -> Void)?) -> (() -> Void)?)? {',
+            '        set {',
+            '            ',
+            '        }',
+            '    }',
+            '}')
+    })
+
+    test('IntType, scaffold, getter and setter', () => {
+        const code = getScaffold(new IntType(), false, true)
+
+        t.expectCode(code,
+            'class Class1',
+            '    ',
+            '    override var property1:Int? {',
+            '        get {',
+            '            ',
+            '        }',
+            '        set {',
+            '            ',
+            '        }',
+            '    }',
+            '}')
     })
 })

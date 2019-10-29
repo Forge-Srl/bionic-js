@@ -29,9 +29,14 @@ class SwiftHostMethodGenerator extends SwiftMethodGenerator {
     }
 
     getCode() {
-        return CodeBlock.create()
-            .append(this.getHeaderCode()).newLineIndenting()
+        return this.getHeaderCode().newLineIndenting()
             .append(this.getBodyCode()).newLineDeindenting()
+            .append('}')
+    }
+
+    getScaffold() {
+        return this.getHeaderCode().newLineIndenting()
+            .newLineDeindenting()
             .append('}')
     }
 }

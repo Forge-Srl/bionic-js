@@ -34,6 +34,26 @@ class SwiftHostClassGenerator extends SwiftClassGenerator {
             .append('}').newLineDeindenting()
             .append('}')
     }
+
+    getScaffold() {
+        const superclass = this.schema.superclassName
+        const classParts = this.getClassParts()
+        const scaffoldCode = CodeBlock.create()
+            .append(`class ${this.schema.name}${superclass ? `: ${superclass}` : ''}`).newLineIndenting()
+
+        if (classParts.length)
+            scaffoldCode.newLine()
+
+        return scaffoldCode.append(classParts.map((classPart, index) => {
+            const classPartCode = classPart.generator.swift.forHosting(this.schema).getScaffold()
+            if (index < classParts.length - 1) {
+                classPartCode.newLine().newLine()
+            }
+            return classPartCode
+        }))
+            .newLineDeindenting()
+            .append('}')
+    }
 }
 
 module.exports = {SwiftHostClassGenerator}

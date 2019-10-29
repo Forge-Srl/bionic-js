@@ -1,6 +1,4 @@
 const {HostFile} = require('./HostFile')
-const {SwiftHostClassGenerator} = require('../generation/swift/SwiftHostClassGenerator')
-const {SwiftWrapperClassGenerator} = require('../generation/swift/SwiftWrapperClassGenerator')
 
 class SwiftHostFile extends HostFile {
 
@@ -11,8 +9,11 @@ class SwiftHostFile extends HostFile {
     }
 
     async generate(schema, hostProject) {
-        const hostFileGenerator = this.guestFile.isNative ? new SwiftWrapperClassGenerator(schema) :
-            new SwiftHostClassGenerator(schema)
+
+        const hostClassGenerator = schema.generator.swift.forHosting()
+        const hostFileGenerator = this.guestFile.isNative ?
+            schema.generator.swift.forWrapping(hostClassGenerator) :
+            hostClassGenerator
 
         let hostFileContent
         try {

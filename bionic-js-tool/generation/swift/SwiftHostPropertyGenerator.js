@@ -10,6 +10,14 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
         return this.schema.type.generator.swift
     }
 
+    get hasGetter() {
+        return this.schema.kinds.includes('get')
+    }
+
+    get hasSetter() {
+        return this.schema.kinds.includes('set')
+    }
+
     getHeaderCode() {
         const override_ = this.schema.isOverriding ? 'override ' : ''
         const class_ = this.schema.isStatic ? 'class ' : ''
@@ -20,7 +28,7 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
     }
 
     getGetterCode() {
-        if (!this.schema.kinds.includes('get'))
+        if (!this.hasGetter)
             return null
 
         const jsValueIniRet = IniRet.create()
@@ -37,7 +45,7 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
     }
 
     getSetterCode() {
-        if (!this.schema.kinds.includes('set'))
+        if (!this.hasSetter)
             return null
 
         const setterContext = new GenerationContext()
@@ -64,6 +72,30 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
 
         return propertyCode.append(setterCode)
             .newLineDeindenting()
+            .append('}')
+    }
+
+    getScaffold() {
+        const scaffoldCode = CodeBlock.create()
+            .append(this.getHeaderCode()).newLineIndenting()
+
+        if (this.hasGetter) {
+            scaffoldCode
+                .append('get {').newLineIndenting()
+                .newLineDeindenting()
+                .append('}')
+        }
+
+        if (this.hasGetter && this.hasSetter)
+            scaffoldCode.newLine()
+
+        if (this.hasSetter) {
+            scaffoldCode
+                .append('set {').newLineIndenting()
+                .newLineDeindenting()
+                .append('}')
+        }
+        return scaffoldCode.newLineDeindenting()
             .append('}')
     }
 }

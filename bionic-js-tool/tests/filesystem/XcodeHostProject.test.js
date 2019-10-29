@@ -1,6 +1,7 @@
 const t = require('../test-utils')
 const copydir = require('copy-dir')
 const xcode = require('xcode')
+const {hostFilePaths, packageFilePaths} = require('../../testing-code/swift/files')
 
 describe('XcodeHostProject', () => {
 
@@ -195,10 +196,6 @@ describe('XcodeHostProject', () => {
         expect(project.normalizeRelativePath('dir1')).toBe('dir1')
     })
 
-    const hostFilePaths = ['FerrariCalifornia.swift', 'TeslaRoadster.swift', 'libs/MotorVehicle.swift',
-        'libs/Vehicle.swift', 'native/EngineWrapper.swift']
-    const packageFilePaths = ['FerrariCalifornia.js', 'TeslaRoadster.js', 'libs/MotorVehicle.js', 'libs/Vehicle.js',
-        'native/Engine.js']
     const checkHostFiles = async (hostDirectory, existence) => {
         for (const hostFilePath of hostFilePaths) {
             expect(await hostDirectory.getSubFile(hostFilePath).exists()).toBe(existence)
@@ -274,11 +271,6 @@ describe('XcodeHostProject', () => {
             })
         })
     })
-
-    /*
-    'FerrariCalifornia.swift', 'TeslaRoadster.swift', 'libs/MotorVehicle.swift', 'libs/Vehicle.swift', 'native/EngineWrapper.swift'
-    'package.bundle'
-     */
 
     const orderSubArray = (objects, subArrayName) => {
         for (const objectKey in objects) {

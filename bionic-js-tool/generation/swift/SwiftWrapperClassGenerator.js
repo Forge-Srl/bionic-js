@@ -4,6 +4,11 @@ const {CodeBlock} = require('../code/CodeBlock')
 
 class SwiftWrapperClassGenerator extends SwiftClassGenerator {
 
+    constructor(schema, hostClassGenerator) {
+        super(schema)
+        Object.assign(this, {hostClassGenerator})
+    }
+
     get constructors() {
         const constructors = super.constructors
         if (!constructors.some(part => part instanceof Constructor)) {
@@ -49,16 +54,28 @@ class SwiftWrapperClassGenerator extends SwiftClassGenerator {
             .newLine()
             .append(this.getClassParts().map((classPart, index, array) => {
                 const code = classPart.generator.swift.forWrapping(this.schema).getCode()
-                if (index < array.length - 1)
+                if (index < array.length - 1) {
                     return code.newLine().newLine()
-                else
-                    return code.newLineDeindenting()
+                }
+                return code
             }))
+            .newLineDeindenting()
     }
 
     getFooterCode() {
-        return CodeBlock.create()
+        const footerCode = CodeBlock.create()
             .append('}')
+
+        if (this.hostClassGenerator) {
+            footerCode.newLine()
+                .newLine()
+                .append(`/* ${this.schema.name} class scaffold:`).newLine()
+                .newLine()
+                .append(this.hostClassGenerator.getScaffold()).newLine()
+                .newLine()
+                .append('*/')
+        }
+        return footerCode
     }
 }
 

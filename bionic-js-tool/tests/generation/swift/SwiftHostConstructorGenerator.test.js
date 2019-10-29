@@ -5,15 +5,6 @@ describe('SwiftHostConstructorGenerator', () => {
     let Class, Constructor, Parameter, VoidType, BoolType, IntType, ArrayType, LambdaType, expectedHeader,
         expectedFooter
 
-    function getCode(constructorParameters) {
-        const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], '', 'module/path')
-        return class1.generator.swift.forHosting().getSource()
-    }
-
-    function newParam(type, name) {
-        return new Parameter(type, name, 'parameter description')
-    }
-
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
         Constructor = t.requireModule('schema/Constructor').Constructor
@@ -42,6 +33,15 @@ describe('SwiftHostConstructorGenerator', () => {
             '    }',
             '}']
     })
+
+    function getCode(constructorParameters) {
+        const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], '', 'module/path')
+        return class1.generator.swift.forHosting().getSource()
+    }
+
+    function newParam(type, name) {
+        return new Parameter(type, name, 'parameter description')
+    }
 
     test('no params', () => {
         const code = getCode([])
@@ -211,5 +211,35 @@ describe('SwiftHostConstructorGenerator', () => {
             '        })])',
             '    }',
             ...expectedFooter)
+    })
+
+    function getScaffold(constructorParameters) {
+        const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], '', 'module/path')
+        return class1.generator.swift.forHosting().getScaffold()
+    }
+
+    test('no params, scaffold', () => {
+        const code = getScaffold([])
+
+        t.expectCode(code,
+            'class Class1',
+            '    ',
+            '    init() {',
+            '        ',
+            '    }',
+            '}')
+    })
+
+    test('single primitive, scaffold', () => {
+        const intPar = newParam(new IntType(), 'intParam')
+        const code = getScaffold([intPar])
+
+        t.expectCode(code,
+            'class Class1',
+            '    ',
+            '    init(_ intParam: Int?) {',
+            '        ',
+            '    }',
+            '}')
     })
 })

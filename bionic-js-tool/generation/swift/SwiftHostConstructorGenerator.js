@@ -15,6 +15,13 @@ class SwiftHostConstructorGenerator extends SwiftMethodGenerator {
             .__.append('])').newLineDeindenting()
             .append('}')
     }
+
+    getScaffold() {
+        return CodeBlock.create()
+            .append(`init(${this.getParametersStatements()}) {`).newLineIndenting()
+            .newLineDeindenting()
+            .append('}')
+    }
 }
 
 module.exports = {SwiftHostConstructorGenerator}

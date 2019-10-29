@@ -4,16 +4,6 @@ describe('SwiftHostMethodGenerator', () => {
 
     let Class, Method, Parameter, VoidType, BoolType, IntType, LambdaType, expectedHeader, expectedFooter
 
-    function getCode(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters, methodName = 'method1') {
-        const class1 = new Class('Class1', '', [], [], [new Method(methodName, 'method description', isMethodStatic,
-            isMethodOverriding, methodReturnType, methodParameters)], '', 'module/path')
-        return class1.generator.swift.forHosting().getSource()
-    }
-
-    function newParam(type, name) {
-        return new Parameter(type, name, 'parameter description')
-    }
-
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
         Method = t.requireModule('schema/Method').Method
@@ -41,6 +31,16 @@ describe('SwiftHostMethodGenerator', () => {
             '    }',
             '}']
     })
+
+    function getCode(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters, methodName = 'method1') {
+        const class1 = new Class('Class1', '', [], [], [new Method(methodName, 'method description', isMethodStatic,
+            isMethodOverriding, methodReturnType, methodParameters)], '', 'module/path')
+        return class1.generator.swift.forHosting().getSource()
+    }
+
+    function newParam(type, name) {
+        return new Parameter(type, name, 'parameter description')
+    }
 
     test('void return, no params', () => {
         const code = getCode(false, false, new VoidType(), [])
@@ -139,5 +139,48 @@ describe('SwiftHostMethodGenerator', () => {
             '        }',
             '    }',
             ...expectedFooter)
+    })
+
+    function getScaffold(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters, methodName = 'method1') {
+        const class1 = new Class('Class1', '', [], [], [new Method(methodName, 'method description', isMethodStatic,
+            isMethodOverriding, methodReturnType, methodParameters)], '', 'module/path')
+        return class1.generator.swift.forHosting().getScaffold()
+    }
+
+    test('void return, no params, scaffold', () => {
+        const code = getScaffold(false, false, new VoidType(), [])
+
+        t.expectCode(code,
+            'class Class1',
+            '    ',
+            '    func method1() {',
+            '        ',
+            '    }',
+            '}')
+    })
+
+    test('void return, no params, reserved keyword, scaffold', () => {
+        const code = getScaffold(false, false, new VoidType(), [], 'throws')
+
+        t.expectCode(code,
+            'class Class1',
+            '    ',
+            '    func `throws`() {',
+            '        ',
+            '    }',
+            '}')
+    })
+
+    test('void lambda return, void lambda param, static, overriding, scaffold', () => {
+        const voidLambda = new LambdaType(new VoidType(), [])
+        const code = getScaffold(true, true, voidLambda, [newParam(voidLambda, 'voidLambda')])
+
+        t.expectCode(code,
+            'class Class1',
+            '    ',
+            '    override class func method1(_ voidLambda: (() -> Void)?) -> (() -> Void)? {',
+            '        ',
+            '    }',
+            '}')
     })
 })

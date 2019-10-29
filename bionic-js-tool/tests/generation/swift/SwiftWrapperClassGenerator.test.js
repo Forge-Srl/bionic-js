@@ -4,9 +4,10 @@ describe('SwiftWrapperClassGenerator', () => {
 
     let Class, Constructor, Property, Method, IntType, expectedHeader
 
-    function getCode(properties, methods, superclassName = '') {
+    function getCode(properties, methods, superclassName = '', withScaffold = false) {
         const class1 = new Class('Class1', 'class description', [new Constructor('desc', [])], properties, methods, superclassName, 'module/path')
-        return class1.generator.swift.forWrapping().getSource()
+        const hostClassGeneratorForScaffolding = withScaffold ? class1.generator.swift.forHosting() : undefined
+        return class1.generator.swift.forWrapping(hostClassGeneratorForScaffolding).getSource()
     }
 
     beforeEach(() => {
@@ -165,5 +166,79 @@ describe('SwiftWrapperClassGenerator', () => {
             '        }',
             '    }',
             '}')
+    })
+
+    test('class parts order, withScaffold', () => {
+        const intType = new IntType()
+
+        const properties = [
+            new Property('property', 'desc', false, false, intType, ['get', 'set']),
+        ]
+        const methods = [
+            new Method('method', 'desc', false, false, intType, []),
+        ]
+        const code = getCode(properties, methods, 'SuperClass', true)
+
+        const expectedFunctionsExport = [
+            '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) {',
+            '        _ = nativeExports',
+            '            .exportBindFunction(bjsBind())',
+            '            .exportFunction("bjsGet_property", bjsGet_property())',
+            '            .exportFunction("bjsSet_property", bjsSet_property())',
+            '            .exportFunction("bjs_method", bjs_method())',
+            '    }']
+
+        t.expectCode(code,
+            ...expectedHeader,
+            ...expectedFunctionsExport,
+            '    ',
+            '    class func bjsBind() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '        return {',
+            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(), $0)',
+            '        }',
+            '    }',
+            '    ',
+            '    class func bjsGet_property() -> @convention(block) (JSValue) -> JSValue {',
+            '        return {',
+            '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.property)',
+            '        }',
+            '    }',
+            '    ',
+            '    class func bjsSet_property() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '        return {',
+            '            Bjs.get.getWrapped($0, Class1.self)!.property = Bjs.get.getInt($1)',
+            '        }',
+            '    }',
+            '    ',
+            '    class func bjs_method() -> @convention(block) (JSValue) -> JSValue {',
+            '        return {',
+            '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.method())',
+            '        }',
+            '    }',
+            '}',
+            '',
+            '/* Class1 class scaffold:',
+            '',
+            'class Class1: SuperClass',
+            '    ',
+            '    init() {',
+            '        ',
+            '    }',
+            '    ',
+            '    var property:Int? {',
+            '        get {',
+            '            ',
+            '        }',
+            '        set {',
+            '            ',
+            '        }',
+            '    }',
+            '    ',
+            '    func method() -> Int? {',
+            '        ',
+            '    }',
+            '}',
+            '',
+            '*/')
     })
 })
