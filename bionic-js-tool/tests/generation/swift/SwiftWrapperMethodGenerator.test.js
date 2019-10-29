@@ -83,7 +83,7 @@ describe('SwiftWrapperMethodGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getFunctionsExportCode([], ['.exportFunction("bjsStatic_method1", bjsStatic_method1())']),
-            '    class func bjsStatic_method1() -> @convention(block) (JSValue) -> Void {',
+            '    class func bjsStatic_method1() -> @convention(block) () -> Void {',
             '        return {',
             '            _ = Class1.method1()',
             '        }',
@@ -99,6 +99,22 @@ describe('SwiftWrapperMethodGenerator', () => {
 
     test('void return, no params, static, overriding', () => {
         testStaticMethodWithVoidReturnAndNoParams(true)
+    })
+
+    test('void return, primitive param, static', () => {
+        const code = getCode(true, false, new VoidType(), [newParam(new BoolType(), 'boolParam')])
+
+        t.expectCode(code,
+            ...expectedHeader,
+            ...getFunctionsExportCode([], ['.exportFunction("bjsStatic_method1", bjsStatic_method1())']),
+            '    class func bjsStatic_method1() -> @convention(block) (JSValue) -> Void {',
+            '        return {',
+            '            _ = Class1.method1(Bjs.get.getBool($0))',
+            '        }',
+            '    }',
+            '    ',
+            ...expectedBindFunction,
+            '}')
     })
 
     test('primitive return, primitive param', () => {

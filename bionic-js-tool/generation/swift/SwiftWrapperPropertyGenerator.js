@@ -65,7 +65,8 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
         const getterContext = new GenerationContext()
 
         return CodeBlock.create()
-            .append(`class func ${this.getterWrapperMethodName}() -> @convention(block) (JSValue) -> JSValue {`).newLineIndenting()
+            .append(`class func ${this.getterWrapperMethodName}() -> @convention(block) (`)
+            .__.append(`${this.schema.isStatic ? '' : 'JSValue'}) -> JSValue {`).newLineIndenting()
             .append('return {').newLineIndenting()
             .append(typeGen.getNativeReturnCode(typeGen.getJsIniRet(this.nativePropertyIniRet, getterContext))).newLineDeindenting()
             .append('}').newLineDeindenting()
@@ -77,11 +78,11 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
             return null
 
         const getterContext = new GenerationContext()
-        const nativeValueIniRet = this.typeGenerator.getNativeIniRet(IniRet.create().appendRet('$1'), getterContext)
+        const nativeValueIniRet = this.typeGenerator.getNativeIniRet(IniRet.create().appendRet(this.schema.isStatic ? '$0' : '$1'), getterContext)
 
         return CodeBlock.create()
-            .append(`class func ${this.setterWrapperMethodName}() -> @convention(block) (JSValue, JSValue) -> Void {`)
-            .__.newLineIndenting()
+            .append(`class func ${this.setterWrapperMethodName}() -> @convention(block) (`)
+            .__.append(`${this.schema.isStatic ? '' : 'JSValue, '}JSValue) -> Void {`).newLineIndenting()
             .append('return {').newLineIndenting()
             .append(nativeValueIniRet.initializationCode)
             .append(this.nativePropertyIniRet.returningCode).append(' = ').append(nativeValueIniRet.returningCode).newLineDeindenting()

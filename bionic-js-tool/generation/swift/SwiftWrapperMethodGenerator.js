@@ -20,11 +20,17 @@ class SwiftWrapperMethodGenerator extends SwiftMethodGenerator {
         return this._wrapperMethodName
     }
 
+    get parametersIndexShift() {
+        return this.schema.isStatic ? 0 : 1
+    }
+
     get parameters() {
-        const firstParameter = new Parameter(new WrappedObjectType(), 'wrappedObj')
+        const firstParameter = this.schema.isStatic ? [] : [new Parameter(new WrappedObjectType(), 'wrappedObj')]
+
         const otherParameters = super.parameters.map((parameter, index) =>
-            new Parameter(parameter.type, `$${index + 1}`, parameter.description))
-        return [firstParameter, ...otherParameters]
+            new Parameter(parameter.type, `$${index + this.parametersIndexShift}`, parameter.description))
+
+        return [...firstParameter, ...otherParameters]
     }
 
     getNativeMethodCall(argumentListCode) {
@@ -37,7 +43,7 @@ class SwiftWrapperMethodGenerator extends SwiftMethodGenerator {
 
     getCode() {
         const methodContext = new GenerationContext()
-        const argumentsListNativeIniRet = this.getArgumentsListNativeIniRet(methodContext, 1)
+        const argumentsListNativeIniRet = this.getArgumentsListNativeIniRet(methodContext, this.parametersIndexShift)
 
         const callIniRet = IniRet.create()
             .appendIni(argumentsListNativeIniRet.initializationCode)
