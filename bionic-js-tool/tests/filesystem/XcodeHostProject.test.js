@@ -62,19 +62,18 @@ describe('XcodeHostProject', () => {
         })
     })
 
-    test('targetKeys', async () => {
+    test('compileTargetKeys', async () => {
         await getProjectWithoutHost(async xcodeProject => {
-            const targetKeys = xcodeProject.targetKeys
+            const targetKeys = xcodeProject.compileTargetKeys
             expect(targetKeys).toStrictEqual(['C5966C8C2349378B00EE670C', 'C5B809F02349FE28002FD95C'])
         })
     })
 
-    test('targetKeys, wrong targets in config', async () => {
+    test('compileTargetKeys, wrong targets in config', async () => {
         await getProjectWithoutHost(async xcodeProject => {
             xcodeProject.targetConfig.targetObj.compileTargets = ['HostProject', 'WrongTarget']
 
-            const targetKeys = xcodeProject.targetKeys
-            expect(targetKeys).toStrictEqual([''])
+            expect(() => xcodeProject.compileTargetKeys).toThrow('compile target "WrongTarget" not found in the project')
         })
     })
 

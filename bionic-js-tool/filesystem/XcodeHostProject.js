@@ -24,9 +24,18 @@ class XcodeHostProject {
         return this.getGroupByKey(mainGroupKey)
     }
 
-    get targetKeys() {
+    get compileTargetKeys() {
         const targetObjects = this.project.pbxNativeTargetSection()
-        return Object.keys(targetObjects).filter(targetKey => this.targetConfig.compileTargets.includes(targetObjects[targetKey].name))
+        const allTargets = this.allTargetKeys.map(targetKey => ({key: targetKey, obj: targetObjects[targetKey]}))
+        const targetKeys = []
+        for (const compileTargetName of this.targetConfig.compileTargets) {
+            const compileTarget = allTargets.find(target => target.obj.name === compileTargetName)
+            if (!compileTarget) {
+                throw new Error(`compile target "${compileTargetName}" not found in the project`)
+            }
+            targetKeys.push(compileTarget.key)
+        }
+        return targetKeys
     }
 
     get allTargetKeys() {
@@ -244,7 +253,7 @@ class XcodeHostProject {
         this.project.addToPbxGroup(file, fatherGroup.key)
 
 
-        for (const targetKey of this.targetKeys) {
+        for (const targetKey of this.compileTargetKeys) {
             file.uuid = this.project.generateUuid()
             file.group = isPackage ? 'Resources' : 'Sources'
             this.project.addToPbxBuildFileSection(file)
