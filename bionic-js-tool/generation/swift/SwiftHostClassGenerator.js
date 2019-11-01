@@ -30,7 +30,7 @@ class SwiftHostClassGenerator extends SwiftClassGenerator {
             .append('}').newLine()
             .newLine()
             .append('override class var bjsModulePath: String {').newLineIndenting()
-            .append(`return "${this.schema.modulePath}"`).newLineDeindenting()
+            .append(`return "${this.schema.moduleLoadingPath}"`).newLineDeindenting()
             .append('}').newLineDeindenting()
             .append('}')
     }
@@ -39,6 +39,8 @@ class SwiftHostClassGenerator extends SwiftClassGenerator {
         const superclass = this.schema.superclassName
         const classParts = this.getClassParts()
         const scaffoldCode = CodeBlock.create()
+            .append('import Bjs').newLine()
+            .newLine()
             .append(`class ${this.schema.name}${superclass ? `: ${superclass}` : ''} {`).newLineIndenting()
 
         if (classParts.length)

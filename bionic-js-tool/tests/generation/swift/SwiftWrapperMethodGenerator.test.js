@@ -41,7 +41,7 @@ describe('SwiftWrapperMethodGenerator', () => {
             'class Class1Wrapper: BjsNativeWrapper {',
             '    ',
             '    override class var name: String { return "Class1" }',
-            '    override class var wrapperPath: String { return "module/path" }',
+            '    override class var wrapperPath: String { return "/module/path" }',
             '    ',
         ]
 

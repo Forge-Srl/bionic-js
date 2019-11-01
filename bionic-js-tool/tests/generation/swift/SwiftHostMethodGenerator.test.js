@@ -27,7 +27,7 @@ describe('SwiftHostMethodGenerator', () => {
             '    }',
             '    ',
             '    override class var bjsModulePath: String {',
-            '        return "module/path"',
+            '        return "/module/path"',
             '    }',
             '}']
     })
@@ -147,10 +147,15 @@ describe('SwiftHostMethodGenerator', () => {
         return class1.generator.swift.forHosting().getScaffold()
     }
 
+    const expectedScaffoldHeader = [
+        'import Bjs',
+        '']
+
     test('void return, no params, scaffold', () => {
         const code = getScaffold(false, false, new VoidType(), [])
 
         t.expectCode(code,
+            ...expectedScaffoldHeader,
             'class Class1 {',
             '    ',
             '    func method1() {',
@@ -163,6 +168,7 @@ describe('SwiftHostMethodGenerator', () => {
         const code = getScaffold(false, false, new VoidType(), [], 'throws')
 
         t.expectCode(code,
+            ...expectedScaffoldHeader,
             'class Class1 {',
             '    ',
             '    func `throws`() {',
@@ -176,6 +182,7 @@ describe('SwiftHostMethodGenerator', () => {
         const code = getScaffold(true, true, voidLambda, [newParam(voidLambda, 'voidLambda')])
 
         t.expectCode(code,
+            ...expectedScaffoldHeader,
             'class Class1 {',
             '    ',
             '    override class func method1(_ voidLambda: (() -> Void)?) -> (() -> Void)? {',

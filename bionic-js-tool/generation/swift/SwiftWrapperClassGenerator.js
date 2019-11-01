@@ -32,7 +32,7 @@ class SwiftWrapperClassGenerator extends SwiftClassGenerator {
             .append(`class ${this.schema.name}Wrapper: BjsNativeWrapper {`).newLineIndenting()
             .newLine()
             .append(`override class var name: String { return "${this.schema.name}" }`).newLine()
-            .append(`override class var wrapperPath: String { return "${this.schema.modulePath}" }`).newLine()
+            .append(`override class var wrapperPath: String { return "${this.schema.moduleLoadingPath}" }`).newLine()
             .newLine()
     }
 

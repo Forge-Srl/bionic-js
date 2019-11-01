@@ -3,6 +3,7 @@ const {Constructor} = require('./Constructor')
 const {Method} = require('./Method')
 const {Property} = require('./Property')
 const {Validation} = require('./Validation')
+const path = require('path')
 
 class Class extends MultiTargetGenerable {
 
@@ -22,6 +23,11 @@ class Class extends MultiTargetGenerable {
 
     get isValid() {
         return Validation.validateIdentifier('class name', this.name)
+    }
+
+    get moduleLoadingPath() {
+        const pathComponents = path.parse(this.modulePath)
+        return path.join('/', pathComponents.dir, pathComponents.name)
     }
 }
 

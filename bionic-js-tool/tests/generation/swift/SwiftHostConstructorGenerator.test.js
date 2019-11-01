@@ -29,7 +29,7 @@ describe('SwiftHostConstructorGenerator', () => {
             '    }',
             '    ',
             '    override class var bjsModulePath: String {',
-            '        return "module/path"',
+            '        return "/module/path"',
             '    }',
             '}']
     })
@@ -218,10 +218,15 @@ describe('SwiftHostConstructorGenerator', () => {
         return class1.generator.swift.forHosting().getScaffold()
     }
 
+    const expectedScaffoldHeader = [
+        'import Bjs',
+        '']
+
     test('no params, scaffold', () => {
         const code = getScaffold([])
 
         t.expectCode(code,
+            ...expectedScaffoldHeader,
             'class Class1 {',
             '    ',
             '    init() {',
@@ -235,6 +240,7 @@ describe('SwiftHostConstructorGenerator', () => {
         const code = getScaffold([intPar])
 
         t.expectCode(code,
+            ...expectedScaffoldHeader,
             'class Class1 {',
             '    ',
             '    init(_ intParam: Int?) {',

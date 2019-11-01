@@ -62,6 +62,29 @@ describe('XcodeHostProject', () => {
         })
     })
 
+    test('targetKeys', async () => {
+        await getProjectWithoutHost(async xcodeProject => {
+            const targetKeys = xcodeProject.targetKeys
+            expect(targetKeys).toStrictEqual(['C5966C8C2349378B00EE670C', 'C5B809F02349FE28002FD95C'])
+        })
+    })
+
+    test('targetKeys, wrong targets in config', async () => {
+        await getProjectWithoutHost(async xcodeProject => {
+            xcodeProject.targetConfig.targetObj.compileTargets = ['HostProject', 'WrongTarget']
+
+            const targetKeys = xcodeProject.targetKeys
+            expect(targetKeys).toStrictEqual([''])
+        })
+    })
+
+    test('allTargetKeys', async () => {
+        await getProjectWithoutHost(async xcodeProject => {
+            const allTargetKeys = xcodeProject.allTargetKeys
+            expect(allTargetKeys).toStrictEqual(['C5966C8C2349378B00EE670C', 'C5B809F02349FE28002FD95C', 'C5B809FF2349FF10002FD95C'])
+        })
+    })
+
     test('getGroupByKey', async () => {
         await getProjectWithHostFiles(async xcodeProject => {
             const group = xcodeProject.getGroupByKey('C5B80A14234A19DB002FD95C')

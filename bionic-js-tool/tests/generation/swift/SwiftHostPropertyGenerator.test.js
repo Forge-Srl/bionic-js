@@ -36,7 +36,7 @@ describe('SwiftHostPropertyGenerator', () => {
             '    }',
             '    ',
             '    override class var bjsModulePath: String {',
-            '        return ""',
+            '        return "/"',
             '    }',
             '}']
     })
@@ -314,10 +314,15 @@ describe('SwiftHostPropertyGenerator', () => {
         return class1.generator.swift.forHosting().getScaffold()
     }
 
+    const expectedScaffoldHeader = [
+        'import Bjs',
+        '']
+
     test('IntType, scaffold, only setter, static', () => {
         const code = getScaffold(new IntType(), true, false, ['set'])
 
         t.expectCode(code,
+            ...expectedScaffoldHeader,
             'class Class1 {',
             '    ',
             '    class var property1:Int? {',
@@ -332,6 +337,7 @@ describe('SwiftHostPropertyGenerator', () => {
         const code = getScaffold(new IntType(), false, true, ['get'])
 
         t.expectCode(code,
+            ...expectedScaffoldHeader,
             'class Class1 {',
             '    ',
             '    override var property1:Int? {',
@@ -348,6 +354,7 @@ describe('SwiftHostPropertyGenerator', () => {
         const code = getScaffold(new LambdaType(voidLambda, [voidLambdaParam]), false, false, ['set'], 'return')
 
         t.expectCode(code,
+            ...expectedScaffoldHeader,
             'class Class1 {',
             '    ',
             '    var `return`:((_ voidLambda: (() -> Void)?) -> (() -> Void)?)? {',
@@ -362,6 +369,7 @@ describe('SwiftHostPropertyGenerator', () => {
         const code = getScaffold(new IntType(), false, true)
 
         t.expectCode(code,
+            ...expectedScaffoldHeader,
             'class Class1 {',
             '    ',
             '    override var property1:Int? {',

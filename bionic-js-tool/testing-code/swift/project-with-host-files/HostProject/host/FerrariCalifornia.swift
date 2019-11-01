@@ -8,6 +8,6 @@ class FerrariCalifornia: MotorVehicle {
     }
     
     override class var bjsModulePath: String {
-        return "FerrariCalifornia.js"
+        return "/FerrariCalifornia"
     }
 }

@@ -4,7 +4,7 @@ import Bjs
 class EngineWrapper: BjsNativeWrapper {
     
     override class var name: String { return "Engine" }
-    override class var wrapperPath: String { return "native/Engine.js" }
+    override class var wrapperPath: String { return "/native/Engine" }
     
     override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) {
         _ = nativeExports
@@ -50,6 +50,8 @@ class EngineWrapper: BjsNativeWrapper {
 }
 
 /* Engine class scaffold:
+
+import Bjs
 
 class Engine {
     

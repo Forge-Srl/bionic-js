@@ -29,7 +29,7 @@ describe('SwiftHostClassGenerator', () => {
 
         expectedModulePathVar = [
             '    override class var bjsModulePath: String {',
-            '        return "module/path"',
+            '        return "/module/path"',
             '    }']
     })
 
@@ -155,6 +155,8 @@ describe('SwiftHostClassGenerator', () => {
         const scaffold = getScaffold([], [], [])
 
         t.expectCode(scaffold,
+            'import Bjs',
+            '',
             'class Class1 {',
             '    ',
             '}')
@@ -164,6 +166,8 @@ describe('SwiftHostClassGenerator', () => {
         const scaffold = getScaffold([], [], [], 'Superclass')
 
         t.expectCode(scaffold,
+            'import Bjs',
+            '',
             'class Class1: Superclass {',
             '    ',
             '}')
@@ -188,6 +192,8 @@ describe('SwiftHostClassGenerator', () => {
         const code = getScaffold(constructors, properties, methods)
 
         t.expectCode(code,
+            'import Bjs',
+            '',
             'class Class1 {',
             '    ',
             '    class var staticProperty1:Int? {',

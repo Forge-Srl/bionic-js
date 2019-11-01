@@ -32,13 +32,13 @@ describe('Class', () => {
                 name: 'method', description: 'method desc', isStatic: false, isOverriding: false,
                 returnType: {type: 'Void'}, parameters: [],
             }],
-            superclassName: 'Superclass', modulePath: '../filePath',
+            superclassName: 'Superclass', modulePath: 'relative/filePath.js',
         }
         const clazz = Class.fromObj(classObj)
 
         const expectedClass = new Class('Class', 'Class desc', [new Constructor('constructor desc', [])],
             [new Property('getter', 'getter desc', false, false, new IntType(), ['get'])],
-            [new Method('method', 'method desc', false, false, new VoidType(), [])], 'Superclass', '../filePath')
+            [new Method('method', 'method desc', false, false, new VoidType(), [])], 'Superclass', 'relative/filePath.js')
 
         expect(clazz).toBeInstanceOf(Class)
         expect(clazz.constructors[0]).toBeInstanceOf(Constructor)
@@ -58,5 +58,16 @@ describe('Class', () => {
 
         expect(actualClass.isValid).toBe('isValid')
         expect(Validation.validateIdentifier).toBeCalledWith('class name', 'ClassName')
+    })
+
+    test('moduleLoadingPath', () => {
+        const expectedModuleLoadingPath = '/relative/filePath'
+
+        const clazz = new Class()
+        clazz.modulePath = 'relative/filePath'
+        expect(clazz.moduleLoadingPath).toBe(expectedModuleLoadingPath)
+
+        clazz.modulePath = '/relative//../relative/filePath.js'
+        expect(clazz.moduleLoadingPath).toBe(expectedModuleLoadingPath)
     })
 })

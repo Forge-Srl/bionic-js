@@ -32,6 +32,6 @@ class MotorVehicle: Vehicle {
     }
     
     override class var bjsModulePath: String {
-        return "libs/MotorVehicle.js"
+        return "/libs/MotorVehicle"
     }
 }

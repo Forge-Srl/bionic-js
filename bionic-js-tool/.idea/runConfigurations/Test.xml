@@ -4,6 +4,7 @@
     <node-options value="" />
     <jest-package value="$PROJECT_DIR$/node_modules/jest-cli" />
     <working-dir value="$PROJECT_DIR$/tests" />
+    <jest-options value="--runInBand" />
     <envs />
     <scope-kind value="ALL" />
     <method v="2" />

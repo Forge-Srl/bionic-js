@@ -14,6 +14,6 @@ class TeslaRoadster: MotorVehicle {
     }
     
     override class var bjsModulePath: String {
-        return "TeslaRoadster.js"
+        return "/TeslaRoadster"
     }
 }
