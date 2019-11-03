@@ -6,12 +6,12 @@
 import JavaScriptCore
 
 public class Bjs {
-    
     static let bjsWrapperObjFieldName = "bjsWrapperObj"
     static let bjsWrapperObjFieldUnboundValue = "unbound"
     static let bjsNativeObjFieldName = "bjsNativeObj"
     
     public typealias Factory<T: BjsObject> = (_ jsObj: JSValue) -> T
+    public static var jsBundleName: String? = nil
     public static var get = Bjs()
     public var jsNull: JSValue { return context.createJsNull() }
     public var customBundles: BjsCustomBundles { return context.appBundle.customBundles }
@@ -21,7 +21,10 @@ public class Bjs {
     var modulesCache: [String : JSValue]
     
     init() {
-        context = BjsModules(BjsBundle("BjsSources"))
+        if Bjs.jsBundleName == nil {
+            fatalError("BjsEnvironment.initialize() must be called before using Bjs classes")
+        }
+        context = BjsModules(BjsBundle(Bjs.jsBundleName!))
         jsValueToNative = [BjsNativeObjectIdentifier : BjsObject]()
         modulesCache = [String : JSValue]()
     }

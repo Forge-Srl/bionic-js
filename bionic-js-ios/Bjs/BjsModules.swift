@@ -71,7 +71,7 @@ class BjsModules : BjsContext {
         
         // Bootstrap JS file contains a function that takes native dependencies as parameter
         let bootstrapFunction = executeJs("(\(bootstrapCode))", "bundles/\(appBundle.name)/\(bootstrapFile)")
-        _nodeJsModule = bootstrapFunction?.call(withArguments: [nativeExport.exportsObject])
+        _nodeJsModule = bootstrapFunction?.call(withArguments: [nativeExport.nativeObj])
     }
     
     private func executeContentFunction() -> @convention(block) (_ : String, _ : String, _ : JSValue, _ : JSValue) -> () {

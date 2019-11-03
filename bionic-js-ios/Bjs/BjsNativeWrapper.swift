@@ -13,7 +13,7 @@ open class BjsNativeWrapper {
     class func bjsGetNativeFunctions(_ context: BjsContext) -> JSValue? {
         let nativeExports = context.createNativeExports()
         bjsExportFunctions(nativeExports)
-        return nativeExports.exportsObject
+        return nativeExports.exportsObj
     }
     
     open class func bjsExportFunctions(_ nativeExports: BjsNativeExports) { }

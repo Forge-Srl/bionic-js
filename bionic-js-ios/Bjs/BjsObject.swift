@@ -22,7 +22,8 @@ open class BjsObject : Hashable {
     }
     
     public class var bjsClass: JSValue {
-        return Bjs.get.loadModule(bjsModulePath);
+        let bjsClassName = bjsModulePath.split(separator: "/").last
+        return Bjs.get.loadModule(bjsModulePath).objectForKeyedSubscript(bjsClassName)
     }
     
     

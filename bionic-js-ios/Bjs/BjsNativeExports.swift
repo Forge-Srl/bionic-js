@@ -7,11 +7,15 @@ import UIKit
 import JavaScriptCore
 
 public class BjsNativeExports {
+    static let nativeObjName = "bjsNative"
     
-    let exportsObject: JSValue
+    let exportsObj: JSValue
+    let nativeObj: JSValue
     
     init(_ context: JSContext) {
-        self.exportsObject = JSValue.init(newObjectIn: context)
+        exportsObj = JSValue.init(newObjectIn: context)
+        nativeObj = JSValue.init(newObjectIn: context)
+        exportsObj.setObject(nativeObj, forKeyedSubscript:BjsNativeExports.nativeObjName)
     }
     
     public func exportBindFunction<T>(_ functionBlock: T) -> BjsNativeExports {
@@ -19,7 +23,7 @@ public class BjsNativeExports {
     }
     
     public func exportFunction<T>(_ name: String, _ functionBlock: T) -> BjsNativeExports {
-        exportsObject.setObject(unsafeBitCast(functionBlock, to: AnyObject.self), forKeyedSubscript: name as NSString)
+        nativeObj.setObject(unsafeBitCast(functionBlock, to: AnyObject.self), forKeyedSubscript: name as NSString)
         return self
     }
 }

@@ -49,8 +49,8 @@ class BjsContext {
         jsContext.setObject(clearTimeout, forKeyedSubscript: "clearTimeout" as NSString)
     }
     
-    func createJsObject(_ nativeObj: Any!) -> JSValue! {
-        let jsObj = JSValue(object: nativeObj, in: jsContext)
+    func createJsObject(_ sourceObj: Any!) -> JSValue! {
+        let jsObj = JSValue(object: sourceObj, in: jsContext)
         return jsObj
     }
     
