@@ -155,12 +155,38 @@ describe('MethodJsExplorer', () => {
         expect(explorer.type).toBe(actualType)
     })
 
+    test('type, constructor', () => {
+        const explorer = getExplorer('/* @bionic (par1: Int) */ constructor(par1) {}')
+        const actualType = explorer.type
+
+        expect(actualType).toEqual(new LambdaType(new VoidType(), [new Parameter(new IntType(), 'par1', undefined)]))
+        expect(explorer.type).toBe(actualType)
+    })
+
+    test('type, constructor with sparse parameter definitions in annotation', () => {
+        const explorer = getExplorer('/* @bionic (Int, par2: Int) */ constructor(par1, par2) {}')
+        const actualType = explorer.type
+
+        expect(actualType).toEqual(new LambdaType(new VoidType(), [
+            new Parameter(new IntType(), 'par1', undefined),
+            new Parameter(new IntType(), 'par2', undefined),
+        ]))
+        expect(explorer.type).toBe(actualType)
+    })
+
     test('type, getter', () => {
         const explorer = getExplorer('/* @bionic Int */ get getter1() {}')
         const actualType = explorer.type
 
         expect(actualType).toEqual(new IntType())
         expect(explorer.type).toBe(actualType)
+    })
+
+    test('type, getter with lambda type', () => {
+        const explorer = getExplorer('/* @bionic (Int) => Int */ get getter1() {}')
+        const actualType = explorer.type
+
+        expect(actualType).toEqual(new LambdaType(new IntType(), [new Parameter(new IntType())]))
     })
 
     test('type, method with void annotation', () => {

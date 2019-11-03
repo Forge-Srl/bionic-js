@@ -5,6 +5,7 @@ const {GlobalSchemaCreator} = require('../parser/GlobalSchemaCreator')
 const {Directory} = require('./Directory')
 const {HostFile} = require('./HostFile')
 const {PackageFile} = require('./PackageFile')
+const bjsVersion = require('../package.json').version;
 
 class BjsSync {
 
@@ -14,6 +15,7 @@ class BjsSync {
 
     async sync() {
         try {
+            this.log.info(`Bionic.js - v${bjsVersion}`)
             const guestFiles = await GuestWatcher.build(this.configuration).getInitialFiles()
             const guestFilesSchemas = await this.getGuestFileSchemas(guestFiles)
 

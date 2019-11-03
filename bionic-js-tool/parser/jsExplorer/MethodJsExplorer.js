@@ -41,11 +41,12 @@ class MethodJsExplorer extends JsExplorer {
     get type() {
         if (!this._type) {
 
-            const parametersNamesFromJs = this.parameterExplorers.map(explorer => explorer.name)
+            const isMethodOrConstructor = this.kinds.includes('method') || this.kinds.includes('constructor')
             const typeInfo = this.bionicTag.typeInfo
+            const parametersNamesFromJs = this.parameterExplorers.map(explorer => explorer.name)
 
             let type
-            if (!typeInfo && this.kinds.includes('method') && parametersNamesFromJs.length === 0) {
+            if (isMethodOrConstructor && !typeInfo && parametersNamesFromJs.length === 0) {
                 type = new LambdaType(new VoidType(), [])
             } else {
                 if (!typeInfo) {
@@ -54,7 +55,7 @@ class MethodJsExplorer extends JsExplorer {
                 type = Type.fromObj(typeInfo)
             }
 
-            if (type instanceof LambdaType) {
+            if (isMethodOrConstructor && type instanceof LambdaType) {
                 const lambdaParameters = type.parameters
 
                 if (lambdaParameters.length > parametersNamesFromJs.length ||
