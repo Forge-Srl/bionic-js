@@ -1,6 +1,6 @@
 const t = require('../test-utils')
 const copydir = require('copy-dir')
-const {hostFilePaths, packageFilePaths} = require('../../testing-code/swift/files')
+const {hostFilePaths, packageFilePaths, forbiddenPackageFilePaths} = require('../../testing-code/swift/files')
 
 describe('Bjs smoke tests', () => {
 
@@ -14,6 +14,7 @@ describe('Bjs smoke tests', () => {
     })
 
     const getProjectDir = projectName => new Directory(__dirname).getSubDir(`../../testing-code/swift/${projectName}`)
+    const getGuestDir = () => new Directory(__dirname).getSubDir('../../testing-code/guest')
 
     const doSmokeTest = async startProjectName => {
 
@@ -30,19 +31,7 @@ describe('Bjs smoke tests', () => {
 
             expect(debugLog.errorLog).toBe('')
 
-            // TODO: do not log the same warning multiple times
-            expect(debugLog.warningLog).toBe('"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n' +
-                '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n' +
-                '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n' +
-                '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n' +
-                '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n' +
-                '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n' +
-                '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n' +
-                '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n' +
-                '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n' +
-                '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n' +
-                '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n' +
-                '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n')
+            expect(debugLog.warningLog).toBe('"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n')
 
             expect(debugLog.infoLog.split('\n')).toEqual(expect.arrayContaining([
                 'Processing guest files',
@@ -67,18 +56,29 @@ describe('Bjs smoke tests', () => {
                 ' ...done']))
 
             const projectWithFilesDir = getProjectDir('project-with-host-files')
+            const hostDir = 'HostProject/host'
             for (const hostFilePath of hostFilePaths) {
-                const hostDir = 'HostProject/host'
                 const expectedHostFile = projectWithFilesDir.getSubDir(hostDir).getSubFile(hostFilePath)
                 const actualHostFile = tempDir.getSubDir(hostDir).getSubFile(hostFilePath)
                 expect(await actualHostFile.getContent()).toBe(await expectedHostFile.getContent())
             }
 
+            const packageDir = 'HostProject/host/package.bundle'
             for (const packageFilePath of packageFilePaths) {
-                const packageDir = 'HostProject/host/package.bundle'
                 const expectedPackageFile = projectWithFilesDir.getSubDir(packageDir).getSubFile(packageFilePath)
                 const actualPackageFile = tempDir.getSubDir(packageDir).getSubFile(packageFilePath)
                 expect(await actualPackageFile.getContent()).toBe(await expectedPackageFile.getContent())
+            }
+
+            const guestDir = getGuestDir()
+            for (const forbiddenPackageFilePath of forbiddenPackageFilePaths) {
+                const guestFile = guestDir.getSubFile(forbiddenPackageFilePath)
+                const forbiddenPackageFile = tempDir.getSubDir(packageDir).getSubFile(forbiddenPackageFilePath)
+                let newVar = await guestFile.exists()
+                let newVar2 = await forbiddenPackageFile.exists()
+                console.log(forbiddenPackageFile.path)
+                expect(newVar).toBe(true)
+                expect(newVar2).toBe(false)
             }
         })
     }

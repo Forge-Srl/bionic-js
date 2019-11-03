@@ -20,10 +20,9 @@ class BjsSync {
             for (const targetConfig of this.configuration.hostTargets) {
                 const hostProject = HostProject.build(targetConfig, this.log)
                 await this.syncHostFiles(targetConfig, hostProject, guestFilesSchemas)
-                await this.syncPackageFiles(targetConfig, hostProject, guestFilesSchemas)
+                await this.syncPackageFiles(targetConfig, hostProject, guestFiles)
                 await hostProject.save()
             }
-
         } catch (error) {
             this.log.error(error)
         }
@@ -56,14 +55,14 @@ class BjsSync {
         this.log.info(' ...done\n')
     }
 
-    async syncPackageFiles(targetConfig, hostProject, guestFilesSchemas) {
+    async syncPackageFiles(targetConfig, hostProject, guestFiles) {
         const packageDir = new Directory(targetConfig.hostDirPath).getSubDir(targetConfig.packageName)
         this.log.info(`Processing package files dir "${packageDir.path}"`)
 
         this.log.info(' Generating package files...')
-        await Promise.all(guestFilesSchemas.map(guestFileSchema => {
+        await Promise.all(guestFiles.map(guestFile => {
 
-            const packageFile = PackageFile.build(guestFileSchema.guestFile, packageDir.path)
+            const packageFile = PackageFile.build(guestFile, packageDir.path)
             this.log.info(`  ${packageFile.relativePath}`)
             return packageFile.generate(hostProject)
         }))

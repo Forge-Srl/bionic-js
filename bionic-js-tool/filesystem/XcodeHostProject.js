@@ -62,8 +62,12 @@ class XcodeHostProject {
             node.debugLocation = `${fatherGroup ? fatherGroup.debugLocation + XCODE_PATH_SEPARATOR : ''}${comment ? comment : 'Project'}`
             node.fileType = node.explicitFileType || node.lastKnownFileType
             if (node.sourceTree !== '"<group>"') {
-                this.log.warning(`"${node.debugLocation}": file location attribute is not "Relative to Group", this config `
-                    + 'is not supported so the file will be skipped')
+                this.relativeToGroupWarning = this.relativeToGroupWarning || new Set()
+                if (!this.relativeToGroupWarning.has(node.debugLocation)) {
+                    this.log.warning(`"${node.debugLocation}": file location attribute is not "Relative to Group", this config `
+                        + 'is not supported so the file will be skipped')
+                    this.relativeToGroupWarning.add(node.debugLocation)
+                }
                 return null
             }
         }
