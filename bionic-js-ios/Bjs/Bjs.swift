@@ -14,6 +14,7 @@ public class Bjs {
     public static var jsBundleName: String? = nil
     public static var get = Bjs()
     public var jsNull: JSValue { return context.createJsNull() }
+    public var anyNull: BjsAnyObject { return getAny(jsNull) }
     public var customBundles: BjsCustomBundles { return context.appBundle.customBundles }
     
     let context: BjsModules
