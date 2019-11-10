@@ -2,6 +2,7 @@ const t = require('../test-utils')
 const copydir = require('copy-dir')
 const xcode = require('xcode')
 const {hostFilePaths, packageFilePaths} = require('../../testing-code/swift/files')
+const fs = require('fs')
 
 describe('XcodeHostProject', () => {
 
@@ -346,7 +347,22 @@ describe('XcodeHostProject', () => {
                     const packageFile = new Directory(hostDirPath).getSubDir('package.bundle').getSubFile(packageFilePath)
                     await projWithoutHost.setPackageFileContent(packageFilePath, await packageFile.getContent())
                 }
+
+                const statsPreTouch = fs.statSync(projWithoutHost.targetConfig.xcodeProjectPath)
+                const modifiedTimePreTouch = statsPreTouch.mtimeMs
+                const accessedTimePreTouch = statsPreTouch.atimeMs
+                await new Promise(resolve => {
+                    setTimeout(resolve, 1000)
+                })
+
                 await projWithoutHost.save()
+
+                const statsAfterTouch = fs.statSync(projWithoutHost.targetConfig.xcodeProjectPath)
+                const modifiedTimeAfterTouch = statsAfterTouch.mtimeMs
+                const accessedTimeAfterTouch = statsAfterTouch.atimeMs
+
+                expect(modifiedTimeAfterTouch).toBeGreaterThan(modifiedTimePreTouch)
+                expect(accessedTimeAfterTouch).toBeGreaterThan(accessedTimePreTouch)
 
                 const freshProjWithoutHost = xcode.project(projWithoutHost.targetConfig.xcodeProjectFilePath).parseSync()
 
