@@ -26,7 +26,8 @@
     "mkdirp": "*",
     "rimraf": "*",
     "xcode": "*",
-    "uuid": "*"
+    "uuid": "*",
+    "touch": "*"
   },
   "devDependencies": {
     "jest-cli": "*",

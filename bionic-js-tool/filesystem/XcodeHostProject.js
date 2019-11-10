@@ -1,9 +1,10 @@
 const xcode = require('xcode')
 const path = require('path')
-const SOURCE_FILE_TYPE = 'sourcecode.swift'
-const BUNDLE_FILE_TYPE = '"wrapper.plug-in"'
+const touch = require("touch")
 const {File} = require('./File')
 const {Directory} = require('./Directory')
+const BUNDLE_FILE_TYPE = '"wrapper.plug-in"'
+const SOURCE_FILE_TYPE = 'sourcecode.swift'
 const XCODE_PATH_SEPARATOR = '/'
 
 class XcodeHostProject {
@@ -122,6 +123,7 @@ class XcodeHostProject {
     async save() {
         const projectFile = new File(this.targetConfig.xcodeProjectFilePath)
         await projectFile.setContent(this.project.writeSync())
+        await touch(this.targetConfig.xcodeProjectPath)
     }
 
     /** REMOVE THINGS */
