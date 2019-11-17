@@ -12,9 +12,15 @@ open class BjsNativeWrapper {
    
     class func bjsGetNativeFunctions(_ context: BjsContext) -> JSValue? {
         let nativeExports = context.createNativeExports()
-        bjsExportFunctions(nativeExports)
-        return nativeExports.exportsObj
+        bjsBind(nativeExports)
+        return bjsExportFunctions(nativeExports).exportsObj
     }
     
-    open class func bjsExportFunctions(_ nativeExports: BjsNativeExports) { }
+    open class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {
+        fatalError("bjsExportFunctions should be implemented")
+    }
+    
+    open class func bjsBind(_ nativeExports: BjsNativeExports) {
+        fatalError("bjsBind should be implemented")
+    }
 }

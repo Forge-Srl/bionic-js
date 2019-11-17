@@ -76,9 +76,9 @@ public class Bjs {
             let jsWrapperObj = jsObj.objectForKeyedSubscript(Bjs.bjsWrapperObjFieldName)
             if jsWrapperObj == nil || jsWrapperObj!.isUndefined {
                 jsObj.setObject(Bjs.bjsWrapperObjFieldUnboundValue, forKeyedSubscript: Bjs.bjsWrapperObjFieldName as NSString)
-                let wrapperClass = self.loadModule(nativeWrapperClass.wrapperPath)
-                
-                let newJsWrapperObj = wrapperClass.construct(withArguments: [jsObj])!
+                let bjsClassName = nativeWrapperClass.wrapperPath.split(separator: "/").last
+                let wrapperClass = self.loadModule(nativeWrapperClass.wrapperPath).objectForKeyedSubscript(bjsClassName)
+                let newJsWrapperObj = wrapperClass!.construct(withArguments: [jsObj])!
                 //unprotect(newJsWrapperObj) TODO
                 
                 return newJsWrapperObj
