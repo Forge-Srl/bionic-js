@@ -33,9 +33,10 @@ describe('SwiftHostClassGenerator', () => {
             '    }']
     })
 
-    function getCode(constructors, properties, methods, superclassName = '') {
-        const class1 = new Class('Class1', 'class description', constructors, properties, methods, superclassName, 'module/path')
-        return class1.generator.swift.forHosting().getSource()
+    function getCode(constructors, properties, methods, superclassName) {
+        const superclass = superclassName ? new Class(superclassName, `${superclassName} description`, [], [], [], null, 'superModule/path') : null
+        const clazz = new Class('Class1', 'class description', constructors, properties, methods, superclass, 'module/path')
+        return clazz.generator.swift.forHosting().getSource()
     }
 
     test('empty class without inheritance', () => {
@@ -146,8 +147,9 @@ describe('SwiftHostClassGenerator', () => {
             '}')
     })
 
-    function getScaffold(constructors, properties, methods, superclassName = '') {
-        const class1 = new Class('Class1', 'class description', constructors, properties, methods, superclassName, 'module/path')
+    function getScaffold(constructors, properties, methods, superclassName) {
+        const superclass = superclassName ? new Class(superclassName, `${superclassName} description`, [], [], [], null, 'superModule/path') : null
+        const class1 = new Class('Class1', 'class description', constructors, properties, methods, superclass, 'module/path')
         return class1.generator.swift.forHosting().getScaffold()
     }
 

@@ -10,11 +10,7 @@ class SwiftWrapperClassGenerator extends SwiftClassGenerator {
     }
 
     get constructors() {
-        const constructors = super.constructors
-        if (!constructors.some(part => part instanceof Constructor)) {
-            return [new Constructor('Default constructor', [])]
-        }
-        return constructors
+        return []
     }
 
     get classPartsGenerators() {
@@ -24,12 +20,20 @@ class SwiftWrapperClassGenerator extends SwiftClassGenerator {
         return this._classPartsGenerators
     }
 
+    get hasClassParts() {
+        if (!this._hasClassParts) {
+            this._hasClassParts = !!this.getClassParts().length
+        }
+        return this._hasClassParts
+    }
+
     getHeaderCode() {
+        const superclassName = this.schema.superclass ? this.schema.superclass.name : 'BjsNative'
         return CodeBlock.create()
             .append('import JavaScriptCore').newLine()
             .append('import Bjs').newLine()
             .newLine()
-            .append(`class ${this.schema.name}Wrapper: BjsNativeWrapper {`).newLineIndenting()
+            .append(`class ${this.schema.name}Wrapper: ${superclassName}Wrapper {`).newLineIndenting()
             .newLine()
             .append(`override class var name: String { return "${this.schema.name}" }`).newLine()
             .append(`override class var wrapperPath: String { return "${this.schema.moduleLoadingPath}" }`).newLine()
@@ -38,27 +42,46 @@ class SwiftWrapperClassGenerator extends SwiftClassGenerator {
 
     getExportFunctionsCode() {
         return CodeBlock.create()
-            .append('override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) {').newLineIndenting()
-            .append('_ = nativeExports').newLineIndenting()
+            .append('override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {').newLineIndenting()
+            .append(`return ${this.schema.superclassName ? 'super.bjsExportFunctions(nativeExports)' : 'nativeExports'}`)
+            .__.newLineConditional(this.hasClassParts, 1)
             .append(this.classPartsGenerators.map((generator, index, array) => {
-                const newLineIndentation = (index < array.length - 1) ? 0 : -2
-                return generator.wrapperExportLines.newLineDeindenting(newLineIndentation)
-
-            }))
+                return generator.wrapperExportLines.newLineConditional(index < array.length - 1)
+            })).newLine(this.hasClassParts ? -2 : -1)
             .append('}')
+    }
+
+    /*
+
+    getPublicConstructor(this.schema)
+
+    Se lo schema attuale NON ha costruttore pubblico e c'è una superclasse, ricorsivamente prova a chiamare getPublicConstructor(this.schema.superclass)
+    Se lo schema attuale NON ha costruttore pubblico e NON c'è una superclasse, ritorna il costruttore di default
+        new Constructor('Default constructor', []).generator.swift.forWrapping(this.schema, false).getCode()
+    Se lo schema attuale ha costruttore pubblico, ritorna constructor.generator.swift.forWrapping(this.schema, true).getCode()
+
+    */
+
+    getExportConstructorCode(schema = this.schema) {
+        if (!schema.constructors.length) {
+            if (schema.superclass) {
+                return this.getExportConstructorCode(schema.superclass)
+            }
+            return new Constructor('Default constructor', []).generator.swift.forWrapping(this.schema, false).getCode()
+        }
+        return schema.constructors[0].generator.swift.forWrapping(this.schema, true).getCode()
     }
 
     getBodyCode() {
         return CodeBlock.create()
             .append(this.getExportFunctionsCode()).newLine()
             .newLine()
-            .append(this.getClassParts().map((classPart, index, array) => {
-                const code = classPart.generator.swift.forWrapping(this.schema).getCode()
-                if (index < array.length - 1) {
-                    return code.newLine().newLine()
-                }
-                return code
-            }))
+            .append(this.getExportConstructorCode())
+            .append(this.classPartsGenerators.map(classPartGenerator =>
+                CodeBlock.create().newLine()
+                    .newLine()
+                    .append(classPartGenerator.getCode()),
+            ))
             .newLineDeindenting()
     }
 

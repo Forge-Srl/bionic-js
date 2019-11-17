@@ -2,11 +2,21 @@ const t = require('../../test-utils')
 
 describe('SwiftWrapperMethodGenerator', () => {
 
-    let Class, Method, Parameter, VoidType, BoolType, IntType, LambdaType, expectedHeader, expectedBindFunction
+    let Class, Method, Parameter, VoidType, BoolType, IntType, LambdaType
+
+    beforeEach(() => {
+        Class = t.requireModule('schema/Class').Class
+        Method = t.requireModule('schema/Method').Method
+        Parameter = t.requireModule('schema/Parameter').Parameter
+        VoidType = t.requireModule('schema/types/VoidType').VoidType
+        BoolType = t.requireModule('schema/types/BoolType').BoolType
+        IntType = t.requireModule('schema/types/IntType').IntType
+        LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
+    })
 
     function getCode(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters) {
         const class1 = new Class('Class1', '', [], [], [new Method('method1', 'method description', isMethodStatic,
-            isMethodOverriding, methodReturnType, methodParameters)], '', 'module/path')
+            isMethodOverriding, methodReturnType, methodParameters)], null, 'module/path')
         return class1.generator.swift.forWrapping().getSource()
     }
 
@@ -14,44 +24,30 @@ describe('SwiftWrapperMethodGenerator', () => {
         return new Parameter(type, name, 'parameter description')
     }
 
-    function getFunctionsExportCode(instanceExports = [], staticExports = []) {
+    const expectedHeader = [
+        'import JavaScriptCore',
+        'import Bjs',
+        '',
+        'class Class1Wrapper: BjsNativeWrapper {',
+        '    ',
+        '    override class var name: String { return "Class1" }',
+        '    override class var wrapperPath: String { return "/module/path" }',
+        '    ',
+    ]
+
+    function getFunctionsExportCode(functionExports = []) {
         return [
-            '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) {',
-            '        _ = nativeExports',
-            ...staticExports.map(code => `            ${code}`),
-            '            .exportBindFunction(bjsBind())',
-            ...instanceExports.map(code => `            ${code}`),
+            '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
+            '        return nativeExports',
+            ...functionExports.map(code => `            ${code}`),
             '    }',
-            '    ']
-    }
-
-    beforeEach(() => {
-        Class = t.requireModule('schema/Class').Class
-        Method = t.requireModule('schema/Method').Method
-        Parameter = t.requireModule('schema/Parameter').Parameter
-        BoolType = t.requireModule('schema/types/BoolType').BoolType
-        IntType = t.requireModule('schema/types/IntType').IntType
-        VoidType = t.requireModule('schema/types/VoidType').VoidType
-        LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
-
-        expectedHeader = [
-            'import JavaScriptCore',
-            'import Bjs',
-            '',
-            'class Class1Wrapper: BjsNativeWrapper {',
             '    ',
-            '    override class var name: String { return "Class1" }',
-            '    override class var wrapperPath: String { return "/module/path" }',
-            '    ',
-        ]
-
-        expectedBindFunction = [
-            '    class func bjsBind() -> @convention(block) (JSValue, JSValue) -> Void {',
-            '        return {',
+            '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
+            '        _ = nativeExports.exportBindFunction({',
             '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self), $0)',
-            '        }',
+            '        } as @convention(block) (JSValue, JSValue) -> Void)',
             '    }']
-    })
+    }
 
     function testMethodWithVoidReturnAndNoParams(overriding) {
         const code = getCode(false, overriding, new VoidType(), [])
@@ -59,9 +55,8 @@ describe('SwiftWrapperMethodGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getFunctionsExportCode(['.exportFunction("bjs_method1", bjs_method1())']),
-            ...expectedBindFunction,
             '    ',
-            '    class func bjs_method1() -> @convention(block) (JSValue) -> Void {',
+            '    private class func bjs_method1() -> @convention(block) (JSValue) -> Void {',
             '        return {',
             '            _ = Bjs.get.getWrapped($0, Class1.self)!.method1()',
             '        }',
@@ -82,14 +77,13 @@ describe('SwiftWrapperMethodGenerator', () => {
 
         t.expectCode(code,
             ...expectedHeader,
-            ...getFunctionsExportCode([], ['.exportFunction("bjsStatic_method1", bjsStatic_method1())']),
-            '    class func bjsStatic_method1() -> @convention(block) () -> Void {',
+            ...getFunctionsExportCode(['.exportFunction("bjsStatic_method1", bjsStatic_method1())']),
+            '    ',
+            '    private class func bjsStatic_method1() -> @convention(block) () -> Void {',
             '        return {',
             '            _ = Class1.method1()',
             '        }',
             '    }',
-            '    ',
-            ...expectedBindFunction,
             '}')
     }
 
@@ -106,14 +100,13 @@ describe('SwiftWrapperMethodGenerator', () => {
 
         t.expectCode(code,
             ...expectedHeader,
-            ...getFunctionsExportCode([], ['.exportFunction("bjsStatic_method1", bjsStatic_method1())']),
-            '    class func bjsStatic_method1() -> @convention(block) (JSValue) -> Void {',
+            ...getFunctionsExportCode(['.exportFunction("bjsStatic_method1", bjsStatic_method1())']),
+            '    ',
+            '    private class func bjsStatic_method1() -> @convention(block) (JSValue) -> Void {',
             '        return {',
             '            _ = Class1.method1(Bjs.get.getBool($0))',
             '        }',
             '    }',
-            '    ',
-            ...expectedBindFunction,
             '}')
     })
 
@@ -123,9 +116,8 @@ describe('SwiftWrapperMethodGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getFunctionsExportCode(['.exportFunction("bjs_method1", bjs_method1())']),
-            ...expectedBindFunction,
             '    ',
-            '    class func bjs_method1() -> @convention(block) (JSValue, JSValue) -> JSValue {',
+            '    private class func bjs_method1() -> @convention(block) (JSValue, JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.method1(Bjs.get.getBool($1)))',
             '        }',
@@ -142,9 +134,8 @@ describe('SwiftWrapperMethodGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getFunctionsExportCode(['.exportFunction("bjs_method1", bjs_method1())']),
-            ...expectedBindFunction,
             '    ',
-            '    class func bjs_method1() -> @convention(block) (JSValue, JSValue, JSValue) -> Void {',
+            '    private class func bjs_method1() -> @convention(block) (JSValue, JSValue, JSValue) -> Void {',
             '        return {',
             '            _ = Bjs.get.getWrapped($0, Class1.self)!.method1(Bjs.get.getBool($1), Bjs.get.getInt($2))',
             '        }',
@@ -159,9 +150,8 @@ describe('SwiftWrapperMethodGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getFunctionsExportCode(['.exportFunction("bjs_method1", bjs_method1())']),
-            ...expectedBindFunction,
             '    ',
-            '    class func bjs_method1() -> @convention(block) (JSValue, JSValue) -> JSValue {',
+            '    private class func bjs_method1() -> @convention(block) (JSValue, JSValue) -> JSValue {',
             '        return {',
             '            let jsFunc_bjs0 = $1',
             '            let nativeFunc_bjs1 = Bjs.get.getWrapped($0, Class1.self)!.method1(Bjs.get.getFunc(jsFunc_bjs0) {',

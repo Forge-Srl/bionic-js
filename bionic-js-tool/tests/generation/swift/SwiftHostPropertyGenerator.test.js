@@ -44,7 +44,7 @@ describe('SwiftHostPropertyGenerator', () => {
     function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set'],
                      propertyName = 'property1') {
         const class1 = new Class('Class1', '', [], [new Property(propertyName, 'property description', isPropertyStatic,
-            isPropertyOverriding, propertyType, propertyKinds)], [], '', '')
+            isPropertyOverriding, propertyType, propertyKinds)], [], null, '')
         return class1.generator.swift.forHosting().getSource()
     }
 
@@ -310,7 +310,7 @@ describe('SwiftHostPropertyGenerator', () => {
     function getScaffold(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set'],
                          propertyName = 'property1') {
         const class1 = new Class('Class1', '', [], [new Property(propertyName, 'property description', isPropertyStatic,
-            isPropertyOverriding, propertyType, propertyKinds)], [], '', '')
+            isPropertyOverriding, propertyType, propertyKinds)], [], null, '')
         return class1.generator.swift.forHosting().getScaffold()
     }
 

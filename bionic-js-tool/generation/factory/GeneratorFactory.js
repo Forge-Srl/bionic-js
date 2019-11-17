@@ -19,6 +19,9 @@ class GeneratorFactory {
     }
 
     get generatorPath() {
+        if (this.language === undefined) {
+            console.log('')
+        }
         return `../${this.language.toLowerCase()}/${this.generatorName}`
     }
 

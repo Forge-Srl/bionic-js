@@ -66,6 +66,38 @@ describe('CodeBlock', () => {
 
         expect(result).toBe(codeBlock)
         expect(codeBlock.codeElements).toEqual([newLine, indentation])
+        expect(Indentation).toBeCalledWith(0)
+    })
+
+    test('newLine, custom indentation', () => {
+        const result = codeBlock.newLine(2)
+
+        expect(result).toBe(codeBlock)
+        expect(codeBlock.codeElements).toEqual([newLine, indentation])
+        expect(Indentation).toBeCalledWith(2)
+    })
+
+    test('newLineConditional, no new line', () => {
+        const result = codeBlock.newLineConditional(false)
+
+        expect(result).toBe(codeBlock)
+        expect(codeBlock.codeElements).toEqual([])
+    })
+
+    test('newLineConditional, new line', () => {
+        const result = codeBlock.newLineConditional(true)
+
+        expect(result).toBe(codeBlock)
+        expect(codeBlock.codeElements).toEqual([newLine, indentation])
+        expect(Indentation).toBeCalledWith(0)
+    })
+
+    test('newLineConditional, new line, custom indentation', () => {
+        const result = codeBlock.newLineConditional(true, 2)
+
+        expect(result).toBe(codeBlock)
+        expect(codeBlock.codeElements).toEqual([newLine, indentation])
+        expect(Indentation).toBeCalledWith(2)
     })
 
     test('newLineIndenting', () => {
@@ -76,28 +108,12 @@ describe('CodeBlock', () => {
         expect(Indentation).toBeCalledWith(1)
     })
 
-    test('newLineIndenting with custom indentation', () => {
-        const result = codeBlock.newLineIndenting(2)
-
-        expect(result).toBe(codeBlock)
-        expect(codeBlock.codeElements).toEqual([newLine, indentation])
-        expect(Indentation).toBeCalledWith(2)
-    })
-
     test('newLineDeindenting', () => {
         const result = codeBlock.newLineDeindenting()
 
         expect(result).toBe(codeBlock)
         expect(codeBlock.codeElements).toEqual([newLine, indentation])
         expect(Indentation).toBeCalledWith(-1)
-    })
-
-    test('newLineDeindenting with custom indentation', () => {
-        const result = codeBlock.newLineDeindenting(-2)
-
-        expect(result).toBe(codeBlock)
-        expect(codeBlock.codeElements).toEqual([newLine, indentation])
-        expect(Indentation).toBeCalledWith(-2)
     })
 
     test('appendString', () => {

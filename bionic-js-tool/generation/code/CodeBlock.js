@@ -25,18 +25,23 @@ class CodeBlock {
         return builder.getString()
     }
 
-    newLine() {
-        this.codeElements.push(new NewLine(), new Indentation())
-        return this
-    }
-
-    newLineIndenting(indentation = 1) {
+    newLine(indentation = 0) {
         this.codeElements.push(new NewLine(), new Indentation(indentation))
         return this
     }
 
-    newLineDeindenting(indentation = -1) {
-        return this.newLineIndenting(indentation)
+    newLineConditional(newLine, indentation = 0) {
+        if (!newLine)
+            return this
+        return this.newLine(indentation)
+    }
+
+    newLineIndenting() {
+        return this.newLine(1)
+    }
+
+    newLineDeindenting() {
+        return this.newLine(-1)
     }
 
     appendString(codeString) {

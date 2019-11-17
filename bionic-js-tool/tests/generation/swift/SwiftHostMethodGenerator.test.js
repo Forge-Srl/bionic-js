@@ -34,7 +34,7 @@ describe('SwiftHostMethodGenerator', () => {
 
     function getCode(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters, methodName = 'method1') {
         const class1 = new Class('Class1', '', [], [], [new Method(methodName, 'method description', isMethodStatic,
-            isMethodOverriding, methodReturnType, methodParameters)], '', 'module/path')
+            isMethodOverriding, methodReturnType, methodParameters)], null, 'module/path')
         return class1.generator.swift.forHosting().getSource()
     }
 
@@ -143,7 +143,7 @@ describe('SwiftHostMethodGenerator', () => {
 
     function getScaffold(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters, methodName = 'method1') {
         const class1 = new Class('Class1', '', [], [], [new Method(methodName, 'method description', isMethodStatic,
-            isMethodOverriding, methodReturnType, methodParameters)], '', 'module/path')
+            isMethodOverriding, methodReturnType, methodParameters)], null, 'module/path')
         return class1.generator.swift.forHosting().getScaffold()
     }
 

@@ -8,9 +8,13 @@ const {Parameter} = require('../../schema/Parameter')
 
 class SwiftWrapperConstructorGenerator extends SwiftMethodGenerator {
 
+    constructor(schema, classSchema, isConstructorPublic) {
+        super(schema, classSchema)
+        Object.assign(this, {isConstructorPublic})
+    }
+
     get wrapperExportLines() {
-        return CodeBlock.create()
-            .append('.exportBindFunction(bjsBind())')
+        return null
     }
 
     get returnTypeGenerator() {
@@ -25,31 +29,28 @@ class SwiftWrapperConstructorGenerator extends SwiftMethodGenerator {
         return [firstParameter, ...otherParameters]
     }
 
-    get isUserDefinedConstructor() {
-        return !!this.classSchema.constructors.length
-    }
-
     getCode() {
         const constructorContext = new GenerationContext()
         const parametersToSkip = super.parameters.length ? 1 : 2
         const argumentsListNativeIniRet = this.getArgumentsListNativeIniRet(constructorContext, parametersToSkip)
 
-        const userDefinedConstructorCall = CodeBlock.create()
-        if (this.isUserDefinedConstructor) {
-            userDefinedConstructorCall
+        const publicConstructorCall = CodeBlock.create()
+        if (this.isConstructorPublic) {
+            publicConstructorCall
                 .append(` ?? ${this.classSchema.name}(`).append(argumentsListNativeIniRet.returningCode).append(')')
         }
 
         return CodeBlock.create()
-            .append('class func bjsBind() -> @convention(block) (')
-            .__.append(this.parameters.map(param => param.type.generator.swift.getBlockTypeStatement()).join(', '))
-            .__.append(')').append(this.returnTypeGenerator.getBlockReturnTypeStatement()).append(' {').newLineIndenting()
-            .append('return {').newLineIndenting()
+            .append('override class func bjsBind(_ nativeExports: BjsNativeExports) {').newLineIndenting()
+            .append('_ = nativeExports.exportBindFunction({').newLineIndenting()
             .append(argumentsListNativeIniRet.initializationCode)
             .append(`Bjs.get.bindNative(Bjs.get.getBound($1, ${this.classSchema.name}.self)`)
-            .append(userDefinedConstructorCall)
-            .append(', $0)').newLineDeindenting()
-            .append('}').newLineDeindenting()
+            .__.append(publicConstructorCall)
+            .__.append(', $0)').newLineDeindenting()
+            .append('} as @convention(block) (')
+            .__.append(this.parameters.map(param => param.type.generator.swift.getBlockTypeStatement()).join(', '))
+            .__.append(')').append(this.returnTypeGenerator.getBlockReturnTypeStatement())
+            .__.append(')').newLineDeindenting()
             .append('}')
     }
 }

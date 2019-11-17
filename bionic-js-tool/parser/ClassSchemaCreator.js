@@ -38,7 +38,7 @@ class ClassSchemaCreator {
                 ).schema)
 
                 const superclassModuleCreator = moduleCreatorsMap.get(this.classExplorer.superclassName)
-                const superclassName = superclassModuleCreator ? superclassModuleCreator.name : null
+                const superclass = superclassModuleCreator ? superclassModuleCreator.getSchema(moduleCreatorsMap) : null
 
                 this._schema = new Class(
                     this.name,
@@ -46,7 +46,7 @@ class ClassSchemaCreator {
                     methodSchemas.filter(method => method instanceof Constructor),
                     methodSchemas.filter(method => method instanceof Property),
                     methodSchemas.filter(method => method instanceof Method),
-                    superclassName,
+                    superclass,
                     this.modulePath)
             } catch (error) {
                 error.message = `extracting schema from class ${this.name} in module "${this.modulePath}"\n${error.message}`

@@ -35,7 +35,7 @@ describe('SwiftHostConstructorGenerator', () => {
     })
 
     function getCode(constructorParameters) {
-        const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], '', 'module/path')
+        const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], null, 'module/path')
         return class1.generator.swift.forHosting().getSource()
     }
 
@@ -214,7 +214,7 @@ describe('SwiftHostConstructorGenerator', () => {
     })
 
     function getScaffold(constructorParameters) {
-        const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], '', 'module/path')
+        const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], null, 'module/path')
         return class1.generator.swift.forHosting().getScaffold()
     }
 

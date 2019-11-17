@@ -13,12 +13,12 @@ class Class extends MultiTargetGenerable {
 
     static fromObj(obj) {
         return new Class(obj.name, obj.description, Constructor.fromObjList(obj.constructors),
-            Property.fromObjList(obj.properties), Method.fromObjList(obj.methods), obj.superclassName, obj.modulePath)
+            Property.fromObjList(obj.properties), Method.fromObjList(obj.methods), Class.fromNullableObj(obj.superclass), obj.modulePath)
     }
 
-    constructor(name, description, constructors, properties, methods, superclassName, modulePath) {
+    constructor(name, description, constructors, properties, methods, superclass, modulePath) {
         super()
-        Object.assign(this, {name, description, constructors, properties, methods, superclassName, modulePath})
+        Object.assign(this, {name, description, constructors, properties, methods, superclass, modulePath})
     }
 
     get isValid() {

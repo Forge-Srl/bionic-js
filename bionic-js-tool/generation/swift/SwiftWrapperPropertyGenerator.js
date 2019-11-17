@@ -65,7 +65,7 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
         const getterContext = new GenerationContext()
 
         return CodeBlock.create()
-            .append(`class func ${this.getterWrapperMethodName}() -> @convention(block) (`)
+            .append(`private class func ${this.getterWrapperMethodName}() -> @convention(block) (`)
             .__.append(`${this.schema.isStatic ? '' : 'JSValue'}) -> JSValue {`).newLineIndenting()
             .append('return {').newLineIndenting()
             .append(typeGen.getNativeReturnCode(typeGen.getJsIniRet(this.nativePropertyIniRet, getterContext))).newLineDeindenting()
@@ -81,7 +81,7 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
         const nativeValueIniRet = this.typeGenerator.getNativeIniRet(IniRet.create().appendRet(this.schema.isStatic ? '$0' : '$1'), getterContext)
 
         return CodeBlock.create()
-            .append(`class func ${this.setterWrapperMethodName}() -> @convention(block) (`)
+            .append(`private class func ${this.setterWrapperMethodName}() -> @convention(block) (`)
             .__.append(`${this.schema.isStatic ? '' : 'JSValue, '}JSValue) -> Void {`).newLineIndenting()
             .append('return {').newLineIndenting()
             .append(nativeValueIniRet.initializationCode)

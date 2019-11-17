@@ -18,6 +18,16 @@ describe('Class', () => {
     })
 
     test('fromObj', () => {
+        const superclassObj = {
+            name: 'SuperClass',
+            description: 'Superclass desc',
+            constructors: [],
+            properties: [],
+            methods: [],
+            superclass: null,
+            modulePath: 'relative/superFilePath.js',
+        }
+
         const classObj = {
             name: 'Class',
             description: 'Class desc',
@@ -32,13 +42,14 @@ describe('Class', () => {
                 name: 'method', description: 'method desc', isStatic: false, isOverriding: false,
                 returnType: {type: 'Void'}, parameters: [],
             }],
-            superclassName: 'Superclass', modulePath: 'relative/filePath.js',
+            superclass: superclassObj, modulePath: 'relative/filePath.js',
         }
         const clazz = Class.fromObj(classObj)
 
+        const expectedSuperclass = new Class('SuperClass', 'Superclass desc', [], [], [], null, 'relative/superFilePath.js')
         const expectedClass = new Class('Class', 'Class desc', [new Constructor('constructor desc', [])],
             [new Property('getter', 'getter desc', false, false, new IntType(), ['get'])],
-            [new Method('method', 'method desc', false, false, new VoidType(), [])], 'Superclass', 'relative/filePath.js')
+            [new Method('method', 'method desc', false, false, new VoidType(), [])], expectedSuperclass, 'relative/filePath.js')
 
         expect(clazz).toBeInstanceOf(Class)
         expect(clazz.constructors[0]).toBeInstanceOf(Constructor)

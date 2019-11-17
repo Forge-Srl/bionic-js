@@ -2,52 +2,54 @@ const t = require('../../test-utils')
 
 describe('SwiftWrapperClassGenerator', () => {
 
-    let Class, Constructor, Property, Method, IntType, expectedHeader
+    let Class, Parameter, Constructor, Property, Method, IntType
 
-    function getCode(properties, methods, superclassName = '', withScaffold = false) {
-        const class1 = new Class('Class1', 'class description', [new Constructor('desc', [])], properties, methods, superclassName, 'module/path')
+    function getCode(properties, methods, superclass = null, withScaffold = false) {
+        const class1 = new Class('Class1', 'class description', [new Constructor('desc', [])], properties, methods, superclass, 'module/path')
         const hostClassGeneratorForScaffolding = withScaffold ? class1.generator.swift.forHosting() : undefined
         return class1.generator.swift.forWrapping(hostClassGeneratorForScaffolding).getSource()
     }
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
+        Parameter = t.requireModule('schema/Parameter').Parameter
         Constructor = t.requireModule('schema/Constructor').Constructor
         Property = t.requireModule('schema/Property').Property
         Method = t.requireModule('schema/Method').Method
         IntType = t.requireModule('schema/types/IntType').IntType
+    })
 
-        expectedHeader = [
+    const getExpectedHeader = (superclassName = 'BjsNativeWrapper') => [
             'import JavaScriptCore',
             'import Bjs',
             '',
-            'class Class1Wrapper: BjsNativeWrapper {',
+            `class Class1Wrapper: ${superclassName} {`,
             '    ',
             '    override class var name: String { return "Class1" }',
             '    override class var wrapperPath: String { return "/module/path" }',
             '    ',
         ]
-    })
 
-    function expectEmptyClass(code) {
-        t.expectCode(code,
-            ...expectedHeader,
-            '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) {',
-            '        _ = nativeExports',
-            '            .exportBindFunction(bjsBind())',
-            '    }',
-            '    ',
-            '    class func bjsBind() -> @convention(block) (JSValue, JSValue) -> Void {',
-            '        return {',
-            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(), $0)',
-            '        }',
-            '    }',
-            '}')
-    }
 
-    test('empty class without inheritance', () => expectEmptyClass(getCode([], [])))
+    const emptyClassBindFunction = [
+        '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
+        '        return nativeExports',
+        '    }',
+        '    ',
+        '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
+        '        _ = nativeExports.exportBindFunction({',
+        '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(), $0)',
+        '        } as @convention(block) (JSValue, JSValue) -> Void)',
+        '    }',
+        '}']
 
-    test('empty class with inheritance', () => expectEmptyClass(getCode([], [], 'Superclass')))
+    test('empty class without inheritance', () => t.expectCode(getCode([], []),
+        ...getExpectedHeader(),
+        ...emptyClassBindFunction))
+
+    test('empty class with inheritance', () => t.expectCode(getCode([], [], new Class('Superclass')),
+        ...getExpectedHeader('SuperclassWrapper'),
+        ...emptyClassBindFunction))
 
     test('class parts order', () => {
         const intType = new IntType()
@@ -66,101 +68,97 @@ describe('SwiftWrapperClassGenerator', () => {
         ]
         const code = getCode(properties, methods)
 
-        const expectedFunctionsExport = [
-            '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) {',
-            '        _ = nativeExports',
+        t.expectCode(code,
+            ...getExpectedHeader(),
+            '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
+            '        return nativeExports',
             '            .exportFunction("bjsStaticGet_staticProperty1", bjsStaticGet_staticProperty1())',
             '            .exportFunction("bjsStaticSet_staticProperty1", bjsStaticSet_staticProperty1())',
             '            .exportFunction("bjsStaticGet_staticProperty2", bjsStaticGet_staticProperty2())',
             '            .exportFunction("bjsStaticSet_staticProperty2", bjsStaticSet_staticProperty2())',
             '            .exportFunction("bjsStatic_staticMethod1", bjsStatic_staticMethod1())',
             '            .exportFunction("bjsStatic_staticMethod2", bjsStatic_staticMethod2())',
-            '            .exportBindFunction(bjsBind())',
             '            .exportFunction("bjsGet_instanceProperty1", bjsGet_instanceProperty1())',
             '            .exportFunction("bjsSet_instanceProperty1", bjsSet_instanceProperty1())',
             '            .exportFunction("bjsGet_instanceProperty2", bjsGet_instanceProperty2())',
             '            .exportFunction("bjsSet_instanceProperty2", bjsSet_instanceProperty2())',
             '            .exportFunction("bjs_instanceMethod1", bjs_instanceMethod1())',
             '            .exportFunction("bjs_instanceMethod2", bjs_instanceMethod2())',
-            '    }']
-
-        t.expectCode(code,
-            ...expectedHeader,
-            ...expectedFunctionsExport,
+            '    }',
             '    ',
-            '    class func bjsStaticGet_staticProperty1() -> @convention(block) () -> JSValue {',
+            '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
+            '        _ = nativeExports.exportBindFunction({',
+            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(), $0)',
+            '        } as @convention(block) (JSValue, JSValue) -> Void)',
+            '    }',
+            '    ',
+            '    private class func bjsStaticGet_staticProperty1() -> @convention(block) () -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Class1.staticProperty1)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsStaticSet_staticProperty1() -> @convention(block) (JSValue) -> Void {',
+            '    private class func bjsStaticSet_staticProperty1() -> @convention(block) (JSValue) -> Void {',
             '        return {',
             '            Class1.staticProperty1 = Bjs.get.getInt($0)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsStaticGet_staticProperty2() -> @convention(block) () -> JSValue {',
+            '    private class func bjsStaticGet_staticProperty2() -> @convention(block) () -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Class1.staticProperty2)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsStaticSet_staticProperty2() -> @convention(block) (JSValue) -> Void {',
+            '    private class func bjsStaticSet_staticProperty2() -> @convention(block) (JSValue) -> Void {',
             '        return {',
             '            Class1.staticProperty2 = Bjs.get.getInt($0)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsStatic_staticMethod1() -> @convention(block) () -> JSValue {',
+            '    private class func bjsStatic_staticMethod1() -> @convention(block) () -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Class1.staticMethod1())',
             '        }',
             '    }',
             '    ',
-            '    class func bjsStatic_staticMethod2() -> @convention(block) () -> JSValue {',
+            '    private class func bjsStatic_staticMethod2() -> @convention(block) () -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Class1.staticMethod2())',
             '        }',
             '    }',
             '    ',
-            '    class func bjsBind() -> @convention(block) (JSValue, JSValue) -> Void {',
-            '        return {',
-            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(), $0)',
-            '        }',
-            '    }',
-            '    ',
-            '    class func bjsGet_instanceProperty1() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjsGet_instanceProperty1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.instanceProperty1)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsSet_instanceProperty1() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '    private class func bjsSet_instanceProperty1() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
             '            Bjs.get.getWrapped($0, Class1.self)!.instanceProperty1 = Bjs.get.getInt($1)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsGet_instanceProperty2() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjsGet_instanceProperty2() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.instanceProperty2)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsSet_instanceProperty2() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '    private class func bjsSet_instanceProperty2() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
             '            Bjs.get.getWrapped($0, Class1.self)!.instanceProperty2 = Bjs.get.getInt($1)',
             '        }',
             '    }',
             '    ',
-            '    class func bjs_instanceMethod1() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjs_instanceMethod1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.instanceMethod1())',
             '        }',
             '    }',
             '    ',
-            '    class func bjs_instanceMethod2() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjs_instanceMethod2() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.instanceMethod2())',
             '        }',
@@ -177,40 +175,39 @@ describe('SwiftWrapperClassGenerator', () => {
         const methods = [
             new Method('method', 'desc', false, false, intType, []),
         ]
-        const code = getCode(properties, methods, 'SuperClass', true)
 
-        const expectedFunctionsExport = [
-            '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) {',
-            '        _ = nativeExports',
-            '            .exportBindFunction(bjsBind())',
+        const superclassConstructor = new Constructor('desc', [new Parameter(new IntType(), 'param1')])
+        const superclass = new Class('SuperClass', `SuperClass description`, [superclassConstructor], [], [], null, 'module/superclassPath')
+        const code = getCode(properties, methods, superclass, true)
+
+        t.expectCode(code,
+            ...getExpectedHeader('SuperClassWrapper'),
+            '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
+            '        return nativeExports',
             '            .exportFunction("bjsGet_property", bjsGet_property())',
             '            .exportFunction("bjsSet_property", bjsSet_property())',
             '            .exportFunction("bjs_method", bjs_method())',
-            '    }']
-
-        t.expectCode(code,
-            ...expectedHeader,
-            ...expectedFunctionsExport,
-            '    ',
-            '    class func bjsBind() -> @convention(block) (JSValue, JSValue) -> Void {',
-            '        return {',
-            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(), $0)',
-            '        }',
             '    }',
             '    ',
-            '    class func bjsGet_property() -> @convention(block) (JSValue) -> JSValue {',
+            '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
+            '        _ = nativeExports.exportBindFunction({',
+            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(), $0)',
+            '        } as @convention(block) (JSValue, JSValue) -> Void)',
+            '    }',
+            '    ',
+            '    private class func bjsGet_property() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.property)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsSet_property() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '    private class func bjsSet_property() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
             '            Bjs.get.getWrapped($0, Class1.self)!.property = Bjs.get.getInt($1)',
             '        }',
             '    }',
             '    ',
-            '    class func bjs_method() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjs_method() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.method())',
             '        }',

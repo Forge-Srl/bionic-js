@@ -57,10 +57,16 @@ describe('ClassSchemaCreator', () => {
             methodExplorers: [constructorExplorer, methodExplorer, getterExplorer1, getterExplorer2],
         })
 
+        const superclass = {super: 'class'}
         const fakeModuleCreatorsMap = {
             get: superclassName => {
                 expect(superclassName).toBe('SuperclassName')
-                return {name: 'SuperclassNameFromCreator'}
+                return {
+                    getSchema: moduleCreatorsMap => {
+                        expect(moduleCreatorsMap).toBe(fakeModuleCreatorsMap)
+                        return superclass
+                    },
+                }
             },
         }
 
@@ -104,7 +110,7 @@ describe('ClassSchemaCreator', () => {
         expect(classSchema.constructors).toStrictEqual([constructorSchema])
         expect(classSchema.methods).toStrictEqual([methodSchema])
         expect(classSchema.properties).toStrictEqual([getterSchema])
-        expect(classSchema.superclassName).toStrictEqual('SuperclassNameFromCreator')
+        expect(classSchema.superclass).toBe(superclass)
         expect(classSchema.modulePath).toStrictEqual('/module/path')
 
         expect(classSchemaCreator.buildSchema()).toBe(classSchema)
@@ -140,7 +146,7 @@ describe('ClassSchemaCreator', () => {
 
         const classSchema = classSchemaCreator.buildSchema(fakeModuleCreatorsMap, 'currentSuperclassSchemaStack')
         expect(classSchema.name).toBe('Class1')
-        expect(classSchema.superclassName).toBe(null)
+        expect(classSchema.superclass).toBe(null)
     })
 
     test('buildSchema, error getting schema', () => {

@@ -53,7 +53,7 @@ class SwiftWrapperMethodGenerator extends SwiftMethodGenerator {
         const lambdaCode = lambdaReturnTypeGen.getNativeReturnCode(lambdaReturnTypeGen.getJsIniRet(callIniRet, methodContext))
 
         return CodeBlock.create()
-            .append(`class func ${this.wrapperMethodName}() -> @convention(block) (`)
+            .append(`private class func ${this.wrapperMethodName}() -> @convention(block) (`)
             .__.append(this.parameters.map(param => param.type.generator.swift.getBlockTypeStatement()).join(', '))
             .__.append(')').append(this.returnTypeGenerator.getBlockReturnTypeStatement()).append(' {').newLineIndenting()
             .append('return {').newLineIndenting()

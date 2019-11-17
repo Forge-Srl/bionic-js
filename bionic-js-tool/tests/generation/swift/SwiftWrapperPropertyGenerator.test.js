@@ -3,24 +3,7 @@ const t = require('../../test-utils')
 describe('SwiftWrapperPropertyGenerator', () => {
 
     let Class, Property, Parameter, AnyType, ArrayType, BoolType, DateType, FloatType, IntType, LambdaType,
-        NativeObjectType, ObjectType, StringType, VoidType, WrappedObjectType, expectedHeader, expectedBindFunction
-
-    function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set']) {
-        const class1 = new Class('Class1', '', [], [new Property('property1', 'property description', isPropertyStatic,
-            isPropertyOverriding, propertyType, propertyKinds)], [], '', 'module/path')
-        return class1.generator.swift.forWrapping().getSource()
-    }
-
-    function getFunctionsExportCode(instanceExports = [], staticExports = []) {
-        return [
-            '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) {',
-            '        _ = nativeExports',
-            ...staticExports.map(code => `            ${code}`),
-            '            .exportBindFunction(bjsBind())',
-            ...instanceExports.map(code => `            ${code}`),
-            '    }',
-            '    ']
-    }
+        NativeObjectType, ObjectType, StringType, VoidType, WrappedObjectType
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
@@ -38,39 +21,51 @@ describe('SwiftWrapperPropertyGenerator', () => {
         StringType = t.requireModule('schema/types/StringType').StringType
         VoidType = t.requireModule('schema/types/VoidType').VoidType
         WrappedObjectType = t.requireModule('schema/types/WrappedObjectType').WrappedObjectType
-
-        expectedHeader = [
-            'import JavaScriptCore',
-            'import Bjs',
-            '',
-            'class Class1Wrapper: BjsNativeWrapper {',
-            '    ',
-            '    override class var name: String { return "Class1" }',
-            '    override class var wrapperPath: String { return "/module/path" }',
-            '    ',
-        ]
-
-        expectedBindFunction = [
-            '    class func bjsBind() -> @convention(block) (JSValue, JSValue) -> Void {',
-            '        return {',
-            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self), $0)',
-            '        }',
-            '    }']
     })
+
+    function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set']) {
+        const class1 = new Class('Class1', '', [], [new Property('property1', 'property description', isPropertyStatic,
+            isPropertyOverriding, propertyType, propertyKinds)], [], null, 'module/path')
+        return class1.generator.swift.forWrapping().getSource()
+    }
+
+    function getFunctionsExportCode(functionsExports = []) {
+        return [
+            '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
+            '        return nativeExports',
+            ...functionsExports.map(code => `            ${code}`),
+            '    }',
+            '    ',
+            '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
+            '        _ = nativeExports.exportBindFunction({',
+            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self), $0)',
+            '        } as @convention(block) (JSValue, JSValue) -> Void)',
+            '    }']
+    }
+
+    const expectedHeader = [
+        'import JavaScriptCore',
+        'import Bjs',
+        '',
+        'class Class1Wrapper: BjsNativeWrapper {',
+        '    ',
+        '    override class var name: String { return "Class1" }',
+        '    override class var wrapperPath: String { return "/module/path" }',
+        '    ',
+    ]
 
     test('IntType, only getter, static', () => {
         const code = getCode(new IntType(), true, false, ['get'])
 
         t.expectCode(code,
             ...expectedHeader,
-            ...getFunctionsExportCode([], ['.exportFunction("bjsStaticGet_property1", bjsStaticGet_property1())']),
-            '    class func bjsStaticGet_property1() -> @convention(block) () -> JSValue {',
+            ...getFunctionsExportCode(['.exportFunction("bjsStaticGet_property1", bjsStaticGet_property1())']),
+            '    ',
+            '    private class func bjsStaticGet_property1() -> @convention(block) () -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Class1.property1)',
             '        }',
             '    }',
-            '    ',
-            ...expectedBindFunction,
             '}')
     })
 
@@ -79,14 +74,13 @@ describe('SwiftWrapperPropertyGenerator', () => {
 
         t.expectCode(code,
             ...expectedHeader,
-            ...getFunctionsExportCode([], ['.exportFunction("bjsStaticSet_property1", bjsStaticSet_property1())']),
-            '    class func bjsStaticSet_property1() -> @convention(block) (JSValue) -> Void {',
+            ...getFunctionsExportCode(['.exportFunction("bjsStaticSet_property1", bjsStaticSet_property1())']),
+            '    ',
+            '    private class func bjsStaticSet_property1() -> @convention(block) (JSValue) -> Void {',
             '        return {',
             '            Class1.property1 = Bjs.get.getInt($0)',
             '        }',
             '    }',
-            '    ',
-            ...expectedBindFunction,
             '}')
     })
 
@@ -95,23 +89,22 @@ describe('SwiftWrapperPropertyGenerator', () => {
 
         t.expectCode(code,
             ...expectedHeader,
-            ...getFunctionsExportCode([], [
+            ...getFunctionsExportCode([
                 '.exportFunction("bjsStaticGet_property1", bjsStaticGet_property1())',
                 '.exportFunction("bjsStaticSet_property1", bjsStaticSet_property1())',
             ]),
-            '    class func bjsStaticGet_property1() -> @convention(block) () -> JSValue {',
+            '    ',
+            '    private class func bjsStaticGet_property1() -> @convention(block) () -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Class1.property1)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsStaticSet_property1() -> @convention(block) (JSValue) -> Void {',
+            '    private class func bjsStaticSet_property1() -> @convention(block) (JSValue) -> Void {',
             '        return {',
             '            Class1.property1 = Bjs.get.getInt($0)',
             '        }',
             '    }',
-            '    ',
-            ...expectedBindFunction,
             '}')
     })
 
@@ -126,15 +119,14 @@ describe('SwiftWrapperPropertyGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getterAndSetterFunctionsExportCode,
-            ...expectedBindFunction,
             '    ',
-            '    class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.getWrapped($0, Class1.self)!.property1.jsObj',
             '        }',
             '    }',
             '    ',
-            '    class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '    private class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
             '            Bjs.get.getWrapped($0, Class1.self)!.property1 = Bjs.get.getAny($1)',
             '        }',
@@ -148,9 +140,8 @@ describe('SwiftWrapperPropertyGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getterAndSetterFunctionsExportCode,
-            ...expectedBindFunction,
             '    ',
-            '    class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putArray(Bjs.get.getWrapped($0, Class1.self)!.property1, {',
             '                return Bjs.get.putArray($0, {',
@@ -160,7 +151,7 @@ describe('SwiftWrapperPropertyGenerator', () => {
             '        }',
             '    }',
             '    ',
-            '    class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '    private class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
             '            Bjs.get.getWrapped($0, Class1.self)!.property1 = Bjs.get.getArray($1, {',
             '                return Bjs.get.getArray($0, {',
@@ -178,15 +169,14 @@ describe('SwiftWrapperPropertyGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getterAndSetterFunctionsExportCode,
-            ...expectedBindFunction,
             '    ',
-            '    class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.property1)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '    private class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
             '            Bjs.get.getWrapped($0, Class1.self)!.property1 = Bjs.get.getBool($1)',
             '        }',
@@ -200,15 +190,14 @@ describe('SwiftWrapperPropertyGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getterAndSetterFunctionsExportCode,
-            ...expectedBindFunction,
             '    ',
-            '    class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.property1)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '    private class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
             '            Bjs.get.getWrapped($0, Class1.self)!.property1 = Bjs.get.getDate($1)',
             '        }',
@@ -222,15 +211,14 @@ describe('SwiftWrapperPropertyGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getterAndSetterFunctionsExportCode,
-            ...expectedBindFunction,
             '    ',
-            '    class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.property1)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '    private class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
             '            Bjs.get.getWrapped($0, Class1.self)!.property1 = Bjs.get.getFloat($1)',
             '        }',
@@ -246,9 +234,8 @@ describe('SwiftWrapperPropertyGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getterAndSetterFunctionsExportCode,
-            ...expectedBindFunction,
             '    ',
-            '    class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            let nativeFunc_bjs0 = Bjs.get.getWrapped($0, Class1.self)!.property1',
             '            let jsFunc_bjs1: @convention(block) (JSValue) -> JSValue = {',
@@ -265,7 +252,7 @@ describe('SwiftWrapperPropertyGenerator', () => {
             '        }',
             '    }',
             '    ',
-            '    class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '    private class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
             '            let jsFunc_bjs0 = $1',
             '            Bjs.get.getWrapped($0, Class1.self)!.property1 = Bjs.get.getFunc(jsFunc_bjs0) {',
@@ -289,15 +276,14 @@ describe('SwiftWrapperPropertyGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getterAndSetterFunctionsExportCode,
-            ...expectedBindFunction,
             '    ',
-            '    class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putNative(Bjs.get.getWrapped($0, Class1.self)!.property1)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '    private class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
             '            Bjs.get.getWrapped($0, Class1.self)!.property1 = Bjs.get.getNative($1, ClassName.self)',
             '        }',
@@ -311,15 +297,14 @@ describe('SwiftWrapperPropertyGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getterAndSetterFunctionsExportCode,
-            ...expectedBindFunction,
             '    ',
-            '    class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putObj(Bjs.get.getWrapped($0, Class1.self)!.property1)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '    private class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
             '            Bjs.get.getWrapped($0, Class1.self)!.property1 = Bjs.get.getObj($1, ClassName.bjsFactory)',
             '        }',
@@ -333,15 +318,14 @@ describe('SwiftWrapperPropertyGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getterAndSetterFunctionsExportCode,
-            ...expectedBindFunction,
             '    ',
-            '    class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.property1)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '    private class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
             '            Bjs.get.getWrapped($0, Class1.self)!.property1 = Bjs.get.getString($1)',
             '        }',
@@ -355,15 +339,14 @@ describe('SwiftWrapperPropertyGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             ...getterAndSetterFunctionsExportCode,
-            ...expectedBindFunction,
             '    ',
-            '    class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
+            '    private class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
             '            return Bjs.get.putWrapped(Bjs.get.getWrapped($0, Class1.self)!.property1, ClassNameWrapper.self)',
             '        }',
             '    }',
             '    ',
-            '    class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
+            '    private class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
             '            Bjs.get.getWrapped($0, Class1.self)!.property1 = Bjs.get.getWrapped($1, ClassName.self)',
             '        }',
