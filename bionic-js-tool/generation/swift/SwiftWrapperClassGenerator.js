@@ -51,17 +51,6 @@ class SwiftWrapperClassGenerator extends SwiftClassGenerator {
             .append('}')
     }
 
-    /*
-
-    getPublicConstructor(this.schema)
-
-    Se lo schema attuale NON ha costruttore pubblico e c'è una superclasse, ricorsivamente prova a chiamare getPublicConstructor(this.schema.superclass)
-    Se lo schema attuale NON ha costruttore pubblico e NON c'è una superclasse, ritorna il costruttore di default
-        new Constructor('Default constructor', []).generator.swift.forWrapping(this.schema, false).getCode()
-    Se lo schema attuale ha costruttore pubblico, ritorna constructor.generator.swift.forWrapping(this.schema, true).getCode()
-
-    */
-
     getExportConstructorCode(schema = this.schema) {
         if (!schema.constructors.length) {
             if (schema.superclass) {
