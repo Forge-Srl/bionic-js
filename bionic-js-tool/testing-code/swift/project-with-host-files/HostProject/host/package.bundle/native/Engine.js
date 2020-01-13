@@ -1,27 +1,27 @@
-const {fuelCosts} = require('./fuelCosts')
+const {BjsNativeModule} = require('./BjsNativeModule')
+const {bjsNative} = require('Engine')
 
-class Engine {
+class Engine extends BjsNativeModule {
 
-    constructor() {
+    static get bjsNative() {
+        return bjsNative
     }
 
-    // @bionic String
     get fuelType() {
+        return bjsNative.bjsGet_fuelType(this)
     }
 
-    get fuelCost() {
-        return fuelCosts[this.fuelType]
-    }
-
-    // @bionic ()
     powerOn() {
+        return bjsNative.bjs_powerOn(this)
     }
 
-    // @bionic
     powerOff() {
+        return bjsNative.bjs_powerOff(this)
     }
 
-    // @bionic method watch (callback: () => String)
+    watch(callback) {
+        return bjsNative.bjs_watch(this, callback)
+    }
 }
 
 module.exports = {Engine}
