@@ -9,7 +9,9 @@ class BjsContext {
     
     public let jsContext: JSContext = JSContext()
     public var timeoutIds: NSMutableSet = NSMutableSet()
+    public var intervalIds: NSMutableSet = NSMutableSet()
     public var lastTimeoutId: Int = 0
+    public var lastIntervalId: Int = 0
     
     init() {
         jsContext.exceptionHandler = { context, exception in
@@ -22,31 +24,76 @@ class BjsContext {
             context?.exception = exception
         }
         
-        let consoleLog: @convention(block) (_ : String) -> Void = { message in self.logInfo(message) }
-        let consoleError: @convention(block) (_ : String) -> Void = { message in self.logError(message) }
+        let consoleLog: @convention(block) (_ : String) -> Void = { self.logInfo($0) }
+        let consoleError: @convention(block) (_ : String) -> Void = { self.logError($0) }
         let console = jsContext.objectForKeyedSubscript("console")!
         console.setObject(consoleLog, forKeyedSubscript: "log" as NSString)
         console.setObject(consoleError, forKeyedSubscript: "error" as NSString)
         
-        let setTimeout: @convention(block) (_ : JSValue, _ : Int) -> Void = { function, delayInMs in
-            self.lastTimeoutId += 1
-            let handlerId = self.lastTimeoutId
-            self.timeoutIds.add(handlerId)
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(delayInMs)) {
-                if self.timeoutIds.contains(handlerId) {
-                    function.call(withArguments: [])
-                    self.timeoutIds.remove(handlerId)
-                }
-            }
+        let setTimeout: @convention(block) (_ : JSValue, _ : Int) -> Int = {
+            let handlerId = self.newTimeoutId()
+            self.runTimeout(handlerId, $0, $1)
+            return handlerId
         }
         jsContext.setObject(setTimeout, forKeyedSubscript: "setTimeout" as NSString)
         
-        let clearTimeout: @convention(block) (_ : Int) -> Void = { timeoutId in
-            if self.timeoutIds.contains(timeoutId) {
-                self.timeoutIds.remove(timeoutId)
+        let clearTimeout: @convention(block) (_ : Int) -> Void = { self.clearTimeout($0) }
+        jsContext.setObject(clearTimeout, forKeyedSubscript: "clearTimeout" as NSString)
+        
+        let setInterval: @convention(block) (_ : JSValue, _ : Int) -> Int = {
+            let handlerId = self.newIntervalId()
+            self.runInterval(handlerId, $0, $1)
+            return handlerId
+        }
+        jsContext.setObject(setInterval, forKeyedSubscript: "setInterval" as NSString)
+        
+        let clearInterval: @convention(block) (_ : Int) -> Void = { self.clearInterval($0) }
+        jsContext.setObject(clearInterval, forKeyedSubscript: "clearInterval" as NSString)
+    }
+    
+    private func newTimeoutId() -> Int {
+        self.lastTimeoutId += 1
+        let handlerId = self.lastTimeoutId
+        self.timeoutIds.add(handlerId)
+        return handlerId
+    }
+    
+    private func newIntervalId() -> Int {
+        self.lastIntervalId += 1
+        let handlerId = self.lastIntervalId
+        self.intervalIds.add(handlerId)
+        return handlerId
+    }
+    
+    private func runTimeout(_ handlerId: Int, _ function: JSValue, _ delayInMs : Int) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(delayInMs)) {
+            if self.timeoutIds.contains(handlerId) {
+                function.call(withArguments: [])
+                self.timeoutIds.remove(handlerId)
             }
         }
-        jsContext.setObject(clearTimeout, forKeyedSubscript: "clearTimeout" as NSString)
+    }
+    
+    private func runInterval(_ handlerId: Int, _ function: JSValue, _ delayInMs : Int) {
+        Timer.scheduledTimer(withTimeInterval: Double(delayInMs) / 1000.0, repeats: true) { timer in
+            if self.intervalIds.contains(handlerId) {
+                function.call(withArguments: [])
+            } else {
+                timer.invalidate()
+            }
+        }.fire()
+    }
+    
+    private func clearTimeout(_ handlerId: Int) {
+        if self.timeoutIds.contains(handlerId) {
+            self.timeoutIds.remove(handlerId)
+        }
+    }
+    
+    private func clearInterval(_ handlerId: Int) {
+        if self.intervalIds.contains(handlerId) {
+            self.intervalIds.remove(handlerId)
+        }
     }
     
     func createJsObject(_ sourceObj: Any!) -> JSValue! {
