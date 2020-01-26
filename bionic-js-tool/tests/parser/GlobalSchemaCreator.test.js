@@ -2,14 +2,14 @@ const t = require('../test-utils')
 
 describe('GlobalSchemaCreator', () => {
 
-    let GlobalSchemaCreator, ModuleSchemaCreator
+    let GlobalSchemaCreator, ModuleSchemaCreator, ExportedFile
 
     beforeEach(() => {
         t.resetModulesCache()
 
         ModuleSchemaCreator = t.mockAndRequireModule('parser/ModuleSchemaCreator').ModuleSchemaCreator
-
         GlobalSchemaCreator = t.requireModule('parser/GlobalSchemaCreator').GlobalSchemaCreator
+        ExportedFile = t.requireModule('filesystem/ExportedFile').ExportedFile
     })
 
     test('moduleCreatorPromises', async () => {
@@ -65,18 +65,22 @@ describe('GlobalSchemaCreator', () => {
             .toThrow('class Class1 in module "/module2" was already exported in module "/module1"')
     })
 
-    test('getGuestFileSchemas', async () => {
-        const schemaCreator = new GlobalSchemaCreator()
+    test('getExportedFiles', async () => {
+        const guestFile1 = {path: 'path1'}
+        const guestFile2 = {path: 'path2'}
+        const guestFile3 = {path: 'path3'}
+
+        const schemaCreator = new GlobalSchemaCreator([guestFile1, guestFile2, guestFile3])
 
         let expectedModuleCreators
         const moduleCreator1 = {
-            guestFile: 'GuestFile1', getSchema: moduleCreators => {
+            guestFile: guestFile1, getSchema: moduleCreators => {
                 expect(moduleCreators).toStrictEqual(expectedModuleCreators)
                 return 'Class1-schema'
             },
         }
         const moduleCreator2 = {
-            guestFile: 'GuestFile2', getSchema: moduleCreators => {
+            guestFile: guestFile2, getSchema: moduleCreators => {
                 expect(moduleCreators).toStrictEqual(expectedModuleCreators)
                 return 'Class2-schema'
             },
@@ -84,10 +88,11 @@ describe('GlobalSchemaCreator', () => {
         expectedModuleCreators = [moduleCreator1, moduleCreator2]
         schemaCreator.getModuleCreators = async () => expectedModuleCreators
 
-        const guestFileSchemas = await schemaCreator.getGuestFileSchemas()
-        expect(guestFileSchemas).toStrictEqual([
-            {guestFile: 'GuestFile1', schema: 'Class1-schema'},
-            {guestFile: 'GuestFile2', schema: 'Class2-schema'},
+        const exportedFiles = await schemaCreator.getExportedFiles()
+        expect(exportedFiles).toStrictEqual([
+            new ExportedFile(guestFile1, 'Class1-schema'),
+            new ExportedFile(guestFile2, 'Class2-schema'),
+            new ExportedFile(guestFile3, null),
         ])
     })
 })

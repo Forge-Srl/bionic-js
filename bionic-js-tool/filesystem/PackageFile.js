@@ -2,22 +2,23 @@ const {File} = require('./File')
 
 class PackageFile extends File {
 
-    constructor(path, packageDirPath, guestFile) {
+    constructor(path, packageDirPath, exportedFile) {
         super(path, packageDirPath)
-        this.guestFile = guestFile
+        Object.assign(this, {exportedFile})
     }
 
-    static build(guestFile, packageDirPath) {
-        const packageFilePath = guestFile.composeNewPath(packageDirPath)
-        return new PackageFile(packageFilePath, packageDirPath, guestFile)
+    static build(exportedFile, packageDirPath) {
+        const packageFilePath = exportedFile.guestFile.composeNewPath(packageDirPath)
+        return new PackageFile(packageFilePath, packageDirPath, exportedFile)
     }
 
     async generate(hostProject) {
+        const guestFile = this.exportedFile.guestFile
         let guestFileContent
         try {
-            guestFileContent = await this.guestFile.getContent()
+            guestFileContent = await guestFile.getContent()
         } catch (error) {
-            error.message = `reading guest code file "${this.guestFile.relativePath}"\n${error.message}`
+            error.message = `reading guest code file "${guestFile.relativePath}"\n${error.message}`
             throw error
         }
 

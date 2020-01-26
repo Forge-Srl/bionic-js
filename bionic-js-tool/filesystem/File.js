@@ -7,8 +7,9 @@ class File extends BaseFile {
     async getContent() {
         try {
             return await fs.readFile(this.path, utf8)
-        } catch (error) {
-            error.message = `reading the file "${this.path}"\n${error.message}`
+        } catch (e) {
+            const error = new Error(`reading the file "${this.path}"\n${e.message}`)
+            error.innerError = e
             throw error
         }
     }

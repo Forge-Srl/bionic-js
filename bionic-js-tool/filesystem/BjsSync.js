@@ -17,12 +17,12 @@ class BjsSync {
         try {
             this.log.info(`Bionic.js - v${bjsVersion}`)
             const guestFiles = await GuestWatcher.build(this.configuration).getInitialFiles()
-            const guestFilesWithSchemas = await this.getGuestFilesWithSchemas(guestFiles)
+            const exportedFiles = await this.getExportedFiles(guestFiles)
 
             for (const targetConfig of this.configuration.hostTargets) {
                 const hostProject = HostProject.build(targetConfig, this.log)
-                await this.syncHostFiles(targetConfig, hostProject, guestFilesWithSchemas)
-                await this.syncPackageFiles(targetConfig, hostProject, guestFilesWithSchemas)
+                await this.syncHostFiles(targetConfig, hostProject, exportedFiles)
+                await this.syncPackageFiles(targetConfig, hostProject, exportedFiles)
                 await hostProject.save()
             }
         } catch (error) {
@@ -30,17 +30,17 @@ class BjsSync {
         }
     }
 
-    async getGuestFilesWithSchemas(guestFiles) {
+    async getExportedFiles(guestFiles) {
         this.log.info('Processing guest files')
 
         this.log.info(' Extracting schemas from guest files...')
         const globalSchemaCreator = new GlobalSchemaCreator(guestFiles)
-        const guestFilesWithSchemas = await globalSchemaCreator.getGuestFileSchemas()
+        const getExportedFiles = await globalSchemaCreator.getExportedFiles()
         this.log.info(' ...done\n')
-        return guestFilesWithSchemas
+        return getExportedFiles
     }
 
-    async syncHostFiles(targetConfig, hostProject, guestFilesWithSchemas) {
+    async syncHostFiles(targetConfig, hostProject, exportedFiles) {
         const hostDir = new Directory(targetConfig.hostDirPath)
         this.log.info(`Processing host files dir "${hostDir.path}"`)
 
@@ -48,23 +48,23 @@ class BjsSync {
         await hostProject.cleanHostDir()
 
         this.log.info(` Generating host files...`)
-        await Promise.all(guestFilesWithSchemas.map(guestFileWithSchema => {
+        await Promise.all(exportedFiles.filter(exportedFile => exportedFile.hasSchema).map(exportedFile => {
 
-            const hostFile = HostFile.build(guestFileWithSchema.guestFile, targetConfig)
+            const hostFile = HostFile.build(exportedFile, targetConfig)
             this.log.info(`  ${hostFile.relativePath}`)
-            return hostFile.generate(guestFileWithSchema.schema, hostProject)
+            return hostFile.generate(hostProject)
         }))
         this.log.info(' ...done\n')
     }
 
-    async syncPackageFiles(targetConfig, hostProject, guestFilesWithSchemas) {
+    async syncPackageFiles(targetConfig, hostProject, exportedFiles) {
         const packageDir = new Directory(targetConfig.hostDirPath).getSubDir(targetConfig.packageName)
         this.log.info(`Processing package files dir "${packageDir.path}"`)
 
         this.log.info(' Generating package files...')
-        await Promise.all(guestFilesWithSchemas.map(guestFileWithSchema => {
+        await Promise.all(exportedFiles.map(exportedFile => {
 
-            const packageFile = PackageFile.build(guestFileWithSchema.guestFile, packageDir.path)
+            const packageFile = PackageFile.build(exportedFile, packageDir.path)
             this.log.info(`  ${packageFile.relativePath}`)
             return packageFile.generate(hostProject)
         }))

@@ -25,13 +25,13 @@
     "ignore": "*",
     "mkdirp": "*",
     "rimraf": "*",
-    "xcode": "*",
+    "touch": "*",
     "uuid": "*",
-    "touch": "*"
+    "xcode": "*"
   },
   "devDependencies": {
+    "copy-dir": "*",
     "jest-cli": "*",
-    "pegjs": "*",
-    "copy-dir": "*"
+    "pegjs": "*"
   }
 }

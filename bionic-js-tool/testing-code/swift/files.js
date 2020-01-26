@@ -1,5 +1,6 @@
 const hostFilePaths = ['FerrariCalifornia.swift', 'TeslaRoadster.swift', 'libs/MotorVehicle.swift',
     'libs/Vehicle.swift', 'native/EngineWrapper.swift']
+
 const packageFilePaths = ['FerrariCalifornia.js', 'GannaBicycle.js', 'package.json', 'TeslaRoadster.js',
     'libs/MotorVehicle.js', 'libs/Vehicle.js',
     'native/Engine.js', 'native/fuelCosts.js',

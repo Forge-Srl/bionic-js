@@ -40,19 +40,11 @@ describe('Bjs smoke tests', () => {
                 `Processing host files dir "${tempDir.absolutePath}/HostProject/host"`,
                 ' Deleting files',
                 ' Generating host files...',
-                '  FerrariCalifornia.swift',
-                '  TeslaRoadster.swift',
-                '  native/EngineWrapper.swift',
-                '  libs/MotorVehicle.swift',
-                '  libs/Vehicle.swift',
+                ...hostFilePaths.map(hostFile => `  ${hostFile}`),
                 ' ...done',
                 `Processing package files dir "${tempDir.absolutePath}/HostProject/host/package.bundle"`,
                 ' Generating package files...',
-                '  FerrariCalifornia.js',
-                '  TeslaRoadster.js',
-                '  native/Engine.js',
-                '  libs/MotorVehicle.js',
-                '  libs/Vehicle.js',
+                ...packageFilePaths.map(packageFile => `  ${packageFile}`),
                 ' ...done']))
 
             const projectWithFilesDir = getProjectDir('project-with-host-files')
@@ -74,11 +66,8 @@ describe('Bjs smoke tests', () => {
             for (const forbiddenPackageFilePath of forbiddenPackageFilePaths) {
                 const guestFile = guestDir.getSubFile(forbiddenPackageFilePath)
                 const forbiddenPackageFile = tempDir.getSubDir(packageDir).getSubFile(forbiddenPackageFilePath)
-                let newVar = await guestFile.exists()
-                let newVar2 = await forbiddenPackageFile.exists()
-                console.log(forbiddenPackageFile.path)
-                expect(newVar).toBe(true)
-                expect(newVar2).toBe(false)
+                expect(await guestFile.exists()).toBe(true)
+                expect(await forbiddenPackageFile.exists()).toBe(false)
             }
         })
     }

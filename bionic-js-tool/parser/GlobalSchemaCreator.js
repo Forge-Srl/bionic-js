@@ -1,4 +1,5 @@
 const {ModuleSchemaCreator} = require('../parser/ModuleSchemaCreator')
+const {ExportedFile} = require('../filesystem/ExportedFile')
 
 class GlobalSchemaCreator {
 
@@ -29,12 +30,14 @@ class GlobalSchemaCreator {
         return this._moduleCreators
     }
 
-    async getGuestFileSchemas() {
+    async getExportedFiles() {
         const moduleCreators = await this.getModuleCreators()
-        return moduleCreators.map(moduleCreator => ({
-            guestFile: moduleCreator.guestFile,
-            schema: moduleCreator.getSchema(moduleCreators),
-        }))
+        const moduleCreatorsMap = new Map(moduleCreators.map(creator => [creator.guestFile.path, creator]))
+
+        return this.guestFiles.map(guestFile => {
+            const creator = moduleCreatorsMap.get(guestFile.path)
+            return new ExportedFile(guestFile, creator ? creator.getSchema(moduleCreators) : null)
+        })
     }
 }
 
