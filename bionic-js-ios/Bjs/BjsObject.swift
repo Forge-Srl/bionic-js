@@ -54,6 +54,6 @@ open class BjsObject : Hashable {
     }
     
     public static func ==(lhs: BjsObject, rhs: BjsObject) -> Bool {
-        return lhs === rhs
+        return lhs.bjsObj.isEqual(to: rhs.bjsObj)
     }
 }
