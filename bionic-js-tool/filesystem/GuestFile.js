@@ -14,9 +14,16 @@ class GuestFile extends File {
         Object.assign(this, {guestNativeDirPath})
     }
 
+    get isJavascript() {
+        if (!this._isJavascript) {
+            this._isJavascript = this.ext === JS_FILE_EXT
+        }
+        return this._isJavascript
+    }
+
     get isExportable() {
         if (!this._isExportable) {
-            this._isExportable = this.ext !== JS_FILE_EXT ? false : !this.isInsideDir(this.rootDirPath, NODE_MODULES_DIR_NAME)
+            this._isExportable = this.isJavascript ? !this.isInsideDir(this.rootDirPath, NODE_MODULES_DIR_NAME) : false
         }
         return this._isExportable
     }

@@ -10,8 +10,12 @@ describe('PackageFile', () => {
         const guestFile = new File('/guest/dir/files/code.js', '/guest/dir')
         const exportedFile = new ExportedFile(guestFile)
         const packageDirPath = '/package/dir'
+        const targetConfig = {
+            hostDirPath: '/package',
+            packageName: 'dir'
+        }
 
-        const packageFile = PackageFile.build(exportedFile, packageDirPath)
+        const packageFile = PackageFile.build(exportedFile, targetConfig)
 
         expect(packageFile.path).toBe('/package/dir/files/code.js')
         expect(packageFile.rootDirPath).toBe(packageDirPath)

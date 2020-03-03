@@ -64,7 +64,7 @@ class BjsSync {
         this.log.info(' Generating package files...')
         await Promise.all(exportedFiles.map(exportedFile => {
 
-            const packageFile = PackageFile.build(exportedFile, packageDir.path)
+            const packageFile = PackageFile.build(exportedFile, targetConfig)
             this.log.info(`  ${packageFile.relativePath}`)
             return packageFile.generate(hostProject)
         }))

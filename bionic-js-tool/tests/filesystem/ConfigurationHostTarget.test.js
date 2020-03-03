@@ -55,4 +55,19 @@ describe('ConfigurationHostTarget', () => {
         const config = new ConfigurationHostTarget({packageName: 'packageName.bundle2'}, 'config/path')
         expect(() => config.packageName).toThrow('config file "config/path" -> "hostTargets" property -> "packageName" must be a .bundle file')
     })
+
+    test('packageMinimization', () => {
+        const config = new ConfigurationHostTarget({packageMinimization: 1})
+        expect(config.packageMinimization).toBe(true)
+    })
+
+    test('packageMinimization, not boolean', () => {
+        const config = new ConfigurationHostTarget({packageMinimization: ''})
+        expect(config.packageMinimization).toBe(false)
+    })
+
+    test('packageMinimization, missing', () => {
+        const config = new ConfigurationHostTarget({})
+        expect(config.packageMinimization).toBe(false)
+    })
 })

@@ -25,6 +25,7 @@
     "ignore": "*",
     "mkdirp": "*",
     "rimraf": "*",
+    "terser": "*",
     "touch": "*",
     "uuid": "*",
     "xcode": "*"

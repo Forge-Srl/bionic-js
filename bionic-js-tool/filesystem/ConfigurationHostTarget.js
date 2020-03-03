@@ -52,6 +52,10 @@ class ConfigurationHostTarget {
         }
     }
 
+    get packageMinimization() {
+        return !!this.targetObj.packageMinimization
+    }
+
     get xcodeProjectPath() {
         return this.targetObj.xcodeProjectPath
     }
