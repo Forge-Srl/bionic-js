@@ -1,4 +1,5 @@
 const {MethodSchemaCreator} = require('./MethodSchemaCreator')
+const {BaseObjectClass} = require('../schema/notable/BaseObjectClass')
 const {Class} = require('../schema/Class')
 const {Constructor} = require('../schema/Constructor')
 const {Property} = require('../schema/Property')
@@ -38,7 +39,9 @@ class ClassSchemaCreator {
                 ).schema)
 
                 const superclassModuleCreator = moduleCreatorsMap.get(this.classExplorer.superclassName)
-                const superclass = superclassModuleCreator ? superclassModuleCreator.getSchema(moduleCreatorsMap) : null
+                const superclass = superclassModuleCreator
+                    ? superclassModuleCreator.getSchema(moduleCreatorsMap)
+                    : new BaseObjectClass()
 
                 this._schema = new Class(
                     this.name,

@@ -1,45 +1,44 @@
 const {File} = require('./File')
-const {Directory} = require('./Directory')
 const Terser = require('terser')
 const terserOptions = {safari10: true}
 
 class PackageFile extends File {
+
+    static build(exportedFile, targetConfig) {
+        const {StandardPackageFile} = require('./StandardPackageFile')
+        const {NativePackageFile} = require('./NativePackageFile')
+        const packageFilePath = exportedFile.guestFile.composeNewPath(targetConfig.packageDirPath)
+        const PackageFileClass = exportedFile.requiresNativePackageFile ? NativePackageFile : StandardPackageFile
+        return new PackageFileClass(packageFilePath, targetConfig.packageDirPath, exportedFile, targetConfig.packageMinimization)
+    }
 
     constructor(path, packageDirPath, exportedFile, minimization) {
         super(path, packageDirPath)
         Object.assign(this, {exportedFile, minimization})
     }
 
-    static build(exportedFile, targetConfig) {
-        const packageDirPath = new Directory(targetConfig.hostDirPath).getSubDir(targetConfig.packageName).path
-        const packageFilePath = exportedFile.guestFile.composeNewPath(packageDirPath)
-        return new PackageFile(packageFilePath, packageDirPath, exportedFile, targetConfig.packageMinimization)
+    async getPackageContent() {
+        throw new Error('method "getPackageContent" must be implemented')
+    }
+
+    processPackage(packageFileContent) {
+        const guestFile = this.exportedFile.guestFile
+        try {
+            if (this.minimization && guestFile.isJavascript) {
+                const result = Terser.minify(packageFileContent, terserOptions)
+                if (result.error)
+                    throw result.error
+                return result.code
+            }
+        } catch (error) {
+            error.message = `minimizing guest code file "${guestFile.relativePath}"\n${JSON.stringify(error)}`
+            throw error
+        }
+        return packageFileContent
     }
 
     async generate(hostProject) {
-        const guestFile = this.exportedFile.guestFile
-        let guestFileContent
-        try {
-            guestFileContent = await guestFile.getContent()
-        } catch (error) {
-            error.message = `reading guest code file "${guestFile.relativePath}"\n${error.message}`
-            throw error
-        }
-
-        let packageFileContent = guestFileContent
-
-        try {
-            if (this.minimization && guestFile.isJavascript) {
-                const result = Terser.minify(guestFileContent, terserOptions)
-                if (result.error)
-                    throw result.error
-                packageFileContent = result.code
-            }
-        } catch (error) {
-            error.message = `minimizing guest code file "${guestFile.relativePath}"\n${error.message}`
-            throw error
-        }
-
+        const packageFileContent = this.processPackage(await this.getPackageContent())
         await hostProject.setPackageFileContent(this.relativePath, packageFileContent)
     }
 }

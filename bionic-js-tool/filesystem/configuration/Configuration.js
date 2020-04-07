@@ -1,6 +1,6 @@
-const {NODE_MODULES_DIR_NAME, PACKAGE_JSON_LOCK_FILE_NAME} = require('./NodeModule')
-const {ConfigurationHostTarget} = require('./ConfigurationHostTarget')
-const {BaseFile} = require('./BaseFile')
+const {NODE_MODULES_DIR_NAME, PACKAGE_JSON_LOCK_FILE_NAME} = require('../NodeModule')
+const {XcodeHostTargetConfiguration} = require('./XcodeHostTargetConfiguration')
+const {BaseFile} = require('../BaseFile')
 const path = require('path')
 
 class Configuration {
@@ -47,7 +47,7 @@ class Configuration {
             if (!Array.isArray(hostTargets)) {
                 throw new Error(`${this.errorLocationString} "hostTargets" is not an array`)
             }
-            this._hostTargets = hostTargets.map(targetObj => new ConfigurationHostTarget(targetObj, this.path))
+            this._hostTargets = hostTargets.map(targetObj => new XcodeHostTargetConfiguration(targetObj, this.path))
         }
         return this._hostTargets
     }

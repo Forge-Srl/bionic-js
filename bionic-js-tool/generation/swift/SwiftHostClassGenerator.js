@@ -1,10 +1,10 @@
-const {SwiftClassGenerator} = require('./SwiftClassGenerator')
+const {ClassGenerator} = require('../ClassGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
 
-class SwiftHostClassGenerator extends SwiftClassGenerator {
+class SwiftHostClassGenerator extends ClassGenerator {
 
     getHeaderCode() {
-        const superclassName = this.schema.superclass ? this.schema.superclass.name : 'BjsObject'
+        const superclassName = this.schema.superclass.isBaseObjectClass ? 'BjsObject' : this.schema.superclass.name
 
         return CodeBlock.create()
             .append('import JavaScriptCore').newLine()
@@ -17,12 +17,12 @@ class SwiftHostClassGenerator extends SwiftClassGenerator {
     getBodyCode() {
         return CodeBlock.create()
             .append(this.getClassParts().map(classPart =>
-                classPart.generator.swift.forHosting(this.schema).getCode().newLine()
+                classPart.generator.forHosting(this.schema).swift.getCode().newLine()
                     .newLine()))
     }
 
     getFooterCode() {
-        const override = !!this.schema.superclass ? 'override ' : ''
+        const override = this.schema.superclass.isBaseObjectClass ? '' : 'override '
 
         return CodeBlock.create()
             .append(`${override}class func bjsFactory(_ jsObject: JSValue) -> ${this.schema.name} {`).newLineIndenting()
@@ -36,18 +36,19 @@ class SwiftHostClassGenerator extends SwiftClassGenerator {
     }
 
     getScaffold() {
-        const superclass = this.schema.superclass
+        const superclassName = this.schema.superclass.isBaseObjectClass || this.schema.superclass.isNativeObjectClass
+            ? null : this.schema.superclass.name
         const scaffoldCode = CodeBlock.create()
             .append('import Bjs').newLine()
             .newLine()
-            .append(`class ${this.schema.name}${superclass ? `: ${superclass.name}` : ''} {`).newLineIndenting()
+            .append(`class ${this.schema.name}${superclassName ? `: ${superclassName}` : ''} {`).newLineIndenting()
 
         const classParts = this.getClassParts()
         if (classParts.length)
             scaffoldCode.newLine()
 
         return scaffoldCode.append(classParts.map((classPart, index) => {
-            const classPartCode = classPart.generator.swift.forHosting(this.schema).getScaffold()
+            const classPartCode = classPart.generator.forHosting(this.schema).swift.getScaffold()
             if (index < classParts.length - 1) {
                 classPartCode.newLine().newLine()
             }

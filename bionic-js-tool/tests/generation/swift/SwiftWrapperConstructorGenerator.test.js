@@ -2,10 +2,11 @@ const t = require('../../test-utils')
 
 describe('SwiftWrapperConstructorGenerator', () => {
 
-    let Class, Constructor, Parameter, VoidType, BoolType, IntType, ArrayType, LambdaType
+    let Class, NativeObjectClass, Constructor, Parameter, VoidType, BoolType, IntType, ArrayType, LambdaType
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
+        NativeObjectClass = t.requireModule('schema/notable/NativeObjectClass').NativeObjectClass
         Constructor = t.requireModule('schema/Constructor').Constructor
         Parameter = t.requireModule('schema/Parameter').Parameter
         BoolType = t.requireModule('schema/types/BoolType').BoolType
@@ -15,9 +16,9 @@ describe('SwiftWrapperConstructorGenerator', () => {
         LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
     })
 
-    function getCode(constructorParameters, superclass = null) {
+    function getCode(constructorParameters, superclass = new NativeObjectClass()) {
         const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], superclass, 'module/path')
-        return class1.generator.swift.forWrapping().getSource()
+        return class1.generator.forWrapping().swift.getSource()
     }
 
     function newParam(type, name) {
@@ -28,6 +29,13 @@ describe('SwiftWrapperConstructorGenerator', () => {
     const exportFunctionsCode = [
         '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
         '        return nativeExports',
+        '    }',
+        '    ',
+    ]
+
+    const exportFunctionsCodeWithInheritance = [
+        '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
+        '        return super.bjsExportFunctions(nativeExports)',
         '    }',
         '    ',
     ]
@@ -58,7 +66,8 @@ describe('SwiftWrapperConstructorGenerator', () => {
     })
 
     test('no public constructor', () => {
-        const code = new Class('Class1', '', [], [], [], null, 'module/path').generator.swift.forWrapping().getSource()
+        const code = new Class('Class1', '', [], [], [], new NativeObjectClass(), 'module/path')
+            .generator.forWrapping().swift.getSource()
 
         t.expectCode(code,
             ...getExpectedHeader(),
@@ -83,11 +92,11 @@ describe('SwiftWrapperConstructorGenerator', () => {
     test('no public constructor, inherited public constructor', () => {
         const intPar = newParam(new IntType(), 'intParam')
         const superclass = new Class('Superclass', '', [new Constructor('', [intPar])], [], [], null, 'module/superPath')
-        const code = new Class('Class1', '', [], [], [], superclass, 'module/path').generator.swift.forWrapping().getSource()
+        const code = new Class('Class1', '', [], [], [], superclass, 'module/path').generator.forWrapping().swift.getSource()
 
         t.expectCode(code,
             ...getExpectedHeader('SuperclassWrapper'),
-            ...exportFunctionsCode,
+            ...exportFunctionsCodeWithInheritance,
             ...publicConstructorWithIntParamBindCode)
     })
 
@@ -95,11 +104,11 @@ describe('SwiftWrapperConstructorGenerator', () => {
         const intPar = newParam(new IntType(), 'intParam')
         const superSuperclass = new Class('SuperSuperclass', '', [new Constructor('', [intPar])], [], [], null, 'module/superSuperPath')
         const superclass = new Class('Superclass', '', [], [], [], superSuperclass, 'module/superPath')
-        const code = new Class('Class1', '', [], [], [], superclass, 'module/path').generator.swift.forWrapping().getSource()
+        const code = new Class('Class1', '', [], [], [], superclass, 'module/path').generator.forWrapping().swift.getSource()
 
         t.expectCode(code,
             ...getExpectedHeader('SuperclassWrapper'),
-            ...exportFunctionsCode,
+            ...exportFunctionsCodeWithInheritance,
             ...publicConstructorWithIntParamBindCode)
     })
 
@@ -122,7 +131,7 @@ describe('SwiftWrapperConstructorGenerator', () => {
 
         t.expectCode(code,
             ...getExpectedHeader('SuperclassWrapper'),
-            ...exportFunctionsCode,
+            ...exportFunctionsCodeWithInheritance,
             ...publicConstructorWithIntParamBindCode)
     })
 

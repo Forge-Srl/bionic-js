@@ -9,7 +9,7 @@ describe('Bjs smoke tests', () => {
     beforeEach(() => {
         BjsSync = t.requireModule('filesystem/BjsSync').BjsSync
         DebugLog = t.requireModule('filesystem/DebugLog').DebugLog
-        Configuration = t.requireModule('filesystem/Configuration').Configuration
+        Configuration = t.requireModule('filesystem/configuration/Configuration').Configuration
         Directory = t.requireModule('filesystem/Directory').Directory
     })
 
@@ -34,18 +34,22 @@ describe('Bjs smoke tests', () => {
             expect(debugLog.warningLog).toBe('"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n')
 
             expect(debugLog.infoLog.split('\n')).toEqual(expect.arrayContaining([
-                'Processing guest files',
-                ' Extracting schemas from guest files...',
-                ' ...done',
-                `Processing host files dir "${tempDir.absolutePath}/HostProject/host"`,
-                ' Deleting files',
-                ' Generating host files...',
-                ...hostFilePaths.map(hostFile => `  ${hostFile}`),
-                ' ...done',
-                `Processing package files dir "${tempDir.absolutePath}/HostProject/host/package.bundle"`,
-                ' Generating package files...',
-                ...packageFilePaths.map(packageFile => `  ${packageFile}`),
-                ' ...done']))
+                'Bionic.js - v0.1.0',
+                'Extracting schemas from guest files...',
+                '...done',
+                'Deleting host files',
+                '...done',
+                'Generating host files...',
+                ...hostFilePaths.map(hostFile => ` ${hostFile}`),
+                '...done',
+                'Generating package files...',
+                ...packageFilePaths.map(packageFile => ` ${packageFile}`),
+                '...done',
+                'Generating virtual files...',
+                ' BjsEnvironment.swift',
+                ' BjsNativeObject.js',
+                '...done',
+            ]))
 
             const projectWithFilesDir = getProjectDir('project-with-host-files')
             const hostDir = 'HostProject/host'

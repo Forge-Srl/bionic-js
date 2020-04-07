@@ -14,16 +14,14 @@ describe('TypeGeneratorFactory', () => {
         }
 
         mockedFactory = new TypeGeneratorFactory(new Schema())
-        mockedFactory.getGenerator = () => ({path: mockedFactory.generatorPath})
+        mockedFactory.language = 'Language'
     })
 
-    test('swift', () => {
-        const actualGenerator = mockedFactory.swift
-        expect(actualGenerator.path).toBe('../swift/types/SwiftTypeNameTypeGenerator')
+    test('generatorName', () => {
+        expect(mockedFactory.generatorName).toBe('LanguageTypeNameTypeGenerator')
     })
 
-    test('java', () => {
-        const actualGenerator = mockedFactory.java
-        expect(actualGenerator.path).toBe('../java/types/JavaTypeNameTypeGenerator')
+    test('generatorPath', () => {
+        expect(mockedFactory.generatorPath).toBe('../language/types/LanguageTypeNameTypeGenerator')
     })
 })

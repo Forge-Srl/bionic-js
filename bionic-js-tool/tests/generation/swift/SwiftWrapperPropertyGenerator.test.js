@@ -2,11 +2,12 @@ const t = require('../../test-utils')
 
 describe('SwiftWrapperPropertyGenerator', () => {
 
-    let Class, Property, Parameter, AnyType, ArrayType, BoolType, DateType, FloatType, IntType, LambdaType,
+    let Class, NativeObjectClass, Property, Parameter, AnyType, ArrayType, BoolType, DateType, FloatType, IntType, LambdaType,
         NativeObjectType, ObjectType, StringType, VoidType, WrappedObjectType
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
+        NativeObjectClass = t.requireModule('schema/notable/NativeObjectClass').NativeObjectClass
         Property = t.requireModule('schema/Property').Property
         Parameter = t.requireModule('schema/Parameter').Parameter
         AnyType = t.requireModule('schema/types/AnyType').AnyType
@@ -23,10 +24,11 @@ describe('SwiftWrapperPropertyGenerator', () => {
         WrappedObjectType = t.requireModule('schema/types/WrappedObjectType').WrappedObjectType
     })
 
-    function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set']) {
+    function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false,
+                     propertyKinds = ['get', 'set']) {
         const class1 = new Class('Class1', '', [], [new Property('property1', 'property description', isPropertyStatic,
-            isPropertyOverriding, propertyType, propertyKinds)], [], null, 'module/path')
-        return class1.generator.swift.forWrapping().getSource()
+            isPropertyOverriding, propertyType, propertyKinds)], [], new NativeObjectClass(), 'module/path')
+        return class1.generator.forWrapping().swift.getSource()
     }
 
     function getFunctionsExportCode(functionsExports = []) {

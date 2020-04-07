@@ -81,4 +81,28 @@ describe('Class', () => {
         clazz.modulePath = '/relative//../relative/filePath.js'
         expect(clazz.moduleLoadingPath).toBe(expectedModuleLoadingPath)
     })
+
+    test('getRelativeModuleLoadingPath', () => {
+        const relativeModuleClass = new Class()
+        relativeModuleClass.modulePath = 'relative/moduleR/filePath'
+
+        const clazz = new Class()
+        clazz.modulePath = 'relative/moduleR/otherFile'
+        expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe('./filePath')
+
+        clazz.modulePath = 'relative/module1/otherFile'
+        expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe('../moduleR/filePath')
+
+        clazz.modulePath = 'relative//../relative/src/module1/otherFile.js'
+        expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe('../../moduleR/filePath')
+
+
+        relativeModuleClass.modulePath = '/relative/moduleR/filePath'
+
+        clazz.modulePath = '/relative/moduleR/otherFile'
+        expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe('./filePath')
+
+        clazz.modulePath = '/relative/module1/otherFile'
+        expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe('../moduleR/filePath')
+    })
 })

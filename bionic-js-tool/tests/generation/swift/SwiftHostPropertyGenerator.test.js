@@ -2,11 +2,12 @@ const t = require('../../test-utils')
 
 describe('SwiftHostPropertyGenerator', () => {
 
-    let Class, Property, Parameter, AnyType, ArrayType, BoolType, DateType, FloatType, IntType, LambdaType,
-        NativeObjectType, ObjectType, StringType, VoidType, WrappedObjectType, expectedHeader, expectedFooter
+    let Class, BaseObjectClass, Property, Parameter, AnyType, ArrayType, BoolType, DateType, FloatType, IntType,
+        LambdaType, NativeObjectType, ObjectType, StringType, VoidType, WrappedObjectType, expectedHeader, expectedFooter
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
+        BaseObjectClass = t.requireModule('schema/notable/BaseObjectClass').BaseObjectClass
         Property = t.requireModule('schema/Property').Property
         Parameter = t.requireModule('schema/Parameter').Parameter
         AnyType = t.requireModule('schema/types/AnyType').AnyType
@@ -41,11 +42,11 @@ describe('SwiftHostPropertyGenerator', () => {
             '}']
     })
 
-    function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set'],
-                     propertyName = 'property1') {
+    function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false,
+                     propertyKinds = ['get', 'set'], propertyName = 'property1') {
         const class1 = new Class('Class1', '', [], [new Property(propertyName, 'property description', isPropertyStatic,
-            isPropertyOverriding, propertyType, propertyKinds)], [], null, '')
-        return class1.generator.swift.forHosting().getSource()
+            isPropertyOverriding, propertyType, propertyKinds)], [], new BaseObjectClass(), '')
+        return class1.generator.forHosting().swift.getSource()
     }
 
     test('IntType, only getter, static', () => {
@@ -307,11 +308,11 @@ describe('SwiftHostPropertyGenerator', () => {
             ...expectedFooter)
     })
 
-    function getScaffold(propertyType, isPropertyStatic = false, isPropertyOverriding = false, propertyKinds = ['get', 'set'],
-                         propertyName = 'property1') {
+    function getScaffold(propertyType, isPropertyStatic = false, isPropertyOverriding = false,
+                         propertyKinds = ['get', 'set'], propertyName = 'property1') {
         const class1 = new Class('Class1', '', [], [new Property(propertyName, 'property description', isPropertyStatic,
-            isPropertyOverriding, propertyType, propertyKinds)], [], null, '')
-        return class1.generator.swift.forHosting().getScaffold()
+            isPropertyOverriding, propertyType, propertyKinds)], [], new BaseObjectClass(), '')
+        return class1.generator.forHosting().swift.getScaffold()
     }
 
     const expectedScaffoldHeader = [

@@ -2,16 +2,18 @@ const t = require('../../test-utils')
 
 describe('SwiftWrapperClassGenerator', () => {
 
-    let Class, Parameter, Constructor, Property, Method, IntType
+    let Class, NativeObjectClass, Parameter, Constructor, Property, Method, IntType
 
-    function getCode(properties, methods, superclass = null, withScaffold = false) {
-        const class1 = new Class('Class1', 'class description', [new Constructor('desc', [])], properties, methods, superclass, 'module/path')
-        const hostClassGeneratorForScaffolding = withScaffold ? class1.generator.swift.forHosting() : undefined
-        return class1.generator.swift.forWrapping(hostClassGeneratorForScaffolding).getSource()
+    function getCode(properties, methods, superclass = new NativeObjectClass(), withScaffold = false) {
+        const class1 = new Class('Class1', 'class description', [new Constructor('desc', [])], properties, methods,
+            superclass, 'module/path')
+        const hostClassGeneratorForScaffolding = withScaffold ? class1.generator.forHosting().swift : undefined
+        return class1.generator.forWrapping(hostClassGeneratorForScaffolding).swift.getSource()
     }
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
+        NativeObjectClass = t.requireModule('schema/notable/NativeObjectClass').NativeObjectClass
         Parameter = t.requireModule('schema/Parameter').Parameter
         Constructor = t.requireModule('schema/Constructor').Constructor
         Property = t.requireModule('schema/Property').Property
@@ -20,21 +22,28 @@ describe('SwiftWrapperClassGenerator', () => {
     })
 
     const getExpectedHeader = (superclassName = 'BjsNativeWrapper') => [
-            'import JavaScriptCore',
-            'import Bjs',
-            '',
-            `class Class1Wrapper: ${superclassName} {`,
-            '    ',
-            '    override class var name: String { return "Class1" }',
-            '    override class var wrapperPath: String { return "/module/path" }',
-            '    ',
-        ]
+        'import JavaScriptCore',
+        'import Bjs',
+        '',
+        `class Class1Wrapper: ${superclassName} {`,
+        '    ',
+        '    override class var name: String { return "Class1" }',
+        '    override class var wrapperPath: String { return "/module/path" }',
+        '    ',
+    ]
 
 
-    const emptyClassBindFunction = [
+    const emptyClassExportFunctions = [
         '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
         '        return nativeExports',
-        '    }',
+        '    }']
+
+    const emptyClassExportFunctionsWithInheritance = [
+        '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
+        '        return super.bjsExportFunctions(nativeExports)',
+        '    }']
+
+    const emptyClassBindFunction = [
         '    ',
         '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
         '        _ = nativeExports.exportBindFunction({',
@@ -45,10 +54,12 @@ describe('SwiftWrapperClassGenerator', () => {
 
     test('empty class without inheritance', () => t.expectCode(getCode([], []),
         ...getExpectedHeader(),
+        ...emptyClassExportFunctions,
         ...emptyClassBindFunction))
 
     test('empty class with inheritance', () => t.expectCode(getCode([], [], new Class('Superclass')),
         ...getExpectedHeader('SuperclassWrapper'),
+        ...emptyClassExportFunctionsWithInheritance,
         ...emptyClassBindFunction))
 
     test('class parts order', () => {
@@ -177,13 +188,14 @@ describe('SwiftWrapperClassGenerator', () => {
         ]
 
         const superclassConstructor = new Constructor('desc', [new Parameter(new IntType(), 'param1')])
-        const superclass = new Class('SuperClass', `SuperClass description`, [superclassConstructor], [], [], null, 'module/superclassPath')
+        const superclass = new Class('SuperClass', `SuperClass description`, [superclassConstructor], [], [],
+            new NativeObjectClass(), 'module/superclassPath')
         const code = getCode(properties, methods, superclass, true)
 
         t.expectCode(code,
             ...getExpectedHeader('SuperClassWrapper'),
             '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
-            '        return nativeExports',
+            '        return super.bjsExportFunctions(nativeExports)',
             '            .exportFunction("bjsGet_property", bjsGet_property())',
             '            .exportFunction("bjsSet_property", bjsSet_property())',
             '            .exportFunction("bjs_method", bjs_method())',

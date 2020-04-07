@@ -17,8 +17,6 @@ class DirectoryWatcher extends Watcher {
 
         if (this.waitingForInitialFiles) {
             this.initialFiles.push(this.fileFactory ? this.fileFactory(file) : file)
-        } else if (this.persistent) {
-            console.log(`post ADD: ${file.path}`)
         }
     }
 

@@ -5,7 +5,7 @@ describe('Configuration', () => {
     let Configuration
 
     beforeEach(() => {
-        Configuration = t.requireModule('filesystem/Configuration').Configuration
+        Configuration = t.requireModule('filesystem/configuration/Configuration').Configuration
     })
 
     test('guestNativeDirPath', () => {

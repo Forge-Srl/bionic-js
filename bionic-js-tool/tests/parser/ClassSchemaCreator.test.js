@@ -2,13 +2,14 @@ const t = require('../test-utils')
 
 describe('ClassSchemaCreator', () => {
 
-    let MethodSchemaCreator, ClassSchemaCreator, Class, Method, Constructor, Property, LambdaType
+    let MethodSchemaCreator, ClassSchemaCreator, Class, BaseObjectClass, Method, Constructor, Property, LambdaType
 
     beforeEach(() => {
         t.resetModulesCache()
 
         MethodSchemaCreator = t.mockAndRequireModule('parser/MethodSchemaCreator').MethodSchemaCreator
         ClassSchemaCreator = t.requireModule('parser/ClassSchemaCreator').ClassSchemaCreator
+        BaseObjectClass = t.requireModule('schema/notable/BaseObjectClass').BaseObjectClass
         Class = t.requireModule('schema/Class').Class
         Method = t.requireModule('schema/Method').Method
         Constructor = t.requireModule('schema/Constructor').Constructor
@@ -146,7 +147,7 @@ describe('ClassSchemaCreator', () => {
 
         const classSchema = classSchemaCreator.buildSchema(fakeModuleCreatorsMap, 'currentSuperclassSchemaStack')
         expect(classSchema.name).toBe('Class1')
-        expect(classSchema.superclass).toBe(null)
+        expect(classSchema.superclass).toBeInstanceOf(BaseObjectClass)
     })
 
     test('buildSchema, error getting schema', () => {

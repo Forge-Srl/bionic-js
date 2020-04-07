@@ -2,10 +2,11 @@ const t = require('../../test-utils')
 
 describe('SwiftHostMethodGenerator', () => {
 
-    let Class, Method, Parameter, VoidType, BoolType, IntType, LambdaType, expectedHeader, expectedFooter
+    let Class, BaseObjectClass, Method, Parameter, VoidType, BoolType, IntType, LambdaType, expectedHeader, expectedFooter
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
+        BaseObjectClass = t.requireModule('schema/notable/BaseObjectClass').BaseObjectClass
         Method = t.requireModule('schema/Method').Method
         Parameter = t.requireModule('schema/Parameter').Parameter
         BoolType = t.requireModule('schema/types/BoolType').BoolType
@@ -34,8 +35,8 @@ describe('SwiftHostMethodGenerator', () => {
 
     function getCode(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters, methodName = 'method1') {
         const class1 = new Class('Class1', '', [], [], [new Method(methodName, 'method description', isMethodStatic,
-            isMethodOverriding, methodReturnType, methodParameters)], null, 'module/path')
-        return class1.generator.swift.forHosting().getSource()
+            isMethodOverriding, methodReturnType, methodParameters)], new BaseObjectClass(), 'module/path')
+        return class1.generator.forHosting().swift.getSource()
     }
 
     function newParam(type, name) {
@@ -143,8 +144,8 @@ describe('SwiftHostMethodGenerator', () => {
 
     function getScaffold(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters, methodName = 'method1') {
         const class1 = new Class('Class1', '', [], [], [new Method(methodName, 'method description', isMethodStatic,
-            isMethodOverriding, methodReturnType, methodParameters)], null, 'module/path')
-        return class1.generator.swift.forHosting().getScaffold()
+            isMethodOverriding, methodReturnType, methodParameters)], new BaseObjectClass(), 'module/path')
+        return class1.generator.forHosting().swift.getScaffold()
     }
 
     const expectedScaffoldHeader = [

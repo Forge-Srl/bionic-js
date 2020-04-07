@@ -10,7 +10,7 @@ describe('XcodeHostProject', () => {
 
     beforeEach(() => {
         XcodeHostProject = t.requireModule('filesystem/XcodeHostProject').XcodeHostProject
-        ConfigurationHostTarget = t.requireModule('filesystem/ConfigurationHostTarget').ConfigurationHostTarget
+        ConfigurationHostTarget = t.requireModule('filesystem/configuration/XcodeHostTargetConfiguration').XcodeHostTargetConfiguration
         File = t.requireModule('filesystem/File').File
         Directory = t.requireModule('filesystem/Directory').Directory
         const DebugLog = t.requireModule('filesystem/DebugLog').DebugLog
@@ -129,7 +129,7 @@ describe('XcodeHostProject', () => {
 
     test('getFileByKey', async () => {
         await getProjectWithHostFiles(async xcodeProject => {
-            const file = xcodeProject.getFileByKey('C5B80A18234A1A0E002FD95C')
+            const file = xcodeProject.getFileByKey('C5B80A17234A1A0E002FD95C')
 
             expect(file.relativePath).toBe('MotorVehicle.swift')
             expect(file.debugLocation).toBe('MotorVehicle.swift')
@@ -148,7 +148,7 @@ describe('XcodeHostProject', () => {
 
     test('getFileByKey, with fatherGroup', async () => {
         await getProjectWithHostFiles(async xcodeProject => {
-            const file = xcodeProject.getFileByKey('C5B80A18234A1A0E002FD95C', {
+            const file = xcodeProject.getFileByKey('C5B80A17234A1A0E002FD95C', {
                 relativePath: 'father/path',
                 debugLocation: 'debugLocation',
             })
@@ -203,9 +203,9 @@ describe('XcodeHostProject', () => {
                 'debugLocation': 'Project/HostProject',
             }
             const files = xcodeProject.getFiles(group)
-            expect(files.length).toBe(7)
-            expect(files.map(file => file.path)).toStrictEqual(['Bjs.framework', 'package.bundle', 'FerrariCalifornia.swift',
-                'Vehicle.swift', 'MotorVehicle.swift', 'EngineWrapper.swift', 'TeslaRoadster.swift'])
+            expect(files.map(file => file.path)).toStrictEqual([
+                'Bjs.framework', 'BjsEnvironment.swift', 'FerrariCalifornia.swift', 'TeslaRoadster.swift',
+                'MotorVehicle.swift', 'Vehicle.swift', 'EngineWrapper.swift', 'package.bundle'])
         })
     })
 
@@ -310,33 +310,37 @@ describe('XcodeHostProject', () => {
             await getProjectWithoutHost(async projWithoutHost => {
 
                 const uuidFn = projWithoutHost.project.generateUuid = t.mockFn()
-                uuidFn.mockReturnValueOnce('C5B80A15234A1A0E002FD95C') // PBXFile: FerrariCalifornia.swift
-                uuidFn.mockReturnValueOnce('C5B80A24234A1A0E002FD95C') // PBXBuildFile (target1): FerrariCalifornia.swift
-                uuidFn.mockReturnValueOnce('C5B80A25234A1A0E002FD95C') // PBXBuildFile (target2): FerrariCalifornia.swift
+                uuidFn.mockReturnValueOnce('C5B80A15234A1A0E002FD95C') // PBXFile: BjsEnvironment.swift
+                uuidFn.mockReturnValueOnce('C5B80A24234A1A0E002FD95C') // PBXBuildFile (target1): BjsEnvironment.swift
+                uuidFn.mockReturnValueOnce('C5B80A25234A1A0E002FD95C') // PBXBuildFile (target2): BjsEnvironment.swift
 
-                uuidFn.mockReturnValueOnce('C5B80A19234A1A0E002FD95C') // PBXFile: TeslaRoadster.swift
-                uuidFn.mockReturnValueOnce('C5B80A2A234A1A0E002FD95C') // PBXBuildFile (target1): TeslaRoadster.swift
-                uuidFn.mockReturnValueOnce('C5B80A2B234A1A0E002FD95C') // PBXBuildFile (target2): TeslaRoadster.swift
+                uuidFn.mockReturnValueOnce('C5B80A19234A1A0E002FD95C') // PBXFile: FerrariCalifornia.swift
+                uuidFn.mockReturnValueOnce('C5B80A2A234A1A0E002FD95C') // PBXBuildFile (target1): FerrariCalifornia.swift
+                uuidFn.mockReturnValueOnce('C5B80A2B234A1A0E002FD95C') // PBXBuildFile (target2): FerrariCalifornia.swift
 
-                uuidFn.mockReturnValueOnce('C5B80A16234A1A0E002FD95C') // PBXGroup: libs
+                uuidFn.mockReturnValueOnce('C5B80A16234A1A0E002FD95C') // PBXFile: TeslaRoadster.swift
+                uuidFn.mockReturnValueOnce('C5B80A18234A1A0E002FD95C') // PBXBuildFile (target1): TeslaRoadster.swift
+                uuidFn.mockReturnValueOnce('C5B80A28234A1A0E002FD95C') // PBXBuildFile (target2): TeslaRoadster.swift
 
-                uuidFn.mockReturnValueOnce('C5B80A18234A1A0E002FD95C') // PBXFile: libs/MotorVehicle.swift
-                uuidFn.mockReturnValueOnce('C5B80A28234A1A0E002FD95C') // PBXBuildFile (target1): MotorVehicle.swift
-                uuidFn.mockReturnValueOnce('C5B80A29234A1A0E002FD95C') // PBXBuildFile (target2): MotorVehicle.swift
+                uuidFn.mockReturnValueOnce('C5B80A29234A1A0E002FD95C') // PBXGroup: libs
 
-                uuidFn.mockReturnValueOnce('C5B80A17234A1A0E002FD95C') // PBXFile: libs/Vehicle.swift
-                uuidFn.mockReturnValueOnce('C5B80A26234A1A0E002FD95C') // PBXBuildFile (target1): Vehicle.swift
-                uuidFn.mockReturnValueOnce('C5B80A27234A1A0E002FD95C') // PBXBuildFile (target2): Vehicle.swift
+                uuidFn.mockReturnValueOnce('C5B80A17234A1A0E002FD95C') // PBXFile: libs/MotorVehicle.swift
+                uuidFn.mockReturnValueOnce('C5B80A26234A1A0E002FD95C') // PBXBuildFile (target1): MotorVehicle.swift
+                uuidFn.mockReturnValueOnce('C5B80A27234A1A0E002FD95C') // PBXBuildFile (target2): MotorVehicle.swift
 
-                uuidFn.mockReturnValueOnce('C5B80A22234A1A0E002FD95C') // PBXGroup: native
+                uuidFn.mockReturnValueOnce('C5B80A22234A1A0E002FD95C') // PBXFile: libs/Vehicle.swift
+                uuidFn.mockReturnValueOnce('C5B80A23234A1A0E002FD95C') // PBXBuildFile (target1): Vehicle.swift
+                uuidFn.mockReturnValueOnce('C5B80A36234A1A0E002FD95C') // PBXBuildFile (target2): Vehicle.swift
 
-                uuidFn.mockReturnValueOnce('C5B80A23234A1A0E002FD95C') // PBXFile: native/EngineWrapper.swift
-                uuidFn.mockReturnValueOnce('C5B80A36234A1A0E002FD95C') // PBXBuildFile (target1): EngineWrapper.swift
-                uuidFn.mockReturnValueOnce('C5B80A37234A1A0E002FD95C') // PBXBuildFile (target2): EngineWrapper.swift
+                uuidFn.mockReturnValueOnce('C5B80A37234A1A0E002FD95C') // PBXGroup: native
 
-                uuidFn.mockReturnValueOnce('C5B80A38234A1A8B002FD95C') // PBXFile: package.bundle
-                uuidFn.mockReturnValueOnce('C5B80A39234A1A8B002FD95C') // PBXBuildFile (target1): package.bundle
-                uuidFn.mockReturnValueOnce('C5B80A3A234A1A8B002FD95C') // PBXBuildFile (target2): package.bundle
+                uuidFn.mockReturnValueOnce('C5B80A38234A1A8B002FD95C') // PBXFile: native/EngineWrapper.swift
+                uuidFn.mockReturnValueOnce('C5B80A39234A1A8B002FD95C') // PBXBuildFile (target1): EngineWrapper.swift
+                uuidFn.mockReturnValueOnce('C5B80A3A234A1A8B002FD95C') // PBXBuildFile (target2): EngineWrapper.swift
+
+                uuidFn.mockReturnValueOnce('C5B80A3B234A1A8B002FD95C') // PBXFile: package.bundle
+                uuidFn.mockReturnValueOnce('C5B80A3C234A1A8B002FD95C') // PBXBuildFile (target1): package.bundle
+                uuidFn.mockReturnValueOnce('C5B80A3D234A1A8B002FD95C') // PBXBuildFile (target2): package.bundle
 
                 const hostDirPath = projWithHostFiles.targetConfig.hostDirPath
                 for (const hostFilePath of hostFilePaths) {

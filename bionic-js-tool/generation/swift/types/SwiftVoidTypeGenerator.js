@@ -1,5 +1,4 @@
 const {SwiftTypeGenerator} = require('./SwiftTypeGenerator')
-const {IniRet} = require('../../code/IniRet')
 
 class SwiftVoidTypeGenerator extends SwiftTypeGenerator {
 

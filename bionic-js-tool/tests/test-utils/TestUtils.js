@@ -17,9 +17,20 @@ class TestUtils {
         return require(absolutePath)
     }
 
+    static unmockModule(relativePath) {
+        const absolutePath = this.getModuleAbsolutePath(relativePath)
+        jest.unmock(absolutePath)
+    }
+
     static mockAndRequireModule(relativePath) {
         const absolutePath = this.getModuleAbsolutePath(relativePath)
-        jest.mock(absolutePath)
+        return this.mockAndRequire(absolutePath)
+    }
+
+    static mockAndRequireFakeModule(relativePath, moduleName, moduleExport) {
+        const absolutePath = this.getModuleAbsolutePath(relativePath)
+        const mockComponent = {[moduleName]: moduleExport}
+        jest.mock(absolutePath, () => mockComponent, {virtual: true})
         return require(absolutePath)
     }
 

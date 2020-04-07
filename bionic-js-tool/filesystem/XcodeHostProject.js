@@ -190,7 +190,7 @@ class XcodeHostProject {
             await groupDirectory.ensureExists()
     }
 
-    async cleanHostDir() {
+    async cleanHostDir() { // TODO convert to cleanDir(dirName)
         const hostDirGroup = this.getGroupByDirPath(this.targetConfig.hostDirName)
         if (hostDirGroup)
             await this.emptyGroup(hostDirGroup)

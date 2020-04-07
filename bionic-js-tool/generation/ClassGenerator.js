@@ -1,7 +1,7 @@
-const {CodeGenerator} = require('../CodeGenerator')
-const {CodeBlock} = require('../code/CodeBlock')
+const {CodeGenerator} = require('./CodeGenerator')
+const {CodeBlock} = require('./code/CodeBlock')
 
-class SwiftClassGenerator extends CodeGenerator {
+class ClassGenerator extends CodeGenerator {
 
     get staticProperties() {
         return this.schema.properties.filter(property => property.isStatic)
@@ -43,4 +43,4 @@ class SwiftClassGenerator extends CodeGenerator {
     }
 }
 
-module.exports = {SwiftClassGenerator}
+module.exports = {ClassGenerator}

@@ -2,12 +2,13 @@ const t = require('../../test-utils')
 
 describe('SwiftHostClassGenerator', () => {
 
-    let Class, Constructor, Property, Method, IntType,
+    let Class, BaseObjectClass, Constructor, Property, Method, IntType,
         expectedImports, expectedClassDeclaration, expectedFactoryMethod, expectedModulePathVar
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
         Constructor = t.requireModule('schema/Constructor').Constructor
+        BaseObjectClass = t.requireModule('schema/notable/BaseObjectClass').BaseObjectClass
         Property = t.requireModule('schema/Property').Property
         Method = t.requireModule('schema/Method').Method
         IntType = t.requireModule('schema/types/IntType').IntType
@@ -34,9 +35,11 @@ describe('SwiftHostClassGenerator', () => {
     })
 
     function getCode(constructors, properties, methods, superclassName) {
-        const superclass = superclassName ? new Class(superclassName, `${superclassName} description`, [], [], [], null, 'superModule/path') : null
+        const superclass = superclassName
+            ? new Class(superclassName, `${superclassName} description`, [], [], [], null, 'superModule/path')
+            : new BaseObjectClass()
         const clazz = new Class('Class1', 'class description', constructors, properties, methods, superclass, 'module/path')
-        return clazz.generator.swift.forHosting().getSource()
+        return clazz.generator.forHosting().swift.getSource()
     }
 
     test('empty class without inheritance', () => {
@@ -148,9 +151,11 @@ describe('SwiftHostClassGenerator', () => {
     })
 
     function getScaffold(constructors, properties, methods, superclassName) {
-        const superclass = superclassName ? new Class(superclassName, `${superclassName} description`, [], [], [], null, 'superModule/path') : null
+        const superclass = superclassName
+            ? new Class(superclassName, `${superclassName} description`, [], [], [], null, 'superModule/path')
+            : new BaseObjectClass()
         const class1 = new Class('Class1', 'class description', constructors, properties, methods, superclass, 'module/path')
-        return class1.generator.swift.forHosting().getScaffold()
+        return class1.generator.forHosting().swift.getScaffold()
     }
 
     test('empty class without inheritance, scaffold', () => {

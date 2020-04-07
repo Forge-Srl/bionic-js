@@ -1,6 +1,7 @@
 const parser = require('@babel/parser')
 const {ModuleExplorer} = require('../parser/jsExplorer/ModuleExplorer')
 const {ClassSchemaCreator} = require('./ClassSchemaCreator')
+const {NativeObjectClass} = require('../schema/notable/NativeObjectClass')
 
 class ModuleSchemaCreator {
 
@@ -47,7 +48,11 @@ class ModuleSchemaCreator {
     }
 
     getSchema(moduleCreators) {
-        return this.classSchemaCreator.getSchema(moduleCreators)
+        const classSchema = this.classSchemaCreator.getSchema(moduleCreators)
+        if (this.isNative && classSchema.superclass.isBaseObjectClass) {
+            classSchema.superclass = new NativeObjectClass()
+        }
+        return classSchema
     }
 }
 

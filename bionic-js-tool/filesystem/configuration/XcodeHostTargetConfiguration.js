@@ -1,10 +1,10 @@
 const path = require('path')
-const {BaseFile} = require('./BaseFile')
+const {BaseFile} = require('../BaseFile')
 
-class ConfigurationHostTarget {
+class XcodeHostTargetConfiguration {
 
     static fromTargetObj(targetObj, path) {
-        const target = new ConfigurationHostTarget(targetObj, path)
+        const target = new XcodeHostTargetConfiguration(targetObj, path)
         target.checkMandatoryProps('hostLanguage', 'hostDirName', 'xcodeProjectPath', 'compileTargets')
         return target
     }
@@ -52,6 +52,10 @@ class ConfigurationHostTarget {
         }
     }
 
+    get packageDirPath() {
+        return path.join(this.hostDirPath, this.packageName)
+    }
+
     get packageMinimization() {
         return !!this.targetObj.packageMinimization
     }
@@ -84,4 +88,4 @@ class ConfigurationHostTarget {
     }
 }
 
-module.exports = {ConfigurationHostTarget}
+module.exports = {XcodeHostTargetConfiguration}

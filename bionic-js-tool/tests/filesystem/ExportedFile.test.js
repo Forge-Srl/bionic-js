@@ -8,31 +8,37 @@ describe('ExportedFile', () => {
         ExportedFile = t.requireModule('filesystem/ExportedFile').ExportedFile
     })
 
-    test('hasSchema', () => {
-        const exportedFileNoSchema = new ExportedFile(undefined)
-        const exportedFileWithSchema = new ExportedFile(undefined, 'schema')
+    test('constructor', () => {
+        const exportedFile = new ExportedFile('guestFile', 'schema')
 
-        expect(exportedFileNoSchema.hasSchema).toBe(false)
-        expect(exportedFileWithSchema.hasSchema).toBe(true)
+        expect(exportedFile.guestFile).toBe('guestFile')
+        expect(exportedFile.schema).toBe('schema')
     })
 
-    test('isNative', () => {
-        const notNativeExportedFile = new ExportedFile({isNative: false})
-        const nativeExportedFile = new ExportedFile({isNative: true})
-
-        expect(notNativeExportedFile.isNative).toBe(false)
-        expect(nativeExportedFile.isNative).toBe(true)
+    test('requiresHostFile, with schema', () => {
+        const exportedFile = new ExportedFile(undefined, 'schema')
+        expect(exportedFile.requiresHostFile).toBe(true)
     })
 
-    test('isHosted', () => {
-        const nativeExportedFile = new ExportedFile({isNative: true}, 'schema')
-        const notNativeExportedFileWithSchema = new ExportedFile({isNative: false}, 'schema')
-        const notNativeExportedFileWithoutSchema = new ExportedFile({isNative: false}, null)
-        const notNativeExportedFileWithoutSchema2 = new ExportedFile({isNative: false})
-
-        expect(nativeExportedFile.isHosted).toBe(false)
-        expect(notNativeExportedFileWithSchema.isHosted).toBe(true)
-        expect(notNativeExportedFileWithoutSchema.isNative).toBe(false)
-        expect(notNativeExportedFileWithoutSchema2.isNative).toBe(false)
+    test('requiresHostFile, without schema', () => {
+        const exportedFile = new ExportedFile(undefined)
+        expect(exportedFile.requiresHostFile).toBe(false)
     })
+
+    const requiresNativePackageFileCases = [
+        {requiresHostFile: true, nativeGuestFile: true, expectedValue: true},
+        {requiresHostFile: false, nativeGuestFile: true, expectedValue: false},
+        {requiresHostFile: true, nativeGuestFile: false, expectedValue: false},
+        {requiresHostFile: false, nativeGuestFile: false, expectedValue: false},
+    ]
+
+    for (const testCase of requiresNativePackageFileCases) {
+        test('requiresNativePackageFile, requires host file: ' + testCase.requiresHostFile + ', native guest file: ' +
+            testCase.nativeGuestFile,
+            () => {
+                const exportedFile = new ExportedFile({isNative: testCase.nativeGuestFile})
+                t.mockGetter(exportedFile, 'requiresHostFile', () => testCase.requiresHostFile)
+                expect(exportedFile.requiresNativePackageFile).toBe(testCase.expectedValue)
+            })
+    }
 })

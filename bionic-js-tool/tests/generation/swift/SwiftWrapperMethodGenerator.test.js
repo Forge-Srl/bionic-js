@@ -2,10 +2,11 @@ const t = require('../../test-utils')
 
 describe('SwiftWrapperMethodGenerator', () => {
 
-    let Class, Method, Parameter, VoidType, BoolType, IntType, LambdaType
+    let Class, NativeObjectClass, Method, Parameter, VoidType, BoolType, IntType, LambdaType
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
+        NativeObjectClass = t.requireModule('schema/notable/NativeObjectClass').NativeObjectClass
         Method = t.requireModule('schema/Method').Method
         Parameter = t.requireModule('schema/Parameter').Parameter
         VoidType = t.requireModule('schema/types/VoidType').VoidType
@@ -16,8 +17,8 @@ describe('SwiftWrapperMethodGenerator', () => {
 
     function getCode(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters) {
         const class1 = new Class('Class1', '', [], [], [new Method('method1', 'method description', isMethodStatic,
-            isMethodOverriding, methodReturnType, methodParameters)], null, 'module/path')
-        return class1.generator.swift.forWrapping().getSource()
+            isMethodOverriding, methodReturnType, methodParameters)], new NativeObjectClass(), 'module/path')
+        return class1.generator.forWrapping().swift.getSource()
     }
 
     function newParam(type, name) {

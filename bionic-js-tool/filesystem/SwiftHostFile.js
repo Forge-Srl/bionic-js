@@ -10,11 +10,13 @@ class SwiftHostFile extends HostFile {
     }
 
     async generate(hostProject) {
-        const guestFile = this.exportedFile.guestFile
-        const schema = this.exportedFile.schema
+        const schemaGenerator = this.exportedFile.schema.generator
+        const hostClassGenerator = schemaGenerator.forHosting().swift
 
-        const hostClassGenerator = schema.generator.swift.forHosting()
-        const hostFileGenerator = guestFile.isNative ? schema.generator.swift.forWrapping(hostClassGenerator) : hostClassGenerator
+        const guestFile = this.exportedFile.guestFile
+        const hostFileGenerator = guestFile.isNative
+            ? schemaGenerator.forWrapping(hostClassGenerator).swift
+            : hostClassGenerator
 
         let hostFileContent
         try {

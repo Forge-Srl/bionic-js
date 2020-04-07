@@ -4,16 +4,12 @@ class ExportedFile {
         Object.assign(this, {guestFile, schema})
     }
 
-    get hasSchema() {
+    get requiresHostFile() {
         return !!this.schema
     }
 
-    get isNative() {
-        return this.guestFile.isNative
-    }
-
-    get isHosted() {
-        return this.hasSchema && !this.isNative
+    get requiresNativePackageFile() {
+        return this.requiresHostFile && this.guestFile.isNative
     }
 }
 

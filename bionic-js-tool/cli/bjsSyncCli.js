@@ -2,7 +2,7 @@ const path = require('path')
 const {BjsSync} = require('../filesystem/BjsSync')
 //const {ConsoleLog} = require('./ConsoleLog')
 const {DebugLog} = require('../filesystem/DebugLog')
-const {Configuration} = require('../filesystem/Configuration')
+const {Configuration} = require('../filesystem/configuration/Configuration')
 
 
 async function main() {
