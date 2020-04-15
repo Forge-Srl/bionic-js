@@ -1,11 +1,12 @@
 const {HostFile} = require('./HostFile')
+const {SWIFT_FILE_EXT} = require('./fileExtensions')
 
 class SwiftHostFile extends HostFile {
 
     static build(exportedFile, targetConfig) {
         const guestFile = exportedFile.guestFile
         const newFileName = `${guestFile.name}${guestFile.isNative ? 'Wrapper' : ''}`
-        return new SwiftHostFile(guestFile.composeNewPath(targetConfig.hostDirPath, newFileName, '.swift'),
+        return new SwiftHostFile(guestFile.composeNewPath(targetConfig.hostDirPath, newFileName, SWIFT_FILE_EXT),
             targetConfig.hostDirPath, exportedFile)
     }
 

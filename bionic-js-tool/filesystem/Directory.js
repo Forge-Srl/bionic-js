@@ -51,6 +51,9 @@ class Directory extends BaseFile {
     }
 
     async getFiles() {
+        if (!await this.exists()) {
+            throw new Error(`directory "${this.path}" doesn't exists`)
+        }
         return (await fs.readdir(this.absolutePath, {withFileTypes: true}))
             .map(file => {
                 if (file.isDirectory()) {
@@ -60,6 +63,27 @@ class Directory extends BaseFile {
                 }
                 return null
             }).filter(file => file)
+    }
+
+    async cleanEmptyDirs(keepRoot = true) {
+        if (!await this.exists()) {
+            return true
+        }
+
+        const files = await this.getFiles()
+        let empty = true
+        for (const file of files) {
+            if (file instanceof Directory) {
+                const isChildDir = await file.cleanEmptyDirs(false)
+                empty = isChildDir && empty
+            } else {
+                empty = false
+            }
+        }
+        if (empty && !keepRoot) {
+            await this.delete()
+        }
+        return empty
     }
 
     async delete() {

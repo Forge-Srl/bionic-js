@@ -1,5 +1,5 @@
-const {DebugLog} = require('./DebugLog')
 const {HostProject} = require('./HostProject')
+const {BjsSyncStats} = require('./BjsSyncStats')
 const {GuestWatcher} = require('./GuestWatcher')
 const {GlobalSchemaCreator} = require('../parser/GlobalSchemaCreator')
 const {HostFile} = require('./HostFile')
@@ -10,22 +10,24 @@ const bjsVersion = require('../package.json').version
 
 class BjsSync {
 
-    constructor(configuration, log = new DebugLog()) {
+    constructor(configuration, log) {
         Object.assign(this, {configuration, log})
     }
 
     async sync() {
         try {
-            this.log.info(`Bionic.js - v${bjsVersion}`)
+            this.log.info(`Bionic.js - v${bjsVersion}\n\n`)
+            const bjsSyncStats = new BjsSyncStats()
             const guestFiles = await GuestWatcher.build(this.configuration).getInitialFiles()
             const exportedFiles = await this.getExportedFiles(guestFiles)
 
             for (const targetConfig of this.configuration.hostTargets) {
-                const hostProject = HostProject.build(targetConfig, this.log)
+                const hostProject = await this.openHostProject(targetConfig, bjsSyncStats)
                 await this.syncHostFiles(targetConfig, hostProject, exportedFiles)
                 await this.syncPackageFiles(targetConfig, hostProject, exportedFiles)
                 await this.syncVirtualFiles(targetConfig, hostProject, exportedFiles)
-                await hostProject.save()
+                await this.saveHostProject(hostProject)
+                bjsSyncStats.logStats(this.log)
             }
         } catch (error) {
             this.log.error(error)
@@ -33,52 +35,46 @@ class BjsSync {
     }
 
     async getExportedFiles(guestFiles) {
-        this.log.info('Extracting schemas from guest files...')
+        this.log.info('Extracting schemas from guest files...\n')
         const globalSchemaCreator = new GlobalSchemaCreator(guestFiles)
-        const exportedFiles = await globalSchemaCreator.getExportedFiles()
-        this.log.info('...done\n')
-        return exportedFiles
+        return await globalSchemaCreator.getExportedFiles()
+    }
+
+    async openHostProject(targetConfig, bjsSyncStats) {
+        const hostProject = HostProject.build(targetConfig, this.log, bjsSyncStats)
+        this.log.info('Opening host project...\n')
+        await hostProject.open()
+        return hostProject
     }
 
     async syncHostFiles(targetConfig, hostProject, exportedFiles) {
-        this.log.info(`Deleting host files\n`)
-        await hostProject.cleanHostDir()
-        this.log.info('...done\n')
-
-        this.log.info(`Generating host files...`)
+        this.log.info('Generating host files...\n')
         await Promise.all(exportedFiles.filter(exportedFile => exportedFile.requiresHostFile).map(exportedFile => {
-
-            const hostFile = HostFile.build(exportedFile, targetConfig)
-            this.log.info(` ${hostFile.relativePath}`)
-            return hostFile.generate(hostProject)
+            return HostFile.build(exportedFile, targetConfig).generate(hostProject)
         }))
-        this.log.info('...done\n')
     }
 
     async syncPackageFiles(targetConfig, hostProject, exportedFiles) {
-        this.log.info('Generating package files...')
+        this.log.info('Generating package files...\n')
         await Promise.all(exportedFiles.map(exportedFile => {
-
-            const packageFile = PackageFile.build(exportedFile, targetConfig)
-            this.log.info(` ${packageFile.relativePath}`)
-            return packageFile.generate(hostProject)
+            return PackageFile.build(exportedFile, targetConfig).generate(hostProject)
         }))
-        this.log.info('...done\n')
     }
 
     async syncVirtualFiles(targetConfig, hostProject, exportedFiles) {
-        this.log.info(`Generating virtual files...`)
+        this.log.info('Generating virtual files...\n')
 
         const nativePackageFiles = exportedFiles.filter(exportedFile => exportedFile.requiresNativePackageFile)
         const hostEnvironmentFile = HostEnvironmentFile.build(nativePackageFiles, targetConfig)
-        this.log.info(` ${hostEnvironmentFile.relativePath}`)
         await hostEnvironmentFile.generate(hostProject)
 
         const packageFile = BjsNativeObjectPackageFile.build(targetConfig)
-        this.log.info(` ${packageFile.relativePath}`)
         await packageFile.generate(hostProject)
+    }
 
-        this.log.info('...done\n')
+    async saveHostProject(hostProject) {
+        this.log.info('Saving host project...\n')
+        await hostProject.save()
     }
 }
 

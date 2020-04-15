@@ -13,8 +13,8 @@ describe('XcodeHostProject', () => {
         ConfigurationHostTarget = t.requireModule('filesystem/configuration/XcodeHostTargetConfiguration').XcodeHostTargetConfiguration
         File = t.requireModule('filesystem/File').File
         Directory = t.requireModule('filesystem/Directory').Directory
-        const DebugLog = t.requireModule('filesystem/DebugLog').DebugLog
-        log = new DebugLog()
+        const Log = t.requireModule('filesystem/Log').Log
+        log = new Log(true)
     })
 
     const getProject = async (projectDirName, codeUsingProject) => {
@@ -50,8 +50,8 @@ describe('XcodeHostProject', () => {
     })
 
     test('mainGroup', async () => {
-        await getProjectWithoutHost(async xcodeProject => {
-            const mainGroup = xcodeProject.mainGroup
+        await getProjectWithoutHost(async project => {
+            const mainGroup = project.mainGroup
 
             expect(mainGroup.relativePath).toBe('')
             expect(mainGroup.debugLocation).toBe('Project')
@@ -64,149 +64,71 @@ describe('XcodeHostProject', () => {
     })
 
     test('compileTargetKeys', async () => {
-        await getProjectWithoutHost(async xcodeProject => {
-            const targetKeys = xcodeProject.compileTargetKeys
+        await getProjectWithoutHost(async project => {
+            const targetKeys = project.compileTargetKeys
             expect(targetKeys).toStrictEqual(['C5966C8C2349378B00EE670C', 'C5B809F02349FE28002FD95C'])
         })
     })
 
     test('compileTargetKeys, wrong targets in config', async () => {
-        await getProjectWithoutHost(async xcodeProject => {
-            xcodeProject.targetConfig.targetObj.compileTargets = ['HostProject', 'WrongTarget']
+        await getProjectWithoutHost(async project => {
+            project.targetConfig.targetObj.compileTargets = ['HostProject', 'WrongTarget']
 
-            expect(() => xcodeProject.compileTargetKeys).toThrow('compile target "WrongTarget" not found in the project')
+            expect(() => project.compileTargetKeys).toThrow('compile target "WrongTarget" not found in the project')
         })
     })
 
     test('allTargetKeys', async () => {
-        await getProjectWithoutHost(async xcodeProject => {
-            const allTargetKeys = xcodeProject.allTargetKeys
+        await getProjectWithoutHost(async project => {
+            const allTargetKeys = project.allTargetKeys
             expect(allTargetKeys).toStrictEqual(['C5966C8C2349378B00EE670C', 'C5B809F02349FE28002FD95C', 'C5B809FF2349FF10002FD95C'])
         })
     })
 
-    test('getGroupByKey', async () => {
-        await getProjectWithHostFiles(async xcodeProject => {
-            const group = xcodeProject.getGroupByKey('C5B80A14234A19DB002FD95C')
-
-            expect(group.relativePath).toBe('host')
-            expect(group.debugLocation).toBe('host')
-        })
+    test('encodePath', () => {
+        const project = new XcodeHostProject()
+        expect(project.encodePath('standard/path')).toBe('standard/path')
+        expect(project.encodePath('standard-path')).toBe('standard-path')
     })
 
-    test('getGroupByKey, with fatherGroup', async () => {
-        await getProjectWithHostFiles(async xcodeProject => {
-            const group = xcodeProject.getGroupByKey('C5B80A14234A19DB002FD95C', {
-                relativePath: 'father//path',
-                debugLocation: 'debugLocation',
-            })
-
-            expect(group.relativePath).toBe('father/path/host')
-            expect(group.debugLocation).toBe('debugLocation/host')
-        })
+    test('encodePath, null path', () => {
+        const project = new XcodeHostProject()
+        expect(project.encodePath('')).toBe('')
+        expect(project.encodePath(null)).toBe(null)
+        expect(project.encodePath(undefined)).toBe(undefined)
     })
 
-    test('getGroupByKey, virtual group', async () => {
-        await getProjectWithHostFiles(async xcodeProject => {
-            const group = xcodeProject.getGroupByKey('C5B80A11234A19AF002FD95C')
-
-            expect(group.relativePath).toBe('')
-            expect(group.debugLocation).toBe('Bjs')
-        })
+    test('encodePath, with quotes', () => {
+        const project = new XcodeHostProject()
+        expect(project.encodePath('quoted/"/"/path')).toBe('"quoted/\\"/\\"/path"')
     })
 
-    test('getGroupByKey, virtual group with fatherGroup', async () => {
-        await getProjectWithHostFiles(async xcodeProject => {
-            const group = xcodeProject.getGroupByKey('C5B80A11234A19AF002FD95C', {
-                relativePath: 'father/path',
-                debugLocation: 'debugLocation',
-            })
-
-            expect(group.relativePath).toBe('father/path')
-            expect(group.debugLocation).toBe('debugLocation/Bjs')
-        })
+    test('decodePath', () => {
+        const project = new XcodeHostProject()
+        expect(project.decodePath('standard/path')).toBe('standard/path')
     })
 
-    test('getFileByKey', async () => {
-        await getProjectWithHostFiles(async xcodeProject => {
-            const file = xcodeProject.getFileByKey('C5B80A17234A1A0E002FD95C')
-
-            expect(file.relativePath).toBe('MotorVehicle.swift')
-            expect(file.debugLocation).toBe('MotorVehicle.swift')
-            expect(file.fileType).toBe('sourcecode.swift')
-        })
+    test('decodePath, null path', () => {
+        const project = new XcodeHostProject()
+        expect(project.decodePath('')).toBe('')
+        expect(project.decodePath('""')).toBe('')
+        expect(project.decodePath(null)).toBe(null)
+        expect(project.decodePath(undefined)).toBe(undefined)
     })
 
-    test('getFileByKey, not source file', async () => {
-        await getProjectWithHostFiles(async xcodeProject => {
-            const file = xcodeProject.getFileByKey('C5966C8D2349378B00EE670C')
-
-            expect(log.warningLog).toBe('"HostProject.app": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n')
-            expect(file).toBe(null)
-        })
+    test('decodePath, quoted path', () => {
+        const project = new XcodeHostProject()
+        expect(project.decodePath('"quoted/path"')).toBe('quoted/path')
     })
 
-    test('getFileByKey, with fatherGroup', async () => {
-        await getProjectWithHostFiles(async xcodeProject => {
-            const file = xcodeProject.getFileByKey('C5B80A17234A1A0E002FD95C', {
-                relativePath: 'father/path',
-                debugLocation: 'debugLocation',
-            })
-
-            expect(file.relativePath).toBe('father/path/MotorVehicle.swift')
-            expect(file.debugLocation).toBe('debugLocation/MotorVehicle.swift')
-            expect(file.fileType).toBe('sourcecode.swift')
-        })
+    test('decodePath, quoted path, with new line', () => {
+        const project = new XcodeHostProject()
+        expect(project.decodePath('"quoted/\n/path"')).toBe('quoted/\n/path')
     })
 
-    test('getGroupByDirPath', async () => {
-        await getProjectWithoutHost(async xcodeProject => {
-            const libsGroup = xcodeProject.getGroupByDirPath('HostProject')
-
-            expect(log.warningLog).toBe('')
-
-            expect(libsGroup.relativePath).toBe('HostProject')
-            expect(libsGroup.debugLocation).toBe('Project/HostProject')
-            expect(libsGroup.children.length).toBe(11)
-        })
-    })
-
-    test('getGroupByDirPath, with groups with wrong location attribute', async () => {
-        await getProjectWithHostFiles(async xcodeProject => {
-            const libsGroup = xcodeProject.getGroupByDirPath('HostProject/Group2')
-
-            expect(log.warningLog).toBe('"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n')
-
-            expect(libsGroup.relativePath).toBe('HostProject/Group2')
-            expect(libsGroup.debugLocation).toBe('Project/HostProject/Group1/Group2')
-            expect(libsGroup.children.length).toBe(1)
-            expect(libsGroup.children[0].comment).toBe('Group3')
-        })
-    })
-
-    test('getGroupByDirPath, no match', async () => {
-        await getProjectWithoutHost(async xcodeProject => {
-            const libsGroup = xcodeProject.getGroupByDirPath('HostProject/notFound')
-
-            expect(libsGroup).toBe(null)
-        })
-    })
-
-    test('getFiles', async () => {
-        await getProjectWithHostFiles(async xcodeProject => {
-            const group = {
-                'children': [{'value': 'C5B80A11234A19AF002FD95C', 'comment': 'Bjs'}],
-                'path': 'HostProject',
-                'sourceTree': '"<group>"',
-                'relativePathParts': ['HostProject'],
-                'relativePath': 'HostProject',
-                'debugLocation': 'Project/HostProject',
-            }
-            const files = xcodeProject.getFiles(group)
-            expect(files.map(file => file.path)).toStrictEqual([
-                'Bjs.framework', 'BjsEnvironment.swift', 'FerrariCalifornia.swift', 'TeslaRoadster.swift',
-                'MotorVehicle.swift', 'Vehicle.swift', 'EngineWrapper.swift', 'package.bundle'])
-        })
+    test('decodePath, quoted path, with escaped quotes', () => {
+        const project = new XcodeHostProject()
+        expect(project.decodePath('"quoted/\\"/\\"/path"')).toBe('quoted/"/"/path')
     })
 
     test('normalizeRelativePath', () => {
@@ -219,78 +141,365 @@ describe('XcodeHostProject', () => {
         expect(project.normalizeRelativePath('dir1')).toBe('dir1')
     })
 
-    const checkHostFiles = async (hostDirectory, existence) => {
-        for (const hostFilePath of hostFilePaths) {
-            expect(await hostDirectory.getSubFile(hostFilePath).exists()).toBe(existence)
-        }
-        for (const packageFilePath of packageFilePaths) {
-            expect(await hostDirectory.getSubDir('package.bundle').getSubFile(packageFilePath).exists()).toBe(existence)
-        }
+    test('getGroupByKey', async () => {
+        await getProjectWithHostFiles(async project => {
+            const group = project.getGroupByKey('C5B80A14234A19DB002FD95C')
+
+            expect(group.relativePath).toBe('host')
+            expect(group.debugLocation).toBe('host')
+        })
+    })
+
+    test('getGroupByKey, with fatherGroup', async () => {
+        await getProjectWithHostFiles(async project => {
+            const group = project.getGroupByKey('C5B80A14234A19DB002FD95C', {
+                relativePath: 'father//path',
+                debugLocation: 'debugLocation',
+            })
+
+            expect(group.relativePath).toBe('father/path/host')
+            expect(group.debugLocation).toBe('debugLocation/host')
+        })
+    })
+
+    test('getGroupByKey, virtual group', async () => {
+        await getProjectWithHostFiles(async project => {
+            const group = project.getGroupByKey('C5B80A11234A19AF002FD95C')
+
+            expect(group.relativePath).toBe('')
+            expect(group.debugLocation).toBe('Bjs')
+        })
+    })
+
+    test('getGroupByKey, virtual group with fatherGroup', async () => {
+        await getProjectWithHostFiles(async project => {
+            const group = project.getGroupByKey('C5B80A11234A19AF002FD95C', {
+                relativePath: 'father/path',
+                debugLocation: 'debugLocation',
+            })
+
+            expect(group.relativePath).toBe('father/path')
+            expect(group.debugLocation).toBe('debugLocation/Bjs')
+        })
+    })
+
+    test('getFileByKey', async () => {
+        await getProjectWithHostFiles(async project => {
+            const file = project.getFileByKey('C5B80A17234A1A0E002FD95C')
+
+            expect(log.warningLog).toBe('')
+
+
+            expect(file.relativePath).toBe('MotorVehicle.swift')
+            expect(file.debugLocation).toBe('MotorVehicle.swift')
+            expect(file.fileType).toBe('sourcecode.swift')
+        })
+    })
+
+    test('getFileByKey, not source file', async () => {
+        await getProjectWithHostFiles(async project => {
+            const file = project.getFileByKey('C5966C8D2349378B00EE670C')
+
+            expect(log.warningLog).toBe('"HostProject.app": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n')
+            expect(file).toBe(null)
+        })
+    })
+
+    test('getFileByKey, with fatherGroup', async () => {
+        await getProjectWithHostFiles(async project => {
+            const file = project.getFileByKey('C5B80A17234A1A0E002FD95C', {
+                relativePath: 'father/path',
+                debugLocation: 'debugLocation',
+            })
+
+            expect(file.relativePath).toBe('father/path/MotorVehicle.swift')
+            expect(file.debugLocation).toBe('debugLocation/MotorVehicle.swift')
+            expect(file.fileType).toBe('sourcecode.swift')
+        })
+    })
+
+    test('getGroupByDirPath', async () => {
+        await getProjectWithoutHost(async project => {
+            const libsGroup = project.getGroupByDirPath('HostProject')
+            const sameLibsGroup = project.getGroupByDirPath('/HostProject')
+
+            expect(log.warningLog).toBe('')
+
+            expect(sameLibsGroup).toEqual(libsGroup)
+            expect(libsGroup.relativePath).toBe('HostProject')
+            expect(libsGroup.debugLocation).toBe('Project/HostProject')
+            expect(libsGroup.children.length).toBe(11)
+        })
+    })
+
+    test('getGroupByDirPath, path of a file', async () => {
+        await getProjectWithoutHost(async project => {
+            const nullGroup = project.getGroupByDirPath('HostProject/host/BjsEnvironment.swift')
+
+            expect(nullGroup).toBe(null)
+        })
+    })
+
+    test('getGroupByDirPath, with groups with wrong location attribute', async () => {
+        await getProjectWithHostFiles(async project => {
+            const libsGroup = project.getGroupByDirPath('HostProject/Group2')
+
+            expect(log.warningLog).toBe('"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n')
+
+            expect(libsGroup.relativePath).toBe('HostProject/Group2')
+            expect(libsGroup.debugLocation).toBe('Project/HostProject/Group1/Group2')
+            expect(libsGroup.children.length).toBe(1)
+            expect(libsGroup.children[0].comment).toBe('Group3')
+        })
+    })
+
+    test('getGroupByDirPath, no match', async () => {
+        await getProjectWithoutHost(async project => {
+            const libsGroup = project.getGroupByDirPath('HostProject/notFound')
+
+            expect(libsGroup).toBe(null)
+        })
+    })
+
+    const hostProjectGroup = {
+        'children': [{'value': 'C5B80A11234A19AF002FD95C', 'comment': 'Bjs'}],
+        'path': 'HostProject',
+        'sourceTree': '"<group>"',
+        'relativePathParts': ['HostProject'],
+        'relativePath': 'HostProject',
+        'debugLocation': 'Project/HostProject',
     }
 
-    test('cleanHostDir', async () => {
-        await getProjectWithoutHost(async projectWithoutHost => {
-            await getProjectWithHostFiles(async projectWithHostFiles => {
+    test('getFiles', async () => {
+        await getProjectWithHostFiles(async project => {
 
-                const hostDirectory = new Directory(projectWithHostFiles.targetConfig.hostDirPath)
-                await checkHostFiles(hostDirectory, true)
-                expect(await hostDirectory.exists()).toBe(true)
+            project.decodePath = t.mockFn(path => path)
+            const files = project.getFiles(hostProjectGroup)
+            expect(files.map(file => file.path)).toStrictEqual([
+                'Bjs.framework', 'BjsEnvironment.swift', 'FerrariCalifornia.swift', 'TeslaRoadster.swift',
+                'MotorVehicle.swift', 'Vehicle.swift', 'EngineWrapper.swift', 'package.bundle'])
 
-                await projectWithHostFiles.cleanHostDir()
+            expect(files.map(file => file.relativePath)).toStrictEqual([
+                'HostProject/Bjs.framework', 'HostProject/host/BjsEnvironment.swift',
+                'HostProject/host/FerrariCalifornia.swift', 'HostProject/host/TeslaRoadster.swift',
+                'HostProject/host/libs/MotorVehicle.swift', 'HostProject/host/libs/Vehicle.swift',
+                'HostProject/host/native/EngineWrapper.swift', 'HostProject/host/package.bundle'])
 
-                await checkHostFiles(hostDirectory, false)
-                await projectWithHostFiles.save()
-                expect(await hostDirectory.exists()).toBe(true)
+            expect(files.map(file => file.debugLocation)).toStrictEqual([
+                'Project/HostProject/Bjs/Bjs.framework', 'Project/HostProject/Bjs/host/BjsEnvironment.swift',
+                'Project/HostProject/Bjs/host/FerrariCalifornia.swift', 'Project/HostProject/Bjs/host/TeslaRoadster.swift',
+                'Project/HostProject/Bjs/host/libs/MotorVehicle.swift', 'Project/HostProject/Bjs/host/libs/Vehicle.swift',
+                'Project/HostProject/Bjs/host/native/EngineWrapper.swift', 'Project/HostProject/Bjs/host/package.bundle'])
 
-                const freshLoadedProjectWithHostFiles = xcode.project(projectWithHostFiles.targetConfig.xcodeProjectFilePath).parseSync()
-                expect(freshLoadedProjectWithHostFiles.hash).toStrictEqual(projectWithoutHost.project.hash)
+            expect(project.decodePath).toHaveBeenCalledTimes(12) // 8 files + 4 dirs
+        })
+    })
+
+    test('getFile', async () => {
+        await getProjectWithHostFiles(async project => {
+            const sourceFile = project.getFile(hostProjectGroup, 'HostProject/host/native/EngineWrapper.swift')
+            expect(sourceFile).toMatchObject({
+                fatherGroup: {
+                    debugLocation: 'Project/HostProject/Bjs/host/native',
+                    key: 'C5B80A37234A1A0E002FD95C',
+                    path: 'native',
+                    relativePath: 'HostProject/host/native',
+                },
+                file: {
+                    debugLocation: 'Project/HostProject/Bjs/host/native/EngineWrapper.swift',
+                    key: 'C5B80A38234A1A8B002FD95C',
+                    path: 'EngineWrapper.swift',
+                    relativePath: 'HostProject/host/native/EngineWrapper.swift',
+                },
+            })
+
+            const bundleFile = project.getFile(hostProjectGroup, '/HostProject/host/package.bundle')
+            expect(bundleFile).toMatchObject({
+                fatherGroup: {
+                    debugLocation: 'Project/HostProject/Bjs/host',
+                    key: 'C5B80A14234A19DB002FD95C',
+                    path: 'host',
+                    relativePath: 'HostProject/host',
+                },
+                file: {
+                    debugLocation: 'Project/HostProject/Bjs/host/package.bundle',
+                    key: 'C5B80A3B234A1A8B002FD95C',
+                    path: 'package.bundle',
+                    relativePath: 'HostProject/host/package.bundle',
+                },
             })
         })
     })
 
-    test('cleanHostDir, host directory not existent', async () => {
-        await getProjectWithHostFiles(async xcodeProject => {
-            t.mockGetter(xcodeProject.targetConfig, 'hostDirName', () => 'notExistingDir')
-            await expect(xcodeProject.cleanHostDir())
+    test('getHostFiles', async () => {
+        await getProjectWithHostFiles(async project => {
+            const files = await project.getHostFiles()
+            expect(files.map(file => file.relativePath)).toStrictEqual([
+                'BjsEnvironment.swift', 'FerrariCalifornia.swift', 'TeslaRoadster.swift', 'libs/MotorVehicle.swift',
+                'libs/Vehicle.swift', 'native/EngineWrapper.swift',
+            ])
+            expect(files[0].rootDirPath).toBe(project.targetConfig.hostDirPath)
         })
     })
 
-    test('cleanHostDir, wrong host directory', async () => {
-        await getProjectWithHostFiles(async xcodeProject => {
-            t.mockGetter(xcodeProject.targetConfig, 'hostDirName', () => 'HostProject')
-            await expect(xcodeProject.cleanHostDir()).rejects.toThrow('"HostProject/Bjs.framework", ' +
-                '"HostProject/SceneDelegate.swift", "HostProject/Assets.xcassets", "HostProject/target1.plist", ' +
-                '"HostProject/target2.plist", "HostProject/target3.plist" cannot be deleted: only source files and ' +
-                'bundles can be placed inside the host directory')
+    const wrongHostFilesTypeError = '"HostProject/Bjs.framework", ' +
+        '"HostProject/SceneDelegate.swift", "HostProject/Assets.xcassets", "HostProject/target1.plist", ' +
+        '"HostProject/target2.plist", "HostProject/target3.plist" not supported: only .swift source files and ' +
+        'bundles can be placed inside the host directory'
+
+    test('getHostFiles, wrong host files type', async () => {
+        await getProjectWithHostFiles(async project => {
+            t.mockGetter(project.targetConfig, 'hostDirName', () => 'HostProject')
+            expect(project.getHostFiles()).rejects.toThrow(wrongHostFilesTypeError)
         })
     })
 
+    test('getPackageFiles', async () => {
+        await getProjectWithHostFiles(async project => {
+            const files = await project.getPackageFiles()
+            expect(files.map(file => file.relativePath)).toStrictEqual([
+                'BjsNativeObject.js', 'FerrariCalifornia.js', 'GannaBicycle.js', 'TeslaRoadster.js', 'package.json',
+                'node_modules/module-c/ModuleC.js', 'node_modules/module-c/package.json',
+                'node_modules/module-c/node_modules/module-b/ModuleB.js',
+                'node_modules/module-c/node_modules/module-b/package.json',
+                'node_modules/module-b/ModuleB.js', 'node_modules/module-b/package.json',
+                'node_modules/module-a/ModuleA.js', 'node_modules/module-a/package.json', 'native/Engine.js',
+                'native/fuelCosts.js', 'libs/MotorVehicle.js', 'libs/Vehicle.js',
+            ])
+            expect(files[0].rootDirPath).toBe(project.targetConfig.packageDirPath)
+        })
+    })
 
-    test('ensureGroupExists', async () => {
-        await getProjectWithHostDirs(async projectWithHostDirs => {
-            await getProjectWithoutHost(async projectWithoutHost => {
-                expect(projectWithoutHost.project.generateUuid().length).toBe(24)
-                projectWithoutHost.project.generateUuid = t.mockFn()
-                projectWithoutHost.project.generateUuid.mockReturnValueOnce('C5B80A16234A1A0E002FD95C') // PBXGroup: libs
-                projectWithoutHost.project.generateUuid.mockReturnValueOnce('C5B80A22234A1A0E002FD95C') // PBXGroup: native
+    test('getPackageFiles, wrong host files type', async () => {
+        await getProjectWithHostFiles(async project => {
+            t.mockGetter(project.targetConfig, 'packageDirPath', () => (project.targetConfig.hostDirPath + '/libs'))
+            expect(project.getPackageFiles()).rejects.toThrow('"MotorVehicle.swift", "Vehicle.swift" not ' +
+                'supported: only Javascript source files can be placed inside the package directory')
+        })
+    })
 
-                expect(await projectWithoutHost.ensureGroupExists('/HostProject/host/libs'))
-                    .toStrictEqual(projectWithoutHost.getGroupByDirPath('/HostProject/host/libs'))
-                expect(await projectWithoutHost.ensureGroupExists('/HostProject/host/native'))
-                    .toStrictEqual(projectWithoutHost.getGroupByDirPath('/HostProject/host/native'))
-                await projectWithoutHost.save()
+    test('removeHostFile', async () => {
+        await getProjectWithHostFiles(async project => {
 
-                let freshLoadedProjectWithoutHost = xcode.project(projectWithoutHost.targetConfig.xcodeProjectFilePath).parseSync()
-                expect(freshLoadedProjectWithoutHost.hash).toStrictEqual(projectWithHostDirs.project.hash)
+            const fileName = 'libs/Vehicle.swift'
+            const hostDirName = project.targetConfig.hostDirName
+            const fileRelativePath = `${hostDirName}/${fileName}`
+            const hostFile = project.xcodeProjectDir.getSubDir(project.targetConfig.hostDirName).getSubFile(fileName)
 
-                expect(await projectWithoutHost.ensureGroupExists('HostProject/host'))
-                    .toStrictEqual(projectWithoutHost.getGroupByDirPath('/HostProject/host'))
-                expect(await projectWithoutHost.ensureGroupExists('HostProject'))
-                    .toStrictEqual(projectWithoutHost.getGroupByDirPath('/HostProject'))
-                await projectWithoutHost.save()
 
-                freshLoadedProjectWithoutHost = xcode.project(projectWithoutHost.targetConfig.xcodeProjectFilePath).parseSync()
-                expect(freshLoadedProjectWithoutHost.hash).toStrictEqual(projectWithHostDirs.project.hash)
+            let hostDirGroup = project.getGroupByDirPath(hostDirName)
+            expect(project.getFile(hostDirGroup, fileRelativePath)).not.toBe(null)
+            expect(await hostFile.exists()).toBe(true)
+
+            await project.removeHostFile(fileName)
+
+            hostDirGroup = project.getGroupByDirPath(hostDirName)
+            expect(project.getFile(hostDirGroup, fileRelativePath)).toBe(null)
+            expect(await hostFile.exists()).toBe(false)
+        })
+    })
+
+    test('removePackageFile', async () => {
+        await getProjectWithHostFiles(async project => {
+
+            const fileName = 'node_modules/module-c/package.json'
+            const packageFile = project.xcodeProjectDir.getSubDir(project.targetConfig.hostDirName)
+                .getSubDir(project.targetConfig.packageName).getSubFile(fileName)
+
+            expect(await packageFile.exists()).toBe(true)
+
+            await project.removePackageFile(fileName)
+
+            expect(await packageFile.exists()).toBe(false)
+        })
+    })
+
+    test('cleanEmptyGroups, empty tree with a package file', async () => {
+        await getProjectWithoutHost(async project1 => {
+            await getProjectWithoutHost(async project2 => {
+
+                let project1Hash = 0
+                project1.project.generateUuid = () => `HASH_${project1Hash++}`
+
+                let project2Hash = 0
+                project2.project.generateUuid = () => `HASH_${project2Hash++}`
+
+                const leftFile = 'dir/dirL/dirLL/leftFile.swift'
+                const rightFile = 'dir/dirR/dirRR/rightFile.swift'
+                await project1.setPackageFileContent('packageFile', 'packageFile')
+                await project2.setPackageFileContent('packageFile', 'packageFile')
+                const packageDir = project2.xcodeProjectDir.getSubDir('HostProject/host/package.bundle')
+
+                await project2.setHostFileContent(rightFile, 'rightFile')
+                await project2.setHostFileContent(leftFile, 'leftFile')
+                const filesDir = project2.xcodeProjectDir.getSubDir('HostProject/host/dir')
+
+                await project2.removeHostFile(rightFile)
+                await project2.removeHostFile(leftFile)
+
+                expect(await packageDir.exists()).toBe(true)
+                expect(await filesDir.exists()).toBe(true)
+
+                const hostGroup = project2.getGroupByDirPath('HostProject/host')
+                await project2.cleanEmptyGroups(hostGroup)
+
+                expect(await packageDir.exists()).toBe(true)
+                expect(await filesDir.exists()).toBe(false)
+                expect(project2.project.hash).toStrictEqual(project1.project.hash)
+            })
+        })
+    })
+
+    test('cleanEmptyGroups, tree with a right leaf file', async () => {
+        await getProjectWithoutHost(async project1 => {
+            await getProjectWithoutHost(async project2 => {
+
+                let project1Hash = 0
+                project1.project.generateUuid = () => `HASH_${project1Hash++}`
+
+                let project2Hash = 0
+                project2.project.generateUuid = () => `HASH_${project2Hash++}`
+
+                const leftFile = 'dir/dirL/dirLL/leftFile.swift'
+                const rightFile = 'dir/dirR/dirRR/rightFile.swift'
+                await project1.setHostFileContent(rightFile, 'rightFile')
+
+                await project2.setHostFileContent(rightFile, 'rightFile')
+                await project2.setHostFileContent(leftFile, 'leftFile')
+
+                await project2.removeHostFile(leftFile)
+
+                const hostGroup = project2.getGroupByDirPath('HostProject/host')
+                await project2.cleanEmptyGroups(hostGroup)
+
+                expect(project2.project.hash).toStrictEqual(project1.project.hash)
+            })
+        })
+    })
+
+    test('cleanEmptyGroups, tree with a left leaf file', async () => {
+        await getProjectWithoutHost(async project1 => {
+            await getProjectWithoutHost(async project2 => {
+
+                let project1Hash = 0
+                project1.project.generateUuid = () => `HASH_${project1Hash++}`
+
+                let project2Hash = 0
+                project2.project.generateUuid = () => `HASH_${project2Hash++}`
+
+                const leftFile = 'dir/dirL/dirLL/leftFile.swift'
+                const rightFile = 'dir/dirR/dirRR/rightFile.swift'
+                await project1.setHostFileContent(leftFile, 'leftFile')
+
+                await project2.setHostFileContent(leftFile, 'leftFile')
+                await project2.setHostFileContent(rightFile, 'rightFile')
+
+                await project2.removeHostFile(rightFile)
+
+                const hostGroup = project2.getGroupByDirPath('HostProject/host')
+                await project2.cleanEmptyGroups(hostGroup)
+
+                expect(project2.project.hash).toStrictEqual(project1.project.hash)
             })
         })
     })
@@ -342,6 +551,9 @@ describe('XcodeHostProject', () => {
                 uuidFn.mockReturnValueOnce('C5B80A3C234A1A8B002FD95C') // PBXBuildFile (target1): package.bundle
                 uuidFn.mockReturnValueOnce('C5B80A3D234A1A8B002FD95C') // PBXBuildFile (target2): package.bundle
 
+                projWithoutHost.encodePath = t.mockFn(path => path)
+
+
                 const hostDirPath = projWithHostFiles.targetConfig.hostDirPath
                 for (const hostFilePath of hostFilePaths) {
                     const hostFile = new Directory(hostDirPath).getSubFile(hostFilePath)
@@ -380,6 +592,85 @@ describe('XcodeHostProject', () => {
                 orderSubArray(projWithHostFiles.project.hash.project.objects.PBXSourcesBuildPhase, 'files')
 
                 expect(freshProjWithoutHost.hash).toStrictEqual(projWithHostFiles.project.hash)
+                expect(projWithoutHost.encodePath).toHaveBeenCalledTimes(9)
+            })
+        })
+    })
+
+    test('save and cleanEmptyDirs', async () => {
+        await getProjectWithoutHost(async project => {
+
+            const hostFilePath = 'dir1/host.swift'
+            const packageFilePath = 'dirA/package.js'
+
+            await project.setHostFileContent(hostFilePath, 'hostFile')
+            await project.setPackageFileContent(packageFilePath, 'packageFile')
+
+            const hostDir = project.xcodeProjectDir.getSubDir('HostProject/host')
+            const packageDir = project.xcodeProjectDir.getSubDir('HostProject/host/package.bundle')
+
+            const hostFile = hostDir.getSubDir('dir1').getSubFile('host.swift')
+            const packageFile = packageDir.getSubDir('dirA').getSubFile('package.js')
+            expect(await hostFile.exists()).toBe(true)
+            expect(await packageFile.exists()).toBe(true)
+
+            await project.save()
+
+            let freshLoadedProject = new XcodeHostProject(project.targetConfig, project.log)
+            expect(freshLoadedProject.getGroupByDirPath('HostProject/host/dir1')).not.toBe(null)
+
+            await freshLoadedProject.removeHostFile(hostFilePath)
+            await freshLoadedProject.removePackageFile(packageFilePath)
+
+            expect(await hostFile.exists()).toBe(false)
+            expect(await packageFile.exists()).toBe(false)
+            expect(await hostFile.dir.exists()).toBe(true)
+            expect(await packageFile.dir.exists()).toBe(true)
+            expect(freshLoadedProject.getGroupByDirPath('HostProject/host/dir1')).not.toBe(null)
+
+            await freshLoadedProject.save()
+
+            expect(await hostDir.exists()).toBe(true)
+            expect(await packageDir.exists()).toBe(true)
+            expect(await hostFile.dir.exists()).toBe(false)
+            expect(await packageFile.dir.exists()).toBe(false)
+            expect(freshLoadedProject.getGroupByDirPath('HostProject/host/dir1')).toBe(null)
+            expect(freshLoadedProject.getGroupByDirPath('HostProject/host')).not.toBe(null)
+        })
+    })
+
+    test('ensureGroupExists', async () => {
+        await getProjectWithHostDirs(async projectWithHostDirs => {
+            await getProjectWithoutHost(async projectWithoutHost => {
+
+                projectWithoutHost.cleanEmptyDirs = t.mockFn() // disable empty groups cleaning
+
+                expect(projectWithoutHost.project.generateUuid().length).toBe(24)
+                projectWithoutHost.project.generateUuid = t.mockFn()
+                projectWithoutHost.project.generateUuid.mockReturnValueOnce('C5B80A16234A1A0E002FD95C') // PBXGroup: libs
+                projectWithoutHost.project.generateUuid.mockReturnValueOnce('C5B80A22234A1A0E002FD95C') // PBXGroup: native
+                projectWithoutHost.encodePath = t.mockFn(path => path)
+
+                expect(await projectWithoutHost.ensureGroupExists('/HostProject/host/libs'))
+                    .toStrictEqual(projectWithoutHost.getGroupByDirPath('/HostProject/host/libs'))
+                expect(await projectWithoutHost.ensureGroupExists('/HostProject/host/native'))
+                    .toStrictEqual(projectWithoutHost.getGroupByDirPath('/HostProject/host/native'))
+                await projectWithoutHost.save()
+
+                let freshLoadedProjectWithoutHost = xcode.project(projectWithoutHost.targetConfig.xcodeProjectFilePath).parseSync()
+                expect(freshLoadedProjectWithoutHost.hash).toStrictEqual(projectWithHostDirs.project.hash)
+
+                expect(await projectWithoutHost.ensureGroupExists('HostProject/host'))
+                    .toStrictEqual(projectWithoutHost.getGroupByDirPath('/HostProject/host'))
+                expect(await projectWithoutHost.ensureGroupExists('HostProject'))
+                    .toStrictEqual(projectWithoutHost.getGroupByDirPath('/HostProject'))
+                await projectWithoutHost.save()
+
+                freshLoadedProjectWithoutHost = xcode.project(projectWithoutHost.targetConfig.xcodeProjectFilePath).parseSync()
+                expect(freshLoadedProjectWithoutHost.hash).toStrictEqual(projectWithHostDirs.project.hash)
+                expect(projectWithoutHost.encodePath).toHaveBeenCalledTimes(2)
+                expect(projectWithoutHost.encodePath).toHaveBeenCalledWith('libs')
+                expect(projectWithoutHost.encodePath).toHaveBeenCalledWith('native')
             })
         })
     })

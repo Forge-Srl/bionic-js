@@ -1,28 +1,26 @@
 const path = require('path')
 const {BjsSync} = require('../filesystem/BjsSync')
-//const {ConsoleLog} = require('./ConsoleLog')
-const {DebugLog} = require('../filesystem/DebugLog')
+const {Log} = require('../filesystem/Log')
 const {Configuration} = require('../filesystem/configuration/Configuration')
 
-
-async function main() {
-    const consoleLog = new DebugLog()
-
-    const args = process.argv.slice(2)
+async function main(args, workingDir, log) {
     if (args.length === 0 || args[0].trim() === '') {
-        consoleLog.error('no configuration file specified')
-        process.exit()
+        log.error('no configuration file specified')
+        return
     }
 
-    const configAbsolutePath = path.resolve(process.cwd(), args[0])
+    const configAbsolutePath = path.resolve(workingDir, args[0])
     const configuration = Configuration.fromPath(configAbsolutePath)
-    const bjsSync = new BjsSync(configuration, consoleLog)
+    const bjsSync = new BjsSync(configuration, log)
     await bjsSync.sync()
-
-    process.exit()
 }
 
-main().catch(err => {
-    console.error(err)
-    process.exit()
+const log = new Log()
+main(process.argv.slice(2), process.cwd(), log).then(() => {
+
+    process.exit(log.processExitCode)
+}).catch(err => {
+
+    log.error(err)
+    process.exit(1)
 })

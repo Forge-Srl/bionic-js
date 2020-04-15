@@ -61,6 +61,13 @@ describe('Directory', () => {
         })
     })
 
+    test('getFiles, not existing dir', async () => {
+        await Directory.runInTempDir(async tempDir => {
+            const dir1 = tempDir.getSubDir('dir1')
+            expect(dir1.getFiles()).rejects.toThrow(new Error(`directory "${dir1.path}" doesn't exists`))
+        })
+    })
+
     test('getFiles', async () => {
         await Directory.runInTempDir(async tempDir => {
             const dir1 = tempDir.getSubDir('dir1')
@@ -95,6 +102,79 @@ describe('Directory', () => {
             expect(file2Result).toBeInstanceOf(File)
             expect(file2Result.base).toBe('file2.txt')
             expect(await file2Result.getContent()).toBe('file2')
+        })
+    })
+
+    test('cleanEmptyDirs, not existing dir', async () => {
+        await Directory.runInTempDir(async tempDir => {
+            const dir1 = tempDir.getSubDir('dir1')
+            await dir1.cleanEmptyDirs()
+
+            expect(await dir1.exists()).toBe(false)
+        })
+    })
+
+    test('cleanEmptyDirs, empty tree', async () => {
+        await Directory.runInTempDir(async tempDir => {
+            const dir = tempDir.getSubDir('dir')
+            const dirL = dir.getSubDir('dirL')
+            const dirR = dir.getSubDir('dirR')
+            const dirRL = dirR.getSubDir('dirRL')
+
+            await dirL.ensureExists()
+            await dirRL.ensureExists()
+
+            await dir.cleanEmptyDirs()
+
+            expect(await dir.exists()).toBe(true)
+            expect(await dirL.exists()).toBe(false)
+            expect(await dirR.exists()).toBe(false)
+        })
+    })
+
+    test('cleanEmptyDirs, tree with a right leaf file', async () => {
+        await Directory.runInTempDir(async tempDir => {
+            const dir = tempDir.getSubDir('dir')
+
+            const dirL = dir.getSubDir('dirL')
+            const dirLL = dirL.getSubDir('dirLL')
+
+            const dirR = dir.getSubDir('dirR')
+            const dirRR = dirR.getSubDir('dirRR')
+
+            await dirLL.ensureExists()
+            await dirRR.ensureExists()
+
+            const rightFile = dirRR.getSubFile('rightFile')
+            await rightFile.setContent('rightFile')
+
+            await dir.cleanEmptyDirs()
+
+            expect(await dirLL.exists()).toBe(false)
+            expect(await dirR.exists()).toBe(true)
+        })
+    })
+
+    test('cleanEmptyDirs, tree with a left leaf file', async () => {
+        await Directory.runInTempDir(async tempDir => {
+            const dir = tempDir.getSubDir('dir')
+
+            const dirL = dir.getSubDir('dirL')
+            const dirLL = dirL.getSubDir('dirLL')
+
+            const dirR = dir.getSubDir('dirR')
+            const dirRR = dirR.getSubDir('dirRR')
+
+            await dirLL.ensureExists()
+            await dirRR.ensureExists()
+
+            const leftFile = dirLL.getSubFile('leftFile')
+            await leftFile.setContent('leftFile')
+
+            await dir.cleanEmptyDirs()
+
+            expect(await dirLL.exists()).toBe(true)
+            expect(await dirR.exists()).toBe(false)
         })
     })
 })

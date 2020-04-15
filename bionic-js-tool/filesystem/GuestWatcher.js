@@ -1,6 +1,7 @@
 const {DirectoryWatcher} = require('./DirectoryWatcher')
 const {FilesFilter} = require('./FilesFilter')
-const {GuestFile, JSON_FILE_EXT, JS_FILE_EXT} = require('./GuestFile')
+const {GuestFile} = require('./GuestFile')
+const {JS_FILE_EXT, JSON_FILE_EXT} = require('./fileExtensions')
 const {NodeModule} = require('./NodeModule')
 const {GuestDependencyFileWalker} = require('./GuestDependencyFileWalker')
 

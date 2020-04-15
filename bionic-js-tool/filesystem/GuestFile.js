@@ -1,7 +1,6 @@
 const {File} = require('./File')
 const {NODE_MODULES_DIR_NAME} = require('./NodeModule')
-const JS_FILE_EXT = '.js'
-const JSON_FILE_EXT = '.json'
+const {JS_FILE_EXT, JSON_FILE_EXT} = require('./fileExtensions')
 
 class GuestFile extends File {
 

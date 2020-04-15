@@ -1,6 +1,7 @@
 const {DirectoryWatcher} = require('./DirectoryWatcher')
 const {FilesFilter} = require('./FilesFilter')
-const {JSON_FILE_EXT, JS_FILE_EXT, GuestFile} = require('./GuestFile')
+const {GuestFile} = require('./GuestFile')
+const {JS_FILE_EXT, JSON_FILE_EXT} = require('./fileExtensions')
 const {NODE_MODULES_DIR_NAME} = require('./NodeModule')
 
 class GuestDependencyFileWalker extends DirectoryWatcher {
@@ -11,7 +12,7 @@ class GuestDependencyFileWalker extends DirectoryWatcher {
         return new GuestDependencyFileWalker(nodeModule.moduleDir.path, guestFilesFilter, fileFactory)
     }
 
-    async getFiles() {
+    async getFiles() { // WHY THIS METHOD, getInitialFiles is already good!!!!!
         const files = await this.getInitialFiles()
         if (this.started) {
             this.stop()

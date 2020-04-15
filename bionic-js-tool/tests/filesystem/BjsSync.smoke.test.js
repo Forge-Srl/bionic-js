@@ -4,11 +4,11 @@ const {hostFilePaths, packageFilePaths, forbiddenPackageFilePaths} = require('..
 
 describe('Bjs smoke tests', () => {
 
-    let BjsSync, DebugLog, Configuration, Directory
+    let BjsSync, Log, Configuration, Directory
 
     beforeEach(() => {
         BjsSync = t.requireModule('filesystem/BjsSync').BjsSync
-        DebugLog = t.requireModule('filesystem/DebugLog').DebugLog
+        Log = t.requireModule('filesystem/Log').Log
         Configuration = t.requireModule('filesystem/configuration/Configuration').Configuration
         Directory = t.requireModule('filesystem/Directory').Directory
     })
@@ -16,7 +16,7 @@ describe('Bjs smoke tests', () => {
     const getProjectDir = projectName => new Directory(__dirname).getSubDir(`../../testing-code/swift/${projectName}`)
     const getGuestDir = () => new Directory(__dirname).getSubDir('../../testing-code/guest')
 
-    const doSmokeTest = async startProjectName => {
+    const doSmokeTest = async (startProjectName, expectedErrorLog, expectedWarningLog, expectedInfoLines) => {
 
         await Directory.runInTempDir(async tempDir => {
 
@@ -25,31 +25,13 @@ describe('Bjs smoke tests', () => {
 
             const configuration = Configuration.fromPath(t.getModuleAbsolutePath('testing-code/bjs.config.js'))
             configuration.configObj.hostTargets[0].xcodeProjectPath = tempDir.getSubFile('HostProject.xcodeproj').absolutePath
-            const debugLog = new DebugLog()
-            const bjsSync = new BjsSync(configuration, debugLog)
+            const log = new Log(true)
+            const bjsSync = new BjsSync(configuration, log)
             await bjsSync.sync()
 
-            expect(debugLog.errorLog).toBe('')
-
-            expect(debugLog.warningLog).toBe('"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n')
-
-            expect(debugLog.infoLog.split('\n')).toEqual(expect.arrayContaining([
-                'Bionic.js - v0.1.0',
-                'Extracting schemas from guest files...',
-                '...done',
-                'Deleting host files',
-                '...done',
-                'Generating host files...',
-                ...hostFilePaths.map(hostFile => ` ${hostFile}`),
-                '...done',
-                'Generating package files...',
-                ...packageFilePaths.map(packageFile => ` ${packageFile}`),
-                '...done',
-                'Generating virtual files...',
-                ' BjsEnvironment.swift',
-                ' BjsNativeObject.js',
-                '...done',
-            ]))
+            expect(log.errorLog).toBe(expectedErrorLog)
+            expect(log.warningLog).toBe(expectedWarningLog)
+            expect(log.infoLog.split('\n').sort()).toEqual(expectedInfoLines.sort())
 
             const projectWithFilesDir = getProjectDir('project-with-host-files')
             const hostDir = 'HostProject/host'
@@ -77,10 +59,59 @@ describe('Bjs smoke tests', () => {
     }
 
     test('Fill an empty project', async () => {
-        await doSmokeTest('project-without-host')
+        await doSmokeTest('project-without-host', '',
+            '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n',
+            [
+                'Bionic.js - v0.2.0',
+                '',
+                'Extracting schemas from guest files...',
+                'Opening host project...',
+                'Generating host files...',
+                'Generating package files...',
+                'Generating virtual files...',
+                'Saving host project...',
+                '',
+                'Package files',
+                ...packageFilePaths.map(packageFile => ` [+] ${packageFile}`),
+                ' ----------',
+                ' [-] deleted : 0',
+                ' [U] updated : 0',
+                ' [+] added : 17',
+                '',
+                'Host files',
+                ...hostFilePaths.map(hostFile => ` [+] ${hostFile}`),
+                ' ----------',
+                ' [-] deleted : 0',
+                ' [U] updated : 0',
+                ' [+] added : 6',
+                '',
+            ])
     })
 
     test('Update existing files', async () => {
-        await doSmokeTest('project-with-host-files')
+        await doSmokeTest('project-with-host-files', '', '',
+            [
+                'Bionic.js - v0.2.0',
+                '',
+                'Extracting schemas from guest files...',
+                'Opening host project...',
+                'Generating host files...',
+                'Generating package files...',
+                'Generating virtual files...',
+                'Saving host project...',
+                '',
+                'Package files',
+                ' ----------',
+                ' [-] deleted : 0',
+                ' [U] updated : 0',
+                ' [+] added : 0',
+                '',
+                'Host files',
+                ' ----------',
+                ' [-] deleted : 0',
+                ' [U] updated : 0',
+                ' [+] added : 0',
+                '',
+            ])
     })
 })

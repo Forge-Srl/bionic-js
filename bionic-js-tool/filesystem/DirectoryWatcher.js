@@ -32,14 +32,14 @@ class DirectoryWatcher extends Watcher {
     async getInitialFiles() {
         const initialFiles = await new Promise((resolve, reject) => {
             if (!this.waitingForInitialFiles) {
-                resolve(this.initialFiles)
+                resolve(this.initialFiles) // TODO: return after????
             }
             this.initialFilesPromises.push({resolve, reject})
             if (!this.started) {
                 this.start()
             }
         })
-        this.stop()
+        this.stop() // TODO: AWAIT??!!!
         return initialFiles
     }
 }

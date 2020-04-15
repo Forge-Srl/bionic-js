@@ -1,8 +1,10 @@
 const xcode = require('xcode')
 const path = require('path')
-const touch = require("touch")
+const touch = require('touch')
 const {File} = require('./File')
 const {Directory} = require('./Directory')
+const {DirectoryWatcher} = require('./DirectoryWatcher')
+const {JS_FILE_EXT, JSON_FILE_EXT, SWIFT_FILE_EXT} = require('./fileExtensions')
 const BUNDLE_FILE_TYPE = '"wrapper.plug-in"'
 const SOURCE_FILE_TYPE = 'sourcecode.swift'
 const XCODE_PATH_SEPARATOR = '/'
@@ -48,6 +50,19 @@ class XcodeHostProject {
         return new Directory(this.targetConfig.xcodeProjectDirPath, this.targetConfig.xcodeProjectDirPath)
     }
 
+    encodePath(path) {
+        if (path === null || path === undefined)
+            return path
+        return path.includes('"') ? `"${path.replace(/"/g, '\\"')}"` : path
+    }
+
+    decodePath(encodedPath) {
+        if (encodedPath === null || encodedPath === undefined)
+            return encodedPath
+        const result = /^"?(.*?)"?$/s.exec(encodedPath)
+        return result[1].replace(/\\"/g, '"')
+    }
+
     normalizeRelativePath(pathToNormalize) {
         return pathToNormalize.split(XCODE_PATH_SEPARATOR).filter(part => part).join(XCODE_PATH_SEPARATOR)
     }
@@ -58,7 +73,8 @@ class XcodeHostProject {
             node.key = key
 
             const fatherPathParts = fatherGroup ? fatherGroup.relativePath.split(XCODE_PATH_SEPARATOR) : []
-            const nodePathParts = node.path ? node.path.split(XCODE_PATH_SEPARATOR) : []
+            const nodePath = this.decodePath(node.path)
+            const nodePathParts = nodePath ? nodePath.split(XCODE_PATH_SEPARATOR) : []
             node.relativePath = [...fatherPathParts, ...nodePathParts].filter(part => part).join(XCODE_PATH_SEPARATOR)
             node.debugLocation = `${fatherGroup ? fatherGroup.debugLocation + XCODE_PATH_SEPARATOR : ''}${comment ? comment : 'Project'}`
             node.fileType = node.explicitFileType || node.lastKnownFileType
@@ -66,7 +82,7 @@ class XcodeHostProject {
                 this.relativeToGroupWarning = this.relativeToGroupWarning || new Set()
                 if (!this.relativeToGroupWarning.has(node.debugLocation)) {
                     this.log.warning(`"${node.debugLocation}": file location attribute is not "Relative to Group", this config `
-                        + 'is not supported so the file will be skipped')
+                        + 'is not supported so the file will be skipped\n')
                     this.relativeToGroupWarning.add(node.debugLocation)
                 }
                 return null
@@ -87,11 +103,11 @@ class XcodeHostProject {
         return this.buildNode(file, key, comment, fatherGroup)
     }
 
-    getGroupByDirPath(dirPath, rootGroup = this.mainGroup) {
+    getGroupByDirPath(dirPath, fatherGroup = this.mainGroup) {
         dirPath = this.normalizeRelativePath(dirPath)
 
-        for (const child of rootGroup.children) {
-            const childGroup = this.getGroupByKey(child.value, rootGroup)
+        for (const child of fatherGroup.children) {
+            const childGroup = this.getGroupByKey(child.value, fatherGroup)
             if (!childGroup)
                 continue
 
@@ -120,13 +136,115 @@ class XcodeHostProject {
         return files
     }
 
+    getFile(group, relativePath) {
+        relativePath = this.normalizeRelativePath(relativePath)
+
+        for (const child of group.children) {
+            const childGroup = this.getGroupByKey(child.value, group)
+            if (childGroup) {
+                const childFile = this.getFile(childGroup, relativePath)
+                if (childFile) {
+                    return childFile
+                }
+                continue
+            }
+
+            const childFile = this.getFileByKey(child.value, group)
+            if (childFile.relativePath === relativePath) {
+                return {fatherGroup: group, file: childFile}
+            }
+        }
+        return null
+    }
+
+    async getHostFiles() {
+        const hostDirGroup = this.getGroupByDirPath(this.targetConfig.hostDirName)
+        if (!hostDirGroup)
+            return []
+        const files = this.getFiles(hostDirGroup)
+        this.checkForIncompatibleHostFiles(files)
+
+        const xcodeProjectDirPath = this.targetConfig.xcodeProjectDirPath
+        const hostDirPath = this.targetConfig.hostDirPath
+        return files
+            .map(file => new File(path.join(xcodeProjectDirPath, file.relativePath), hostDirPath))
+            .filter(file => file.ext === SWIFT_FILE_EXT)
+    }
+
+    checkForIncompatibleHostFiles(files) {
+        const notSourceFiles = files.filter(file => file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE)
+        if (notSourceFiles.length) {
+            const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
+            throw new Error(`${fileNames} not supported: only .swift source files and bundles can be placed inside the host directory`)
+        }
+    }
+
+    async getPackageFiles() {
+        const packageDirPath = this.targetConfig.packageDirPath
+        const files = await (new DirectoryWatcher(packageDirPath)).getInitialFiles()
+        this.checkForIncompatiblePackageFiles(files)
+        return files
+    }
+
+    checkForIncompatiblePackageFiles(files) {
+        const notSourceFiles = files.filter(file => file.ext !== JS_FILE_EXT && file.ext !== JSON_FILE_EXT)
+        if (notSourceFiles.length) {
+            const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
+            throw new Error(`${fileNames} not supported: only Javascript source files can be placed inside the package directory`)
+        }
+    }
+
+    async cleanEmptyDirs() {
+        const hostDirGroup = this.getGroupByDirPath(this.targetConfig.hostDirName)
+        if (hostDirGroup)
+            await this.cleanEmptyGroups(hostDirGroup)
+
+        const packageDir = new Directory(this.targetConfig.packageDirPath)
+        await packageDir.cleanEmptyDirs()
+    }
+
     async save() {
+        await this.cleanEmptyDirs()
         const projectFile = new File(this.targetConfig.xcodeProjectFilePath)
         await projectFile.setContent(this.project.writeSync())
         await touch(this.targetConfig.xcodeProjectPath)
     }
 
     /** REMOVE THINGS */
+
+    async removeHostFile(pathRelativeToHostDir) {
+        const hostDirGroup = this.getGroupByDirPath(this.targetConfig.hostDirName)
+        const hostFileRef = this.getFile(hostDirGroup, path.join(this.targetConfig.hostDirName, pathRelativeToHostDir))
+        if (hostFileRef) {
+            this.removePbxGroupChild(hostFileRef.fatherGroup, hostFileRef.file)
+            this.removePbxSourceFile(hostFileRef.fatherGroup, hostFileRef.file)
+        }
+
+        const hostFile = this.xcodeProjectDir
+            .getSubDir(this.targetConfig.hostDirName)
+            .getSubFile(pathRelativeToHostDir)
+
+        try {
+            await hostFile.delete()
+        } catch (error) {
+            error.message = `removing host file "${hostFile.relativePath}"\n${error.message}`
+            throw error
+        }
+    }
+
+    async removePackageFile(pathRelativeToPackageDir) {
+        const packageFile = this.xcodeProjectDir
+            .getSubDir(this.targetConfig.hostDirName)
+            .getSubDir(this.targetConfig.packageName)
+            .getSubFile(pathRelativeToPackageDir)
+
+        try {
+            await packageFile.delete()
+        } catch (error) {
+            error.message = `removing package file "${packageFile.relativePath}"\n${error.message}`
+            throw error
+        }
+    }
 
     removePbxGroupChild(father, childGroup) {
         const pbxGroup = this.project.getPBXGroupByKey(father.key)
@@ -146,55 +264,32 @@ class XcodeHostProject {
         }
     }
 
-    removePbxGroup(group) {
-        const pbxGroup = this.project.hash.project.objects['PBXGroup']
-        delete pbxGroup[group.key]
-    }
-
-    checkHostFilesToDelete(files) {
-        const notSourceFiles = files.filter(file => file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE)
-        if (notSourceFiles.length) {
-            const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
-            throw new Error(`${fileNames} cannot be deleted: only source files and bundles can be placed inside the host directory`)
-        }
-    }
-
-    async emptyGroup(group, targetGroup = group) {
-        if (group === targetGroup) {
-            this.checkHostFilesToDelete(this.getFiles(group))
-            await this.removeGroupDirectory(group, true)
-        }
-
+    async cleanEmptyGroups(group, fatherGroup) {
+        let empty = true
         for (const child of group.children) {
             const childGroup = this.getGroupByKey(child.value, group)
             const childFile = this.getFileByKey(child.value, group)
             if (childGroup) {
-                this.removePbxGroupChild(group, childGroup)
-                this.emptyGroup(childGroup, targetGroup)
+                const isChildGroupEmpty = await this.cleanEmptyGroups(childGroup, group)
+                empty = isChildGroupEmpty && empty
             } else if (childFile) {
-                this.removePbxGroupChild(group, childFile)
-                this.removePbxSourceFile(group, childFile)
+                empty = false
             }
         }
-
-        if (group !== targetGroup) {
+        if (empty && fatherGroup) {
+            this.removePbxGroupChild(fatherGroup, group)
             this.removePbxGroup(group)
-            await this.removeGroupDirectory(group, false)
+            await this.xcodeProjectDir.getSubDir(group.relativePath).delete()
         }
+        return empty
     }
 
-    async removeGroupDirectory(group, recreateEmpty) {
-        const groupDirectory = this.xcodeProjectDir.getSubDir(group.relativePath)
-        await groupDirectory.delete()
-        if (recreateEmpty)
-            await groupDirectory.ensureExists()
+    removePbxGroup(group) {
+        const pbxGroup = this.project.hash.project.objects['PBXGroup']
+        delete pbxGroup[group.key]
+        delete pbxGroup[`${group.key}_comment`]
     }
 
-    async cleanHostDir() { // TODO convert to cleanDir(dirName)
-        const hostDirGroup = this.getGroupByDirPath(this.targetConfig.hostDirName)
-        if (hostDirGroup)
-            await this.emptyGroup(hostDirGroup)
-    }
 
     /** ADD THINGS */
 
@@ -225,7 +320,6 @@ class XcodeHostProject {
         try {
             await packageFile.dir.ensureExists()
             await packageFile.setContent(packageFileContent)
-
         } catch (error) {
             error.message = `writing package file "${packageFile.relativePath}"\n${error.message}`
             throw error
@@ -233,18 +327,18 @@ class XcodeHostProject {
     }
 
     addHostFileToProject(pathRelativeToHostDir, isPackage) {
-        const sourceFile = new Directory(this.targetConfig.hostDirName).getSubFile(pathRelativeToHostDir)
-        const groupDirPath = sourceFile.dir.path
-        const fatherGroup = this.ensureGroupExists(groupDirPath)
+        const parsedFilePath = path.parse(path.join(this.targetConfig.hostDirName, pathRelativeToHostDir))
+        const fatherGroup = this.ensureGroupExists(parsedFilePath.dir)
 
-        if (fatherGroup.children.some(child => child.comment === sourceFile.base))
+        const fileBaseName = parsedFilePath.base
+        if (fatherGroup.children.some(child => child.comment === fileBaseName))
             return
 
         const fileKey = this.project.generateUuid()
 
         const pbxFile = {
             isa: 'PBXFileReference',
-            path: sourceFile.base,
+            path: this.encodePath(fileBaseName),
             sourceTree: '"<group>"',
             lastKnownFileType: isPackage ? '"wrapper.plug-in"' : 'sourcecode.swift',
         }
@@ -253,9 +347,9 @@ class XcodeHostProject {
         }
         this.project.pbxFileReferenceSection()[fileKey] = pbxFile
         const commentKey = `${fileKey}_comment`
-        this.project.pbxFileReferenceSection()[commentKey] = sourceFile.base
+        this.project.pbxFileReferenceSection()[commentKey] = fileBaseName
 
-        const file = {fileRef: fileKey, basename: sourceFile.base}
+        const file = {fileRef: fileKey, basename: fileBaseName}
         this.project.addToPbxGroup(file, fatherGroup.key)
 
 
@@ -290,7 +384,7 @@ class XcodeHostProject {
             const pbxGroup = {
                 isa: 'PBXGroup',
                 children: [],
-                path: targetChildGroupName,
+                path: this.encodePath(targetChildGroupName),
                 sourceTree: '"<group>"',
             }
 

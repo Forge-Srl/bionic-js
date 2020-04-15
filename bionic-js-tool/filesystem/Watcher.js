@@ -39,7 +39,7 @@ class Watcher {
     }
 
     stop() {
-        this.watchProcess.close()
+        this.watchProcess.close() // TODO: AWAIT!!!??
         this.watchProcess = undefined
     }
 
