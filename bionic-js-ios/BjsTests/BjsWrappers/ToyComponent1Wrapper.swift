@@ -5,17 +5,22 @@ class ToyComponent1Wrapper: BjsNativeWrapper {
     override class var name: String { return "ToyComponent1" }
     override class var wrapperPath: String { return "/_bundle_/test/src/ToyComponent1" }
     
-    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) {
-        _ = nativeExports
+    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {
+        return nativeExports
             .exportFunction("bjsStaticGet_pi", bjsStaticGet_pi())
             .exportFunction("bjsStatic_sum", bjsStatic_sum())
-            .exportBindFunction(bjsBind())
             .exportFunction("bjsGet_number1", bjsGet_number1())
             .exportFunction("bjsSet_number1", bjsSet_number1())
             .exportFunction("bjsGet_number2", bjsGet_number2())
             .exportFunction("bjsSet_number2", bjsSet_number2())
             .exportFunction("bjs_getSum", bjs_getSum())
             .exportFunction("bjs_getToySum", bjs_getToySum())
+    }
+    
+    override class func bjsBind(_ nativeExports: BjsNativeExports) {
+        _ = nativeExports.exportBindFunction({
+            Bjs.get.bindNative(Bjs.get.getBound($1, ToyComponent1.self) ?? ToyComponent1(Bjs.get.getString($1), Bjs.get.getString($2)), $0)
+        } as @convention(block) (JSValue, JSValue, JSValue) -> Void)
     }
     
     class func bjsStaticGet_pi() -> @convention(block) () -> JSValue {
@@ -30,18 +35,6 @@ class ToyComponent1Wrapper: BjsNativeWrapper {
         }
     }
     
-    class func bjsBind() -> @convention(block) (JSValue, JSValue, JSValue) -> Void {
-        return {
-            /*
-               $0 is the JS wrapper object, always obtained passing "this" from the JS constructor
-               $1 can be either:
-               - the first JS constructor parameter, when the native object is instantiated in the JS side
-               - the native JS object, when the native object is instantiated in the native side (and then the putWrapped() call the JS wrapper constructor)
-            */
-            Bjs.get.bindNative(Bjs.get.getBound($1, ToyComponent1.self) ?? ToyComponent1(Bjs.get.getString($1), Bjs.get.getString($2)), $0)
-        }
-    }
-     
     class func bjsGet_number1() -> @convention(block) (JSValue) -> JSValue {
         return {
             return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, ToyComponent1.self)?.number1)

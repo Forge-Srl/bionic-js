@@ -8,7 +8,7 @@ class BjsLibTest: XCTestCase {
     }
     
     class BjsObject2: BjsObject { }
-    let bjsClass2Factory = { (jsValue: JSValue) -> BjsObject2 in
+    let bjsObject2Factory = { (jsValue: JSValue) -> BjsObject2 in
         return BjsObject2(jsValue)
     }
     
@@ -17,6 +17,7 @@ class BjsLibTest: XCTestCase {
     
     override func setUp() {
         super.setUp()
+        Bjs.jsBundleName = ""
         Bjs.get.clearJsEnvironment()
         jsInstance1 = Bjs.get.context.jsContext.evaluateScript("{test:'instance1'}");
         jsInstance2 = Bjs.get.context.jsContext.evaluateScript("{test:'instance2'}");
@@ -43,12 +44,12 @@ class BjsLibTest: XCTestCase {
     
     func test_bjsObject_sameInstances_differentTypes() {
         let instance1 = Bjs.get.getObj(jsInstance1, bjsObjectFactory)
-        let instance1DifferentType = Bjs.get.getObj(jsInstance1, bjsClass2Factory);
+        let instance1DifferentType = Bjs.get.getObj(jsInstance1, bjsObject2Factory);
         XCTAssertNotEqual(instance1, instance1DifferentType)
         XCTAssertEqual(instance1?.bjsObj, instance1DifferentType?.bjsObj)
         
         let instance1Again = Bjs.get.getObj(jsInstance1, bjsObjectFactory)
-        let instance1DifferentTypeAgain = Bjs.get.getObj(jsInstance1, bjsClass2Factory);
+        let instance1DifferentTypeAgain = Bjs.get.getObj(jsInstance1, bjsObject2Factory);
         
         XCTAssertEqual(instance1, instance1Again)
         XCTAssertEqual(instance1?.bjsObj, instance1Again?.bjsObj)
