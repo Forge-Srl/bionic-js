@@ -9,25 +9,28 @@ public class Bjs {
     static let bjsWrapperObjFieldName = "bjsWrapperObj"
     static let bjsWrapperObjFieldUnboundValue = "unbound"
     static let bjsNativeObjFieldName = "bjsNativeObj"
+    static var bjsBundle: BjsBundle? = nil
     
     public typealias Factory<T: BjsObject> = (_ jsObj: JSValue) -> T
-    public static var jsBundleName: String? = nil
     public static var get = Bjs()
     public var jsNull: JSValue { return context.createJsNull() }
     public var anyNull: BjsAnyObject { return getAny(jsNull) }
-    public var customBundles: BjsCustomBundles { return context.appBundle.customBundles }
     
     let context: BjsModules
     var jsValueToNative: [BjsNativeObjectIdentifier : BjsObject]
     var modulesCache: [String : JSValue]
     
     init() {
-        if Bjs.jsBundleName == nil {
+        if Bjs.bjsBundle == nil {
             fatalError("BjsEnvironment.initialize() must be called before using Bjs classes")
         }
-        context = BjsModules(BjsBundle(Bjs.jsBundleName!))
+        context = BjsModules(Bjs.bjsBundle!)
         jsValueToNative = [BjsNativeObjectIdentifier : BjsObject]()
         modulesCache = [String : JSValue]()
+    }
+    
+    public static func setBundle(_ forClass: AnyClass, _ name: String) {
+        bjsBundle = BjsBundle(forClass, name)
     }
     
     

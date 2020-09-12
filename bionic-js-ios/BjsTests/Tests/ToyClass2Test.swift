@@ -10,7 +10,7 @@ class ToyClass2Test: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        Bjs.get.customBundles.add(bundleName: "test", bundle: Bundle(for: ToyClass2Test.self))
+        Bjs.setBundle(ToyClass2Test.self, "test")
         testDateTimestamp = 472867200
         testDate = Date(timeIntervalSince1970: testDateTimestamp)
         bjsObj = ToyClass2(false)

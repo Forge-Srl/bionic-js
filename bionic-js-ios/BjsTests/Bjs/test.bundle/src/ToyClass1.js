@@ -78,4 +78,4 @@ class ToyClass1 {
     }
 }
 
-module.exports = ToyClass1
+module.exports = {ToyClass1}

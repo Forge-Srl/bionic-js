@@ -3,7 +3,7 @@ import JavaScriptCore
 class ToyComponent1Wrapper: BjsNativeWrapper {
     
     override class var name: String { return "ToyComponent1" }
-    override class var wrapperPath: String { return "/_bundle_/test/src/ToyComponent1" }
+    override class var wrapperPath: String { return "/src/ToyComponent1" }
     
     override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {
         return nativeExports

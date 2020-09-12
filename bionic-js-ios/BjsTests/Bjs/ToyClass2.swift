@@ -199,7 +199,7 @@ class ToyClass2: ToyClass1 {
     // BJS HELPERS
     
     override class var bjsModulePath: String {
-        return "/_bundle_/test/src/ToyClass2"
+        return "/src/ToyClass2"
     }
     
     override class func bjsFactory(_ jsObject: JSValue) -> ToyClass2 {

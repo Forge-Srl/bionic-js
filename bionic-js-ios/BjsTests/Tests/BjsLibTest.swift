@@ -17,7 +17,7 @@ class BjsLibTest: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        Bjs.jsBundleName = ""
+        Bjs.setBundle(BjsLibTest.self, "test")
         Bjs.get.clearJsEnvironment()
         jsInstance1 = Bjs.get.context.jsContext.evaluateScript("{test:'instance1'}");
         jsInstance2 = Bjs.get.context.jsContext.evaluateScript("{test:'instance2'}");

@@ -9,8 +9,8 @@ class ToyComponent1Test: XCTestCase {
     override func setUp() {
         super.setUp()
         
+        Bjs.setBundle(ToyComponent1Test.self, "test")
         Bjs.get.clearJsEnvironment()
-        Bjs.get.customBundles.add(bundleName: "test", bundle: Bundle(for: ToyComponent1Test.self))
         Bjs.get.addNativeWrapper(ToyComponent1Wrapper.self)
     }
     

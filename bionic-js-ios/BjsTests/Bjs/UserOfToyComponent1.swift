@@ -35,7 +35,7 @@ class UserOfToyComponent1: BjsObject {
     
     
     override class var bjsModulePath: String {
-        return "/_bundle_/test/src/UserOfToyComponent1"
+        return "/src/UserOfToyComponent1"
     }
     
     class func bjsFactory(_ jsObject: JSValue) -> UserOfToyComponent1 {

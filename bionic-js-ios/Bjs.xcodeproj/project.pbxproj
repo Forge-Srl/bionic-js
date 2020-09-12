@@ -12,8 +12,6 @@
 		C559FB5A1FFEDBBC00E6DEDA /* BjsFileInfoTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB591FFEDBBC00E6DEDA /* BjsFileInfoTest.swift */; };
 		C559FB711FFEDD0F00E6DEDA /* BjsBootstrap.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C559FB651FFEDD0E00E6DEDA /* BjsBootstrap.bundle */; };
 		C559FB721FFEDD0F00E6DEDA /* BjsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB661FFEDD0E00E6DEDA /* BjsBundle.swift */; };
-		C559FB731FFEDD0F00E6DEDA /* BjsCustomBundleFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB671FFEDD0E00E6DEDA /* BjsCustomBundleFileInfo.swift */; };
-		C559FB741FFEDD0F00E6DEDA /* BjsCustomBundles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB681FFEDD0E00E6DEDA /* BjsCustomBundles.swift */; };
 		C559FB751FFEDD0F00E6DEDA /* BjsNativeWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB691FFEDD0E00E6DEDA /* BjsNativeWrapper.swift */; };
 		C559FB761FFEDD0F00E6DEDA /* BjsException.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6A1FFEDD0E00E6DEDA /* BjsException.swift */; };
 		C559FB771FFEDD0F00E6DEDA /* BjsNativeExports.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6B1FFEDD0E00E6DEDA /* BjsNativeExports.swift */; };
@@ -23,15 +21,12 @@
 		C559FB7B1FFEDD0F00E6DEDA /* BjsContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6F1FFEDD0F00E6DEDA /* BjsContext.swift */; };
 		C559FB7C1FFEDD0F00E6DEDA /* BjsObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB701FFEDD0F00E6DEDA /* BjsObject.swift */; };
 		C57C8FFA20AC68C5007CFA3B /* BjsLibTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57C8FF920AC68C5007CFA3B /* BjsLibTest.swift */; };
-		C57C8FFC20AC68E9007CFA3B /* BjsTestFileInfoTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57C8FFB20AC68E9007CFA3B /* BjsTestFileInfoTest.swift */; };
 		C57C8FFD20AC6BA8007CFA3B /* BjsBootstrap.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C559FB651FFEDD0E00E6DEDA /* BjsBootstrap.bundle */; };
 		C57C8FFE20AC6BAC007CFA3B /* Bjs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6C1FFEDD0E00E6DEDA /* Bjs.swift */; };
 		C57C8FFF20AC6BAC007CFA3B /* BjsAnyObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C537B18D20A1C8CC008CA398 /* BjsAnyObject.swift */; };
 		C57C900020AC6BAC007CFA3B /* BjsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB661FFEDD0E00E6DEDA /* BjsBundle.swift */; };
 		C57C900120AC6BAC007CFA3B /* BjsObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB701FFEDD0F00E6DEDA /* BjsObject.swift */; };
 		C57C900220AC6BAC007CFA3B /* BjsContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6F1FFEDD0F00E6DEDA /* BjsContext.swift */; };
-		C57C900320AC6BAC007CFA3B /* BjsCustomBundleFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB671FFEDD0E00E6DEDA /* BjsCustomBundleFileInfo.swift */; };
-		C57C900420AC6BAC007CFA3B /* BjsCustomBundles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB681FFEDD0E00E6DEDA /* BjsCustomBundles.swift */; };
 		C57C900520AC6BAC007CFA3B /* BjsException.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6A1FFEDD0E00E6DEDA /* BjsException.swift */; };
 		C57C900620AC6BAC007CFA3B /* BjsFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6D1FFEDD0E00E6DEDA /* BjsFileInfo.swift */; };
 		C57C900720AC6BAC007CFA3B /* BjsModules.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6E1FFEDD0F00E6DEDA /* BjsModules.swift */; };
@@ -60,8 +55,6 @@
 		C559FB5B1FFEDBBC00E6DEDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C559FB651FFEDD0E00E6DEDA /* BjsBootstrap.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = BjsBootstrap.bundle; sourceTree = "<group>"; };
 		C559FB661FFEDD0E00E6DEDA /* BjsBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsBundle.swift; sourceTree = "<group>"; };
-		C559FB671FFEDD0E00E6DEDA /* BjsCustomBundleFileInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsCustomBundleFileInfo.swift; sourceTree = "<group>"; };
-		C559FB681FFEDD0E00E6DEDA /* BjsCustomBundles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsCustomBundles.swift; sourceTree = "<group>"; };
 		C559FB691FFEDD0E00E6DEDA /* BjsNativeWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsNativeWrapper.swift; sourceTree = "<group>"; };
 		C559FB6A1FFEDD0E00E6DEDA /* BjsException.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsException.swift; sourceTree = "<group>"; };
 		C559FB6B1FFEDD0E00E6DEDA /* BjsNativeExports.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsNativeExports.swift; sourceTree = "<group>"; };
@@ -71,7 +64,6 @@
 		C559FB6F1FFEDD0F00E6DEDA /* BjsContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsContext.swift; sourceTree = "<group>"; };
 		C559FB701FFEDD0F00E6DEDA /* BjsObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsObject.swift; sourceTree = "<group>"; };
 		C57C8FF920AC68C5007CFA3B /* BjsLibTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BjsLibTest.swift; sourceTree = "<group>"; };
-		C57C8FFB20AC68E9007CFA3B /* BjsTestFileInfoTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BjsTestFileInfoTest.swift; sourceTree = "<group>"; };
 		C584E43421636C4B00A38028 /* BjsExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BjsExport.swift; sourceTree = "<group>"; };
 		C58757682161361700AA6221 /* ToyComponent1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyComponent1.swift; sourceTree = "<group>"; };
 		C587576A216140B800AA6221 /* ToyComponent1Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyComponent1Wrapper.swift; sourceTree = "<group>"; };
@@ -107,7 +99,6 @@
 			children = (
 				C559FB591FFEDBBC00E6DEDA /* BjsFileInfoTest.swift */,
 				C57C8FF920AC68C5007CFA3B /* BjsLibTest.swift */,
-				C57C8FFB20AC68E9007CFA3B /* BjsTestFileInfoTest.swift */,
 				C5F993DC20B6A71400356DFD /* ToyClass1Test.swift */,
 				C5F993DD20B6A71400356DFD /* ToyClass2Test.swift */,
 				C587576E216171AC00AA6221 /* ToyComponent1Test.swift */,
@@ -142,8 +133,6 @@
 				C559FB661FFEDD0E00E6DEDA /* BjsBundle.swift */,
 				C559FB701FFEDD0F00E6DEDA /* BjsObject.swift */,
 				C559FB6F1FFEDD0F00E6DEDA /* BjsContext.swift */,
-				C559FB671FFEDD0E00E6DEDA /* BjsCustomBundleFileInfo.swift */,
-				C559FB681FFEDD0E00E6DEDA /* BjsCustomBundles.swift */,
 				C559FB6A1FFEDD0E00E6DEDA /* BjsException.swift */,
 				C584E43421636C4B00A38028 /* BjsExport.swift */,
 				C559FB6D1FFEDD0E00E6DEDA /* BjsFileInfo.swift */,
@@ -310,9 +299,7 @@
 				C559FB781FFEDD0F00E6DEDA /* Bjs.swift in Sources */,
 				C559FB751FFEDD0F00E6DEDA /* BjsNativeWrapper.swift in Sources */,
 				C559FB7C1FFEDD0F00E6DEDA /* BjsObject.swift in Sources */,
-				C559FB741FFEDD0F00E6DEDA /* BjsCustomBundles.swift in Sources */,
 				C559FB771FFEDD0F00E6DEDA /* BjsNativeExports.swift in Sources */,
-				C559FB731FFEDD0F00E6DEDA /* BjsCustomBundleFileInfo.swift in Sources */,
 				C559FB7B1FFEDD0F00E6DEDA /* BjsContext.swift in Sources */,
 				C559FB7A1FFEDD0F00E6DEDA /* BjsModules.swift in Sources */,
 				C559FB761FFEDD0F00E6DEDA /* BjsException.swift in Sources */,
@@ -333,7 +320,6 @@
 				C5F993DE20B6A71400356DFD /* ToyClass1Test.swift in Sources */,
 				C57C8FFA20AC68C5007CFA3B /* BjsLibTest.swift in Sources */,
 				C5F993E620B6A8AC00356DFD /* ToyClass1.swift in Sources */,
-				C57C8FFC20AC68E9007CFA3B /* BjsTestFileInfoTest.swift in Sources */,
 				C5F993E720B6A8AC00356DFD /* ToyClass2.swift in Sources */,
 				C57C900720AC6BAC007CFA3B /* BjsModules.swift in Sources */,
 				C57C900020AC6BAC007CFA3B /* BjsBundle.swift in Sources */,
@@ -343,13 +329,11 @@
 				C57C900820AC6BAC007CFA3B /* BjsNativeExports.swift in Sources */,
 				C57C900620AC6BAC007CFA3B /* BjsFileInfo.swift in Sources */,
 				C57C900A20AC6BAC007CFA3B /* BjsNativeObjectIdentifier.swift in Sources */,
-				C57C900420AC6BAC007CFA3B /* BjsCustomBundles.swift in Sources */,
 				C57C8FFE20AC6BAC007CFA3B /* Bjs.swift in Sources */,
 				C5F993DF20B6A71400356DFD /* ToyClass2Test.swift in Sources */,
 				C57C900920AC6BAC007CFA3B /* BjsNativeWrapper.swift in Sources */,
 				C587576F216171AC00AA6221 /* ToyComponent1Test.swift in Sources */,
 				C587576D2161624500AA6221 /* UserOfToyComponent1.swift in Sources */,
-				C57C900320AC6BAC007CFA3B /* BjsCustomBundleFileInfo.swift in Sources */,
 				C58757692161361700AA6221 /* ToyComponent1.swift in Sources */,
 				C57C900220AC6BAC007CFA3B /* BjsContext.swift in Sources */,
 			);

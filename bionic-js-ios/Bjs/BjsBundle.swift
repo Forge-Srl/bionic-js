@@ -9,26 +9,13 @@ public class BjsBundle {
     
     let bundle: Bundle
     let name: String
-    let customBundles: BjsCustomBundles
-    
-    public init(_ name: String) {
-        self.bundle = Bundle.main
-        self.name = name
-        self.customBundles = BjsCustomBundles()
-    }
     
     public init(_ forClass: AnyClass, _ name: String) {
         self.bundle = Bundle(for: forClass)
         self.name = name
-        self.customBundles = BjsCustomBundles()
     }
     
     func getFilePath(_ requirePath: String) -> String? {
-        
-        if let customBundlePath = customBundles.getPath(requirePath: requirePath) {
-            return customBundlePath
-        }
-        
         let mainBundleFileInfo = BjsFileInfo(requirePath)
         let bundleDir = "\(name).bundle"
         if requirePath == "/" {

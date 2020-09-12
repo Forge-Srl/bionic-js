@@ -1,4 +1,4 @@
-const ToyComponent1 = require('./ToyComponent1')
+const {ToyComponent1} = require('./ToyComponent1')
 
 class UserOfToyComponent1 {
     
@@ -35,4 +35,4 @@ class UserOfToyComponent1 {
     }
 }
 
-module.exports = UserOfToyComponent1
+module.exports = {UserOfToyComponent1}

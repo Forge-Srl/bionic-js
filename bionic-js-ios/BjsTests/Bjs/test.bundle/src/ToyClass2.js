@@ -1,4 +1,4 @@
-const ToyClass1 = require('./ToyClass1')
+const {ToyClass1} = require('./ToyClass1')
 
 class ToyClass2 extends ToyClass1 {
     
@@ -78,4 +78,4 @@ class ToyClass2 extends ToyClass1 {
     }
 }
 
-module.exports = ToyClass2
+module.exports = {ToyClass2}
