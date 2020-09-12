@@ -14,7 +14,7 @@ describe('SwiftHostEnvironmentFileGenerator', () => {
             'class BjsEnvironment {',
             '    ',
             '    static func initialize() {',
-            '        Bjs.jsBundleName = "pkgName"',
+            '        Bjs.setBundle(BjsEnvironment.self, "pkgName")',
         ]
 
         expectedFooter = [
