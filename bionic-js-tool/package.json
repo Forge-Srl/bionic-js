@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "@babel/parser": "*",
-    "glob": "*",
+    "fast-glob": "*",
     "ignore": "*",
     "mkdirp": "*",
     "rimraf": "*",

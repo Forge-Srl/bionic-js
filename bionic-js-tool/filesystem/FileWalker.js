@@ -1,4 +1,4 @@
-const glob = require('glob')
+const fg = require('fast-glob')
 const {File} = require('./File')
 const path = require('path')
 
@@ -9,25 +9,17 @@ class FileWalker {
             dirPath, filesFilter, fileFactory,
             globOptions: {
                 cwd: dirPath,
-                nonull: false,
-                nodir: true,
+                onlyFiles: true,
             },
         })
     }
 
     async getFiles() {
-        return new Promise((resolve, reject) => {
-            glob('**', this.globOptions, (error, files) => {
-                if (error) {
-                    reject(error)
-                } else {
-                    resolve(files
-                        .map(filePath => new File(path.resolve(this.dirPath, filePath), this.dirPath))
-                        .filter(file => !this.filesFilter || !this.filesFilter.isToFilter(file))
-                        .map(file => this.fileFactory ? this.fileFactory(file) : file))
-                }
-            })
-        })
+        const files = await fg(['**'], this.globOptions)
+        return files
+            .map(filePath => new File(path.resolve(this.dirPath, filePath), this.dirPath))
+            .filter(file => !this.filesFilter || !this.filesFilter.isToFilter(file))
+            .map(file => this.fileFactory ? this.fileFactory(file) : file)
     }
 }
 
