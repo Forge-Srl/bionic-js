@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "@babel/parser": "*",
-    "chokidar": "*",
+    "glob": "*",
     "ignore": "*",
     "mkdirp": "*",
     "rimraf": "*",

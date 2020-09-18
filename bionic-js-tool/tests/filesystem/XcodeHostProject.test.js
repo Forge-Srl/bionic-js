@@ -357,7 +357,7 @@ describe('XcodeHostProject', () => {
     test('getPackageFiles', async () => {
         await getProjectWithHostFiles(async project => {
             const files = await project.getPackageFiles()
-            expect(files.map(file => file.relativePath)).toStrictEqual([
+            expect(files.map(file => file.relativePath).sort()).toStrictEqual([
                 'BjsNativeObject.js', 'FerrariCalifornia.js', 'GannaBicycle.js', 'TeslaRoadster.js', 'package.json',
                 'node_modules/module-c/ModuleC.js', 'node_modules/module-c/package.json',
                 'node_modules/module-c/node_modules/module-b/ModuleB.js',
@@ -365,7 +365,7 @@ describe('XcodeHostProject', () => {
                 'node_modules/module-b/ModuleB.js', 'node_modules/module-b/package.json',
                 'node_modules/module-a/ModuleA.js', 'node_modules/module-a/package.json', 'native/Engine.js',
                 'native/fuelCosts.js', 'libs/MotorVehicle.js', 'libs/Vehicle.js',
-            ])
+            ].sort())
             expect(files[0].rootDirPath).toBe(project.targetConfig.packageDirPath)
         })
     })

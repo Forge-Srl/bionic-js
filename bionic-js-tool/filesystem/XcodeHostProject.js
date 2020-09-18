@@ -3,7 +3,7 @@ const path = require('path')
 const touch = require('touch')
 const {File} = require('./File')
 const {Directory} = require('./Directory')
-const {DirectoryWatcher} = require('./DirectoryWatcher')
+const {FileWalker} = require('./FileWalker')
 const {JS_FILE_EXT, JSON_FILE_EXT, SWIFT_FILE_EXT} = require('./fileExtensions')
 const BUNDLE_FILE_TYPE = '"wrapper.plug-in"'
 const SOURCE_FILE_TYPE = 'sourcecode.swift'
@@ -181,7 +181,7 @@ class XcodeHostProject {
 
     async getPackageFiles() {
         const packageDirPath = this.targetConfig.packageDirPath
-        const files = await (new DirectoryWatcher(packageDirPath)).getInitialFiles()
+        const files = await (new FileWalker(packageDirPath)).getFiles()
         this.checkForIncompatiblePackageFiles(files)
         return files
     }

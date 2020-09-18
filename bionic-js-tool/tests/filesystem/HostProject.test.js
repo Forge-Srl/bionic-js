@@ -82,17 +82,16 @@ describe('HostProject', () => {
 
             expect(diff.filesToUpdate).toStrictEqual([])
 
-            expect(diff.filesToDelete).toStrictEqual([
-                {relativePath: 'BjsNativeObject.js'}, {relativePath: 'FerrariCalifornia.js'},
-                {relativePath: 'GannaBicycle.js'}, {relativePath: 'TeslaRoadster.js'}, {relativePath: 'package.json'},
-                {relativePath: 'node_modules/module-c/ModuleC.js'}, {relativePath: 'node_modules/module-c/package.json'},
-                {relativePath: 'node_modules/module-c/node_modules/module-b/ModuleB.js'},
-                {relativePath: 'node_modules/module-c/node_modules/module-b/package.json'},
-                {relativePath: 'node_modules/module-b/ModuleB.js'}, {relativePath: 'node_modules/module-b/package.json'},
-                {relativePath: 'node_modules/module-a/ModuleA.js'}, {relativePath: 'node_modules/module-a/package.json'},
-                {relativePath: 'native/Engine.js'}, {relativePath: 'native/fuelCosts.js'},
-                {relativePath: 'libs/MotorVehicle.js'}, {relativePath: 'libs/Vehicle.js'},
-            ])
+            expect(diff.filesToDelete.map(file => file.relativePath).sort()).toStrictEqual([
+                'BjsNativeObject.js', 'FerrariCalifornia.js', 'GannaBicycle.js', 'TeslaRoadster.js', 'package.json',
+                'node_modules/module-c/ModuleC.js', 'node_modules/module-c/package.json',
+                'node_modules/module-c/node_modules/module-b/ModuleB.js',
+                'node_modules/module-c/node_modules/module-b/package.json',
+                'node_modules/module-b/ModuleB.js', 'node_modules/module-b/package.json',
+                'node_modules/module-a/ModuleA.js', 'node_modules/module-a/package.json',
+                'native/Engine.js', 'native/fuelCosts.js',
+                'libs/MotorVehicle.js', 'libs/Vehicle.js',
+            ].sort())
         })
     })
 
@@ -116,17 +115,15 @@ describe('HostProject', () => {
             expect(diff.filesToUpdate.map(f => f.oldFile.relativePath))
                 .toStrictEqual(['BjsNativeObject.js', 'node_modules/module-b/ModuleB.js'])
 
-            expect(diff.filesToDelete).toStrictEqual([
-                {relativePath: 'FerrariCalifornia.js'}, {relativePath: 'GannaBicycle.js'},
-                {relativePath: 'TeslaRoadster.js'}, {relativePath: 'package.json'},
-                {relativePath: 'node_modules/module-c/ModuleC.js'}, {relativePath: 'node_modules/module-c/package.json'},
-                {relativePath: 'node_modules/module-c/node_modules/module-b/ModuleB.js'},
-                {relativePath: 'node_modules/module-c/node_modules/module-b/package.json'},
-                {relativePath: 'node_modules/module-b/package.json'}, {relativePath: 'node_modules/module-a/ModuleA.js'},
-                {relativePath: 'node_modules/module-a/package.json'}, {relativePath: 'native/Engine.js'},
-                {relativePath: 'native/fuelCosts.js'}, {relativePath: 'libs/MotorVehicle.js'},
-                {relativePath: 'libs/Vehicle.js'},
-            ])
+            expect(diff.filesToDelete.map(file => file.relativePath).sort()).toStrictEqual([
+                'FerrariCalifornia.js', 'GannaBicycle.js', 'TeslaRoadster.js', 'package.json',
+                'node_modules/module-c/ModuleC.js', 'node_modules/module-c/package.json',
+                'node_modules/module-c/node_modules/module-b/ModuleB.js',
+                'node_modules/module-c/node_modules/module-b/package.json', 'node_modules/module-b/package.json',
+                'node_modules/module-a/ModuleA.js', 'node_modules/module-a/package.json',
+                'native/Engine.js', 'native/fuelCosts.js',
+                'libs/MotorVehicle.js', 'libs/Vehicle.js',
+            ].sort())
         })
     })
 

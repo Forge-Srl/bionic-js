@@ -13,10 +13,36 @@ describe('Bjs smoke tests', () => {
         Directory = t.requireModule('filesystem/Directory').Directory
     })
 
+    const expectLog = (expectedLog, actualLogString) => {
+        let actualLog = actualLogString.split('\n')
+        expect(actualLog.length).toBe(expectedLog.length)
+
+        for (let a = 0; a < actualLog.length; a++) {
+            const actualMsg = actualLog[a]
+
+            const matches = expectedMsg => {
+                return expectedMsg instanceof RegExp ? expectedMsg.test(actualMsg) : expectedMsg === actualMsg
+            }
+            let matching = false
+            for (let e = 0; e < expectedLog.length; e++) {
+                const expectedMsg = expectedLog[e]
+
+                if (matches(expectedMsg)) {
+                    expectedLog = expectedLog.filter((_, index) => index !== e)
+                    matching = true
+                    break
+                }
+            }
+            if (!matching) {
+                throw new Error(`Log row "${actualMsg}" (row ${a}) not found in expected log`)
+            }
+        }
+    }
+
     const getProjectDir = projectName => new Directory(__dirname).getSubDir(`../../testing-code/swift/${projectName}`)
     const getGuestDir = () => new Directory(__dirname).getSubDir('../../testing-code/guest')
 
-    const doSmokeTest = async (startProjectName, expectedErrorLog, expectedWarningLog, expectedInfoLines) => {
+    const doSmokeTest = async (startProjectName, expectedErrors, expectedWarnings, expectedInfos) => {
 
         await Directory.runInTempDir(async tempDir => {
 
@@ -29,9 +55,9 @@ describe('Bjs smoke tests', () => {
             const bjsSync = new BjsSync(configuration, log)
             await bjsSync.sync()
 
-            expect(log.errorLog).toBe(expectedErrorLog)
-            expect(log.warningLog).toBe(expectedWarningLog)
-            expect(log.infoLog.split('\n').sort()).toEqual(expectedInfoLines.sort())
+            expectLog(expectedErrors, log.errorLog)
+            expectLog(expectedWarnings, log.warningLog)
+            expectLog(expectedInfos, log.infoLog)
 
             const projectWithFilesDir = getProjectDir('project-with-host-files')
             const hostDir = 'HostProject/host'
@@ -59,8 +85,14 @@ describe('Bjs smoke tests', () => {
     }
 
     test('Fill an empty project', async () => {
-        await doSmokeTest('project-without-host', '',
-            '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped\n',
+        await doSmokeTest('project-without-host',
+            [
+                '',
+            ],
+            [
+                '"Project/HostProject/Group1/WrongLocationGroup": file location attribute is not "Relative to Group", this config is not supported so the file will be skipped',
+                '',
+            ],
             [
                 'Bionic.js - v0.2.0',
                 '',
@@ -85,11 +117,19 @@ describe('Bjs smoke tests', () => {
                 ' [U] updated : 0',
                 ' [+] added : 6',
                 '',
+                /Processing time: \d\.\d\ds/,
+                '',
             ])
     })
 
     test('Update existing files', async () => {
-        await doSmokeTest('project-with-host-files', '', '',
+        await doSmokeTest('project-with-host-files',
+            [
+                '',
+            ],
+            [
+                '',
+            ],
             [
                 'Bionic.js - v0.2.0',
                 '',
@@ -111,6 +151,8 @@ describe('Bjs smoke tests', () => {
                 ' [-] deleted : 0',
                 ' [U] updated : 0',
                 ' [+] added : 0',
+                '',
+                /Processing time: \d\.\d\ds/,
                 '',
             ])
     })

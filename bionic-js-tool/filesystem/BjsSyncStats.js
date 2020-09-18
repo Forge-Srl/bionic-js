@@ -3,6 +3,11 @@ class BjsSyncStats {
     constructor() {
         this.packageFiles = {deleted: [], updated: [], added: []}
         this.hostFiles = {deleted: [], updated: [], added: []}
+        this.startTimestamp = new Date().getTime()
+    }
+
+    get processingTime() {
+        return (new Date().getTime() - this.startTimestamp) / 1000
     }
 
     deletePackageFile(relativePath) {
@@ -45,6 +50,10 @@ class BjsSyncStats {
         log.info(` [+] added : ${files.added.length}\n`)
     }
 
+    logProcessingTime(log) {
+        log.info(`Processing time: ${this.processingTime.toFixed(2)}s\n`)
+    }
+
     logStats(log) {
         log.info('\n')
         log.info('Package files\n')
@@ -52,6 +61,8 @@ class BjsSyncStats {
         log.info('\n')
         log.info('Host files\n')
         this.logFiles(log, this.hostFiles)
+        log.info('\n')
+        this.logProcessingTime(log)
     }
 }
 

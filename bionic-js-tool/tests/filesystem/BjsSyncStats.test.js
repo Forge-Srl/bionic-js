@@ -12,6 +12,7 @@ describe('BjsSyncStats', () => {
     })
 
     test('logStats, no files', async () => {
+        t.mockGetter(stats, 'processingTime', () => 1.23)
         stats.logStats(log)
 
         expect(log.infoLog).toBe(
@@ -26,7 +27,9 @@ describe('BjsSyncStats', () => {
             ' ----------\n' +
             ' [-] deleted : 0\n' +
             ' [U] updated : 0\n' +
-            ' [+] added : 0\n')
+            ' [+] added : 0\n' +
+            '\n' +
+            'Processing time: 1.23s\n')
         expect(log.errorLog).toBe('')
         expect(log.warningLog).toBe('')
 
@@ -45,6 +48,8 @@ describe('BjsSyncStats', () => {
         stats.updateHostFile('host2.upd')
         stats.addHostFile('host1.add')
         stats.addHostFile('host2.add')
+
+        t.mockGetter(stats, 'processingTime', () => 1.23)
 
         stats.logStats(log)
         expect(log.infoLog).toBe(
@@ -71,7 +76,9 @@ describe('BjsSyncStats', () => {
             ' ----------\n' +
             ' [-] deleted : 2\n' +
             ' [U] updated : 2\n' +
-            ' [+] added : 2\n')
+            ' [+] added : 2\n' +
+            '\n' +
+            'Processing time: 1.23s\n')
         expect(log.errorLog).toBe('')
         expect(log.warningLog).toBe('')
     })

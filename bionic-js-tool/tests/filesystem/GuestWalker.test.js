@@ -1,18 +1,18 @@
 const t = require('../test-utils')
 const path = require('path')
 
-describe('GuestWatcher', () => {
+describe('GuestWalker', () => {
 
-    let guestDirPath, guestNativeDirPath, GuestFile, watcher
+    let guestDirPath, guestNativeDirPath, GuestFile, walker
 
     beforeEach(() => {
-        const GuestWatcher = t.requireModule('filesystem/GuestWatcher').GuestWatcher
+        const GuestWalker = t.requireModule('filesystem/GuestWalker').GuestWalker
         guestDirPath = path.resolve(__dirname, '../../testing-code/guest')
         guestNativeDirPath = path.resolve(__dirname, '../../testing-code/guest/native')
         const config = {guestDirPath, guestNativeDirPath, guestIgnores: ['node_modules']}
 
         GuestFile = t.requireModule('filesystem/GuestFile').GuestFile
-        watcher = GuestWatcher.build(config)
+        walker = GuestWalker.build(config)
     })
 
     const expectedDependencies = [
@@ -27,7 +27,7 @@ describe('GuestWatcher', () => {
     ]
 
     test('getDependenciesFiles', async () => {
-        const dependenciesFiles = await watcher.getDependenciesFiles()
+        const dependenciesFiles = await walker.getDependenciesFiles()
         dependenciesFiles.forEach(dependencyFile => {
             expect(dependencyFile).toBeInstanceOf(GuestFile)
             expect(dependencyFile.rootDirPath).toBe(guestDirPath)
@@ -45,9 +45,9 @@ describe('GuestWatcher', () => {
         'libs/Vehicle.js', 'native/Engine.js', 'native/fuelCosts.js', 'tests/guest1-test.js',
     ]
 
-    test('getInitialFiles', async () => {
+    test('getFiles', async () => {
 
-        const guestFiles = await watcher.getInitialFiles()
+        const guestFiles = await walker.getFiles()
         guestFiles.forEach(guestFile => {
             expect(guestFile).toBeInstanceOf(GuestFile)
             expect(guestFile.rootDirPath).toBe(guestDirPath)
@@ -59,21 +59,21 @@ describe('GuestWatcher', () => {
         expect(guestPaths).toEqual(expect.arrayContaining(expectedGuestFiles))
     })
 
-    test('getInitialFiles, duplicated guest files', async () => {
+    test('getFiles, duplicated guest files', async () => {
 
         const guestFile1 = new GuestFile('/path1')
         const guestFile2 = new GuestFile('/path2')
         const guestFile3 = new GuestFile('/path3')
 
-        const DirectoryWatcher = t.requireModule('filesystem/DirectoryWatcher').DirectoryWatcher
-        DirectoryWatcher.prototype.getInitialFiles = async () => [guestFile1, guestFile2]
-        const GuestWatcher = t.requireModule('filesystem/GuestWatcher').GuestWatcher
+        const FileWalker = t.requireModule('filesystem/FileWalker').FileWalker
+        FileWalker.prototype.getFiles = async () => [guestFile1, guestFile2]
+        const GuestWalker = t.requireModule('filesystem/GuestWalker').GuestWalker
         t.resetModulesCache()
 
-        watcher = GuestWatcher.build({})
-        watcher.getDependenciesFiles = async () => [guestFile2, guestFile3]
+        walker = GuestWalker.build({})
+        walker.getDependenciesFiles = async () => [guestFile2, guestFile3]
 
-        const guestFiles = await watcher.getInitialFiles()
+        const guestFiles = await walker.getFiles()
         expect(guestFiles.length).toBe(3)
         expect(guestFiles).toEqual(expect.arrayContaining([guestFile1, guestFile2, guestFile3]))
     })

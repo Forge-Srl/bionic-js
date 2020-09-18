@@ -1,6 +1,6 @@
 const {HostProject} = require('./HostProject')
 const {BjsSyncStats} = require('./BjsSyncStats')
-const {GuestWatcher} = require('./GuestWatcher')
+const {GuestWalker} = require('./GuestWalker')
 const {GlobalSchemaCreator} = require('../parser/GlobalSchemaCreator')
 const {HostFile} = require('./HostFile')
 const {PackageFile} = require('./PackageFile')
@@ -18,7 +18,7 @@ class BjsSync {
         try {
             this.log.info(`Bionic.js - v${bjsVersion}\n\n`)
             const bjsSyncStats = new BjsSyncStats()
-            const guestFiles = await GuestWatcher.build(this.configuration).getInitialFiles()
+            const guestFiles = await GuestWalker.build(this.configuration).getFiles()
             const exportedFiles = await this.getExportedFiles(guestFiles)
 
             for (const targetConfig of this.configuration.hostTargets) {
