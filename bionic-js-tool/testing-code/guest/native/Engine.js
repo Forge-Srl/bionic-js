@@ -1,27 +1,15 @@
 const {fuelCosts} = require('./fuelCosts')
+const {BaseEngine} = require('./BaseEngine')
 
-class Engine {
-
-    constructor() {
-    }
-
+class Engine extends BaseEngine {
+    
     // @bionic String
     get fuelType() {
     }
-
+    
     get fuelCost() {
         return fuelCosts[this.fuelType]
     }
-
-    // @bionic ()
-    powerOn() {
-    }
-
-    // @bionic
-    powerOff() {
-    }
-
-    // @bionic method watch (callback: () => String)
 }
 
 module.exports = {Engine}

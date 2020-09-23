@@ -164,7 +164,7 @@ describe('SwiftHostClassGenerator', () => {
         t.expectCode(scaffold,
             'import Bjs',
             '',
-            'class Class1 {',
+            'class Class1: BjsExport {',
             '    ',
             '}')
     })
@@ -201,7 +201,7 @@ describe('SwiftHostClassGenerator', () => {
         t.expectCode(code,
             'import Bjs',
             '',
-            'class Class1 {',
+            'class Class1: BjsExport {',
             '    ',
             '    class var staticProperty1:Int? {',
             '        get {',

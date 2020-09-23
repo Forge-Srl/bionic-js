@@ -1,7 +1,7 @@
-const {BjsNativeObject} = require('../BjsNativeObject')
+const {BaseEngine} = require('./BaseEngine')
 const {bjsNative} = require('Engine')
 
-class Engine extends BjsNativeObject {
+class Engine extends BaseEngine {
     
     static get bjsNative() {
         return bjsNative
@@ -9,18 +9,6 @@ class Engine extends BjsNativeObject {
     
     get fuelType() {
         return bjsNative.bjsGet_fuelType(this)
-    }
-    
-    powerOn() {
-        bjsNative.bjs_powerOn(this)
-    }
-    
-    powerOff() {
-        bjsNative.bjs_powerOff(this)
-    }
-    
-    watch(callback) {
-        bjsNative.bjs_watch(this, callback)
     }
 }
 

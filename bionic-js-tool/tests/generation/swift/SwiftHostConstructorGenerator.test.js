@@ -231,7 +231,7 @@ describe('SwiftHostConstructorGenerator', () => {
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
-            'class Class1 {',
+            'class Class1: BjsExport {',
             '    ',
             '    init() {',
             '        ',
@@ -245,7 +245,7 @@ describe('SwiftHostConstructorGenerator', () => {
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
-            'class Class1 {',
+            'class Class1: BjsExport {',
             '    ',
             '    init(_ intParam: Int?) {',
             '        ',

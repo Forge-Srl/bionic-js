@@ -157,7 +157,7 @@ describe('SwiftHostMethodGenerator', () => {
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
-            'class Class1 {',
+            'class Class1: BjsExport {',
             '    ',
             '    func method1() {',
             '        ',
@@ -170,7 +170,7 @@ describe('SwiftHostMethodGenerator', () => {
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
-            'class Class1 {',
+            'class Class1: BjsExport {',
             '    ',
             '    func `throws`() {',
             '        ',
@@ -184,7 +184,7 @@ describe('SwiftHostMethodGenerator', () => {
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
-            'class Class1 {',
+            'class Class1: BjsExport {',
             '    ',
             '    override class func method1(_ voidLambda: (() -> Void)?) -> (() -> Void)? {',
             '        ',

@@ -1,20 +1,8 @@
-import UIKit
+class Engine: BaseEngine {
 
-class Engine {
-    
-    var fuelType: String? {
-        get { return "petrol" }
-    }
-    
-    func powerOn() {
-        
-    }
-    
-    func powerOff() {
-        
-    }
-
-    func watch(_ callback: (() -> String?)?) {
-        
+    var fuelType:String? {
+        get {
+            
+        }
     }
 }

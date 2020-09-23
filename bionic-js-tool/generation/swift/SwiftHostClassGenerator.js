@@ -37,11 +37,11 @@ class SwiftHostClassGenerator extends ClassGenerator {
 
     getScaffold() {
         const superclassName = this.schema.superclass.isBaseObjectClass || this.schema.superclass.isNativeObjectClass
-            ? null : this.schema.superclass.name
+            ? 'BjsExport' : this.schema.superclass.name
         const scaffoldCode = CodeBlock.create()
             .append('import Bjs').newLine()
             .newLine()
-            .append(`class ${this.schema.name}${superclassName ? `: ${superclassName}` : ''} {`).newLineIndenting()
+            .append(`class ${this.schema.name}: ${superclassName} {`).newLineIndenting()
 
         const classParts = this.getClassParts()
         if (classParts.length)

@@ -25,6 +25,8 @@
 		C5B80A41234A1B19002FD95C /* Bjs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5B80A3F234A1B19002FD95C /* Bjs.framework */; };
 		C5B80A43234A1BED002FD95C /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A42234A1BED002FD95C /* Engine.swift */; };
 		C5B80A44234A1BED002FD95C /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A42234A1BED002FD95C /* Engine.swift */; };
+		C5E300F2251A4C6F009410C2 /* BaseEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E300B6251A27DF009410C2 /* BaseEngine.swift */; };
+		C5E300F3251A4C6F009410C2 /* BaseEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E300B6251A27DF009410C2 /* BaseEngine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +43,7 @@
 		C5B80A46234A860A002FD95C /* target1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = target1.plist; sourceTree = "<group>"; };
 		C5B80A48234A8612002FD95C /* target2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = target2.plist; sourceTree = "<group>"; };
 		C5B80A4A234A861C002FD95C /* target3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = target3.plist; sourceTree = "<group>"; };
+		C5E300B6251A27DF009410C2 /* BaseEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseEngine.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +98,7 @@
 				C5CE054823546844009E64CC /* Group1 */,
 				C5966C902349378B00EE670C /* AppDelegate.swift */,
 				C5B80A42234A1BED002FD95C /* Engine.swift */,
+				C5E300B6251A27DF009410C2 /* BaseEngine.swift */,
 				C5966C922349378B00EE670C /* SceneDelegate.swift */,
 				C5966C942349378B00EE670C /* ContentView.swift */,
 				C5966C962349378F00EE670C /* Assets.xcassets */,
@@ -118,20 +122,20 @@
 		C5B80A14234A19DB002FD95C /* host */ = {
 			isa = PBXGroup;
 			children = (
-				C5B80A16234A1A0E002FD95C /* libs */,
-				C5B80A22234A1A0E002FD95C /* native */,
+				C5B80A29234A1A0E002FD95C /* libs */,
+				C5B80A37234A1A0E002FD95C /* native */,
 			);
 			path = host;
 			sourceTree = "<group>";
 		};
-		C5B80A16234A1A0E002FD95C /* libs */ = {
+		C5B80A29234A1A0E002FD95C /* libs */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = libs;
 			sourceTree = "<group>";
 		};
-		C5B80A22234A1A0E002FD95C /* native */ = {
+		C5B80A37234A1A0E002FD95C /* native */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -297,6 +301,7 @@
 				C5966C912349378B00EE670C /* AppDelegate.swift in Sources */,
 				C5966C932349378B00EE670C /* SceneDelegate.swift in Sources */,
 				C5B80A43234A1BED002FD95C /* Engine.swift in Sources */,
+				C5E300F2251A4C6F009410C2 /* BaseEngine.swift in Sources */,
 				C5966C952349378B00EE670C /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -307,6 +312,7 @@
 			files = (
 				C5B809F22349FE28002FD95C /* AppDelegate.swift in Sources */,
 				C5B809F32349FE28002FD95C /* SceneDelegate.swift in Sources */,
+				C5E300F3251A4C6F009410C2 /* BaseEngine.swift in Sources */,
 				C5B80A44234A1BED002FD95C /* Engine.swift in Sources */,
 				C5B809F42349FE28002FD95C /* ContentView.swift in Sources */,
 			);

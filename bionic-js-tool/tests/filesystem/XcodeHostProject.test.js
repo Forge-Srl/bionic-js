@@ -17,7 +17,7 @@ describe('XcodeHostProject', () => {
         log = new Log(true)
     })
 
-    const getProject = async (projectDirName, codeUsingProject) => {
+    async function getProject(projectDirName, codeUsingProject) {
         await Directory.runInTempDir(async tempDir => {
             const projectDir = new Directory(__dirname).getSubDir(`../../testing-code/swift/${projectDirName}/`)
             copydir.sync(projectDir.absolutePath, tempDir.absolutePath, {utimes: true, mode: true, cover: true})
@@ -30,15 +30,15 @@ describe('XcodeHostProject', () => {
         })
     }
 
-    const getProjectWithoutHost = async codeUsingProject => {
+    async function getProjectWithoutHost(codeUsingProject) {
         return getProject('project-without-host', codeUsingProject)
     }
 
-    const getProjectWithHostFiles = async codeUsingProject => {
+    async function getProjectWithHostFiles(codeUsingProject) {
         return getProject('project-with-host-files', codeUsingProject)
     }
 
-    const getProjectWithHostDirs = async codeUsingProject => {
+    async function getProjectWithHostDirs(codeUsingProject) {
         return getProject('project-with-host-dirs', codeUsingProject)
     }
 
@@ -228,7 +228,7 @@ describe('XcodeHostProject', () => {
             expect(sameLibsGroup).toEqual(libsGroup)
             expect(libsGroup.relativePath).toBe('HostProject')
             expect(libsGroup.debugLocation).toBe('Project/HostProject')
-            expect(libsGroup.children.length).toBe(11)
+            expect(libsGroup.children.length).toBe(12)
         })
     })
 
@@ -277,21 +277,24 @@ describe('XcodeHostProject', () => {
             const files = project.getFiles(hostProjectGroup)
             expect(files.map(file => file.path)).toStrictEqual([
                 'Bjs.framework', 'BjsEnvironment.swift', 'FerrariCalifornia.swift', 'TeslaRoadster.swift',
-                'MotorVehicle.swift', 'Vehicle.swift', 'EngineWrapper.swift', 'package.bundle'])
+                'MotorVehicle.swift', 'Vehicle.swift', 'BaseEngineWrapper.swift', 'EngineWrapper.swift',
+                'package.bundle'])
 
             expect(files.map(file => file.relativePath)).toStrictEqual([
                 'HostProject/Bjs.framework', 'HostProject/host/BjsEnvironment.swift',
                 'HostProject/host/FerrariCalifornia.swift', 'HostProject/host/TeslaRoadster.swift',
                 'HostProject/host/libs/MotorVehicle.swift', 'HostProject/host/libs/Vehicle.swift',
-                'HostProject/host/native/EngineWrapper.swift', 'HostProject/host/package.bundle'])
+                'HostProject/host/native/BaseEngineWrapper.swift', 'HostProject/host/native/EngineWrapper.swift',
+                'HostProject/host/package.bundle'])
 
             expect(files.map(file => file.debugLocation)).toStrictEqual([
                 'Project/HostProject/Bjs/Bjs.framework', 'Project/HostProject/Bjs/host/BjsEnvironment.swift',
                 'Project/HostProject/Bjs/host/FerrariCalifornia.swift', 'Project/HostProject/Bjs/host/TeslaRoadster.swift',
                 'Project/HostProject/Bjs/host/libs/MotorVehicle.swift', 'Project/HostProject/Bjs/host/libs/Vehicle.swift',
+                'Project/HostProject/Bjs/host/native/BaseEngineWrapper.swift',
                 'Project/HostProject/Bjs/host/native/EngineWrapper.swift', 'Project/HostProject/Bjs/host/package.bundle'])
 
-            expect(project.decodePath).toHaveBeenCalledTimes(12) // 8 files + 4 dirs
+            expect(project.decodePath).toHaveBeenCalledTimes(13) // 9 files + 4 dirs
         })
     })
 
@@ -336,7 +339,7 @@ describe('XcodeHostProject', () => {
             const files = await project.getHostFiles()
             expect(files.map(file => file.relativePath)).toStrictEqual([
                 'BjsEnvironment.swift', 'FerrariCalifornia.swift', 'TeslaRoadster.swift', 'libs/MotorVehicle.swift',
-                'libs/Vehicle.swift', 'native/EngineWrapper.swift',
+                'libs/Vehicle.swift', 'native/BaseEngineWrapper.swift', 'native/EngineWrapper.swift',
             ])
             expect(files[0].rootDirPath).toBe(project.targetConfig.hostDirPath)
         })
@@ -363,8 +366,8 @@ describe('XcodeHostProject', () => {
                 'node_modules/module-c/node_modules/module-b/ModuleB.js',
                 'node_modules/module-c/node_modules/module-b/package.json',
                 'node_modules/module-b/ModuleB.js', 'node_modules/module-b/package.json',
-                'node_modules/module-a/ModuleA.js', 'node_modules/module-a/package.json', 'native/Engine.js',
-                'native/fuelCosts.js', 'libs/MotorVehicle.js', 'libs/Vehicle.js',
+                'node_modules/module-a/ModuleA.js', 'node_modules/module-a/package.json', 'native/BaseEngine.js',
+                'native/Engine.js', 'native/fuelCosts.js', 'libs/MotorVehicle.js', 'libs/Vehicle.js',
             ].sort())
             expect(files[0].rootDirPath).toBe(project.targetConfig.packageDirPath)
         })
@@ -504,55 +507,57 @@ describe('XcodeHostProject', () => {
         })
     })
 
-    const orderSubArray = (objects, subArrayName) => {
-        for (const objectKey in objects) {
-            const object = objects[objectKey]
-            if (object[subArrayName]) {
-                object[subArrayName] = object[subArrayName].sort((child1, child2) => child1.comment.localeCompare(child2.comment))
-            }
+    function testFileKeys(actualGroup, expectedGroup, filesKey) {
+        const actualComments = Object.getOwnPropertyNames(actualGroup)
+            .filter(key => !key.endsWith('_comment'))
+            .map(key => actualGroup[key])
+            .flatMap(group => group[filesKey].map(file => file.comment))
+            .sort()
+
+        const expectedComments = Object.getOwnPropertyNames(expectedGroup)
+            .filter(key => !key.endsWith('_comment'))
+            .map(key => expectedGroup[key])
+            .flatMap(group => group[filesKey].map(file => file.comment))
+            .sort()
+
+        expect(actualComments.length).toBeGreaterThan(0)
+        expect(actualComments).toEqual(expectedComments)
+    }
+
+    function testCommentKeys(actualGroup, expectedGroup, filesKey) {
+        const actualComments = Object.getOwnPropertyNames(actualGroup)
+            .filter(key => key.endsWith('_comment'))
+            .map(key => actualGroup[key])
+            .sort()
+
+        const expectedComments = Object.getOwnPropertyNames(expectedGroup)
+            .filter(key => key.endsWith('_comment'))
+            .map(key => expectedGroup[key])
+            .sort()
+
+        expect(actualComments.length).toBeGreaterThan(0)
+        expect(actualComments).toEqual(expectedComments)
+
+        if (filesKey) {
+            testFileKeys(actualGroup, expectedGroup, filesKey)
         }
-        return objects
+    }
+
+    function testProjectObjects(actualObjects, expectedObjects) {
+        testCommentKeys(actualObjects.PBXBuildFile, expectedObjects.PBXBuildFile)
+        testCommentKeys(actualObjects.PBXFileReference, expectedObjects.PBXFileReference)
+        testCommentKeys(actualObjects.PBXFrameworksBuildPhase, expectedObjects.PBXFrameworksBuildPhase, 'files')
+        testCommentKeys(actualObjects.PBXGroup, expectedObjects.PBXGroup, 'children')
+        testCommentKeys(actualObjects.PBXNativeTarget, expectedObjects.PBXNativeTarget, 'buildPhases')
+        testCommentKeys(actualObjects.PBXProject, expectedObjects.PBXProject, 'targets')
+        testCommentKeys(actualObjects.PBXResourcesBuildPhase, expectedObjects.PBXResourcesBuildPhase, 'files')
+        testCommentKeys(actualObjects.PBXSourcesBuildPhase, expectedObjects.PBXSourcesBuildPhase, 'files')
+        testCommentKeys(actualObjects.PBXVariantGroup, expectedObjects.PBXVariantGroup, 'children')
     }
 
     test('setHostFileContent and setPackageFileContent', async () => {
         await getProjectWithHostFiles(async projWithHostFiles => {
             await getProjectWithoutHost(async projWithoutHost => {
-
-                const uuidFn = projWithoutHost.project.generateUuid = t.mockFn()
-                uuidFn.mockReturnValueOnce('C5B80A15234A1A0E002FD95C') // PBXFile: BjsEnvironment.swift
-                uuidFn.mockReturnValueOnce('C5B80A24234A1A0E002FD95C') // PBXBuildFile (target1): BjsEnvironment.swift
-                uuidFn.mockReturnValueOnce('C5B80A25234A1A0E002FD95C') // PBXBuildFile (target2): BjsEnvironment.swift
-
-                uuidFn.mockReturnValueOnce('C5B80A19234A1A0E002FD95C') // PBXFile: FerrariCalifornia.swift
-                uuidFn.mockReturnValueOnce('C5B80A2A234A1A0E002FD95C') // PBXBuildFile (target1): FerrariCalifornia.swift
-                uuidFn.mockReturnValueOnce('C5B80A2B234A1A0E002FD95C') // PBXBuildFile (target2): FerrariCalifornia.swift
-
-                uuidFn.mockReturnValueOnce('C5B80A16234A1A0E002FD95C') // PBXFile: TeslaRoadster.swift
-                uuidFn.mockReturnValueOnce('C5B80A18234A1A0E002FD95C') // PBXBuildFile (target1): TeslaRoadster.swift
-                uuidFn.mockReturnValueOnce('C5B80A28234A1A0E002FD95C') // PBXBuildFile (target2): TeslaRoadster.swift
-
-                uuidFn.mockReturnValueOnce('C5B80A29234A1A0E002FD95C') // PBXGroup: libs
-
-                uuidFn.mockReturnValueOnce('C5B80A17234A1A0E002FD95C') // PBXFile: libs/MotorVehicle.swift
-                uuidFn.mockReturnValueOnce('C5B80A26234A1A0E002FD95C') // PBXBuildFile (target1): MotorVehicle.swift
-                uuidFn.mockReturnValueOnce('C5B80A27234A1A0E002FD95C') // PBXBuildFile (target2): MotorVehicle.swift
-
-                uuidFn.mockReturnValueOnce('C5B80A22234A1A0E002FD95C') // PBXFile: libs/Vehicle.swift
-                uuidFn.mockReturnValueOnce('C5B80A23234A1A0E002FD95C') // PBXBuildFile (target1): Vehicle.swift
-                uuidFn.mockReturnValueOnce('C5B80A36234A1A0E002FD95C') // PBXBuildFile (target2): Vehicle.swift
-
-                uuidFn.mockReturnValueOnce('C5B80A37234A1A0E002FD95C') // PBXGroup: native
-
-                uuidFn.mockReturnValueOnce('C5B80A38234A1A8B002FD95C') // PBXFile: native/EngineWrapper.swift
-                uuidFn.mockReturnValueOnce('C5B80A39234A1A8B002FD95C') // PBXBuildFile (target1): EngineWrapper.swift
-                uuidFn.mockReturnValueOnce('C5B80A3A234A1A8B002FD95C') // PBXBuildFile (target2): EngineWrapper.swift
-
-                uuidFn.mockReturnValueOnce('C5B80A3B234A1A8B002FD95C') // PBXFile: package.bundle
-                uuidFn.mockReturnValueOnce('C5B80A3C234A1A8B002FD95C') // PBXBuildFile (target1): package.bundle
-                uuidFn.mockReturnValueOnce('C5B80A3D234A1A8B002FD95C') // PBXBuildFile (target2): package.bundle
-
-                projWithoutHost.encodePath = t.mockFn(path => path)
-
 
                 const hostDirPath = projWithHostFiles.targetConfig.hostDirPath
                 for (const hostFilePath of hostFilePaths) {
@@ -582,17 +587,9 @@ describe('XcodeHostProject', () => {
 
                 const freshProjWithoutHost = xcode.project(projWithoutHost.targetConfig.xcodeProjectFilePath).parseSync()
 
-                orderSubArray(freshProjWithoutHost.hash.project.objects.PBXGroup, 'children')
-                orderSubArray(projWithHostFiles.project.hash.project.objects.PBXGroup, 'children')
-
-                orderSubArray(freshProjWithoutHost.hash.project.objects.PBXResourcesBuildPhase, 'files')
-                orderSubArray(projWithHostFiles.project.hash.project.objects.PBXResourcesBuildPhase, 'files')
-
-                orderSubArray(freshProjWithoutHost.hash.project.objects.PBXSourcesBuildPhase, 'files')
-                orderSubArray(projWithHostFiles.project.hash.project.objects.PBXSourcesBuildPhase, 'files')
-
-                expect(freshProjWithoutHost.hash).toStrictEqual(projWithHostFiles.project.hash)
-                expect(projWithoutHost.encodePath).toHaveBeenCalledTimes(9)
+                const actualObjects = freshProjWithoutHost.hash.project.objects
+                const expectedObjects = projWithHostFiles.project.hash.project.objects
+                testProjectObjects(actualObjects, expectedObjects)
             })
         })
     })
@@ -644,11 +641,6 @@ describe('XcodeHostProject', () => {
             await getProjectWithoutHost(async projectWithoutHost => {
 
                 projectWithoutHost.cleanEmptyDirs = t.mockFn() // disable empty groups cleaning
-
-                expect(projectWithoutHost.project.generateUuid().length).toBe(24)
-                projectWithoutHost.project.generateUuid = t.mockFn()
-                projectWithoutHost.project.generateUuid.mockReturnValueOnce('C5B80A16234A1A0E002FD95C') // PBXGroup: libs
-                projectWithoutHost.project.generateUuid.mockReturnValueOnce('C5B80A22234A1A0E002FD95C') // PBXGroup: native
                 projectWithoutHost.encodePath = t.mockFn(path => path)
 
                 expect(await projectWithoutHost.ensureGroupExists('/HostProject/host/libs'))
@@ -658,7 +650,7 @@ describe('XcodeHostProject', () => {
                 await projectWithoutHost.save()
 
                 let freshLoadedProjectWithoutHost = xcode.project(projectWithoutHost.targetConfig.xcodeProjectFilePath).parseSync()
-                expect(freshLoadedProjectWithoutHost.hash).toStrictEqual(projectWithHostDirs.project.hash)
+                testProjectObjects(freshLoadedProjectWithoutHost.hash.project.objects, projectWithHostDirs.project.hash.project.objects)
 
                 expect(await projectWithoutHost.ensureGroupExists('HostProject/host'))
                     .toStrictEqual(projectWithoutHost.getGroupByDirPath('/HostProject/host'))
@@ -667,7 +659,8 @@ describe('XcodeHostProject', () => {
                 await projectWithoutHost.save()
 
                 freshLoadedProjectWithoutHost = xcode.project(projectWithoutHost.targetConfig.xcodeProjectFilePath).parseSync()
-                expect(freshLoadedProjectWithoutHost.hash).toStrictEqual(projectWithHostDirs.project.hash)
+                testProjectObjects(freshLoadedProjectWithoutHost.hash.project.objects, projectWithHostDirs.project.hash.project.objects)
+
                 expect(projectWithoutHost.encodePath).toHaveBeenCalledTimes(2)
                 expect(projectWithoutHost.encodePath).toHaveBeenCalledWith('libs')
                 expect(projectWithoutHost.encodePath).toHaveBeenCalledWith('native')

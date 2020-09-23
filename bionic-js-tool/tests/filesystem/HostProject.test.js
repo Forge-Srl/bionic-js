@@ -41,7 +41,8 @@ describe('HostProject', () => {
             expect(diff.filesToDelete).toStrictEqual([
                 {relativePath: 'BjsEnvironment.swift'}, {relativePath: 'FerrariCalifornia.swift'},
                 {relativePath: 'TeslaRoadster.swift'}, {relativePath: 'libs/MotorVehicle.swift'},
-                {relativePath: 'libs/Vehicle.swift'}, {relativePath: 'native/EngineWrapper.swift'},
+                {relativePath: 'libs/Vehicle.swift'}, {relativePath: 'native/BaseEngineWrapper.swift'},
+                {relativePath: 'native/EngineWrapper.swift'},
             ])
         })
     })
@@ -68,7 +69,8 @@ describe('HostProject', () => {
 
             expect(diff.filesToDelete).toStrictEqual([
                 {relativePath: 'BjsEnvironment.swift'}, {relativePath: 'TeslaRoadster.swift'},
-                {relativePath: 'libs/MotorVehicle.swift'}, {relativePath: 'native/EngineWrapper.swift'},
+                {relativePath: 'libs/MotorVehicle.swift'}, {relativePath: 'native/BaseEngineWrapper.swift'},
+                {relativePath: 'native/EngineWrapper.swift'},
             ])
         })
     })
@@ -89,7 +91,7 @@ describe('HostProject', () => {
                 'node_modules/module-c/node_modules/module-b/package.json',
                 'node_modules/module-b/ModuleB.js', 'node_modules/module-b/package.json',
                 'node_modules/module-a/ModuleA.js', 'node_modules/module-a/package.json',
-                'native/Engine.js', 'native/fuelCosts.js',
+                'native/BaseEngine.js', 'native/Engine.js', 'native/fuelCosts.js',
                 'libs/MotorVehicle.js', 'libs/Vehicle.js',
             ].sort())
         })
@@ -121,7 +123,7 @@ describe('HostProject', () => {
                 'node_modules/module-c/node_modules/module-b/ModuleB.js',
                 'node_modules/module-c/node_modules/module-b/package.json', 'node_modules/module-b/package.json',
                 'node_modules/module-a/ModuleA.js', 'node_modules/module-a/package.json',
-                'native/Engine.js', 'native/fuelCosts.js',
+                'native/Engine.js', 'native/BaseEngine.js', 'native/fuelCosts.js',
                 'libs/MotorVehicle.js', 'libs/Vehicle.js',
             ].sort())
         })
@@ -134,7 +136,7 @@ describe('HostProject', () => {
 
             const expectedRelativePaths = [
                 'BjsEnvironment.swift', 'FerrariCalifornia.swift', 'TeslaRoadster.swift', 'libs/MotorVehicle.swift',
-                'libs/Vehicle.swift', 'native/EngineWrapper.swift',
+                'libs/Vehicle.swift', 'native/BaseEngineWrapper.swift', 'native/EngineWrapper.swift',
             ]
             expect(oldHostFiles.map(keyValue => keyValue[0])).toStrictEqual(expectedRelativePaths)
             expect(oldHostFiles.map(keyValue => keyValue[1].relativePath)).toStrictEqual(expectedRelativePaths)

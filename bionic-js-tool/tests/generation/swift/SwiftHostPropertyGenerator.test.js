@@ -324,7 +324,7 @@ describe('SwiftHostPropertyGenerator', () => {
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
-            'class Class1 {',
+            'class Class1: BjsExport {',
             '    ',
             '    class var property1:Int? {',
             '        set {',
@@ -339,7 +339,7 @@ describe('SwiftHostPropertyGenerator', () => {
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
-            'class Class1 {',
+            'class Class1: BjsExport {',
             '    ',
             '    override var property1:Int? {',
             '        get {',
@@ -356,7 +356,7 @@ describe('SwiftHostPropertyGenerator', () => {
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
-            'class Class1 {',
+            'class Class1: BjsExport {',
             '    ',
             '    var `return`:((_ voidLambda: (() -> Void)?) -> (() -> Void)?)? {',
             '        set {',
@@ -371,7 +371,7 @@ describe('SwiftHostPropertyGenerator', () => {
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
-            'class Class1 {',
+            'class Class1: BjsExport {',
             '    ',
             '    override var property1:Int? {',
             '        get {',

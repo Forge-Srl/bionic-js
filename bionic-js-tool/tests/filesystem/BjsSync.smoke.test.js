@@ -15,7 +15,6 @@ describe('Bjs smoke tests', () => {
 
     const expectLog = (expectedLog, actualLogString) => {
         let actualLog = actualLogString.split('\n')
-        expect(actualLog.length).toBe(expectedLog.length)
 
         for (let a = 0; a < actualLog.length; a++) {
             const actualMsg = actualLog[a]
@@ -36,6 +35,21 @@ describe('Bjs smoke tests', () => {
             if (!matching) {
                 throw new Error(`Log row "${actualMsg}" (row ${a}) not found in expected log`)
             }
+        }
+        if (expectedLog.length) {
+            throw new Error(`expected log messages not logged:\n${expectedLog.join('\n')}`)
+        }
+    }
+
+    const expectCode = async (actualCodeFile, expectedCodeFile) => {
+        const expectedContent = await expectedCodeFile.getContent()
+        const expectedLines = expectedContent.split('\n').map(line => line.trim())
+        const actualContent = await actualCodeFile.getContent()
+        const actualLines = actualContent.split('\n').map(line => line.trim())
+        try {
+            expect(actualLines).toEqual(expectedLines)
+        } catch (e) {
+            expect(actualContent).toEqual(expectedContent)
         }
     }
 
@@ -64,14 +78,14 @@ describe('Bjs smoke tests', () => {
             for (const hostFilePath of hostFilePaths) {
                 const expectedHostFile = projectWithFilesDir.getSubDir(hostDir).getSubFile(hostFilePath)
                 const actualHostFile = tempDir.getSubDir(hostDir).getSubFile(hostFilePath)
-                expect(await actualHostFile.getContent()).toBe(await expectedHostFile.getContent())
+                await expectCode(actualHostFile, expectedHostFile)
             }
 
             const packageDir = 'HostProject/host/package.bundle'
             for (const packageFilePath of packageFilePaths) {
                 const expectedPackageFile = projectWithFilesDir.getSubDir(packageDir).getSubFile(packageFilePath)
                 const actualPackageFile = tempDir.getSubDir(packageDir).getSubFile(packageFilePath)
-                expect(await actualPackageFile.getContent()).toBe(await expectedPackageFile.getContent())
+                await expectCode(actualPackageFile, expectedPackageFile)
             }
 
             const guestDir = getGuestDir()
@@ -108,14 +122,14 @@ describe('Bjs smoke tests', () => {
                 ' ----------',
                 ' [-] deleted : 0',
                 ' [U] updated : 0',
-                ' [+] added : 17',
+                ' [+] added : 18',
                 '',
                 'Host files',
                 ...hostFilePaths.map(hostFile => ` [+] ${hostFile}`),
                 ' ----------',
                 ' [-] deleted : 0',
                 ' [U] updated : 0',
-                ' [+] added : 6',
+                ' [+] added : 7',
                 '',
                 /Processing time: \d\.\d\ds/,
                 '',
