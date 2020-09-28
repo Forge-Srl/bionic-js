@@ -13,7 +13,7 @@ describe('Bjs smoke tests', () => {
         Directory = t.requireModule('filesystem/Directory').Directory
     })
 
-    const expectLog = (expectedLog, actualLogString) => {
+    function expectLog(expectedLog, actualLogString) {
         let actualLog = actualLogString.split('\n')
 
         for (let a = 0; a < actualLog.length; a++) {
@@ -33,31 +33,24 @@ describe('Bjs smoke tests', () => {
                 }
             }
             if (!matching) {
-                throw new Error(`Log row "${actualMsg}" (row ${a}) not found in expected log`)
+                throw new Error(`Log row "${actualMsg}" (row ${a}) not found in expected log\nActual log:\n${actualLogString}`)
             }
         }
         if (expectedLog.length) {
-            throw new Error(`expected log messages not logged:\n${expectedLog.join('\n')}`)
+            throw new Error(`Expected log messages not logged:\n${expectedLog.join('\n')}\nActual log:\n${actualLogString}`)
         }
     }
 
-    const expectCode = async (actualCodeFile, expectedCodeFile) => {
+    async function expectCode(actualCodeFile, expectedCodeFile) {
         const expectedContent = await expectedCodeFile.getContent()
-        const expectedLines = expectedContent.split('\n').map(line => line.trim())
         const actualContent = await actualCodeFile.getContent()
-        const actualLines = actualContent.split('\n').map(line => line.trim())
-        try {
-            expect(actualLines).toEqual(expectedLines)
-        } catch (e) {
-            expect(actualContent).toEqual(expectedContent)
-        }
+        expect(actualContent).toEqual(expectedContent)
     }
 
     const getProjectDir = projectName => new Directory(__dirname).getSubDir(`../../testing-code/swift/${projectName}`)
     const getGuestDir = () => new Directory(__dirname).getSubDir('../../testing-code/guest')
 
-    const doSmokeTest = async (startProjectName, expectedErrors, expectedWarnings, expectedInfos) => {
-
+    async function doSmokeTest(startProjectName, expectedErrors, expectedWarnings, expectedInfos) {
         await Directory.runInTempDir(async tempDir => {
 
             const startProjectDir = getProjectDir(startProjectName)

@@ -1,5 +1,4 @@
 const {MethodSchemaCreator} = require('./MethodSchemaCreator')
-const {BaseObjectClass} = require('../schema/notable/BaseObjectClass')
 const {Class} = require('../schema/Class')
 const {Constructor} = require('../schema/Constructor')
 const {Property} = require('../schema/Property')
@@ -32,16 +31,13 @@ class ClassSchemaCreator {
             try {
                 const methodNames = [...new Set(this.classExplorer.methodExplorers.map(methodExplorer => methodExplorer.name))]
                 const superclassSchemas = this.buildSuperclassSchemas(moduleCreatorsMap, currentSuperclassSchemas)
-                const methodCreatorContext = this.buildMethodCreatorContext(moduleCreatorsMap, superclassSchemas)
+                const superclassInfo = this.buildSuperclassInfo(superclassSchemas)
                 const methodSchemas = methodNames.map(methodName => new MethodSchemaCreator(
                     this.classExplorer.methodExplorers.filter(methodExplorer => methodExplorer.name === methodName),
-                    methodCreatorContext,
+                    superclassInfo,
                 ).schema)
 
                 const superclassModuleCreator = moduleCreatorsMap.get(this.classExplorer.superclassName)
-                const superclass = superclassModuleCreator
-                    ? superclassModuleCreator.getSchema(moduleCreatorsMap)
-                    : new BaseObjectClass()
 
                 this._schema = new Class(
                     this.name,
@@ -49,7 +45,8 @@ class ClassSchemaCreator {
                     methodSchemas.filter(method => method instanceof Constructor),
                     methodSchemas.filter(method => method instanceof Property),
                     methodSchemas.filter(method => method instanceof Method),
-                    superclass,
+                    superclassModuleCreator ? superclassModuleCreator.getSchema(moduleCreatorsMap) : null,
+                    this.classExplorer.isNative,
                     this.modulePath)
             } catch (error) {
                 error.message = `extracting schema from class ${this.name} in module "${this.modulePath}"\n${error.message}`
@@ -68,19 +65,16 @@ class ClassSchemaCreator {
         }
 
         if (currentSuperclassSchemas.some(schema => schema.name === superclassName)) {
-            throw new Error(`class "${this.name}" extends superclass "${superclassName}" but this generates an ` +
+            throw new Error(`class "${this.name}" extends superclass "${superclassName}" generating ` +
                 'inheritance cycle (e.g. A extends B, B extends A)')
         }
         return [superclassModuleCreator.classSchemaCreator.buildSchema(moduleCreatorsMap, currentSuperclassSchemas), ...currentSuperclassSchemas]
     }
 
-    buildMethodCreatorContext(moduleCreatorsMap, superclassSchemas) {
-        const exportedModules = [...moduleCreatorsMap.values()]
+    buildSuperclassInfo(superclassSchemas) {
         return {
-            superclassMethodNames: new Set(superclassSchemas.map(schema => schema.methods.map(method => method.name)).flat()),
-            superclassPropertyNames: new Set(superclassSchemas.map(schema => schema.properties.map(property => property.name)).flat()),
-            jsModuleNames: new Set(exportedModules.filter(module => !module.isNative).map(module => module.name)),
-            nativeModuleNames: new Set(exportedModules.filter(module => module.isNative).map(module => module.name)),
+            methodNames: new Set(superclassSchemas.map(schema => schema.methods.map(method => method.name)).flat()),
+            propertyNames: new Set(superclassSchemas.map(schema => schema.properties.map(property => property.name)).flat()),
         }
     }
 }

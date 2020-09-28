@@ -8,7 +8,7 @@ class PackageFile extends File {
         const {StandardPackageFile} = require('./StandardPackageFile')
         const {NativePackageFile} = require('./NativePackageFile')
         const packageFilePath = exportedFile.guestFile.composeNewPath(targetConfig.packageDirPath)
-        const PackageFileClass = exportedFile.requiresNativePackageFile ? NativePackageFile : StandardPackageFile
+        const PackageFileClass = exportedFile.exportsNativeClass ? NativePackageFile : StandardPackageFile
         return new PackageFileClass(packageFilePath, targetConfig.packageDirPath, exportedFile, targetConfig.packageMinimization)
     }
 

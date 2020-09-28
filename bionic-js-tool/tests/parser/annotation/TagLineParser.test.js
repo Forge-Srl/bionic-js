@@ -1,6 +1,6 @@
 const t = require('../../test-utils')
 
-describe('Comment text parser', () => {
+describe('Tag line parser', () => {
 
     let Parser
 
@@ -9,7 +9,7 @@ describe('Comment text parser', () => {
     })
 
     const testParsing = (annotation, expectedResult) => {
-        const parseResult = Parser.parse(annotation, {startRule: 'CommentText'})
+        const parseResult = Parser.parse(annotation, {startRule: 'TagLine'})
         expect(parseResult).toEqual(expectedResult)
     }
 
@@ -41,7 +41,7 @@ describe('Comment text parser', () => {
         @tag2 just @text again `, ['@tag1 just @text', '@tag2 just @text again']))
 
     test('parse multiple tags multiline', () => testParsing(` @tag1 just @text
-        just @text again 
+        just @text again
         @tag2
         just @text`, ['@tag1 just @text\njust @text again', '@tag2\njust @text']))
 

@@ -1,7 +1,5 @@
 const {NODE_MODULES_DIR_NAME, PACKAGE_JSON_LOCK_FILE_NAME} = require('../NodeModule')
 const {XcodeHostTargetConfiguration} = require('./XcodeHostTargetConfiguration')
-const {BaseFile} = require('../BaseFile')
-const path = require('path')
 
 class Configuration {
 
@@ -29,16 +27,6 @@ class Configuration {
 
     get guestDirPath() {
         return this.configObj.guestDirPath
-    }
-
-    get guestNativeDirPath() {
-        const nativeDirName = this.configObj.nativeDirName || 'native'
-        const guestNativeDirPath = path.resolve(this.guestDirPath, nativeDirName)
-        const guestNativeDir = new BaseFile(guestNativeDirPath)
-        if (!guestNativeDir.isInsideDir(this.guestDirPath)) {
-            throw new Error(`${this.errorLocationString} "nativeDirName" must be a directory inside "${this.guestDirPath}"`)
-        }
-        return guestNativeDirPath
     }
 
     get hostTargets() {

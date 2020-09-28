@@ -17,7 +17,7 @@ describe('LambdaType', () => {
             returnType: {type: 'String'},
             parameters: [
                 {type: {type: 'Int'}, name: 'par1', description: 'desc1'},
-                {type: {type: 'Any'}, name: 'par2', description: 'desc2'},
+                {type: {type: 'JsRef'}, name: 'par2', description: 'desc2'},
             ],
         })
 
@@ -36,8 +36,8 @@ describe('LambdaType', () => {
         expect(parameters[0].description).toBe('desc1')
 
         expect(parameters[1]).toBeInstanceOf(Parameter)
-        const AnyType = t.requireModule('schema/types/AnyType').AnyType
-        expect(parameters[1].type).toBeInstanceOf(AnyType)
+        const JsRefType = t.requireModule('schema/types/JsRefType').JsRefType
+        expect(parameters[1].type).toBeInstanceOf(JsRefType)
         expect(parameters[1].name).toBe('par2')
         expect(parameters[1].description).toBe('desc2')
     })
@@ -104,25 +104,22 @@ describe('LambdaType', () => {
         expect(lambdaType.toString()).toBe('(Par1Type, Par2Type) => RetType')
     })
 
-    test('resolveNativeType, primitive type', () => {
+    test('resolveClassType', () => {
         const returnType = {
-            resolveNativeType: (jsClasses, nativeClasses) => {
-                expect(jsClasses).toBe('jsClasses')
-                expect(nativeClasses).toBe('nativeClasses')
-                return 'nativeReturnType'
+            resolveClassType: nativeClassesMap => {
+                expect(nativeClassesMap).toBe('nativeClassesMap')
+                return 'resolvedReturnType'
             },
         }
-
-        const paramType = {
-            resolveNativeType: (jsClasses, nativeClasses) => {
-                expect(jsClasses).toBe('jsClasses')
-                expect(nativeClasses).toBe('nativeClasses')
-                return 'nativeParamType'
+        const param = {
+            resolveClassType: nativeClassesMap => {
+                expect(nativeClassesMap).toBe('nativeClassesMap')
+                return 'resolvedParam'
             },
         }
+        const lambdaType = new LambdaType(returnType, [param])
 
-        const lambdaType = new LambdaType(returnType, [new Parameter(paramType)])
-        expect(lambdaType.resolveNativeType('jsClasses', 'nativeClasses')).toStrictEqual(
-            new LambdaType('nativeReturnType', [new Parameter('nativeParamType')]))
+        expect(lambdaType.resolveClassType('nativeClassesMap')).toStrictEqual(
+            new LambdaType('resolvedReturnType', ['resolvedParam']))
     })
 })

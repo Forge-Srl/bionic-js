@@ -77,19 +77,12 @@ describe('MethodSchemaCreator', () => {
 
 
     test('type', () => {
-
         const methodCreatorContext = {
             jsModuleNames: 'jsModuleNames',
             nativeModuleNames: 'nativeModuleNames',
         }
-        const nativeType = {native: 'type'}
         const type1 = {
             isEqualTo: () => true,
-            resolveNativeType: (jsModuleNames, nativeModuleNames) => {
-                expect(jsModuleNames).toBe('jsModuleNames')
-                expect(nativeModuleNames).toBe('nativeModuleNames')
-                return nativeType
-            },
         }
         const type2 = {isEqualTo: () => true}
         const methodExplorers = [{type: type1}, {type: type2}]
@@ -98,8 +91,8 @@ describe('MethodSchemaCreator', () => {
 
         const type = methodSchemaCreator.type
 
-        expect(type).toBe(nativeType)
-        expect(methodSchemaCreator.type).toBe(nativeType)
+        expect(type).toBe(type1)
+        expect(methodSchemaCreator.type).toBe(type1)
     })
 
     test('type, different types', () => {
@@ -139,19 +132,19 @@ describe('MethodSchemaCreator', () => {
 
 
     test('methodSchema', () => {
-        const methodCreatorContext = {superclassMethodNames: new Set()}
+        const methodCreatorContext = {methodNames: new Set()}
         const schemaCreator = new MethodSchemaCreator(null, methodCreatorContext)
         t.mockGetter(schemaCreator, 'name', () => 'method1')
         t.mockGetter(schemaCreator, 'description', () => 'description')
         t.mockGetter(schemaCreator, 'isStatic', () => true)
         t.mockGetter(schemaCreator, 'methodSignature', () => ({returnType: 'returnType', parameters: 'parameters'}))
 
-        expect(schemaCreator.methodSchema).toStrictEqual(new Method('method1', 'description', true, false,
-            'returnType', 'parameters'))
+        expect(schemaCreator.methodSchema).toStrictEqual(new Method('method1', 'description', true, 'returnType',
+            'parameters'))
     })
 
     test('methodSchema, another method in hierarchy', () => {
-        const methodCreatorContext = {superclassMethodNames: new Set(['method1'])}
+        const methodCreatorContext = {methodNames: new Set(['method1'])}
         const schemaCreator = new MethodSchemaCreator(null, methodCreatorContext)
         t.mockGetter(schemaCreator, 'name', () => 'method1')
         t.mockGetter(schemaCreator, 'description', () => 'description')
@@ -163,7 +156,7 @@ describe('MethodSchemaCreator', () => {
 
 
     test('propertySchema', () => {
-        const methodCreatorContext = {superclassPropertyNames: new Set()}
+        const methodCreatorContext = {propertyNames: new Set()}
         const schemaCreator = new MethodSchemaCreator(null, methodCreatorContext)
         t.mockGetter(schemaCreator, 'name', () => 'property1')
         t.mockGetter(schemaCreator, 'description', () => 'description')
@@ -171,12 +164,12 @@ describe('MethodSchemaCreator', () => {
         t.mockGetter(schemaCreator, 'type', () => 'type')
         t.mockGetter(schemaCreator, 'kinds', () => new Set(['kind']))
 
-        expect(schemaCreator.propertySchema).toStrictEqual(new Property('property1', 'description', true, false,
-            'type', ['kind']))
+        expect(schemaCreator.propertySchema).toStrictEqual(new Property('property1', 'description', true, 'type',
+            ['kind']))
     })
 
     test('propertySchema, another property in hierarchy', () => {
-        const methodCreatorContext = {superclassPropertyNames: new Set(['property1'])}
+        const methodCreatorContext = {propertyNames: new Set(['property1'])}
         const schemaCreator = new MethodSchemaCreator(null, methodCreatorContext)
         t.mockGetter(schemaCreator, 'name', () => 'property1')
         t.mockGetter(schemaCreator, 'isStatic', () => true)

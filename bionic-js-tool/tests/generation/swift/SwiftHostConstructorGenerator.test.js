@@ -2,13 +2,12 @@ const t = require('../../test-utils')
 
 describe('SwiftHostConstructorGenerator', () => {
 
-    let Class, BaseObjectClass, Constructor, Parameter, VoidType, BoolType, IntType, ArrayType, LambdaType,
+    let Class, Constructor, Parameter, VoidType, BoolType, IntType, ArrayType, LambdaType,
         expectedHeader,
         expectedFooter
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
-        BaseObjectClass = t.requireModule('schema/notable/BaseObjectClass').BaseObjectClass
         Constructor = t.requireModule('schema/Constructor').Constructor
         Parameter = t.requireModule('schema/Parameter').Parameter
         BoolType = t.requireModule('schema/types/BoolType').BoolType
@@ -38,7 +37,7 @@ describe('SwiftHostConstructorGenerator', () => {
 
     function getCode(constructorParameters) {
         const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)],
-            [], [], new BaseObjectClass(), 'module/path')
+            [], [], null, false, 'module/path')
         return class1.generator.forHosting().swift.getSource()
     }
 
@@ -218,7 +217,7 @@ describe('SwiftHostConstructorGenerator', () => {
 
     function getScaffold(constructorParameters) {
         const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [],
-            [], new BaseObjectClass(), 'module/path')
+            [], null, false, 'module/path')
         return class1.generator.forHosting().swift.getScaffold()
     }
 

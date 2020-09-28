@@ -38,8 +38,8 @@ class ArrayType extends Type {
         return `${ArrayType.typeName}<${this.elementType.toString()}>`
     }
 
-    resolveNativeType(jsClasses, nativeClasses) {
-        return new ArrayType(this.elementType.resolveNativeType(jsClasses, nativeClasses))
+    resolveClassType(nativeClassesMap) {
+        return new ArrayType(this.elementType.resolveClassType(nativeClassesMap))
     }
 }
 

@@ -25,6 +25,7 @@ describe('Class', () => {
             properties: [],
             methods: [],
             superclass: null,
+            isNative: false,
             modulePath: 'relative/superFilePath.js',
         }
 
@@ -35,21 +36,21 @@ describe('Class', () => {
                 description: 'constructor desc', parameters: [],
             }],
             properties: [{
-                name: 'getter', description: 'getter desc', isStatic: false, isOverriding: false,
+                name: 'getter', description: 'getter desc', isStatic: false,
                 type: {type: 'Int'}, kinds: ['get'],
             }],
             methods: [{
-                name: 'method', description: 'method desc', isStatic: false, isOverriding: false,
+                name: 'method', description: 'method desc', isStatic: false,
                 returnType: {type: 'Void'}, parameters: [],
             }],
-            superclass: superclassObj, modulePath: 'relative/filePath.js',
+            superclass: superclassObj, isNative: true, modulePath: 'relative/filePath.js',
         }
         const clazz = Class.fromObj(classObj)
 
-        const expectedSuperclass = new Class('SuperClass', 'Superclass desc', [], [], [], null, 'relative/superFilePath.js')
+        const expectedSuperclass = new Class('SuperClass', 'Superclass desc', [], [], [], null, false, 'relative/superFilePath.js')
         const expectedClass = new Class('Class', 'Class desc', [new Constructor('constructor desc', [])],
-            [new Property('getter', 'getter desc', false, false, new IntType(), ['get'])],
-            [new Method('method', 'method desc', false, false, new VoidType(), [])], expectedSuperclass, 'relative/filePath.js')
+            [new Property('getter', 'getter desc', false, new IntType(), ['get'])],
+            [new Method('method', 'method desc', false, new VoidType(), [])], expectedSuperclass, true, 'relative/filePath.js')
 
         expect(clazz).toBeInstanceOf(Class)
         expect(clazz.constructors[0]).toBeInstanceOf(Constructor)
@@ -104,5 +105,30 @@ describe('Class', () => {
 
         clazz.modulePath = '/relative/module1/otherFile'
         expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe('../moduleR/filePath')
+    })
+
+    test('resolveClassType', () => {
+        const constructor = {
+            resolveClassType: nativeClassesMap => {
+                expect(nativeClassesMap).toBe('nativeClassesMap')
+                return 'resolvedConstructor'
+            },
+        }
+        const property = {
+            resolveClassType: nativeClassesMap => {
+                expect(nativeClassesMap).toBe('nativeClassesMap')
+                return 'resolvedProperty'
+            },
+        }
+        const method = {
+            resolveClassType: nativeClassesMap => {
+                expect(nativeClassesMap).toBe('nativeClassesMap')
+                return 'resolvedMethod'
+            },
+        }
+        const clazz = new Class('name', 'desc', [constructor], [property], [method], null, false, 'modulePath')
+        expect(clazz.resolveClassType('nativeClassesMap'))
+            .toStrictEqual(new Class('name', 'desc', ['resolvedConstructor'], ['resolvedProperty'], ['resolvedMethod'],
+                null, false, 'modulePath'))
     })
 })

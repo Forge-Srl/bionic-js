@@ -28,7 +28,7 @@ class SwiftWrapperClassGenerator extends ClassGenerator {
     }
 
     getHeaderCode() {
-        const superclassName = this.schema.superclass.isNativeObjectClass ? 'BjsNative' : this.schema.superclass.name
+        const superclassName = this.schema.superclass ? this.schema.superclass.name : 'BjsNative'
         return CodeBlock.create()
             .append('import JavaScriptCore').newLine()
             .append('import Bjs').newLine()
@@ -43,7 +43,7 @@ class SwiftWrapperClassGenerator extends ClassGenerator {
     getExportFunctionsCode() {
         return CodeBlock.create()
             .append('override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {').newLineIndenting()
-            .append(`return ${this.schema.superclass.isNativeObjectClass ? 'nativeExports' : 'super.bjsExportFunctions(nativeExports)'}`)
+            .append(`return ${this.schema.superclass ? 'super.bjsExportFunctions(nativeExports)' : 'nativeExports'}`)
             .__.newLineConditional(this.hasClassParts, 1)
             .append(this.classPartsGenerators.map((generator, index, array) => {
                 return generator.wrapperExportLines.newLineConditional(index < array.length - 1)
@@ -53,7 +53,7 @@ class SwiftWrapperClassGenerator extends ClassGenerator {
 
     getExportConstructorCode(schema = this.schema) {
         if (!schema.constructors.length) {
-            if (!schema.superclass.isNativeObjectClass) {
+            if (schema.superclass) {
                 return this.getExportConstructorCode(schema.superclass)
             }
             return new Constructor('Default constructor', []).generator.forWrapping(this.schema, false).swift.getCode()

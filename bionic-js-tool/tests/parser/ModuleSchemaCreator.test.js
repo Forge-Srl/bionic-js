@@ -2,7 +2,7 @@ const t = require('../test-utils')
 
 describe('ModuleSchemaCreator', () => {
 
-    let parser, ModuleExplorer, ClassSchemaCreator, NativeObjectClass, ModuleSchemaCreator
+    let parser, ModuleExplorer, ClassSchemaCreator, ModuleSchemaCreator
 
     beforeEach(() => {
         t.resetModulesCache()
@@ -10,7 +10,6 @@ describe('ModuleSchemaCreator', () => {
         parser = t.mockAndRequire('@babel/parser')
         ModuleExplorer = t.mockAndRequireModule('parser/jsExplorer/ModuleExplorer').ModuleExplorer
         ClassSchemaCreator = t.mockAndRequireModule('parser/ClassSchemaCreator').ClassSchemaCreator
-        NativeObjectClass = t.mockAndRequireModule('schema/notable/NativeObjectClass').NativeObjectClass
 
         ModuleSchemaCreator = t.requireModule('parser/ModuleSchemaCreator').ModuleSchemaCreator
     })
@@ -84,13 +83,6 @@ describe('ModuleSchemaCreator', () => {
         expect(moduleCreator.path).toBe('path')
     })
 
-    test('isNative', () => {
-        const guestFile = {isNative: true}
-        const moduleCreator = new ModuleSchemaCreator(guestFile)
-
-        expect(moduleCreator.isNative).toBe(true)
-    })
-
     test('getSchema', () => {
         const moduleCreator = new ModuleSchemaCreator()
         t.mockGetter(moduleCreator, 'isNative', () => false)
@@ -102,45 +94,5 @@ describe('ModuleSchemaCreator', () => {
         }))
 
         expect(moduleCreator.getSchema('moduleCreators')).toBe('classSchema')
-    })
-
-    test('getSchema, native module with non base object superclass', () => {
-        const classSchema = {
-            superclass: {test: 'schema'},
-        }
-        const moduleCreator = new ModuleSchemaCreator()
-        t.mockGetter(moduleCreator, 'isNative', () => true)
-        t.mockGetter(moduleCreator, 'classSchemaCreator', () => ({
-            getSchema: moduleCreators => {
-                expect(moduleCreators).toBe('moduleCreators')
-                return classSchema
-            },
-        }))
-
-        expect(moduleCreator.getSchema('moduleCreators')).toBe(classSchema)
-    })
-
-    test('getSchema, native module with base object superclass', () => {
-
-        const classSchema = {
-            superclass: {
-                isBaseObjectClass: true,
-            },
-        }
-        const moduleCreator = new ModuleSchemaCreator('guestFile')
-        t.mockGetter(moduleCreator, 'isNative', () => true)
-
-        NativeObjectClass.mockImplementationOnce(() => {
-            return {test: 'nativeObj'}
-        })
-        t.mockGetter(moduleCreator, 'classSchemaCreator', () => ({
-            getSchema: moduleCreators => {
-                expect(moduleCreators).toBe('moduleCreators')
-                return classSchema
-            },
-        }))
-
-        expect(moduleCreator.getSchema('moduleCreators')).toBe(classSchema)
-        expect(classSchema.superclass).toStrictEqual({test: 'nativeObj'})
     })
 })

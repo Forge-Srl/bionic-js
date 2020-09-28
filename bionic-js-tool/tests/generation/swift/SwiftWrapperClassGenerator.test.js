@@ -2,18 +2,17 @@ const t = require('../../test-utils')
 
 describe('SwiftWrapperClassGenerator', () => {
 
-    let Class, NativeObjectClass, Parameter, Constructor, Property, Method, IntType
+    let Class, Parameter, Constructor, Property, Method, IntType
 
-    function getCode(properties, methods, superclass = new NativeObjectClass(), withScaffold = false) {
+    function getCode(properties, methods, superclass = null, withScaffold = false) {
         const class1 = new Class('Class1', 'class description', [new Constructor('desc', [])], properties, methods,
-            superclass, 'module/path')
+            superclass, true, 'module/path')
         const hostClassGeneratorForScaffolding = withScaffold ? class1.generator.forHosting().swift : undefined
         return class1.generator.forWrapping(hostClassGeneratorForScaffolding).swift.getSource()
     }
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
-        NativeObjectClass = t.requireModule('schema/notable/NativeObjectClass').NativeObjectClass
         Parameter = t.requireModule('schema/Parameter').Parameter
         Constructor = t.requireModule('schema/Constructor').Constructor
         Property = t.requireModule('schema/Property').Property
@@ -66,16 +65,16 @@ describe('SwiftWrapperClassGenerator', () => {
         const intType = new IntType()
 
         const properties = [
-            new Property('instanceProperty1', 'desc', false, false, intType, ['get', 'set']),
-            new Property('staticProperty1', 'desc', true, false, intType, ['get', 'set']),
-            new Property('instanceProperty2', 'desc', false, false, intType, ['get', 'set']),
-            new Property('staticProperty2', 'desc', true, false, intType, ['get', 'set']),
+            new Property('instanceProperty1', 'desc', false, intType, ['get', 'set']),
+            new Property('staticProperty1', 'desc', true, intType, ['get', 'set']),
+            new Property('instanceProperty2', 'desc', false, intType, ['get', 'set']),
+            new Property('staticProperty2', 'desc', true, intType, ['get', 'set']),
         ]
         const methods = [
-            new Method('instanceMethod1', 'desc', false, false, intType, []),
-            new Method('staticMethod1', 'desc', true, false, intType, []),
-            new Method('instanceMethod2', 'desc', false, false, intType, []),
-            new Method('staticMethod2', 'desc', true, false, intType, []),
+            new Method('instanceMethod1', 'desc', false, intType, []),
+            new Method('staticMethod1', 'desc', true, intType, []),
+            new Method('instanceMethod2', 'desc', false, intType, []),
+            new Method('staticMethod2', 'desc', true, intType, []),
         ]
         const code = getCode(properties, methods)
 
@@ -181,15 +180,15 @@ describe('SwiftWrapperClassGenerator', () => {
         const intType = new IntType()
 
         const properties = [
-            new Property('property', 'desc', false, false, intType, ['get', 'set']),
+            new Property('property', 'desc', false, intType, ['get', 'set']),
         ]
         const methods = [
-            new Method('method', 'desc', false, false, intType, []),
+            new Method('method', 'desc', false, intType, []),
         ]
 
         const superclassConstructor = new Constructor('desc', [new Parameter(new IntType(), 'param1')])
-        const superclass = new Class('SuperClass', `SuperClass description`, [superclassConstructor], [], [],
-            new NativeObjectClass(), 'module/superclassPath')
+        const superclass = new Class('SuperClass', `SuperClass description`, [superclassConstructor], [], [], null,
+            true, 'module/superclassPath')
         const code = getCode(properties, methods, superclass, true)
 
         t.expectCode(code,

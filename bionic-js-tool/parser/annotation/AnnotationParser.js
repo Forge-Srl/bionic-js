@@ -10,7 +10,7 @@ class AnnotationParser {
         if (!this._tags) {
             try {
                 const tags = new Map()
-                const tagsTexts = this.parseWithRule(this.annotation, 'CommentText')
+                const tagsTexts = this.parseWithRule(this.annotation, 'TagLine')
                 for (const tagText of tagsTexts) {
                     const tag = this.parseWithRule(tagText, 'Tags')
                     if (tag === 'UnknownTag')

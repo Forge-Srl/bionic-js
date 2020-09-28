@@ -73,15 +73,14 @@ describe('ArrayType', () => {
         expect(ArrayType.typeName).toBe('Array')
     })
 
-    test('resolveNativeType, primitive type', () => {
+    test('resolveClassType, primitive type', () => {
         const elementType = {
-            resolveNativeType: (jsClasses, nativeClasses) => {
-                expect(jsClasses).toBe('jsClasses')
-                expect(nativeClasses).toBe('nativeClasses')
+            resolveClassType: (nativeClassesMap) => {
+                expect(nativeClassesMap).toBe('nativeClassesMap')
                 return 'nativeType'
             },
         }
         const arrayType = new ArrayType(elementType)
-        expect(arrayType.resolveNativeType('jsClasses', 'nativeClasses')).toStrictEqual(new ArrayType('nativeType'))
+        expect(arrayType.resolveClassType('nativeClassesMap')).toStrictEqual(new ArrayType('nativeType'))
     })
 })

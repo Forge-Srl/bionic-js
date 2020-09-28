@@ -2,7 +2,7 @@ const t = require('../../test-utils')
 
 describe('JavascriptWrapperMethodGenerator', () => {
 
-    let Class, Method, Parameter, intType, voidType, nativeObjectSchema, expectedHeader, expectedFooter
+    let Class, Method, Parameter, intType, voidType, expectedHeader, expectedFooter
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
@@ -16,26 +16,17 @@ describe('JavascriptWrapperMethodGenerator', () => {
         voidType = new VoidType()
 
         const expectedJavascriptCode = require('./expectedJavascriptCode')
-        nativeObjectSchema = expectedJavascriptCode.getNativeObjectSchema()
         expectedHeader = expectedJavascriptCode.getExpectedHeader()
         expectedFooter = expectedJavascriptCode.getExpectedFooter()
     })
 
-    function getSchema(isMethodStatic, isMethodOverriding, parameterNames, returnType) {
-        return new Class('Class1', '', [], [], [
-            new Method('method1', 'method description', isMethodStatic, isMethodOverriding, returnType,
-                parameterNames.map(name => new Parameter(intType, name, `${name} desc`))),
-        ], nativeObjectSchema, 'native/path')
-    }
-
     function expectMethodCode(isMethodStatic, parameterNames, returnType, expectedCode) {
-        const schema = getSchema(isMethodStatic, false, parameterNames, returnType)
+        const schema = new Class('Class1', '', [], [], [
+            new Method('method1', 'method description', isMethodStatic, returnType,
+                parameterNames.map(name => new Parameter(intType, name, `${name} desc`))),
+        ], null, true, 'native/path')
         const code = schema.generator.forWrapping().javascript.getSource()
         t.expectCode(code, ...expectedCode)
-
-        const schemaWithOverriding = getSchema(isMethodStatic, true, parameterNames, returnType)
-        const codeWithOverriding = schemaWithOverriding.generator.forWrapping().javascript.getSource()
-        t.expectCode(codeWithOverriding, ...expectedCode)
     }
 
     test('Void static method, no params', () => {

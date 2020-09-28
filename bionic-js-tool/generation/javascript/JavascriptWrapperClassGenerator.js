@@ -1,5 +1,6 @@
 const {ClassGenerator} = require('../ClassGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
+const {Class, nativeObjectBaseClassName} = require('../../schema/Class')
 
 class JavascriptWrapperClassGenerator extends ClassGenerator {
 
@@ -19,7 +20,7 @@ class JavascriptWrapperClassGenerator extends ClassGenerator {
     }
 
     getHeaderCode() {
-        const superclass = this.schema.superclass
+        const superclass = this.schema.superclass || new Class(nativeObjectBaseClassName, '', [], [], [], null, true, nativeObjectBaseClassName)
         return CodeBlock.create()
             .append(`const {${superclass.name}} = require(\'${this.schema.getRelativeModuleLoadingPath(superclass)}\')`).newLine()
             .append(`const {bjsNative} = require(\'${this.schema.name}\')`).newLine()

@@ -5,17 +5,17 @@ class SwiftHostFile extends HostFile {
 
     static build(exportedFile, targetConfig) {
         const guestFile = exportedFile.guestFile
-        const newFileName = `${guestFile.name}${guestFile.isNative ? 'Wrapper' : ''}`
+        const newFileName = `${guestFile.name}${exportedFile.schema.isNative ? 'Wrapper' : ''}`
         return new SwiftHostFile(guestFile.composeNewPath(targetConfig.hostDirPath, newFileName, SWIFT_FILE_EXT),
             targetConfig.hostDirPath, exportedFile)
     }
 
     async generate(hostProject) {
-        const schemaGenerator = this.exportedFile.schema.generator
+        const schema = this.exportedFile.schema
+        const schemaGenerator = schema.generator
         const hostClassGenerator = schemaGenerator.forHosting().swift
 
-        const guestFile = this.exportedFile.guestFile
-        const hostFileGenerator = guestFile.isNative
+        const hostFileGenerator = schema.isNative
             ? schemaGenerator.forWrapping(hostClassGenerator).swift
             : hostClassGenerator
 
@@ -23,7 +23,7 @@ class SwiftHostFile extends HostFile {
         try {
             hostFileContent = hostFileGenerator.getSource()
         } catch (error) {
-            error.message = `generating host code from guest file "${guestFile.relativePath}"\n${error.message}`
+            error.message = `generating host code from guest file "${this.exportedFile.guestFile.relativePath}"\n${error.message}`
             throw error
         }
 

@@ -15,6 +15,10 @@ class Parameter extends Generable {
         super()
         Object.assign(this, {type, name, description})
     }
+
+    resolveClassType(nativeClassesMap) {
+        return new Parameter(this.type.resolveClassType(nativeClassesMap), this.name, this.description)
+    }
 }
 
 module.exports = {Parameter}

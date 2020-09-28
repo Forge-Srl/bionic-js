@@ -10,14 +10,14 @@ describe('PackageFile', () => {
         NativePackageFile = t.requireModule('filesystem/NativePackageFile').NativePackageFile
     })
 
-    const buildAndTestPackageFile = (requiresNativePackageFile) => {
+    const buildAndTestPackageFile = (exportsNativeClass) => {
         const targetConfig = {
             packageDirPath: '/package/dir',
             packageMinimization: true,
         }
 
         const exportedFile = {
-            requiresNativePackageFile,
+            exportsNativeClass,
             guestFile: {
                 composeNewPath: (newRootDirPath) => {
                     expect(newRootDirPath).toBe('/package/dir')

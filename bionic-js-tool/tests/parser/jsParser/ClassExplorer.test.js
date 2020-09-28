@@ -31,6 +31,21 @@ describe('ClassExplorer', () => {
         expect(explorer.isToExport).toBe(true)
     })
 
+    test('isNative, nothing to export', () => {
+        const explorer = getExplorer(`/* @desc description */class Class1 { }`)
+        expect(explorer.isNative).toBe(false)
+    })
+
+    test('isNative, bionic class', () => {
+        const explorer = getExplorer(`/* @bionic */class Class1 { }`)
+        expect(explorer.isNative).toBe(false)
+    })
+
+    test('isNative, bionic get', () => {
+        const explorer = getExplorer(`/* @bionic native */ \n\nclass Class1 { }`)
+        expect(explorer.isNative).toBe(true)
+    })
+
     test('name', () => {
         const explorer = getExplorer(`class Class1 {}`)
         const className = explorer.name

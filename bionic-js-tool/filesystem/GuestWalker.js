@@ -9,18 +9,16 @@ class GuestWalker extends FileWalker {
 
     static build(config) {
         const guestFilesFilter = new FilesFilter(config.guestIgnores, [JSON_FILE_EXT, JS_FILE_EXT])
-        return new GuestWalker(config.guestDirPath, guestFilesFilter, config.guestNativeDirPath)
+        return new GuestWalker(config.guestDirPath, guestFilesFilter)
     }
 
-    constructor(dirPath, filesFilter, guestNativeDirPath) {
-        super(dirPath, filesFilter, file => GuestFile.fromFile(file, guestNativeDirPath))
-        Object.assign(this, {guestNativeDirPath})
+    constructor(dirPath, filesFilter) {
+        super(dirPath, filesFilter, file => GuestFile.fromFile(file))
     }
 
     async getDependenciesFiles() {
         const depModules = await NodeModule.fromModulePath(this.dirPath).getDependencies()
-        const depFilesPromises = depModules.map(depModule => GuestDependencyWalker.build(depModule, this.dirPath,
-            this.guestNativeDirPath).getFiles())
+        const depFilesPromises = depModules.map(depModule => GuestDependencyWalker.build(depModule, this.dirPath).getFiles())
         return (await Promise.all(depFilesPromises)).flat()
     }
 

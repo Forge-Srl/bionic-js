@@ -8,13 +8,16 @@ class Property extends Generable {
     }
 
     static fromObj(obj) {
-        return new Property(obj.name, obj.description, obj.isStatic, obj.isOverriding, Type.fromObj(obj.type),
-            obj.kinds.slice())
+        return new Property(obj.name, obj.description, obj.isStatic, Type.fromObj(obj.type), obj.kinds.slice())
     }
 
-    constructor(name, description, isStatic, isOverriding, type, kinds) {
+    constructor(name, description, isStatic, type, kinds) {
         super()
-        Object.assign(this, {name, description, isStatic, isOverriding, type, kinds})
+        Object.assign(this, {name, description, isStatic, type, kinds})
+    }
+
+    resolveClassType(nativeClassesMap) {
+        return new Property(this.name, this.description, this.isStatic, this.type.resolveClassType(nativeClassesMap), this.kinds)
     }
 }
 

@@ -1,3 +1,4 @@
+// @bionic native
 class BaseEngine {
     
     // @bionic ()

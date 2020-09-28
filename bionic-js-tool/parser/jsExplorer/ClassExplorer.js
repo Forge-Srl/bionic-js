@@ -13,7 +13,18 @@ class ClassExplorer extends JsExplorer {
         try {
             return !!(this.bionicTag || this.methodExplorers.find(methodExplorer => methodExplorer.bionicTag))
         } catch (error) {
-            error.message = `parsing annotations of class "${this.name}" in module "${this.modulePath}"\n${error.message}`
+            error.message = this.getParsingErrorMessage(error)
+            throw error
+        }
+    }
+
+    get isNative() {
+        try {
+            const bionicTag = this.bionicTag
+            return !!(bionicTag && bionicTag.typeInfo && bionicTag.typeInfo.type === 'Class' &&
+                bionicTag.typeInfo.className === 'native')
+        } catch (error) {
+            error.message = this.getParsingErrorMessage(error)
             throw error
         }
     }
@@ -67,6 +78,10 @@ class ClassExplorer extends JsExplorer {
                 isCommentInsideClass(comment) && isCommentUnusedByMethods(comment)).map(node => node.value)
         }
         return this._innerComments
+    }
+
+    getParsingErrorMessage(error) {
+        return `parsing annotations of class "${this.name}" in module "${this.modulePath}"\n${error.message}`
     }
 }
 

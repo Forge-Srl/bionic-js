@@ -25,7 +25,7 @@ class Type extends JsonSerializable {
         return this.constructor.typeName
     }
 
-    resolveNativeType(jsClasses, nativeClasses) {
+    resolveClassType(nativeClassesMap) {
         return this
     }
 }

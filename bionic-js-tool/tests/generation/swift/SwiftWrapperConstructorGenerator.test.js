@@ -2,11 +2,10 @@ const t = require('../../test-utils')
 
 describe('SwiftWrapperConstructorGenerator', () => {
 
-    let Class, NativeObjectClass, Constructor, Parameter, VoidType, BoolType, IntType, ArrayType, LambdaType
+    let Class, Constructor, Parameter, VoidType, BoolType, IntType, ArrayType, LambdaType
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
-        NativeObjectClass = t.requireModule('schema/notable/NativeObjectClass').NativeObjectClass
         Constructor = t.requireModule('schema/Constructor').Constructor
         Parameter = t.requireModule('schema/Parameter').Parameter
         BoolType = t.requireModule('schema/types/BoolType').BoolType
@@ -16,8 +15,8 @@ describe('SwiftWrapperConstructorGenerator', () => {
         LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
     })
 
-    function getCode(constructorParameters, superclass = new NativeObjectClass()) {
-        const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], superclass, 'module/path')
+    function getCode(constructorParameters, superclass = null) {
+        const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], superclass, true, 'module/path')
         return class1.generator.forWrapping().swift.getSource()
     }
 
@@ -66,7 +65,7 @@ describe('SwiftWrapperConstructorGenerator', () => {
     })
 
     test('no public constructor', () => {
-        const code = new Class('Class1', '', [], [], [], new NativeObjectClass(), 'module/path')
+        const code = new Class('Class1', '', [], [], [], null, true, 'module/path')
             .generator.forWrapping().swift.getSource()
 
         t.expectCode(code,
@@ -91,8 +90,8 @@ describe('SwiftWrapperConstructorGenerator', () => {
 
     test('no public constructor, inherited public constructor', () => {
         const intPar = newParam(new IntType(), 'intParam')
-        const superclass = new Class('Superclass', '', [new Constructor('', [intPar])], [], [], null, 'module/superPath')
-        const code = new Class('Class1', '', [], [], [], superclass, 'module/path').generator.forWrapping().swift.getSource()
+        const superclass = new Class('Superclass', '', [new Constructor('', [intPar])], [], [], null, true, 'module/superPath')
+        const code = new Class('Class1', '', [], [], [], superclass, true, 'module/path').generator.forWrapping().swift.getSource()
 
         t.expectCode(code,
             ...getExpectedHeader('SuperclassWrapper'),
@@ -102,9 +101,9 @@ describe('SwiftWrapperConstructorGenerator', () => {
 
     test('no public constructor, inherited public constructor from superSuperclass', () => {
         const intPar = newParam(new IntType(), 'intParam')
-        const superSuperclass = new Class('SuperSuperclass', '', [new Constructor('', [intPar])], [], [], null, 'module/superSuperPath')
-        const superclass = new Class('Superclass', '', [], [], [], superSuperclass, 'module/superPath')
-        const code = new Class('Class1', '', [], [], [], superclass, 'module/path').generator.forWrapping().swift.getSource()
+        const superSuperclass = new Class('SuperSuperclass', '', [new Constructor('', [intPar])], [], [], null, true, 'module/superSuperPath')
+        const superclass = new Class('Superclass', '', [], [], [], superSuperclass, true, 'module/superPath')
+        const code = new Class('Class1', '', [], [], [], superclass, true, 'module/path').generator.forWrapping().swift.getSource()
 
         t.expectCode(code,
             ...getExpectedHeader('SuperclassWrapper'),
@@ -125,8 +124,8 @@ describe('SwiftWrapperConstructorGenerator', () => {
     test('single primitive, inherited public constructor with different signature', () => {
         const intPar = newParam(new IntType(), 'intParam')
         const boolPar = newParam(new BoolType(), 'boolParam')
-        const superSuperclass = new Class('SuperSuperclass', '', [new Constructor('', [boolPar])], [], [], null, 'module/superPath')
-        const superclass = new Class('Superclass', '', [new Constructor('constructor description', [boolPar, intPar])], [], [], superSuperclass, 'module/superPath')
+        const superSuperclass = new Class('SuperSuperclass', '', [new Constructor('', [boolPar])], [], [], null, true, 'module/superPath')
+        const superclass = new Class('Superclass', '', [new Constructor('constructor description', [boolPar, intPar])], [], [], superSuperclass, true, 'module/superPath')
         const code = getCode([intPar], superclass)
 
         t.expectCode(code,

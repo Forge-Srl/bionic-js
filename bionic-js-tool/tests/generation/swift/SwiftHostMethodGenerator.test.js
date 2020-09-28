@@ -2,11 +2,10 @@ const t = require('../../test-utils')
 
 describe('SwiftHostMethodGenerator', () => {
 
-    let Class, BaseObjectClass, Method, Parameter, VoidType, BoolType, IntType, LambdaType, expectedHeader, expectedFooter
+    let Class, Method, Parameter, VoidType, BoolType, IntType, LambdaType, expectedHeader, expectedFooter
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
-        BaseObjectClass = t.requireModule('schema/notable/BaseObjectClass').BaseObjectClass
         Method = t.requireModule('schema/Method').Method
         Parameter = t.requireModule('schema/Parameter').Parameter
         BoolType = t.requireModule('schema/types/BoolType').BoolType
@@ -33,9 +32,9 @@ describe('SwiftHostMethodGenerator', () => {
             '}']
     })
 
-    function getCode(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters, methodName = 'method1') {
+    function getCode(isMethodStatic, methodReturnType, methodParameters, methodName = 'method1') {
         const class1 = new Class('Class1', '', [], [], [new Method(methodName, 'method description', isMethodStatic,
-            isMethodOverriding, methodReturnType, methodParameters)], new BaseObjectClass(), 'module/path')
+            methodReturnType, methodParameters)], null, false, 'module/path')
         return class1.generator.forHosting().swift.getSource()
     }
 
@@ -44,7 +43,7 @@ describe('SwiftHostMethodGenerator', () => {
     }
 
     test('void return, no params', () => {
-        const code = getCode(false, false, new VoidType(), [])
+        const code = getCode(false, new VoidType(), [])
 
         t.expectCode(code,
             ...expectedHeader,
@@ -55,7 +54,7 @@ describe('SwiftHostMethodGenerator', () => {
     })
 
     test('void return, reserved keyword', () => {
-        const code = getCode(false, false, new VoidType(), [], 'default')
+        const code = getCode(false, new VoidType(), [], 'default')
 
         t.expectCode(code,
             ...expectedHeader,
@@ -66,7 +65,7 @@ describe('SwiftHostMethodGenerator', () => {
     })
 
     test('void return, no params, static', () => {
-        const code = getCode(true, false, new VoidType(), [])
+        const code = getCode(true, new VoidType(), [])
 
         t.expectCode(code,
             ...expectedHeader,
@@ -76,30 +75,8 @@ describe('SwiftHostMethodGenerator', () => {
             ...expectedFooter)
     })
 
-    test('void return, no params, overriding', () => {
-        const code = getCode(false, true, new VoidType(), [])
-
-        t.expectCode(code,
-            ...expectedHeader,
-            '    override func method1() {',
-            '        _ = bjsCall("method1")',
-            '    }',
-            ...expectedFooter)
-    })
-
-    test('void return, no params, static, overriding', () => {
-        const code = getCode(true, true, new VoidType(), [])
-
-        t.expectCode(code,
-            ...expectedHeader,
-            '    override class func method1() {',
-            '        _ = Bjs.get.call(self.bjsClass, "method1")',
-            '    }',
-            ...expectedFooter)
-    })
-
     test('primitive return, primitive param', () => {
-        const code = getCode(false, false, new IntType(), [newParam(new BoolType(), 'boolParam')])
+        const code = getCode(false, new IntType(), [newParam(new BoolType(), 'boolParam')])
 
         t.expectCode(code,
             ...expectedHeader,
@@ -110,7 +87,7 @@ describe('SwiftHostMethodGenerator', () => {
     })
 
     test('multiple primitive params', () => {
-        const code = getCode(false, false, new VoidType(), [
+        const code = getCode(false, new VoidType(), [
             newParam(new BoolType(), 'boolParam'),
             newParam(new IntType(), 'intParam'),
         ])
@@ -125,7 +102,7 @@ describe('SwiftHostMethodGenerator', () => {
 
     test('void lambda return, void lambda param', () => {
         const voidLambda = new LambdaType(new VoidType(), [])
-        const code = getCode(false, false, voidLambda, [newParam(voidLambda, 'voidLambda')])
+        const code = getCode(false, voidLambda, [newParam(voidLambda, 'voidLambda')])
 
         t.expectCode(code,
             ...expectedHeader,
@@ -142,9 +119,9 @@ describe('SwiftHostMethodGenerator', () => {
             ...expectedFooter)
     })
 
-    function getScaffold(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters, methodName = 'method1') {
+    function getScaffold(isMethodStatic, methodReturnType, methodParameters, methodName = 'method1') {
         const class1 = new Class('Class1', '', [], [], [new Method(methodName, 'method description', isMethodStatic,
-            isMethodOverriding, methodReturnType, methodParameters)], new BaseObjectClass(), 'module/path')
+            methodReturnType, methodParameters)], null, false, 'module/path')
         return class1.generator.forHosting().swift.getScaffold()
     }
 
@@ -153,7 +130,7 @@ describe('SwiftHostMethodGenerator', () => {
         '']
 
     test('void return, no params, scaffold', () => {
-        const code = getScaffold(false, false, new VoidType(), [])
+        const code = getScaffold(false, new VoidType(), [])
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
@@ -166,7 +143,7 @@ describe('SwiftHostMethodGenerator', () => {
     })
 
     test('void return, no params, reserved keyword, scaffold', () => {
-        const code = getScaffold(false, false, new VoidType(), [], 'throws')
+        const code = getScaffold(false, new VoidType(), [], 'throws')
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
@@ -178,15 +155,15 @@ describe('SwiftHostMethodGenerator', () => {
             '}')
     })
 
-    test('void lambda return, void lambda param, static, overriding, scaffold', () => {
+    test('void lambda return, void lambda param, static, scaffold', () => {
         const voidLambda = new LambdaType(new VoidType(), [])
-        const code = getScaffold(true, true, voidLambda, [newParam(voidLambda, 'voidLambda')])
+        const code = getScaffold(true, voidLambda, [newParam(voidLambda, 'voidLambda')])
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
             'class Class1: BjsExport {',
             '    ',
-            '    override class func method1(_ voidLambda: (() -> Void)?) -> (() -> Void)? {',
+            '    class func method1(_ voidLambda: (() -> Void)?) -> (() -> Void)? {',
             '        ',
             '    }',
             '}')

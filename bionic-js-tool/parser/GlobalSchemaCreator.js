@@ -33,11 +33,16 @@ class GlobalSchemaCreator {
     async getExportedFiles() {
         const moduleCreators = await this.getModuleCreators()
         const moduleCreatorsMap = new Map(moduleCreators.map(creator => [creator.guestFile.path, creator]))
-
-        return this.guestFiles.map(guestFile => {
-            const creator = moduleCreatorsMap.get(guestFile.path)
-            return new ExportedFile(guestFile, creator ? creator.getSchema(moduleCreators) : null)
+        const exportedFiles = this.guestFiles.map(guestFile => {
+            const moduleCreator = moduleCreatorsMap.get(guestFile.path)
+            return new ExportedFile(guestFile, moduleCreator ? moduleCreator.getSchema(moduleCreators) : null)
         })
+
+        const nativeClassesMap = new Map(exportedFiles
+            .filter(exportedFile => exportedFile.exportsClass)
+            .map(exportedFile => [exportedFile.schema.name, exportedFile.exportsNativeClass]),
+        )
+        return exportedFiles.map(exportedFile => exportedFile.resolveClassType(nativeClassesMap))
     }
 }
 

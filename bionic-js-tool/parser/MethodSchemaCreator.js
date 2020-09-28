@@ -5,8 +5,8 @@ const {LambdaType} = require('../schema/types/LambdaType')
 
 class MethodSchemaCreator {
 
-    constructor(methodExplorers, context) {
-        Object.assign(this, {methodExplorers, context})
+    constructor(methodExplorers, superclassInfo) {
+        Object.assign(this, {methodExplorers, superclassInfo})
     }
 
     get name() {
@@ -50,7 +50,7 @@ class MethodSchemaCreator {
             const types = this.methodExplorers.map(explorer => explorer.type)
             if (types.some(type => !type.isEqualTo(types[0])))
                 throw new Error(`"${this.name}" is annotated multiple times with different types`)
-            this._type = types[0].resolveNativeType(this.context.jsModuleNames, this.context.nativeModuleNames)
+            this._type = types[0]
         }
         return this._type
     }
@@ -70,20 +70,20 @@ class MethodSchemaCreator {
     }
 
     get methodSchema() {
-        if (this.context.superclassMethodNames.has(this.name)) {
+        if (this.superclassInfo.methodNames.has(this.name)) {
             throw new Error(`method "${this.name}" was already exported in superclass`)
         }
 
-        return new Method(this.name, this.description, this.isStatic, false, this.methodSignature.returnType,
+        return new Method(this.name, this.description, this.isStatic, this.methodSignature.returnType,
             this.methodSignature.parameters)
     }
 
     get propertySchema() {
-        if (this.context.superclassPropertyNames.has(this.name)) {
+        if (this.superclassInfo.propertyNames.has(this.name)) {
             throw new Error(`property "${this.name}" was already exported in superclass`)
         }
 
-        return new Property(this.name, this.description, this.isStatic, false, this.type, [...this.kinds])
+        return new Property(this.name, this.description, this.isStatic, this.type, [...this.kinds])
     }
 
     get schema() {

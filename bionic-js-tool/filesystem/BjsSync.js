@@ -49,7 +49,7 @@ class BjsSync {
 
     async syncHostFiles(targetConfig, hostProject, exportedFiles) {
         this.log.info('Generating host files...\n')
-        await Promise.all(exportedFiles.filter(exportedFile => exportedFile.requiresHostFile).map(exportedFile => {
+        await Promise.all(exportedFiles.filter(exportedFile => exportedFile.exportsClass).map(exportedFile => {
             return HostFile.build(exportedFile, targetConfig).generate(hostProject)
         }))
     }
@@ -64,7 +64,7 @@ class BjsSync {
     async syncVirtualFiles(targetConfig, hostProject, exportedFiles) {
         this.log.info('Generating virtual files...\n')
 
-        const nativePackageFiles = exportedFiles.filter(exportedFile => exportedFile.requiresNativePackageFile)
+        const nativePackageFiles = exportedFiles.filter(exportedFile => exportedFile.exportsNativeClass)
         const hostEnvironmentFile = HostEnvironmentFile.build(nativePackageFiles, targetConfig)
         await hostEnvironmentFile.generate(hostProject)
 

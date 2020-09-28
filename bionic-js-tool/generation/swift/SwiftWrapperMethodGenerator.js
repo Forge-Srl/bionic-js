@@ -2,7 +2,7 @@ const {SwiftMethodGenerator} = require('./SwiftMethodGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
 const {GenerationContext} = require('../code/GenerationContext')
 const {IniRet} = require('../code/IniRet')
-const {WrappedObjectType} = require('../../schema/types/WrappedObjectType')
+const {NativeClassType} = require('../../schema/types/NativeClassType')
 const {Parameter} = require('../../schema/Parameter')
 
 class SwiftWrapperMethodGenerator extends SwiftMethodGenerator {
@@ -25,7 +25,7 @@ class SwiftWrapperMethodGenerator extends SwiftMethodGenerator {
     }
 
     get parameters() {
-        const firstParameter = this.schema.isStatic ? [] : [new Parameter(new WrappedObjectType(), 'wrappedObj')]
+        const firstParameter = this.schema.isStatic ? [] : [new Parameter(new NativeClassType(), 'wrappedObj')]
 
         const otherParameters = super.parameters.map((parameter, index) =>
             new Parameter(parameter.type, `$${index + this.parametersIndexShift}`, parameter.description))

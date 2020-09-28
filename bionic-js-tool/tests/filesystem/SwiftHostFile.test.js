@@ -8,13 +8,15 @@ describe('SwiftHostFile', () => {
         const exportedFile = {
             guestFile: {
                 name: 'Code',
-                isNative: true,
                 composeNewPath: (newRootDirPath, newName, newExtension) => {
                     expect(newRootDirPath).toBe('/host/dir')
                     expect(newName).toBe('CodeWrapper')
                     expect(newExtension).toBe('.swift')
                     return 'host/dir/guest/CodeWrapper.swift'
                 },
+            },
+            schema: {
+                isNative: true,
             },
         }
         const targetConfig = {hostDirPath: '/host/dir'}
@@ -30,13 +32,15 @@ describe('SwiftHostFile', () => {
         const exportedFile = {
             guestFile: {
                 name: 'Code',
-                isNative: false,
                 composeNewPath: (newRootDirPath, newName, newExtension) => {
                     expect(newRootDirPath).toBe('/host/dir')
                     expect(newName).toBe('Code')
                     expect(newExtension).toBe('.swift')
                     return 'host/dir/guest/Code.swift'
                 },
+            },
+            schema: {
+                isNative: false,
             },
         }
         const targetConfig = {hostDirPath: '/host/dir'}
@@ -50,10 +54,8 @@ describe('SwiftHostFile', () => {
 
     test('generate, for hosting guest file', async () => {
         const exportedFile = {
-            guestFile: {
-                isNative: false,
-            },
             schema: {
+                isNative: false,
                 generator: {
                     forHosting: () => ({
                         swift: {
@@ -80,10 +82,8 @@ describe('SwiftHostFile', () => {
     test('generate, for wrapping guest file', async () => {
 
         const exportedFile = {
-            guestFile: {
-                isNative: true,
-            },
             schema: {
+                isNative: true,
                 generator: {
                     forHosting: () => ({
                         swift: 'swiftHostClassGenerator',
@@ -116,10 +116,10 @@ describe('SwiftHostFile', () => {
     test('generate, error', async () => {
         const exportedFile = {
             guestFile: {
-                isNative: false,
-                relativePath: 'guest/path'
+                relativePath: 'guest/path',
             },
             schema: {
+                isNative: false,
                 generator: {
                     forHosting: () => ({
                         swift: {

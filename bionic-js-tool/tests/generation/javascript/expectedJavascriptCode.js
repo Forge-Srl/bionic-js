@@ -1,10 +1,5 @@
 const t = require('../../test-utils')
 
-function getNativeObjectSchema() {
-    const NativeObjectClass = t.requireModule('schema/notable/NativeObjectClass').NativeObjectClass
-    return new NativeObjectClass('native/BjsNativeObject')
-}
-
 function getExpectedHeader(superclassName = 'BjsNativeObject', superclassPath = '../BjsNativeObject',
                            addBottomEmptyLine = true) {
     return [
@@ -28,4 +23,4 @@ function getExpectedFooter() {
     ]
 }
 
-module.exports = {getNativeObjectSchema, getExpectedHeader, getExpectedFooter}
+module.exports = {getExpectedHeader, getExpectedFooter}

@@ -15,6 +15,11 @@ class Constructor extends Generable {
         super()
         Object.assign(this, {description, parameters})
     }
+
+    resolveClassType(nativeClassesMap) {
+        return new Constructor(this.description,
+            this.parameters.map(parameter => parameter.resolveClassType(nativeClassesMap)))
+    }
 }
 
 module.exports = {Constructor}

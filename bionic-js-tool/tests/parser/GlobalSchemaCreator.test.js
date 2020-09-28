@@ -4,12 +4,19 @@ describe('GlobalSchemaCreator', () => {
 
     let GlobalSchemaCreator, ModuleSchemaCreator, ExportedFile
 
+    function requireGlobalSchemaCreator() {
+        GlobalSchemaCreator = t.requireModule('parser/GlobalSchemaCreator').GlobalSchemaCreator
+    }
+
+    function requireExportedFile() {
+        ExportedFile = t.requireModule('filesystem/ExportedFile').ExportedFile
+    }
+
     beforeEach(() => {
         t.resetModulesCache()
-
         ModuleSchemaCreator = t.mockAndRequireModule('parser/ModuleSchemaCreator').ModuleSchemaCreator
-        GlobalSchemaCreator = t.requireModule('parser/GlobalSchemaCreator').GlobalSchemaCreator
-        ExportedFile = t.requireModule('filesystem/ExportedFile').ExportedFile
+        requireGlobalSchemaCreator()
+        requireExportedFile()
     })
 
     test('moduleCreatorPromises', async () => {
@@ -66,6 +73,10 @@ describe('GlobalSchemaCreator', () => {
     })
 
     test('getExportedFiles', async () => {
+        t.resetModulesCache()
+        const {ExportedFile} = t.mockAndRequireModule('filesystem/ExportedFile')
+        requireGlobalSchemaCreator()
+
         const guestFile1 = {path: 'path1'}
         const guestFile2 = {path: 'path2'}
         const guestFile3 = {path: 'path3'}
@@ -88,11 +99,42 @@ describe('GlobalSchemaCreator', () => {
         expectedModuleCreators = [moduleCreator1, moduleCreator2]
         schemaCreator.getModuleCreators = async () => expectedModuleCreators
 
+        const expectedNativeClassesMap = new Map([['GuestFile1', false], ['GuestFile2', true]])
+        ExportedFile.mockImplementationOnce((guestFile, schema) => {
+            expect(guestFile).toBe(guestFile1)
+            expect(schema).toBe('Class1-schema')
+            return {
+                guestFile: guestFile1, exportsClass: true, exportsNativeClass: false, schema: {name: 'GuestFile1'},
+                resolveClassType: nativeClassesMap => {
+                    expect(nativeClassesMap).toEqual(expectedNativeClassesMap)
+                    return 'ExportedFile1'
+                },
+            }
+        })
+        ExportedFile.mockImplementationOnce((guestFile, schema) => {
+            expect(guestFile).toBe(guestFile2)
+            expect(schema).toBe('Class2-schema')
+            return {
+                guestFile: guestFile2, exportsClass: true, exportsNativeClass: true, schema: {name: 'GuestFile2'},
+                resolveClassType: nativeClassesMap => {
+                    expect(nativeClassesMap).toEqual(expectedNativeClassesMap)
+                    return 'ExportedFile2'
+                },
+            }
+        })
+        ExportedFile.mockImplementationOnce((guestFile, moduleCreator) => {
+            expect(guestFile).toBe(guestFile3)
+            expect(moduleCreator).toBe(null)
+            return {
+                guestFile: guestFile2, exportsClass: false,
+                resolveClassType: nativeClassesMap => {
+                    expect(nativeClassesMap).toEqual(expectedNativeClassesMap)
+                    return 'ExportedFile3'
+                },
+            }
+        })
+
         const exportedFiles = await schemaCreator.getExportedFiles()
-        expect(exportedFiles).toStrictEqual([
-            new ExportedFile(guestFile1, 'Class1-schema'),
-            new ExportedFile(guestFile2, 'Class2-schema'),
-            new ExportedFile(guestFile3, null),
-        ])
+        expect(exportedFiles).toEqual(['ExportedFile1', 'ExportedFile2', 'ExportedFile3'])
     })
 })

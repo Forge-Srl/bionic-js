@@ -40,9 +40,9 @@ class LambdaType extends Type {
         return `(${this.parameters.map(par => par.type.toString()).join(', ')}) => ${this.returnType.toString()}`
     }
 
-    resolveNativeType(jsClasses, nativeClasses) {
-        return new LambdaType(this.returnType.resolveNativeType(jsClasses, nativeClasses),
-            this.parameters.map(par => new Parameter(par.type.resolveNativeType(jsClasses, nativeClasses), par.name, par.description)))
+    resolveClassType(nativeClassesMap) {
+        return new LambdaType(this.returnType.resolveClassType(nativeClassesMap),
+            this.parameters.map(par => par.resolveClassType(nativeClassesMap)))
     }
 }
 

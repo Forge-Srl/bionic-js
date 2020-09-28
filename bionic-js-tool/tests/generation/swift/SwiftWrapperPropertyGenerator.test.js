@@ -2,32 +2,30 @@ const t = require('../../test-utils')
 
 describe('SwiftWrapperPropertyGenerator', () => {
 
-    let Class, NativeObjectClass, Property, Parameter, AnyType, ArrayType, BoolType, DateType, FloatType, IntType, LambdaType,
-        NativeObjectType, ObjectType, StringType, VoidType, WrappedObjectType
+    let Class, Property, Parameter, JsClassType, JsRefType, ArrayType, BoolType, DateType, FloatType,
+        IntType, LambdaType, NativeRefType, StringType, VoidType, NativeClassType
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
-        NativeObjectClass = t.requireModule('schema/notable/NativeObjectClass').NativeObjectClass
         Property = t.requireModule('schema/Property').Property
         Parameter = t.requireModule('schema/Parameter').Parameter
-        AnyType = t.requireModule('schema/types/AnyType').AnyType
+        JsClassType = t.requireModule('schema/types/JsClassType').JsClassType
+        JsRefType = t.requireModule('schema/types/JsRefType').JsRefType
         ArrayType = t.requireModule('schema/types/ArrayType').ArrayType
         BoolType = t.requireModule('schema/types/BoolType').BoolType
         DateType = t.requireModule('schema/types/DateType').DateType
         FloatType = t.requireModule('schema/types/FloatType').FloatType
         IntType = t.requireModule('schema/types/IntType').IntType
         LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
-        NativeObjectType = t.requireModule('schema/types/NativeObjectType').NativeObjectType
-        ObjectType = t.requireModule('schema/types/ObjectType').ObjectType
         StringType = t.requireModule('schema/types/StringType').StringType
         VoidType = t.requireModule('schema/types/VoidType').VoidType
-        WrappedObjectType = t.requireModule('schema/types/WrappedObjectType').WrappedObjectType
+        NativeClassType = t.requireModule('schema/types/NativeClassType').NativeClassType
+        NativeRefType = t.requireModule('schema/types/NativeRefType').NativeRefType
     })
 
-    function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false,
-                     propertyKinds = ['get', 'set']) {
+    function getCode(propertyType, isPropertyStatic = false, propertyKinds = ['get', 'set']) {
         const class1 = new Class('Class1', '', [], [new Property('property1', 'property description', isPropertyStatic,
-            isPropertyOverriding, propertyType, propertyKinds)], [], new NativeObjectClass(), 'module/path')
+            propertyType, propertyKinds)], [], null, true, 'module/path')
         return class1.generator.forWrapping().swift.getSource()
     }
 
@@ -57,7 +55,7 @@ describe('SwiftWrapperPropertyGenerator', () => {
     ]
 
     test('IntType, only getter, static', () => {
-        const code = getCode(new IntType(), true, false, ['get'])
+        const code = getCode(new IntType(), true, ['get'])
 
         t.expectCode(code,
             ...expectedHeader,
@@ -72,7 +70,7 @@ describe('SwiftWrapperPropertyGenerator', () => {
     })
 
     test('IntType, only setter, static', () => {
-        const code = getCode(new IntType(), true, false, ['set'])
+        const code = getCode(new IntType(), true, ['set'])
 
         t.expectCode(code,
             ...expectedHeader,
@@ -86,8 +84,8 @@ describe('SwiftWrapperPropertyGenerator', () => {
             '}')
     })
 
-    test('IntType, static, override', () => {
-        const code = getCode(new IntType(), true, true)
+    test('IntType, static', () => {
+        const code = getCode(new IntType(), true)
 
         t.expectCode(code,
             ...expectedHeader,
@@ -115,8 +113,8 @@ describe('SwiftWrapperPropertyGenerator', () => {
         '.exportFunction("bjsSet_property1", bjsSet_property1())',
     ])
 
-    test('AnyType', () => {
-        const code = getCode(new AnyType())
+    test('JsRefType', () => {
+        const code = getCode(new JsRefType())
 
         t.expectCode(code,
             ...expectedHeader,
@@ -272,8 +270,8 @@ describe('SwiftWrapperPropertyGenerator', () => {
             '}')
     })
 
-    test('NativeObjectType', () => {
-        const code = getCode(new NativeObjectType('ClassName'))
+    test('NativeRefType', () => {
+        const code = getCode(new NativeRefType('ClassName'))
 
         t.expectCode(code,
             ...expectedHeader,
@@ -293,8 +291,8 @@ describe('SwiftWrapperPropertyGenerator', () => {
             '}')
     })
 
-    test('ObjectType', () => {
-        const code = getCode(new ObjectType('ClassName'))
+    test('JsClassType', () => {
+        const code = getCode(new JsClassType('ClassName'))
 
         t.expectCode(code,
             ...expectedHeader,
@@ -335,8 +333,8 @@ describe('SwiftWrapperPropertyGenerator', () => {
             '}')
     })
 
-    test('WrappedObjectType', () => {
-        const code = getCode(new WrappedObjectType('ClassName'))
+    test('NativeClassType', () => {
+        const code = getCode(new NativeClassType('ClassName'))
 
         t.expectCode(code,
             ...expectedHeader,

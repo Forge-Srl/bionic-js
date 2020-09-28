@@ -2,12 +2,10 @@ const t = require('../../test-utils')
 
 describe('JavascriptWrapperClassGenerator', () => {
 
-    let Class, NativeObjectClass, Parameter, Constructor, Property, Method, IntType, nativeObjectSchema,
-        getExpectedHeader, expectedFooter
+    let Class, Parameter, Constructor, Property, Method, IntType, getExpectedHeader, expectedFooter
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
-        NativeObjectClass = t.requireModule('schema/notable/NativeObjectClass').NativeObjectClass
         Parameter = t.requireModule('schema/Parameter').Parameter
         Constructor = t.requireModule('schema/Constructor').Constructor
         Property = t.requireModule('schema/Property').Property
@@ -15,14 +13,13 @@ describe('JavascriptWrapperClassGenerator', () => {
         IntType = t.requireModule('schema/types/IntType').IntType
 
         const expectedJavascriptCode = require('./expectedJavascriptCode')
-        nativeObjectSchema = expectedJavascriptCode.getNativeObjectSchema()
         getExpectedHeader = expectedJavascriptCode.getExpectedHeader
         expectedFooter = expectedJavascriptCode.getExpectedFooter()
     })
 
-    function getCode(properties, methods, superclass = nativeObjectSchema) {
+    function getCode(properties, methods, superclass = null) {
         const class1 = new Class('Class1', 'class description', [], properties, methods,
-            superclass, 'native/module/path')
+            superclass, true, 'native/module/path')
         return class1.generator.forWrapping().javascript.getSource()
     }
 
@@ -33,7 +30,7 @@ describe('JavascriptWrapperClassGenerator', () => {
     test('empty class with inheritance', () => {
         const superclass = new Class('Superclass', 'superclass desc', [
             new Constructor('desc', [new Parameter(new IntType(), 'par1', 'desc1')]),
-        ], [], [], nativeObjectSchema, 'native/superclass/path')
+        ], [], [], null, true, 'native/superclass/path')
 
         t.expectCode(getCode([], [], superclass),
             ...getExpectedHeader('Superclass', '../superclass/path', false),
@@ -44,16 +41,16 @@ describe('JavascriptWrapperClassGenerator', () => {
         const intType = new IntType()
 
         const properties = [
-            new Property('instanceProperty1', 'desc', false, false, intType, ['get', 'set']),
-            new Property('staticProperty1', 'desc', true, false, intType, ['get', 'set']),
-            new Property('instanceProperty2', 'desc', false, false, intType, ['get', 'set']),
-            new Property('staticProperty2', 'desc', true, false, intType, ['get', 'set']),
+            new Property('instanceProperty1', 'desc', false, intType, ['get', 'set']),
+            new Property('staticProperty1', 'desc', true, intType, ['get', 'set']),
+            new Property('instanceProperty2', 'desc', false, intType, ['get', 'set']),
+            new Property('staticProperty2', 'desc', true, intType, ['get', 'set']),
         ]
         const methods = [
-            new Method('instanceMethod1', 'desc', false, false, intType, []),
-            new Method('staticMethod1', 'desc', true, false, intType, []),
-            new Method('instanceMethod2', 'desc', false, false, intType, []),
-            new Method('staticMethod2', 'desc', true, false, intType, []),
+            new Method('instanceMethod1', 'desc', false, intType, []),
+            new Method('staticMethod1', 'desc', true, intType, []),
+            new Method('instanceMethod2', 'desc', false, intType, []),
+            new Method('staticMethod2', 'desc', true, intType, []),
         ]
         const code = getCode(properties, methods)
 

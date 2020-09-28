@@ -4,12 +4,16 @@ class ExportedFile {
         Object.assign(this, {guestFile, schema})
     }
 
-    get requiresHostFile() {
+    get exportsClass() {
         return !!this.schema
     }
 
-    get requiresNativePackageFile() {
-        return this.requiresHostFile && this.guestFile.isNative
+    get exportsNativeClass() {
+        return this.exportsClass && this.schema.isNative
+    }
+
+    resolveClassType(nativeClassesMap) {
+        return new ExportedFile(this.guestFile, this.schema ? this.schema.resolveClassType(nativeClassesMap) : null)
     }
 }
 

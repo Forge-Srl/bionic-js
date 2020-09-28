@@ -2,11 +2,10 @@ const t = require('../../test-utils')
 
 describe('SwiftWrapperMethodGenerator', () => {
 
-    let Class, NativeObjectClass, Method, Parameter, VoidType, BoolType, IntType, LambdaType
+    let Class, Method, Parameter, VoidType, BoolType, IntType, LambdaType
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
-        NativeObjectClass = t.requireModule('schema/notable/NativeObjectClass').NativeObjectClass
         Method = t.requireModule('schema/Method').Method
         Parameter = t.requireModule('schema/Parameter').Parameter
         VoidType = t.requireModule('schema/types/VoidType').VoidType
@@ -15,9 +14,9 @@ describe('SwiftWrapperMethodGenerator', () => {
         LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
     })
 
-    function getCode(isMethodStatic, isMethodOverriding, methodReturnType, methodParameters) {
+    function getCode(isMethodStatic, methodReturnType, methodParameters) {
         const class1 = new Class('Class1', '', [], [], [new Method('method1', 'method description', isMethodStatic,
-            isMethodOverriding, methodReturnType, methodParameters)], new NativeObjectClass(), 'module/path')
+            methodReturnType, methodParameters)], null, true, 'module/path')
         return class1.generator.forWrapping().swift.getSource()
     }
 
@@ -50,8 +49,8 @@ describe('SwiftWrapperMethodGenerator', () => {
             '    }']
     }
 
-    function testMethodWithVoidReturnAndNoParams(overriding) {
-        const code = getCode(false, overriding, new VoidType(), [])
+    test('void return, no params', () => {
+        const code = getCode(false, new VoidType(), [])
 
         t.expectCode(code,
             ...expectedHeader,
@@ -63,18 +62,10 @@ describe('SwiftWrapperMethodGenerator', () => {
             '        }',
             '    }',
             '}')
-    }
-
-    test('void return, no params', () => {
-        testMethodWithVoidReturnAndNoParams(false)
     })
 
-    test('void return, no params, overriding', () => {
-        testMethodWithVoidReturnAndNoParams(true)
-    })
-
-    function testStaticMethodWithVoidReturnAndNoParams(overriding) {
-        const code = getCode(true, overriding, new VoidType(), [])
+    test('void return, no params, static', () => {
+        const code = getCode(true, new VoidType(), [])
 
         t.expectCode(code,
             ...expectedHeader,
@@ -86,18 +77,10 @@ describe('SwiftWrapperMethodGenerator', () => {
             '        }',
             '    }',
             '}')
-    }
-
-    test('void return, no params, static', () => {
-        testStaticMethodWithVoidReturnAndNoParams(false)
-    })
-
-    test('void return, no params, static, overriding', () => {
-        testStaticMethodWithVoidReturnAndNoParams(true)
     })
 
     test('void return, primitive param, static', () => {
-        const code = getCode(true, false, new VoidType(), [newParam(new BoolType(), 'boolParam')])
+        const code = getCode(true, new VoidType(), [newParam(new BoolType(), 'boolParam')])
 
         t.expectCode(code,
             ...expectedHeader,
@@ -112,7 +95,7 @@ describe('SwiftWrapperMethodGenerator', () => {
     })
 
     test('primitive return, primitive param', () => {
-        const code = getCode(false, false, new IntType(), [newParam(new BoolType(), 'boolParam')])
+        const code = getCode(false, new IntType(), [newParam(new BoolType(), 'boolParam')])
 
         t.expectCode(code,
             ...expectedHeader,
@@ -127,7 +110,7 @@ describe('SwiftWrapperMethodGenerator', () => {
     })
 
     test('multiple primitive params', () => {
-        const code = getCode(false, false, new VoidType(), [
+        const code = getCode(false, new VoidType(), [
             newParam(new BoolType(), 'boolParam'),
             newParam(new IntType(), 'intParam'),
         ])
@@ -146,7 +129,7 @@ describe('SwiftWrapperMethodGenerator', () => {
 
     test('void lambda return, void lambda param', () => {
         const voidLambda = new LambdaType(new VoidType(), [])
-        const code = getCode(false, false, voidLambda, [newParam(voidLambda, 'voidLambda')])
+        const code = getCode(false, voidLambda, [newParam(voidLambda, 'voidLambda')])
 
         t.expectCode(code,
             ...expectedHeader,

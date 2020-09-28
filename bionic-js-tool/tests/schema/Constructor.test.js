@@ -33,4 +33,16 @@ describe('Constructor', () => {
         expect(constructor.parameters[0]).toBeInstanceOf(Parameter)
         expect(constructor).toEqual(expectedConstructor)
     })
+
+    test('resolveClassType', () => {
+        const parameter = {
+            resolveClassType: nativeClassesMap => {
+                expect(nativeClassesMap).toBe('nativeClassesMap')
+                return 'resolvedParameter'
+            },
+        }
+        const constructor = new Constructor('desc', [parameter])
+        expect(constructor.resolveClassType('nativeClassesMap'))
+            .toStrictEqual(new Constructor('desc', ['resolvedParameter']))
+    })
 })

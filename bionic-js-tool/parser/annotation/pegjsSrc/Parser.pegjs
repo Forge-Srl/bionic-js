@@ -1,6 +1,6 @@
 {
   const asg = Object.assign
-  const primitiveTypes = ['Bool', 'Int', 'Float', 'String', 'Date', 'Any', 'Void']
+  const primitiveTypes = ['Bool', 'Date', 'Float', 'Int', 'JsRef', 'String', 'Void']
   const voidType = {
     type: 'Void'
   }
@@ -9,9 +9,9 @@
 Start
  = BionicTag
 
-// COMMENT TEXT
+// TAG LINE
 
-CommentText
+TagLine
  = lines:(EmptyLine/Tag/Line)* {
    return lines
  }
@@ -85,6 +85,9 @@ TypeDefinition 'type definition'
   = arrayType: ArrayDefinition {
     return arrayType
   }
+  / nativeRefType: NativeRefDefinition {
+    return nativeRefType
+  }
   / type: Identifier {
     if (primitiveTypes.includes(type)) {
       return {
@@ -92,7 +95,7 @@ TypeDefinition 'type definition'
       }
     } else {
       return {
-        type: 'Object',
+        type: 'Class',
         className: type
       }
     }
@@ -115,6 +118,14 @@ LambdaDefinition 'lambda definition'
       type: 'Lambda',
       parameters: left || [],
       returnType:right ? right[3] : voidType
+    }
+  }
+
+NativeRefDefinition 'native ref definition'
+  = 'NativeRef' _ '<' _ className:Identifier _ '>' {
+    return {
+      type: 'NativeRef',
+      className
     }
   }
 

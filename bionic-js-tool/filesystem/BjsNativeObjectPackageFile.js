@@ -1,11 +1,11 @@
 const {File} = require('./File')
 const path = require('path')
-const {nativeObjectClassName} = require('../schema/notable/NativeObjectClass')
+const {nativeObjectBaseClassName} = require('../schema/Class')
 
 class BjsNativeObjectPackageFile extends File {
 
     static build(targetConfig) {
-        const filePath = path.resolve(targetConfig.packageDirPath, `${nativeObjectClassName}.js`)
+        const filePath = path.resolve(targetConfig.packageDirPath, `${nativeObjectBaseClassName}.js`)
         return new BjsNativeObjectPackageFile(filePath, targetConfig.packageDirPath)
     }
 

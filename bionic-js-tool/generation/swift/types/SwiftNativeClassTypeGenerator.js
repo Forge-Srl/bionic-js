@@ -1,7 +1,7 @@
-const {SwiftObjectTypeGenerator} = require('./SwiftObjectTypeGenerator')
+const {SwiftJsClassTypeGenerator} = require('./SwiftJsClassTypeGenerator')
 const {IniRet} = require('../../code/IniRet')
 
-class SwiftWrappedObjectTypeGenerator extends SwiftObjectTypeGenerator {
+class SwiftNativeClassTypeGenerator extends SwiftJsClassTypeGenerator {
 
     getJsIniRet(nativeIniRet, context) {
         return IniRet.create()
@@ -14,4 +14,4 @@ class SwiftWrappedObjectTypeGenerator extends SwiftObjectTypeGenerator {
     }
 }
 
-module.exports = {SwiftWrappedObjectTypeGenerator}
+module.exports = {SwiftNativeClassTypeGenerator}

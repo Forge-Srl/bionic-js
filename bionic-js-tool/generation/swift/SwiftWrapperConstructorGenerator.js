@@ -2,8 +2,8 @@ const {SwiftMethodGenerator} = require('./SwiftMethodGenerator')
 const {GenerationContext} = require('../code/GenerationContext')
 const {CodeBlock} = require('../code/CodeBlock')
 const {VoidType} = require('../../schema/types/VoidType')
-const {WrappedObjectType} = require('../../schema/types/WrappedObjectType')
-const {NativeObjectType} = require('../../schema/types/NativeObjectType')
+const {NativeClassType} = require('../../schema/types/NativeClassType')
+const {NativeRefType} = require('../../schema/types/NativeRefType')
 const {Parameter} = require('../../schema/Parameter')
 
 class SwiftWrapperConstructorGenerator extends SwiftMethodGenerator {
@@ -24,8 +24,8 @@ class SwiftWrapperConstructorGenerator extends SwiftMethodGenerator {
     get parameters() {
         const parameters = super.parameters.map((parameter, index) =>
             new Parameter(parameter.type, `$${index + 1}`, parameter.description))
-        const firstParameter = new Parameter(new WrappedObjectType(), 'wrappedObj')
-        const otherParameters = super.parameters.length ? parameters : [new Parameter(new NativeObjectType(), 'nativeObj')]
+        const firstParameter = new Parameter(new NativeClassType(), 'wrappedObj')
+        const otherParameters = super.parameters.length ? parameters : [new Parameter(new NativeRefType(), 'nativeObj')]
         return [firstParameter, ...otherParameters]
     }
 

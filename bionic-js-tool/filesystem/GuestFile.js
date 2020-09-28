@@ -4,13 +4,12 @@ const {JS_FILE_EXT, JSON_FILE_EXT} = require('./fileExtensions')
 
 class GuestFile extends File {
 
-    static fromFile(file, guestNativeDirPath) {
-        return new GuestFile(file.path, file.rootDirPath, guestNativeDirPath)
+    static fromFile(file) {
+        return new GuestFile(file.path, file.rootDirPath)
     }
 
-    constructor(path, guestDirPath, guestNativeDirPath) {
+    constructor(path, guestDirPath) {
         super(path, guestDirPath)
-        Object.assign(this, {guestNativeDirPath})
     }
 
     get isJavascript() {
@@ -25,13 +24,6 @@ class GuestFile extends File {
             this._isExportable = this.isJavascript ? !this.isInsideDir(this.rootDirPath, NODE_MODULES_DIR_NAME) : false
         }
         return this._isExportable
-    }
-
-    get isNative() {
-        if (!this._isNative) {
-            this._isNative = this.isExportable && this.isInsideDir(this.guestNativeDirPath)
-        }
-        return this._isNative
     }
 }
 

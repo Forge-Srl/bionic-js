@@ -2,14 +2,13 @@ const t = require('../test-utils')
 
 describe('ClassSchemaCreator', () => {
 
-    let MethodSchemaCreator, ClassSchemaCreator, Class, BaseObjectClass, Method, Constructor, Property, LambdaType
+    let MethodSchemaCreator, ClassSchemaCreator, Class, Method, Constructor, Property, LambdaType
 
     beforeEach(() => {
         t.resetModulesCache()
 
         MethodSchemaCreator = t.mockAndRequireModule('parser/MethodSchemaCreator').MethodSchemaCreator
         ClassSchemaCreator = t.requireModule('parser/ClassSchemaCreator').ClassSchemaCreator
-        BaseObjectClass = t.requireModule('schema/notable/BaseObjectClass').BaseObjectClass
         Class = t.requireModule('schema/Class').Class
         Method = t.requireModule('schema/Method').Method
         Constructor = t.requireModule('schema/Constructor').Constructor
@@ -77,8 +76,7 @@ describe('ClassSchemaCreator', () => {
             return 'superclassSchemas'
         }
 
-        classSchemaCreator.buildMethodCreatorContext = (moduleCreatorsMap, superclassSchemas) => {
-            expect(moduleCreatorsMap).toBe(fakeModuleCreatorsMap)
+        classSchemaCreator.buildSuperclassInfo = (superclassSchemas) => {
             expect(superclassSchemas).toBe('superclassSchemas')
             return 'methodCreatorContext'
         }
@@ -139,15 +137,14 @@ describe('ClassSchemaCreator', () => {
             return 'superclassSchemas'
         }
 
-        classSchemaCreator.buildMethodCreatorContext = (moduleCreatorsMap, superclassSchemas) => {
-            expect(moduleCreatorsMap).toBe(fakeModuleCreatorsMap)
+        classSchemaCreator.buildSuperclassInfo = (superclassSchemas) => {
             expect(superclassSchemas).toBe('superclassSchemas')
             return 'methodCreatorContext'
         }
 
         const classSchema = classSchemaCreator.buildSchema(fakeModuleCreatorsMap, 'currentSuperclassSchemaStack')
         expect(classSchema.name).toBe('Class1')
-        expect(classSchema.superclass).toBeInstanceOf(BaseObjectClass)
+        expect(classSchema.superclass).toBeNull()
     })
 
     test('buildSchema, error getting schema', () => {
@@ -186,7 +183,7 @@ describe('ClassSchemaCreator', () => {
 
         const moduleCreatorsMap = {get: () => 'superclassSchemaCreator'}
         expect(() => classSchemaCreator.buildSuperclassSchemas(moduleCreatorsMap, superclassSchemaStack))
-            .toThrow('class "Class1" extends superclass "SuperClass1" but this generates an inheritance cycle (e.g. A extends B, B extends A)')
+            .toThrow('class "Class1" extends superclass "SuperClass1" generating inheritance cycle (e.g. A extends B, B extends A)')
     })
 
     test('buildSuperclassSchemas', () => {
@@ -201,24 +198,17 @@ describe('ClassSchemaCreator', () => {
         expect(superclassModuleCreator.classSchemaCreator.buildSchema).toBeCalledWith(moduleCreatorsMap, currentSuperclassSchemas)
     })
 
-    test('buildMethodCreatorContext', () => {
+    test('buildSuperclassInfo', () => {
         const classSchemaCreator = new ClassSchemaCreator()
-
-        const moduleCreatorsMap = new Map([
-            ['m1', {isNative: true, name: 'module1'}],
-            ['m2', {isNative: false, name: 'module2'}],
-        ])
 
         const superclassSchemas = [
             {methods: [{name: 'method1'}, {name: 'method2'}], properties: [{name: 'property1'}, {name: 'property2'}]},
             {methods: [{name: 'method2'}, {name: 'method3'}], properties: [{name: 'property2'}, {name: 'property3'}]},
         ]
 
-        const context = classSchemaCreator.buildMethodCreatorContext(moduleCreatorsMap, superclassSchemas)
+        const superclassInfo = classSchemaCreator.buildSuperclassInfo(superclassSchemas)
 
-        expect(context.superclassMethodNames).toStrictEqual(new Set(['method1', 'method2', 'method3']))
-        expect(context.superclassPropertyNames).toStrictEqual(new Set(['property1', 'property2', 'property3']))
-        expect(context.jsModuleNames).toStrictEqual(new Set(['module2']))
-        expect(context.nativeModuleNames).toStrictEqual(new Set(['module1']))
+        expect(superclassInfo.methodNames).toStrictEqual(new Set(['method1', 'method2', 'method3']))
+        expect(superclassInfo.propertyNames).toStrictEqual(new Set(['property1', 'property2', 'property3']))
     })
 })

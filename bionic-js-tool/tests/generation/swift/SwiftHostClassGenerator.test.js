@@ -2,13 +2,12 @@ const t = require('../../test-utils')
 
 describe('SwiftHostClassGenerator', () => {
 
-    let Class, BaseObjectClass, Constructor, Property, Method, IntType,
+    let Class, Constructor, Property, Method, IntType,
         expectedImports, expectedClassDeclaration, expectedFactoryMethod, expectedModulePathVar
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
         Constructor = t.requireModule('schema/Constructor').Constructor
-        BaseObjectClass = t.requireModule('schema/notable/BaseObjectClass').BaseObjectClass
         Property = t.requireModule('schema/Property').Property
         Method = t.requireModule('schema/Method').Method
         IntType = t.requireModule('schema/types/IntType').IntType
@@ -36,9 +35,9 @@ describe('SwiftHostClassGenerator', () => {
 
     function getCode(constructors, properties, methods, superclassName) {
         const superclass = superclassName
-            ? new Class(superclassName, `${superclassName} description`, [], [], [], null, 'superModule/path')
-            : new BaseObjectClass()
-        const clazz = new Class('Class1', 'class description', constructors, properties, methods, superclass, 'module/path')
+            ? new Class(superclassName, `${superclassName} description`, [], [], [], null, false, 'superModule/path')
+            : null
+        const clazz = new Class('Class1', 'class description', constructors, properties, methods, superclass, false, 'module/path')
         return clazz.generator.forHosting().swift.getSource()
     }
 
@@ -73,16 +72,16 @@ describe('SwiftHostClassGenerator', () => {
 
         const constructors = [new Constructor('desc', [])]
         const properties = [
-            new Property('instanceProperty1', 'desc', false, false, intType, ['get', 'set']),
-            new Property('staticProperty1', 'desc', true, false, intType, ['get', 'set']),
-            new Property('instanceProperty2', 'desc', false, false, intType, ['get', 'set']),
-            new Property('staticProperty2', 'desc', true, false, intType, ['get', 'set']),
+            new Property('instanceProperty1', 'desc', false, intType, ['get', 'set']),
+            new Property('staticProperty1', 'desc', true, intType, ['get', 'set']),
+            new Property('instanceProperty2', 'desc', false, intType, ['get', 'set']),
+            new Property('staticProperty2', 'desc', true, intType, ['get', 'set']),
         ]
         const methods = [
-            new Method('instanceMethod1', 'desc', false, false, intType, []),
-            new Method('staticMethod1', 'desc', true, false, intType, []),
-            new Method('instanceMethod2', 'desc', false, false, intType, []),
-            new Method('staticMethod2', 'desc', true, false, intType, []),
+            new Method('instanceMethod1', 'desc', false, intType, []),
+            new Method('staticMethod1', 'desc', true, intType, []),
+            new Method('instanceMethod2', 'desc', false, intType, []),
+            new Method('staticMethod2', 'desc', true, intType, []),
         ]
         const code = getCode(constructors, properties, methods)
 
@@ -152,9 +151,9 @@ describe('SwiftHostClassGenerator', () => {
 
     function getScaffold(constructors, properties, methods, superclassName) {
         const superclass = superclassName
-            ? new Class(superclassName, `${superclassName} description`, [], [], [], null, 'superModule/path')
-            : new BaseObjectClass()
-        const class1 = new Class('Class1', 'class description', constructors, properties, methods, superclass, 'module/path')
+            ? new Class(superclassName, `${superclassName} description`, [], [], [], null, false, 'superModule/path')
+            : null
+        const class1 = new Class('Class1', 'class description', constructors, properties, methods, superclass, false, 'module/path')
         return class1.generator.forHosting().swift.getScaffold()
     }
 
@@ -185,16 +184,16 @@ describe('SwiftHostClassGenerator', () => {
 
         const constructors = [new Constructor('desc', [])]
         const properties = [
-            new Property('instanceProperty1', 'desc', false, false, intType, ['get', 'set']),
-            new Property('staticProperty1', 'desc', true, false, intType, ['get', 'set']),
-            new Property('instanceProperty2', 'desc', false, false, intType, ['get', 'set']),
-            new Property('staticProperty2', 'desc', true, false, intType, ['get', 'set']),
+            new Property('instanceProperty1', 'desc', false, intType, ['get', 'set']),
+            new Property('staticProperty1', 'desc', true, intType, ['get', 'set']),
+            new Property('instanceProperty2', 'desc', false, intType, ['get', 'set']),
+            new Property('staticProperty2', 'desc', true, intType, ['get', 'set']),
         ]
         const methods = [
-            new Method('instanceMethod1', 'desc', false, false, intType, []),
-            new Method('staticMethod1', 'desc', true, false, intType, []),
-            new Method('instanceMethod2', 'desc', false, false, intType, []),
-            new Method('staticMethod2', 'desc', true, false, intType, []),
+            new Method('instanceMethod1', 'desc', false, intType, []),
+            new Method('staticMethod1', 'desc', true, intType, []),
+            new Method('instanceMethod2', 'desc', false, intType, []),
+            new Method('staticMethod2', 'desc', true, intType, []),
         ]
         const code = getScaffold(constructors, properties, methods)
 

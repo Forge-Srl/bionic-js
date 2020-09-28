@@ -2,26 +2,25 @@ const t = require('../../test-utils')
 
 describe('SwiftHostPropertyGenerator', () => {
 
-    let Class, BaseObjectClass, Property, Parameter, AnyType, ArrayType, BoolType, DateType, FloatType, IntType,
-        LambdaType, NativeObjectType, ObjectType, StringType, VoidType, WrappedObjectType, expectedHeader, expectedFooter
+    let Class, Property, Parameter, JsClassType, JsRefType, ArrayType, BoolType, DateType, FloatType,
+        IntType, LambdaType, NativeRefType, StringType, VoidType, NativeClassType, expectedHeader, expectedFooter
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
-        BaseObjectClass = t.requireModule('schema/notable/BaseObjectClass').BaseObjectClass
         Property = t.requireModule('schema/Property').Property
         Parameter = t.requireModule('schema/Parameter').Parameter
-        AnyType = t.requireModule('schema/types/AnyType').AnyType
+        JsClassType = t.requireModule('schema/types/JsClassType').JsClassType
+        JsRefType = t.requireModule('schema/types/JsRefType').JsRefType
         ArrayType = t.requireModule('schema/types/ArrayType').ArrayType
         BoolType = t.requireModule('schema/types/BoolType').BoolType
         DateType = t.requireModule('schema/types/DateType').DateType
         FloatType = t.requireModule('schema/types/FloatType').FloatType
         IntType = t.requireModule('schema/types/IntType').IntType
         LambdaType = t.requireModule('schema/types/LambdaType').LambdaType
-        NativeObjectType = t.requireModule('schema/types/NativeObjectType').NativeObjectType
-        ObjectType = t.requireModule('schema/types/ObjectType').ObjectType
         StringType = t.requireModule('schema/types/StringType').StringType
         VoidType = t.requireModule('schema/types/VoidType').VoidType
-        WrappedObjectType = t.requireModule('schema/types/WrappedObjectType').WrappedObjectType
+        NativeClassType = t.requireModule('schema/types/NativeClassType').NativeClassType
+        NativeRefType = t.requireModule('schema/types/NativeRefType').NativeRefType
 
         expectedHeader = [
             'import JavaScriptCore',
@@ -42,15 +41,15 @@ describe('SwiftHostPropertyGenerator', () => {
             '}']
     })
 
-    function getCode(propertyType, isPropertyStatic = false, isPropertyOverriding = false,
-                     propertyKinds = ['get', 'set'], propertyName = 'property1') {
+    function getCode(propertyType, isPropertyStatic = false, propertyKinds = ['get', 'set'],
+                     propertyName = 'property1') {
         const class1 = new Class('Class1', '', [], [new Property(propertyName, 'property description', isPropertyStatic,
-            isPropertyOverriding, propertyType, propertyKinds)], [], new BaseObjectClass(), '')
+            propertyType, propertyKinds)], [], null, false, '')
         return class1.generator.forHosting().swift.getSource()
     }
 
     test('IntType, only getter, static', () => {
-        const code = getCode(new IntType(), true, false, ['get'])
+        const code = getCode(new IntType(), true, ['get'])
 
         t.expectCode(code,
             ...expectedHeader,
@@ -63,7 +62,7 @@ describe('SwiftHostPropertyGenerator', () => {
     })
 
     test('IntType, only getter, reserved keyword', () => {
-        const code = getCode(new IntType(), false, false, ['get'], 'default')
+        const code = getCode(new IntType(), false, ['get'], 'default')
 
         t.expectCode(code,
             ...expectedHeader,
@@ -76,7 +75,7 @@ describe('SwiftHostPropertyGenerator', () => {
     })
 
     test('IntType, only setter, static', () => {
-        const code = getCode(new IntType(), true, false, ['set'])
+        const code = getCode(new IntType(), true, ['set'])
 
         t.expectCode(code,
             ...expectedHeader,
@@ -88,12 +87,12 @@ describe('SwiftHostPropertyGenerator', () => {
             ...expectedFooter)
     })
 
-    test('IntType, static, override', () => {
-        const code = getCode(new IntType(), true, true)
+    test('IntType, static', () => {
+        const code = getCode(new IntType(), true)
 
         t.expectCode(code,
             ...expectedHeader,
-            '    override class var property1:Int? {',
+            '    class var property1:Int? {',
             '        get {',
             '            return Bjs.get.getInt(Bjs.get.getProperty(self.bjsClass, "property1"))',
             '        }',
@@ -104,8 +103,8 @@ describe('SwiftHostPropertyGenerator', () => {
             ...expectedFooter)
     })
 
-    test('AnyType', () => {
-        const code = getCode(new AnyType())
+    test('JsRefType', () => {
+        const code = getCode(new JsRefType())
 
         t.expectCode(code,
             ...expectedHeader,
@@ -231,8 +230,8 @@ describe('SwiftHostPropertyGenerator', () => {
             ...expectedFooter)
     })
 
-    test('NativeObjectType', () => {
-        const code = getCode(new NativeObjectType('ClassName'))
+    test('NativeRefType', () => {
+        const code = getCode(new NativeRefType('ClassName'))
 
         t.expectCode(code,
             ...expectedHeader,
@@ -247,8 +246,8 @@ describe('SwiftHostPropertyGenerator', () => {
             ...expectedFooter)
     })
 
-    test('ObjectType', () => {
-        const code = getCode(new ObjectType('ClassName'))
+    test('JsClassType', () => {
+        const code = getCode(new JsClassType('ClassName'))
 
         t.expectCode(code,
             ...expectedHeader,
@@ -279,8 +278,8 @@ describe('SwiftHostPropertyGenerator', () => {
             ...expectedFooter)
     })
 
-    test('WrappedObjectType', () => {
-        const code = getCode(new WrappedObjectType('ClassName'))
+    test('NativeClassType', () => {
+        const code = getCode(new NativeClassType('ClassName'))
 
         t.expectCode(code,
             ...expectedHeader,
@@ -296,7 +295,7 @@ describe('SwiftHostPropertyGenerator', () => {
     })
 
     test('IntType, only getter, reserved keyword', () => {
-        const code = getCode(new IntType(), false, false, ['get'], 'default')
+        const code = getCode(new IntType(), false, ['get'], 'default')
 
         t.expectCode(code,
             ...expectedHeader,
@@ -308,10 +307,10 @@ describe('SwiftHostPropertyGenerator', () => {
             ...expectedFooter)
     })
 
-    function getScaffold(propertyType, isPropertyStatic = false, isPropertyOverriding = false,
-                         propertyKinds = ['get', 'set'], propertyName = 'property1') {
+    function getScaffold(propertyType, isPropertyStatic = false, propertyKinds = ['get', 'set'],
+                         propertyName = 'property1') {
         const class1 = new Class('Class1', '', [], [new Property(propertyName, 'property description', isPropertyStatic,
-            isPropertyOverriding, propertyType, propertyKinds)], [], new BaseObjectClass(), '')
+            propertyType, propertyKinds)], [], null, false, '')
         return class1.generator.forHosting().swift.getScaffold()
     }
 
@@ -320,7 +319,7 @@ describe('SwiftHostPropertyGenerator', () => {
         '']
 
     test('IntType, scaffold, only setter, static', () => {
-        const code = getScaffold(new IntType(), true, false, ['set'])
+        const code = getScaffold(new IntType(), true, ['set'])
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
@@ -334,14 +333,14 @@ describe('SwiftHostPropertyGenerator', () => {
             '}')
     })
 
-    test('IntType, scaffold, overriding, only getter', () => {
-        const code = getScaffold(new IntType(), false, true, ['get'])
+    test('IntType, scaffold, only getter', () => {
+        const code = getScaffold(new IntType(), false, ['get'])
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
             'class Class1: BjsExport {',
             '    ',
-            '    override var property1:Int? {',
+            '    var property1:Int? {',
             '        get {',
             '            ',
             '        }',
@@ -349,10 +348,10 @@ describe('SwiftHostPropertyGenerator', () => {
             '}')
     })
 
-    test('LambdaType, scaffold, overriding, reserved keyword, only setter', () => {
+    test('LambdaType, scaffold, reserved keyword, only setter', () => {
         const voidLambda = new LambdaType(new VoidType(), [])
         const voidLambdaParam = new Parameter(voidLambda, 'voidLambda')
-        const code = getScaffold(new LambdaType(voidLambda, [voidLambdaParam]), false, false, ['set'], 'return')
+        const code = getScaffold(new LambdaType(voidLambda, [voidLambdaParam]), false, ['set'], 'return')
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
@@ -367,13 +366,13 @@ describe('SwiftHostPropertyGenerator', () => {
     })
 
     test('IntType, scaffold, getter and setter', () => {
-        const code = getScaffold(new IntType(), false, true)
+        const code = getScaffold(new IntType(), false)
 
         t.expectCode(code,
             ...expectedScaffoldHeader,
             'class Class1: BjsExport {',
             '    ',
-            '    override var property1:Int? {',
+            '    var property1:Int? {',
             '        get {',
             '            ',
             '        }',

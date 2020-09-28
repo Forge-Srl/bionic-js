@@ -19,12 +19,11 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
     }
 
     getHeaderCode() {
-        const override_ = this.schema.isOverriding ? 'override ' : ''
         const class_ = this.schema.isStatic ? 'class ' : ''
         const typeStatement = this.typeGenerator.getTypeStatement()
 
         return CodeBlock.create()
-            .append(`${override_}${class_}var ${SwiftKeywords.getSafeIdentifier(this.schema.name)}:`).append(`${typeStatement} {`)
+            .append(`${class_}var ${SwiftKeywords.getSafeIdentifier(this.schema.name)}:`).append(`${typeStatement} {`)
     }
 
     getGetterCode() {

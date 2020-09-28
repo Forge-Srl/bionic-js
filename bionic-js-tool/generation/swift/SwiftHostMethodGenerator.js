@@ -7,12 +7,11 @@ const {SwiftKeywords} = require('./SwiftKeywords')
 class SwiftHostMethodGenerator extends SwiftMethodGenerator {
 
     getHeaderCode() {
-        const override_ = this.schema.isOverriding ? 'override ' : ''
         const class_ = this.schema.isStatic ? 'class ' : ''
         const returnTypeStatement = this.returnTypeGenerator.getNativeReturnTypeStatement()
 
         return CodeBlock.create()
-            .append(`${override_}${class_}func ${SwiftKeywords.getSafeIdentifier(this.schema.name)}(`).append(this.getParametersStatements())
+            .append(`${class_}func ${SwiftKeywords.getSafeIdentifier(this.schema.name)}(`).append(this.getParametersStatements())
             .__.append(`)${returnTypeStatement} {`)
     }
 

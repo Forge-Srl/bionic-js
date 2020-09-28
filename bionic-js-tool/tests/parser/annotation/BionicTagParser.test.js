@@ -36,7 +36,7 @@ describe('@bionic tag parser', () => {
     const testParsingPrimitiveType = primitiveType =>
         testParsing(primitiveType, {typeInfo: {type: primitiveType}})
 
-            ['Any', 'Bool', 'Date', 'Float', 'Int', 'String', 'Void'].forEach(
+            ['JsRef', 'Bool', 'Date', 'Float', 'Int', 'String', 'Void'].forEach(
             type => test(`parse typeInfo > primitive > ${type}`, () => testParsingPrimitiveType(type)))
 
 
@@ -59,10 +59,18 @@ describe('@bionic tag parser', () => {
             },
         }))
 
+    test('parse typeInfo > native ref',
+        () => testParsing('NativeRef<String>', {
+            typeInfo: {
+                type: 'NativeRef',
+                className: 'String',
+            },
+        }))
+
     test('parse typeInfo > class',
         () => testParsing('MyClass', {
             typeInfo: {
-                type: 'Object',
+                type: 'Class',
                 className: 'MyClass',
             },
         }))
@@ -124,7 +132,7 @@ describe('@bionic tag parser', () => {
                     },
                     {
                         type: {
-                            type: 'Object',
+                            type: 'Class',
                             className: 'MyClass1',
                         },
                         name: 'class1',
@@ -136,7 +144,7 @@ describe('@bionic tag parser', () => {
                     returnType: {
                         type: 'Array',
                         elementType: {
-                            type: 'Object',
+                            type: 'Class',
                             className: 'MyClass2',
                         },
                     },
@@ -222,7 +230,7 @@ describe('@bionic tag parser', () => {
             name: 'method',
             typeInfo: {
                 className: 'set',
-                type: 'Object',
+                type: 'Class',
             },
         }))
 

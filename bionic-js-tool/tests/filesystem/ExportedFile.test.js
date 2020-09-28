@@ -15,30 +15,50 @@ describe('ExportedFile', () => {
         expect(exportedFile.schema).toBe('schema')
     })
 
-    test('requiresHostFile, with schema', () => {
+    test('exportsClass, with schema', () => {
         const exportedFile = new ExportedFile(undefined, 'schema')
-        expect(exportedFile.requiresHostFile).toBe(true)
+        expect(exportedFile.exportsClass).toBe(true)
     })
 
-    test('requiresHostFile, without schema', () => {
+    test('exportsClass, without schema', () => {
         const exportedFile = new ExportedFile(undefined)
-        expect(exportedFile.requiresHostFile).toBe(false)
+        expect(exportedFile.exportsClass).toBe(false)
     })
 
-    const requiresNativePackageFileCases = [
-        {requiresHostFile: true, nativeGuestFile: true, expectedValue: true},
-        {requiresHostFile: false, nativeGuestFile: true, expectedValue: false},
-        {requiresHostFile: true, nativeGuestFile: false, expectedValue: false},
-        {requiresHostFile: false, nativeGuestFile: false, expectedValue: false},
+    const exportsNativeClassCases = [
+        {exportsClass: true, schemaIsNative: true, expectedValue: true},
+        {exportsClass: false, schemaIsNative: true, expectedValue: false},
+        {exportsClass: true, schemaIsNative: false, expectedValue: false},
+        {exportsClass: false, schemaIsNative: false, expectedValue: false},
     ]
 
-    for (const testCase of requiresNativePackageFileCases) {
-        test('requiresNativePackageFile, requires host file: ' + testCase.requiresHostFile + ', native guest file: ' +
-            testCase.nativeGuestFile,
+    for (const testCase of exportsNativeClassCases) {
+        test('exportsNativeClass, requires host file: ' + testCase.exportsClass + ', schema is native: ' +
+            testCase.schemaIsNative,
             () => {
-                const exportedFile = new ExportedFile({isNative: testCase.nativeGuestFile})
-                t.mockGetter(exportedFile, 'requiresHostFile', () => testCase.requiresHostFile)
-                expect(exportedFile.requiresNativePackageFile).toBe(testCase.expectedValue)
+                const exportedFile = new ExportedFile(undefined, {isNative: testCase.schemaIsNative})
+                t.mockGetter(exportedFile, 'exportsClass', () => testCase.exportsClass)
+                expect(exportedFile.exportsNativeClass).toBe(testCase.expectedValue)
             })
     }
+
+    test('resolveClassType, with schema', () => {
+        const schema = {
+            resolveClassType: nativeClassesMap => {
+                expect(nativeClassesMap).toBe('nativeClassesMap')
+                return 'resolvedSchema'
+            },
+        }
+        const exportedFile = new ExportedFile('guestFile', schema)
+        expect(exportedFile.resolveClassType('nativeClassesMap'))
+            .toStrictEqual(new ExportedFile('guestFile', 'resolvedSchema'))
+    })
+
+    test('resolveClassType, without schema', () => {
+        const exportedFile = new ExportedFile('guestFile', null)
+
+        const actualExportedFile = exportedFile.resolveClassType('nativeClassesMap')
+        expect(actualExportedFile).toStrictEqual(exportedFile)
+        expect(actualExportedFile).not.toBe(exportedFile)
+    })
 })

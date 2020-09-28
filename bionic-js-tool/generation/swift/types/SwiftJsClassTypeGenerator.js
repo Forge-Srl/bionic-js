@@ -1,7 +1,7 @@
 const {SwiftTypeGenerator} = require('./SwiftTypeGenerator')
 const {IniRet} = require('../../code/IniRet')
 
-class SwiftObjectTypeGenerator extends SwiftTypeGenerator {
+class SwiftJsClassTypeGenerator extends SwiftTypeGenerator {
 
     getTypeStatement() {
         return `${this.schema.className}?`
@@ -19,4 +19,4 @@ class SwiftObjectTypeGenerator extends SwiftTypeGenerator {
     }
 }
 
-module.exports = {SwiftObjectTypeGenerator}
+module.exports = {SwiftJsClassTypeGenerator}

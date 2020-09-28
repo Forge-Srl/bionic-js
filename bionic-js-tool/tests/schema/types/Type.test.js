@@ -16,9 +16,16 @@ describe('Type', () => {
     })
 
     test('fromObj Class', () => {
-        const instance = Type.fromObj({type: 'Object', className: 'MyName'})
-        const ObjectType = t.requireModule('schema/types/ObjectType').ObjectType
-        expect(instance).toBeInstanceOf(ObjectType)
+        const instance = Type.fromObj({type: 'Class', className: 'MyName'})
+        const ClassType = t.requireModule('schema/types/ClassType').ClassType
+        expect(instance).toBeInstanceOf(ClassType)
+        expect(instance.className).toBe('MyName')
+    })
+
+    test('fromObj NativeRef', () => {
+        const instance = Type.fromObj({type: 'NativeRef', className: 'MyName'})
+        const NativeRefType = t.requireModule('schema/types/NativeRefType').NativeRefType
+        expect(instance).toBeInstanceOf(NativeRefType)
         expect(instance.className).toBe('MyName')
     })
 
@@ -46,8 +53,7 @@ describe('Type', () => {
         expect(testType.toString()).toBe('test...')
     })
 
-    test('resolveNativeType', () => {
-        expect(type.resolveNativeType()).toBe(type)
-
+    test('resolveClassType', () => {
+        expect(type.resolveClassType()).toBe(type)
     })
 })

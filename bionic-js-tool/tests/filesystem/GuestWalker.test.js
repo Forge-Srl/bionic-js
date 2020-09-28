@@ -3,13 +3,12 @@ const path = require('path')
 
 describe('GuestWalker', () => {
 
-    let guestDirPath, guestNativeDirPath, GuestFile, walker
+    let guestDirPath, GuestFile, walker
 
     beforeEach(() => {
         const GuestWalker = t.requireModule('filesystem/GuestWalker').GuestWalker
         guestDirPath = path.resolve(__dirname, '../../testing-code/guest')
-        guestNativeDirPath = path.resolve(__dirname, '../../testing-code/guest/native')
-        const config = {guestDirPath, guestNativeDirPath, guestIgnores: ['node_modules']}
+        const config = {guestDirPath, guestIgnores: ['node_modules']}
 
         GuestFile = t.requireModule('filesystem/GuestFile').GuestFile
         walker = GuestWalker.build(config)
@@ -31,7 +30,6 @@ describe('GuestWalker', () => {
         dependenciesFiles.forEach(dependencyFile => {
             expect(dependencyFile).toBeInstanceOf(GuestFile)
             expect(dependencyFile.rootDirPath).toBe(guestDirPath)
-            expect(dependencyFile.guestNativeDirPath).toBe(guestNativeDirPath)
         })
         const dependenciesPaths = dependenciesFiles.map(guestFile => guestFile.relativePath)
 
@@ -51,7 +49,6 @@ describe('GuestWalker', () => {
         guestFiles.forEach(guestFile => {
             expect(guestFile).toBeInstanceOf(GuestFile)
             expect(guestFile.rootDirPath).toBe(guestDirPath)
-            expect(guestFile.guestNativeDirPath).toBe(guestNativeDirPath)
         })
         const guestPaths = guestFiles.map(guestFile => guestFile.relativePath)
 
