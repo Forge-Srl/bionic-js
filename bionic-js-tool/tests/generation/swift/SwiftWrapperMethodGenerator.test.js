@@ -58,7 +58,7 @@ describe('SwiftWrapperMethodGenerator', () => {
             '    ',
             '    private class func bjs_method1() -> @convention(block) (JSValue) -> Void {',
             '        return {',
-            '            _ = Bjs.get.getWrapped($0, Class1.self)!.method1()',
+            '            Bjs.get.getWrapped($0, Class1.self)!.method1()',
             '        }',
             '    }',
             '}')
@@ -73,7 +73,7 @@ describe('SwiftWrapperMethodGenerator', () => {
             '    ',
             '    private class func bjsStatic_method1() -> @convention(block) () -> Void {',
             '        return {',
-            '            _ = Class1.method1()',
+            '            Class1.method1()',
             '        }',
             '    }',
             '}')
@@ -88,7 +88,7 @@ describe('SwiftWrapperMethodGenerator', () => {
             '    ',
             '    private class func bjsStatic_method1() -> @convention(block) (JSValue) -> Void {',
             '        return {',
-            '            _ = Class1.method1(Bjs.get.getBool($0))',
+            '            Class1.method1(Bjs.get.getBool($0))',
             '        }',
             '    }',
             '}')
@@ -121,7 +121,7 @@ describe('SwiftWrapperMethodGenerator', () => {
             '    ',
             '    private class func bjs_method1() -> @convention(block) (JSValue, JSValue, JSValue) -> Void {',
             '        return {',
-            '            _ = Bjs.get.getWrapped($0, Class1.self)!.method1(Bjs.get.getBool($1), Bjs.get.getInt($2))',
+            '            Bjs.get.getWrapped($0, Class1.self)!.method1(Bjs.get.getBool($1), Bjs.get.getInt($2))',
             '        }',
             '    }',
             '}')
@@ -142,7 +142,7 @@ describe('SwiftWrapperMethodGenerator', () => {
             '                _ = Bjs.get.funcCall(jsFunc_bjs0)',
             '            })',
             '            let jsFunc_bjs2: @convention(block) () -> Void = {',
-            '                _ = nativeFunc_bjs1!()',
+            '                nativeFunc_bjs1!()',
             '            }',
             '            return Bjs.get.putFunc(nativeFunc_bjs1, jsFunc_bjs2)',
             '        }',

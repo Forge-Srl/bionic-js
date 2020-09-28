@@ -42,6 +42,14 @@ describe('Swift primitive types generators', () => {
         },
         {
             name: 'Void',
+            alwaysReturningCode: false,
+            statement: 'Void',
+            nativeReturnTypeStatement: '',
+            nativeReturnStatement: '',
+        },
+        {
+            name: 'Void',
+            alwaysReturningCode: true,
             statement: 'Void',
             nativeReturnTypeStatement: '',
             nativeReturnStatement: '_ = ',
@@ -62,7 +70,12 @@ describe('Swift primitive types generators', () => {
         })
 
         test(`getNativeReturnStatement of ${expectation.name}`, () => {
-            expect(generator.getNativeReturnStatement()).toBe(expectation.nativeReturnStatement)
+            if (expectation.alwaysReturningCode === undefined) {
+                expect(generator.getNativeReturnStatement(true)).toBe(expectation.nativeReturnStatement)
+                expect(generator.getNativeReturnStatement(false)).toBe(expectation.nativeReturnStatement)
+            } else {
+                expect(generator.getNativeReturnStatement(expectation.alwaysReturningCode)).toBe(expectation.nativeReturnStatement)
+            }
         })
     }
 })

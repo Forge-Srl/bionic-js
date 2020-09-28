@@ -7,11 +7,11 @@ const {SwiftKeywords} = require('./SwiftKeywords')
 class SwiftHostMethodGenerator extends SwiftMethodGenerator {
 
     getHeaderCode() {
-        const class_ = this.schema.isStatic ? 'class ' : ''
+        const clazz = this.schema.isStatic ? 'class ' : ''
         const returnTypeStatement = this.returnTypeGenerator.getNativeReturnTypeStatement()
 
         return CodeBlock.create()
-            .append(`${class_}func ${SwiftKeywords.getSafeIdentifier(this.schema.name)}(`).append(this.getParametersStatements())
+            .append(`${clazz}func ${SwiftKeywords.getSafeIdentifier(this.schema.name)}(`).append(this.getParametersStatements())
             .__.append(`)${returnTypeStatement} {`)
     }
 
@@ -23,7 +23,7 @@ class SwiftHostMethodGenerator extends SwiftMethodGenerator {
         const callIniRet = IniRet.create()
             .appendRet(this.schema.isStatic ? 'Bjs.get.call(self.bjsClass, ' : 'bjsCall(').appendRet(`"${this.schema.name}"`)
             .__.appendRet(anyParameter ? ', ' : '').append(this.getArgumentsListJsIniRet(methodContext)).appendRet(')')
-        return returnTypeGen.getNativeReturnCode(returnTypeGen.getNativeIniRet(callIniRet, methodContext))
+        return returnTypeGen.getNativeReturnCode(returnTypeGen.getNativeIniRet(callIniRet, methodContext), true)
 
     }
 

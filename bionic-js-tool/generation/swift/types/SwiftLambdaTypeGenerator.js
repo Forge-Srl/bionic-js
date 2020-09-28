@@ -27,7 +27,8 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
                     .append(`let ${jsFuncVar} = `).append(jsFuncIniRet.returningCode).newLine())
             .editRet(ret =>
                 ret.append(`Bjs.get.getFunc(${jsFuncVar}) {`).newLineIndenting()
-                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithNativeIniRet(jsFuncVar, context))).newLineDeindenting()
+                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithNativeIniRet(jsFuncVar, context), true))
+                    .__.newLineDeindenting()
                     .append('}'))
     }
 
@@ -58,7 +59,7 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
                     .__.append(this.parameters.map(param => param.type.generator.swift.getBlockTypeStatement()).join(', '))
                     .__.append(')').append(this.returnTypeGenerator.getBlockReturnTypeStatement())
                     .__.append(' = {').newLineIndenting()
-                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithJsIniRet(nativeFuncVar, context))).newLineDeindenting()
+                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithJsIniRet(nativeFuncVar, context), false)).newLineDeindenting()
                     .append('}').newLine())
 
             .editRet(ret =>

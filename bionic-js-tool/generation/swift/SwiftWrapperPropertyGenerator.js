@@ -68,7 +68,8 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
             .append(`private class func ${this.getterWrapperMethodName}() -> @convention(block) (`)
             .__.append(`${this.schema.isStatic ? '' : 'JSValue'}) -> JSValue {`).newLineIndenting()
             .append('return {').newLineIndenting()
-            .append(typeGen.getNativeReturnCode(typeGen.getJsIniRet(this.nativePropertyIniRet, getterContext))).newLineDeindenting()
+            .append(typeGen.getNativeReturnCode(typeGen.getJsIniRet(this.nativePropertyIniRet, getterContext), false))
+            .__.newLineDeindenting()
             .append('}').newLineDeindenting()
             .append('}')
     }

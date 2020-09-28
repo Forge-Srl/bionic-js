@@ -109,7 +109,7 @@ describe('SwiftHostMethodGenerator', () => {
             '    func method1(_ voidLambda: (() -> Void)?) -> (() -> Void)? {',
             '        let nativeFunc_bjs0 = voidLambda',
             '        let jsFunc_bjs1: @convention(block) () -> Void = {',
-            '            _ = nativeFunc_bjs0!()',
+            '            nativeFunc_bjs0!()',
             '        }',
             '        let jsFunc_bjs2 = bjsCall("method1", Bjs.get.putFunc(nativeFunc_bjs0, jsFunc_bjs1))',
             '        return Bjs.get.getFunc(jsFunc_bjs2) {',

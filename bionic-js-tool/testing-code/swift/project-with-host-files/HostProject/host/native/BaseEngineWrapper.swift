@@ -21,20 +21,20 @@ class BaseEngineWrapper: BjsNativeWrapper {
     
     private class func bjs_powerOn() -> @convention(block) (JSValue) -> Void {
         return {
-            _ = Bjs.get.getWrapped($0, BaseEngine.self)!.powerOn()
+            Bjs.get.getWrapped($0, BaseEngine.self)!.powerOn()
         }
     }
     
     private class func bjs_powerOff() -> @convention(block) (JSValue) -> Void {
         return {
-            _ = Bjs.get.getWrapped($0, BaseEngine.self)!.powerOff()
+            Bjs.get.getWrapped($0, BaseEngine.self)!.powerOff()
         }
     }
     
     private class func bjs_watch() -> @convention(block) (JSValue, JSValue) -> Void {
         return {
             let jsFunc_bjs0 = $1
-            _ = Bjs.get.getWrapped($0, BaseEngine.self)!.watch(Bjs.get.getFunc(jsFunc_bjs0) {
+            Bjs.get.getWrapped($0, BaseEngine.self)!.watch(Bjs.get.getFunc(jsFunc_bjs0) {
                 return Bjs.get.getString(Bjs.get.funcCall(jsFunc_bjs0))
             })
         }

@@ -19,11 +19,11 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
     }
 
     getHeaderCode() {
-        const class_ = this.schema.isStatic ? 'class ' : ''
+        const clazz = this.schema.isStatic ? 'class ' : ''
         const typeStatement = this.typeGenerator.getTypeStatement()
 
         return CodeBlock.create()
-            .append(`${class_}var ${SwiftKeywords.getSafeIdentifier(this.schema.name)}:`).append(`${typeStatement} {`)
+            .append(`${clazz}var ${SwiftKeywords.getSafeIdentifier(this.schema.name)}:`).append(`${typeStatement} {`)
     }
 
     getGetterCode() {
@@ -39,7 +39,8 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
 
         return CodeBlock.create()
             .append('get {').newLineIndenting()
-            .append(typeGen.getNativeReturnCode(typeGen.getNativeIniRet(jsValueIniRet, getterContext))).newLineDeindenting()
+            .append(typeGen.getNativeReturnCode(typeGen.getNativeIniRet(jsValueIniRet, getterContext), true))
+            .__.newLineDeindenting()
             .append('}')
     }
 

@@ -50,7 +50,8 @@ class SwiftWrapperMethodGenerator extends SwiftMethodGenerator {
             .appendRet(this.getNativeMethodCall(argumentsListNativeIniRet.returningCode))
 
         const lambdaReturnTypeGen = this.returnTypeGenerator
-        const lambdaCode = lambdaReturnTypeGen.getNativeReturnCode(lambdaReturnTypeGen.getJsIniRet(callIniRet, methodContext))
+        const lambdaCode = lambdaReturnTypeGen
+            .getNativeReturnCode(lambdaReturnTypeGen.getJsIniRet(callIniRet, methodContext), false)
 
         return CodeBlock.create()
             .append(`private class func ${this.wrapperMethodName}() -> @convention(block) (`)

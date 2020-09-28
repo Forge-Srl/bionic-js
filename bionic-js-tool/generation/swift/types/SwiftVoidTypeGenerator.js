@@ -14,8 +14,8 @@ class SwiftVoidTypeGenerator extends SwiftTypeGenerator {
         return ''
     }
 
-    getNativeReturnStatement() {
-        return '_ = '
+    getNativeReturnStatement(alwaysReturningCode) {
+        return alwaysReturningCode ? '_ = ' : ''
     }
 
     getJsIniRet(nativeIniRet, context) {

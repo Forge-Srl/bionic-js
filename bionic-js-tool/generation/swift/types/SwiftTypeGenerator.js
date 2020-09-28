@@ -20,7 +20,7 @@ class SwiftTypeGenerator extends CodeGenerator {
         return ` -> ${this.getTypeStatement()}`
     }
 
-    getNativeReturnStatement() {
+    getNativeReturnStatement(alwaysReturningCode) {
         return 'return '
     }
 
@@ -28,10 +28,10 @@ class SwiftTypeGenerator extends CodeGenerator {
         throw new Error('method "getJsToPrimitiveMethodName" must be implemented')
     }
 
-    getNativeReturnCode(iniRet) {
+    getNativeReturnCode(iniRet, alwaysReturningCode) {
         return CodeBlock.create()
             .append(iniRet.initializationCode)
-            .append(this.getNativeReturnStatement()).append(iniRet.returningCode)
+            .append(this.getNativeReturnStatement(alwaysReturningCode)).append(iniRet.returningCode)
     }
 
     getJsIniRet(nativeIniRet, context) {
