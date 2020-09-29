@@ -45,7 +45,7 @@ class BjsLibTest: XCTestCase {
     func test_bjsObject_sameInstances_differentTypes() {
         let instance1 = Bjs.get.getObj(jsInstance1, bjsObjectFactory)
         let instance1DifferentType = Bjs.get.getObj(jsInstance1, bjsObject2Factory);
-        XCTAssertNotEqual(instance1, instance1DifferentType)
+        XCTAssertEqual(instance1, instance1DifferentType)
         XCTAssertEqual(instance1?.bjsObj, instance1DifferentType?.bjsObj)
         
         let instance1Again = Bjs.get.getObj(jsInstance1, bjsObjectFactory)
