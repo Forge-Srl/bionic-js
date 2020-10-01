@@ -1,5 +1,5 @@
 const {BjsNativeObject} = require('./BjsNativeObject')
-const {bjsNative} = require('ToyComponent1')
+const {bjsNative} = bjsNativeRequire('ToyComponent1')
 
 class ToyComponent1 extends BjsNativeObject {
     

@@ -5,12 +5,12 @@
 
 import JavaScriptCore
 
+// This class is ready to die with webpack introduction
 class BjsModules : BjsContext {
     
     let bootstrapFile = "bootstrap.js"
     let bootstrapBundle: BjsBundle
     let appBundle: BjsBundle
-    var nativeWrappers: [String : BjsNativeWrapper.Type]
     
     var _nodeJsModule: JSValue?
     var nodeJsModule: JSValue {
@@ -21,7 +21,6 @@ class BjsModules : BjsContext {
     init(_ appBundle: BjsBundle, _ bootstrapBundleName: String = "BjsBootstrap") {
         self.appBundle = appBundle
         bootstrapBundle = BjsBundle(BjsModules.self, bootstrapBundleName)
-        nativeWrappers = [String : BjsNativeWrapper.Type]()
     }
     
     func load(_ modulePath: String) -> JSValue {
@@ -31,22 +30,6 @@ class BjsModules : BjsContext {
             logError("cannot load js module \"\(modulePath)\"")
         }
         return jsValue
-    }
-    
-    func addNativeWrappers(_ nativeWrapperClass: BjsNativeWrapper.Type) {
-        
-        if nativeWrapperClass.name == "" || nativeWrapperClass.wrapperPath == "" {
-            fatalError("invalid native wrapper")
-        }
-        
-        if nativeWrappers[nativeWrapperClass.name] != nil {
-            fatalError("native wrapper \"\(nativeWrapperClass.name)\" was already added")
-        }
-        nativeWrappers[nativeWrapperClass.name] = nativeWrapperClass
-    }
-    
-    func removeAllNativeWrappers() {
-        nativeWrappers.removeAll()
     }
     
     func clearNodeLoader() {
@@ -160,7 +143,7 @@ class BjsModules : BjsContext {
     private func getInternalModuleFunction() -> @convention(block) (_ : String) -> (JSValue) {
         
         return { moduleName in
-            return self.nativeWrappers[moduleName]!.bjsGetNativeFunctions(self)!
+            return self.getNativeModule(moduleName)
         }
     }
 }

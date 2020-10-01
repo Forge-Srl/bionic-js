@@ -12,6 +12,7 @@ class BjsContext {
     public var intervalIds: NSMutableSet = NSMutableSet()
     public var lastTimeoutId: Int = 0
     public var lastIntervalId: Int = 0
+    var nativeWrappers: [String : BjsNativeWrapper.Type] = [String : BjsNativeWrapper.Type]()
 
     init() {
         jsContext.exceptionHandler = { context, exception in
@@ -54,6 +55,29 @@ class BjsContext {
         let process = JSValue.init(newObjectIn: jsContext)
         process!.setObject(JSValue.init(newObjectIn: jsContext), forKeyedSubscript: "env" as NSString)
         jsContext.setObject(process, forKeyedSubscript: "process" as NSString)
+        
+        let bjsNativeRequire: @convention(block) (_ : String) -> JSValue = { return self.getNativeModule($0) }
+        jsContext.setObject(bjsNativeRequire, forKeyedSubscript: "bjsNativeRequire" as NSString)
+    }
+    
+    func addNativeWrappers(_ nativeWrapperClass: BjsNativeWrapper.Type) {
+        
+        if nativeWrapperClass.name == "" || nativeWrapperClass.wrapperPath == "" {
+            fatalError("invalid native wrapper")
+        }
+        
+        if nativeWrappers[nativeWrapperClass.name] != nil {
+            fatalError("native wrapper \"\(nativeWrapperClass.name)\" was already added")
+        }
+        nativeWrappers[nativeWrapperClass.name] = nativeWrapperClass
+    }
+    
+    func getNativeModule(_ nativeModuleName: String) -> JSValue {
+        return self.nativeWrappers[nativeModuleName]!.bjsGetNativeFunctions(self)!
+    }
+    
+    func removeAllNativeWrappers() {
+        nativeWrappers.removeAll()
     }
 
     private func newTimeoutId() -> Int {
