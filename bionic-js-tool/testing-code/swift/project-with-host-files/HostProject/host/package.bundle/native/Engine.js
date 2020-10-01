@@ -1,5 +1,5 @@
 const {BaseEngine} = require('./BaseEngine')
-const {bjsNative} = require('Engine')
+const {bjsNative} = bjsNativeRequire('Engine')
 
 class Engine extends BaseEngine {
     

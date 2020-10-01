@@ -23,7 +23,7 @@ class JavascriptWrapperClassGenerator extends ClassGenerator {
         const superclass = this.schema.superclass || new Class(nativeObjectBaseClassName, '', [], [], [], null, true, nativeObjectBaseClassName)
         return CodeBlock.create()
             .append(`const {${superclass.name}} = require(\'${this.schema.getRelativeModuleLoadingPath(superclass)}\')`).newLine()
-            .append(`const {bjsNative} = require(\'${this.schema.name}\')`).newLine()
+            .append(`const {bjsNative} = bjsNativeRequire(\'${this.schema.name}\')`).newLine()
             .newLine()
             .append(`class ${this.schema.name} extends ${superclass.name} {`).newLineIndenting()
             .newLine()

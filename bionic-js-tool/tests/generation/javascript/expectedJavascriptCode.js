@@ -4,7 +4,7 @@ function getExpectedHeader(superclassName = 'BjsNativeObject', superclassPath = 
                            addBottomEmptyLine = true) {
     return [
         `const {${superclassName}} = require(\'${superclassPath}\')`,
-        'const {bjsNative} = require(\'Class1\')',
+        'const {bjsNative} = bjsNativeRequire(\'Class1\')',
         '',
         `class Class1 extends ${superclassName} {`,
         '    ',

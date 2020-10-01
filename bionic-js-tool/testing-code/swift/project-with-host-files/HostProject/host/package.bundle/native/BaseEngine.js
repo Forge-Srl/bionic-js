@@ -1,5 +1,5 @@
 const {BjsNativeObject} = require('../BjsNativeObject')
-const {bjsNative} = require('BaseEngine')
+const {bjsNative} = bjsNativeRequire('BaseEngine')
 
 class BaseEngine extends BjsNativeObject {
     
