@@ -187,7 +187,7 @@ class XcodeHostProject {
     }
 
     checkForIncompatiblePackageFiles(files) {
-        const notSourceFiles = files.filter(file => file.ext !== JS_FILE_EXT && file.ext !== JSON_FILE_EXT)
+        const notSourceFiles = files.filter(file => file.ext !== JS_FILE_EXT && file.ext !== JSON_FILE_EXT && file.ext !== '.mjs')
         if (notSourceFiles.length) {
             const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
             throw new Error(`${fileNames} not supported: only Javascript source files can be placed inside the package directory`)
