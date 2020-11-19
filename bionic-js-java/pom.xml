@@ -185,6 +185,11 @@
             <artifactId>spotbugs-annotations</artifactId>
             <version>4.1.2</version>
             <scope>provided</scope>
+            <!--
+            Setting as optional to bypass LGPL limitations.
+            See: https://github.com/spotbugs/discuss/issues/64#issuecomment-454634426
+            -->
+            <optional>true</optional>
         </dependency>
 
         <dependency>
