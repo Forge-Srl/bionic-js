@@ -2,15 +2,15 @@ const {File} = require('./File')
 
 class HostFile extends File {
 
-    static build(exportedFile, targetConfig) {
-        const exportFieldName = `${targetConfig.hostLanguage}HostFile`
+    static build(annotatedFile, hostProjectConfig, projectName) {
+        const exportFieldName = `${hostProjectConfig.language}HostFile`
         const LanguageHostFile = require(`./${exportFieldName}`)[exportFieldName]
-        return LanguageHostFile.build(exportedFile, targetConfig)
+        return LanguageHostFile.build(annotatedFile, hostProjectConfig, projectName)
     }
 
-    constructor(path, hostDir, exportedFile) {
+    constructor(path, hostDir, annotatedFile, projectName) {
         super(path, hostDir)
-        Object.assign(this, {exportedFile})
+        Object.assign(this, {annotatedFile, projectName})
     }
 }
 

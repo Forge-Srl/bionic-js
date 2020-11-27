@@ -3,6 +3,11 @@ const {CodeBlock} = require('../code/CodeBlock')
 
 class SwiftHostClassGenerator extends ClassGenerator {
 
+    constructor(schema, projectName) {
+        super(schema)
+        Object.assign(this, {projectName})
+    }
+
     getHeaderCode() {
         const superclassName = this.schema.superclass ? this.schema.superclass.name : 'BjsObject'
 
@@ -25,13 +30,11 @@ class SwiftHostClassGenerator extends ClassGenerator {
         const override = this.schema.superclass ? 'override ' : ''
 
         return CodeBlock.create()
-            .append(`${override}class func bjsFactory(_ jsObject: JSValue) -> ${this.schema.name} {`).newLineIndenting()
-            .append(`return ${this.schema.name}(jsObject)`).newLineDeindenting()
-            .append('}').newLine()
-            .newLine()
-            .append('override class var bjsModulePath: String {').newLineIndenting()
-            .append(`return "${this.schema.moduleLoadingPath}"`).newLineDeindenting()
-            .append('}').newLineDeindenting()
+            .append(`private static var _bjsLocator: BjsLocator = BjsLocator("${this.projectName}", "${this.schema.name}")`)
+            .__.newLine()
+            .append('override class var bjsLocator: BjsLocator { _bjsLocator }').newLine()
+            .append(`${override}class func bjsFactory(_ jsObject: JSValue) -> ${this.schema.name} { ${this.schema.name}(jsObject) }`)
+            .__.newLineDeindenting()
             .append('}')
     }
 

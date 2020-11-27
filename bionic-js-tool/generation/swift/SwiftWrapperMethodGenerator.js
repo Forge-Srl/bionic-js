@@ -37,7 +37,7 @@ class SwiftWrapperMethodGenerator extends SwiftMethodGenerator {
         return CodeBlock.create()
             .append(this.schema.isStatic ?
                 `${this.classSchema.name}.${this.schema.name}(` :
-                `Bjs.get.getWrapped($0, ${this.classSchema.name}.self)!.${this.schema.name}(`)
+                `bjs.getWrapped($0, ${this.classSchema.name}.self)!.${this.schema.name}(`)
             .append(argumentListCode).append(')')
     }
 

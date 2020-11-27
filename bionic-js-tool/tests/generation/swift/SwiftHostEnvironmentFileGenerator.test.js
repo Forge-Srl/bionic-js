@@ -9,12 +9,14 @@ describe('SwiftHostEnvironmentFileGenerator', () => {
             t.requireModule('generation/swift/SwiftHostEnvironmentFileGenerator').SwiftHostEnvironmentFileGenerator
 
         expectedHeader = [
+            'import Foundation',
             'import Bjs',
             '',
-            'class BjsEnvironment {',
+            '@objc(BjsProject1)',
+            'class BjsProject1 : BjsProject {',
             '    ',
-            '    static func initialize() {',
-            '        Bjs.setBundle(BjsEnvironment.self, "pkgName")',
+            '    override class func initialize(_ bjs: Bjs) {',
+            '        bjs.loadBundle(BjsProject1.self, "pkgName")',
         ]
 
         expectedFooter = [
@@ -23,9 +25,9 @@ describe('SwiftHostEnvironmentFileGenerator', () => {
         ]
     })
 
-    function getSourceCode(nativePackageFilesNames) {
-        const nativePackageFiles = nativePackageFilesNames.map(name => ({schema: {name}}))
-        return new SwiftHostEnvironmentFileGenerator('pkgName', nativePackageFiles).getSource()
+    function getSourceCode(nativeFilesNames) {
+        const nativeFiles = nativeFilesNames.map(name => ({schema: {name}}))
+        return new SwiftHostEnvironmentFileGenerator('pkgName', nativeFiles, 'Project1').getSource()
     }
 
     test('getSource, no package native files', () => {
@@ -41,8 +43,8 @@ describe('SwiftHostEnvironmentFileGenerator', () => {
 
         t.expectCode(code,
             ...expectedHeader,
-            '        Bjs.get.addNativeWrapper(NativeClass1Wrapper.self)',
-            '        Bjs.get.addNativeWrapper(NativeClass2Wrapper.self)',
+            '        bjs.addNativeWrapper(NativeClass1BjsWrapper.self)',
+            '        bjs.addNativeWrapper(NativeClass2BjsWrapper.self)',
             ...expectedFooter)
     })
 })

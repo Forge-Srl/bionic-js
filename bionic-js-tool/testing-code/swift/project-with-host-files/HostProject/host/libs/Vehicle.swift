@@ -5,36 +5,32 @@ class Vehicle: BjsObject {
     
     var description:String? {
         get {
-            return Bjs.get.getString(bjsGetProperty("description"))
+            return Vehicle.bjs.getString(bjsGetProperty("description"))
         }
     }
     
     var weight:Double? {
         get {
-            return Bjs.get.getFloat(bjsGetProperty("weight"))
+            return Vehicle.bjs.getFloat(bjsGetProperty("weight"))
         }
         set {
-            bjsSetProperty("weight", Bjs.get.putPrimitive(newValue))
+            bjsSetProperty("weight", Vehicle.bjs.putPrimitive(newValue))
         }
     }
     
     var seats:Int? {
         get {
-            return Bjs.get.getInt(bjsGetProperty("seats"))
+            return Vehicle.bjs.getInt(bjsGetProperty("seats"))
         }
     }
     
     var maxSpeed:Int? {
         get {
-            return Bjs.get.getInt(bjsGetProperty("maxSpeed"))
+            return Vehicle.bjs.getInt(bjsGetProperty("maxSpeed"))
         }
     }
     
-    class func bjsFactory(_ jsObject: JSValue) -> Vehicle {
-        return Vehicle(jsObject)
-    }
-    
-    override class var bjsModulePath: String {
-        return "/libs/Vehicle"
-    }
+    private static var _bjsLocator: BjsLocator = BjsLocator("BeautifulVehicles", "Vehicle")
+    override class var bjsLocator: BjsLocator { _bjsLocator }
+    class func bjsFactory(_ jsObject: JSValue) -> Vehicle { Vehicle(jsObject) }
 }

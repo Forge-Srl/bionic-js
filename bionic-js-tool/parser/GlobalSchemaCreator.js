@@ -1,5 +1,5 @@
 const {ModuleSchemaCreator} = require('../parser/ModuleSchemaCreator')
-const {ExportedFile} = require('../filesystem/ExportedFile')
+const {AnnotatedGuestFile} = require('../filesystem/AnnotatedGuestFile')
 
 class GlobalSchemaCreator {
 
@@ -8,7 +8,7 @@ class GlobalSchemaCreator {
     }
 
     get moduleCreatorPromises() {
-        return this.guestFiles.filter(guestFile => guestFile.isExportable)
+        return this.guestFiles.filter(guestFile => guestFile.isJavascript)
             .map(guestFile => ModuleSchemaCreator.build(guestFile))
     }
 
@@ -30,19 +30,19 @@ class GlobalSchemaCreator {
         return this._moduleCreators
     }
 
-    async getExportedFiles() {
+    async getAnnotatedFiles() {
         const moduleCreators = await this.getModuleCreators()
         const moduleCreatorsMap = new Map(moduleCreators.map(creator => [creator.guestFile.path, creator]))
-        const exportedFiles = this.guestFiles.map(guestFile => {
+        const annotatedFiles = this.guestFiles.map(guestFile => {
             const moduleCreator = moduleCreatorsMap.get(guestFile.path)
-            return new ExportedFile(guestFile, moduleCreator ? moduleCreator.getSchema(moduleCreators) : null)
+            return new AnnotatedGuestFile(guestFile, moduleCreator ? moduleCreator.getSchema(moduleCreators) : null)
         })
 
-        const nativeClassesMap = new Map(exportedFiles
-            .filter(exportedFile => exportedFile.exportsClass)
-            .map(exportedFile => [exportedFile.schema.name, exportedFile.exportsNativeClass]),
+        const nativeClassesMap = new Map(annotatedFiles
+            .filter(annotatedFile => annotatedFile.exportsClass)
+            .map(annotatedFile => [annotatedFile.schema.name, annotatedFile.exportsNativeClass]),
         )
-        return exportedFiles.map(exportedFile => exportedFile.resolveClassType(nativeClassesMap))
+        return annotatedFiles.map(annotatedFile => annotatedFile.resolveClassType(nativeClassesMap))
     }
 }
 

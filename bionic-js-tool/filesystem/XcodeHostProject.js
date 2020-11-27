@@ -1,23 +1,23 @@
 const xcode = require('xcode')
+const pbxFile = require('xcode/lib/pbxFile')
 const path = require('path')
 const touch = require('touch')
-const {File} = require('./File')
-const {Directory} = require('./Directory')
-const {FileWalker} = require('./FileWalker')
-const {JS_FILE_EXT, JSON_FILE_EXT, SWIFT_FILE_EXT} = require('./fileExtensions')
+const {HostProjectFile} = require('./HostProjectFile')
+const {BundleProjectFile} = require('./BundleProjectFile')
+const {JS_FILE_EXT, SWIFT_FILE_EXT, BJS_BUNDLE_SUFFIX} = require('./fileExtensions')
 const BUNDLE_FILE_TYPE = '"wrapper.plug-in"'
 const SOURCE_FILE_TYPE = 'sourcecode.swift'
 const XCODE_PATH_SEPARATOR = '/'
 
 class XcodeHostProject {
 
-    constructor(targetConfig, log) {
-        Object.assign(this, {targetConfig, log})
+    constructor(config, log) {
+        Object.assign(this, {config, log})
     }
 
     get project() {
         if (!this._project) {
-            this._project = xcode.project(this.targetConfig.xcodeProjectFilePath).parseSync()
+            this._project = xcode.project(this.config.xcodeProjectFile.path).parseSync()
         }
         return this._project
     }
@@ -27,27 +27,70 @@ class XcodeHostProject {
         return this.getGroupByKey(mainGroupKey)
     }
 
-    get compileTargetKeys() {
+    get allTargetKeys() {
+        const targetObjects = this.project.pbxNativeTargetSection()
+        return Object.keys(targetObjects).filter(targetKey => targetObjects[targetKey].name)
+    }
+
+    get targetKeysFilesMap() {
+        const targetKeysFilesMap = new Map()
+        const buildFileMap = this.project.pbxBuildFileSection()
+        const targetObjects = this.project.pbxNativeTargetSection()
+        const nativeTargets = Object.keys(targetObjects).filter(targetKey => targetObjects[targetKey].buildPhases)
+            .map(key => ({targetKey: key, targetName: targetObjects[key].name}))
+        for (const nativeTarget of nativeTargets) {
+            const fileRefs = [...this.project.pbxSourcesBuildPhaseObj(nativeTarget.targetKey).files,
+                ...this.project.pbxResourcesBuildPhaseObj(nativeTarget.targetKey).files]
+                .map(fileKey => buildFileMap[fileKey.value].fileRef)
+            for (const fileRef of fileRefs) {
+                const targetKeys = targetKeysFilesMap.get(fileRef)
+                if (targetKeys) {
+                    targetKeys.push(nativeTarget.targetName)
+                } else {
+                    targetKeysFilesMap.set(fileRef, [nativeTarget.targetName])
+                }
+            }
+        }
+        return targetKeysFilesMap
+    }
+
+    get targetKeysBundleMap() {
+        const targetKeysBundleMap = new Map()
+        for (const targetBundle of this.config.targetBundles) {
+            for (const compileTarget of targetBundle.compileTargets) {
+                targetKeysBundleMap.set(compileTarget, targetBundle.bundleName)
+            }
+        }
+        return targetKeysBundleMap
+    }
+
+    getBundleDirName(bundleName) {
+        return `Bjs${bundleName}/${bundleName}${BJS_BUNDLE_SUFFIX}`
+    }
+
+    getBundleFileName(bundleName) {
+        return `${bundleName}${JS_FILE_EXT}`
+    }
+
+    getCompileTargetKeys(compileTargets) {
         const targetObjects = this.project.pbxNativeTargetSection()
         const allTargets = this.allTargetKeys.map(targetKey => ({key: targetKey, obj: targetObjects[targetKey]}))
         const targetKeys = []
-        for (const compileTargetName of this.targetConfig.compileTargets) {
+        for (const compileTargetName of compileTargets) {
             const compileTarget = allTargets.find(target => target.obj.name === compileTargetName)
             if (!compileTarget) {
-                throw new Error(`compile target "${compileTargetName}" not found in the project`)
+                throw new Error(`compile target "${compileTargetName}" not found in the Xcode project`)
             }
             targetKeys.push(compileTarget.key)
         }
         return targetKeys
     }
 
-    get allTargetKeys() {
-        const targetObjects = this.project.pbxNativeTargetSection()
-        return Object.keys(targetObjects).filter(targetKey => targetObjects[targetKey].name)
-    }
-
-    get xcodeProjectDir() {
-        return new Directory(this.targetConfig.xcodeProjectDirPath, this.targetConfig.xcodeProjectDirPath)
+    getCompileTargets(bundles) {
+        return bundles.flatMap(bundleName => {
+            const targetBundle = this.config.targetBundles.find(targetBundle => targetBundle.bundleName === bundleName)
+            return targetBundle ? targetBundle.compileTargets : []
+        })
     }
 
     encodePath(path) {
@@ -157,71 +200,82 @@ class XcodeHostProject {
         return null
     }
 
-    async getHostFiles() {
-        const hostDirGroup = this.getGroupByDirPath(this.targetConfig.hostDirName)
+    async getProjectFiles() {
+        const hostDirGroup = this.getGroupByDirPath(this.config.hostDirName)
         if (!hostDirGroup)
             return []
-        const files = this.getFiles(hostDirGroup)
-        this.checkForIncompatibleHostFiles(files)
+        const xcodeFiles = this.getFiles(hostDirGroup)
+        this.checkForIncompatibleHostFiles(xcodeFiles)
 
-        const xcodeProjectDirPath = this.targetConfig.xcodeProjectDirPath
-        const hostDirPath = this.targetConfig.hostDirPath
-        return files
-            .map(file => new File(path.join(xcodeProjectDirPath, file.relativePath), hostDirPath))
-            .filter(file => file.ext === SWIFT_FILE_EXT)
+        const targetKeysFilesMap = this.targetKeysFilesMap
+        const filesToProcess = xcodeFiles
+            .map(xcodeFile => ({
+                file: this.config.xcodeProjectDir.getSubFile(xcodeFile.relativePath).setRootDirPath(this.config.hostDir.path),
+                targets: targetKeysFilesMap.get(xcodeFile.key),
+            }))
+
+        const targetKeysBundleMap = this.targetKeysBundleMap
+        const processFile = async fileToProcess => {
+
+            const bundlesSet = new Set()
+            const targets = fileToProcess.targets ? fileToProcess.targets : []
+            targets.forEach(target => {
+                const bundle = targetKeysBundleMap.get(target)
+                if (bundle) {
+                    bundlesSet.add(bundle)
+                }
+            })
+            if (fileToProcess.file.ext === SWIFT_FILE_EXT) {
+                return new HostProjectFile(fileToProcess.file.relativePath, [...bundlesSet], await fileToProcess.file.asFile.getContent())
+            } else if (fileToProcess.file.base.endsWith(BJS_BUNDLE_SUFFIX)) {
+                const bundleName = fileToProcess.file.base.slice(0, -BJS_BUNDLE_SUFFIX.length)
+                const bundleFile = fileToProcess.file.asDir.getSubFile(this.getBundleFileName(bundleName))
+                return new BundleProjectFile(bundleName, await bundleFile.getContent(), [...bundlesSet])
+            }
+        }
+        return (await Promise.all(filesToProcess.map(filesToProcess => processFile(filesToProcess)))).filter(nonNull => nonNull)
     }
 
     checkForIncompatibleHostFiles(files) {
-        const notSourceFiles = files.filter(file => file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE)
-        if (notSourceFiles.length) {
-            const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
-            throw new Error(`${fileNames} not supported: only .swift source files and bundles can be placed inside the host directory`)
-        }
-    }
-
-    async getPackageFiles() {
-        const packageDirPath = this.targetConfig.packageDirPath
-        const files = await (new FileWalker(packageDirPath)).getFiles()
-        this.checkForIncompatiblePackageFiles(files)
-        return files
-    }
-
-    checkForIncompatiblePackageFiles(files) {
-        const notSourceFiles = files.filter(file => file.ext !== JS_FILE_EXT && file.ext !== JSON_FILE_EXT && file.ext !== '.mjs')
-        if (notSourceFiles.length) {
-            const fileNames = notSourceFiles.map(file => `"${file.relativePath}"`).join(', ')
-            throw new Error(`${fileNames} not supported: only Javascript source files can be placed inside the package directory`)
+        const notSupportedFiles = files.filter(
+            file => (file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE) ||
+                (file.fileType === BUNDLE_FILE_TYPE && !file.relativePath.endsWith(BJS_BUNDLE_SUFFIX)))
+        if (notSupportedFiles.length) {
+            const fileNames = notSupportedFiles.map(file => `"${file.relativePath}"`).join(', ')
+            throw new Error(`${fileNames} not supported: only .swift source files and bundles with "${BJS_BUNDLE_SUFFIX}" suffix are allowed inside the host directory`)
         }
     }
 
     async cleanEmptyDirs() {
-        const hostDirGroup = this.getGroupByDirPath(this.targetConfig.hostDirName)
+        const hostDirGroup = this.getGroupByDirPath(this.config.hostDirName)
         if (hostDirGroup)
             await this.cleanEmptyGroups(hostDirGroup)
 
-        const packageDir = new Directory(this.targetConfig.packageDirPath)
-        await packageDir.cleanEmptyDirs()
+        for (const bundleName of this.config.targetBundles.map(targetBundle => targetBundle.bundleName)) {
+            const bundleDir = this.config.xcodeProjectDir
+                .getSubDir(this.config.hostDirName)
+                .getSubDir(this.getBundleDirName(bundleName))
+            await bundleDir.cleanEmptyDirs(false)
+        }
     }
 
     async save() {
         await this.cleanEmptyDirs()
-        const projectFile = new File(this.targetConfig.xcodeProjectFilePath)
-        await projectFile.setContent(this.project.writeSync())
-        await touch(this.targetConfig.xcodeProjectPath)
+        await this.config.xcodeProjectFile.setContent(this.project.writeSync())
+        await touch(this.config.projectPath)
     }
 
     /** REMOVE THINGS */
 
-    async removeHostFile(pathRelativeToHostDir) {
-        const hostDirGroup = this.getGroupByDirPath(this.targetConfig.hostDirName)
-        const hostFileRef = this.getFile(hostDirGroup, path.join(this.targetConfig.hostDirName, pathRelativeToHostDir))
+    async removeHostFileFromProject(pathRelativeToHostDir) {
+        const hostDirGroup = this.getGroupByDirPath(this.config.hostDirName)
+        const hostFileRef = this.getFile(hostDirGroup, path.join(this.config.hostDirName, pathRelativeToHostDir))
         if (hostFileRef) {
-            this.removePbxGroupChild(hostFileRef.fatherGroup, hostFileRef.file)
             this.removePbxSourceFile(hostFileRef.fatherGroup, hostFileRef.file)
         }
 
-        const hostFile = this.xcodeProjectDir
-            .getSubDir(this.targetConfig.hostDirName)
+        const hostFile = this.config.xcodeProjectDir
+            .getSubDir(this.config.hostDirName)
             .getSubFile(pathRelativeToHostDir)
 
         try {
@@ -232,34 +286,86 @@ class XcodeHostProject {
         }
     }
 
-    async removePackageFile(pathRelativeToPackageDir) {
-        const packageFile = this.xcodeProjectDir
-            .getSubDir(this.targetConfig.hostDirName)
-            .getSubDir(this.targetConfig.packageName)
-            .getSubFile(pathRelativeToPackageDir)
+    async removeBundleFromProject(bundleName) {
+        const bundleDirName = this.getBundleDirName(bundleName)
+        const hostDirGroup = this.getGroupByDirPath(this.config.hostDirName)
+        const hostFileRef = this.getFile(hostDirGroup, path.join(this.config.hostDirName, bundleDirName))
+        if (hostFileRef) {
+            this.removePbxSourceFile(hostFileRef.fatherGroup, hostFileRef.file)
+        }
 
+        const bundleDir = this.config.xcodeProjectDir.getSubDir(this.config.hostDirName).getSubDir(bundleDirName)
         try {
-            await packageFile.delete()
+            await bundleDir.delete()
         } catch (error) {
-            error.message = `removing package file "${packageFile.relativePath}"\n${error.message}`
+            error.message = `removing bundle directory "${bundleDir.relativePath}"\n${error.message}`
             throw error
         }
     }
 
-    removePbxGroupChild(father, childGroup) {
-        const pbxGroup = this.project.getPBXGroupByKey(father.key)
-        pbxGroup.children = pbxGroup.children.filter(child => child.value !== childGroup.key)
+    /* removeFromPbx* methods from the "xcode" library are buggy since they use only the file name to locate
+       and delete a file entry, but 2 files can have the same name and different groups/dirs! For this reason
+       the methods were reimplemented here
+     */
+    removeFromPbxFileReferenceSection(sourceFile) {
+        const pbxFileReferenceSection = this.project.pbxFileReferenceSection()
+        delete pbxFileReferenceSection[sourceFile.key]
+        const commentKey = `${sourceFile.key}_comment`
+        if (pbxFileReferenceSection[commentKey]) {
+            delete pbxFileReferenceSection[commentKey]
+        }
+    }
+
+    removeFromPbxGroup(groupKey, childKey) {
+        const pbxGroup = this.project.getPBXGroupByKey(groupKey)
+        pbxGroup.children = pbxGroup.children.filter(child => child.value !== childKey)
+    }
+
+    removeFromPbxBuildFileSection(sourceFile) {
+        const pbx = this.project.pbxBuildFileSection()
+        const buildFileKeys = Object.getOwnPropertyNames(pbx).filter(key => pbx[key].fileRef === sourceFile.key)
+        for (const key of buildFileKeys) {
+            delete pbx[key]
+            const commentKey = `${key}_comment`
+            if (pbx[commentKey]) {
+                delete pbx[commentKey]
+            }
+        }
+        return buildFileKeys
+    }
+
+    removeFromPbxSourcesBuildPhase(targetKey, buildFileKey) {
+        const sources = this.project.pbxSourcesBuildPhaseObj(targetKey)
+        for (const sourceFileIndex in sources.files) {
+            if (sources.files[sourceFileIndex].value === buildFileKey) {
+                sources.files.splice(sourceFileIndex, 1)
+                return
+            }
+        }
+    }
+
+    removeFromPbxResourcesBuildPhase(targetKey, buildFileKey) {
+        const resources = this.project.pbxResourcesBuildPhaseObj(targetKey)
+        for (const resourceFileIndex in resources.files) {
+            if (resources.files[resourceFileIndex].value === buildFileKey) {
+                resources.files.splice(resourceFileIndex, 1)
+                return
+            }
+        }
     }
 
     removePbxSourceFile(father, sourceFile) {
-        const file = this.project.removeFile(sourceFile.path, father.key, null)
-        this.project.removeFromPbxBuildFileSection(file)
+        this.removeFromPbxFileReferenceSection(sourceFile)
+        this.removeFromPbxGroup(father.key, sourceFile.key)
+        const buildFileKeys = this.removeFromPbxBuildFileSection(sourceFile)
+
         for (const targetKey of this.allTargetKeys) {
-            file.target = targetKey
-            if (sourceFile.fileType === SOURCE_FILE_TYPE) {
-                this.project.removeFromPbxSourcesBuildPhase(file)
-            } else {
-                this.project.removeFromPbxResourcesBuildPhase(file)
+            for (const buildFileKey of buildFileKeys) {
+                if (sourceFile.fileType === SOURCE_FILE_TYPE) {
+                    this.removeFromPbxSourcesBuildPhase(targetKey, buildFileKey)
+                } else {
+                    this.removeFromPbxResourcesBuildPhase(targetKey, buildFileKey)
+                }
             }
         }
     }
@@ -277,9 +383,9 @@ class XcodeHostProject {
             }
         }
         if (empty && fatherGroup) {
-            this.removePbxGroupChild(fatherGroup, group)
+            this.removeFromPbxGroup(fatherGroup.key, group.key)
             this.removePbxGroup(group)
-            await this.xcodeProjectDir.getSubDir(group.relativePath).delete()
+            await this.config.xcodeProjectDir.getSubDir(group.relativePath).delete()
         }
         return empty
     }
@@ -293,11 +399,11 @@ class XcodeHostProject {
 
     /** ADD THINGS */
 
-    async setHostFileContent(pathRelativeToHostDir, hostFileContent) {
-        this.addHostFileToProject(pathRelativeToHostDir, false)
+    async addHostFileToProject(pathRelativeToHostDir, bundles, hostFileContent) {
+        this.addFileToProject(pathRelativeToHostDir, bundles, false)
 
-        const hostFile = this.xcodeProjectDir
-            .getSubDir(this.targetConfig.hostDirName)
+        const hostFile = this.config.xcodeProjectDir
+            .getSubDir(this.config.hostDirName)
             .getSubFile(pathRelativeToHostDir)
 
         try {
@@ -309,25 +415,26 @@ class XcodeHostProject {
         }
     }
 
-    async setPackageFileContent(pathRelativeToPackageDir, packageFileContent) {
-        this.addHostFileToProject(this.targetConfig.packageName, true)
+    async addBundleToProject(bundleName, bundleFileContent) {
+        const bundleDirName = this.getBundleDirName(bundleName)
+        this.addFileToProject(bundleDirName, [bundleName], true)
 
-        const packageFile = this.xcodeProjectDir
-            .getSubDir(this.targetConfig.hostDirName)
-            .getSubDir(this.targetConfig.packageName)
-            .getSubFile(pathRelativeToPackageDir)
+        const bundleFile = this.config.xcodeProjectDir
+            .getSubDir(this.config.hostDirName)
+            .getSubDir(bundleDirName)
+            .getSubFile(this.getBundleFileName(bundleName))
 
         try {
-            await packageFile.dir.ensureExists()
-            await packageFile.setContent(packageFileContent)
+            await bundleFile.dir.ensureExists()
+            await bundleFile.setContent(bundleFileContent)
         } catch (error) {
-            error.message = `writing package file "${packageFile.relativePath}"\n${error.message}`
+            error.message = `writing bundle file "${bundleFile.relativePath}"\n${error.message}`
             throw error
         }
     }
 
-    addHostFileToProject(pathRelativeToHostDir, isPackage) {
-        const parsedFilePath = path.parse(path.join(this.targetConfig.hostDirName, pathRelativeToHostDir))
+    addFileToProject(pathRelativeToHostDir, bundles, isBundleDir) {
+        const parsedFilePath = path.parse(path.join(this.config.hostDirName, pathRelativeToHostDir))
         const fatherGroup = this.ensureGroupExists(parsedFilePath.dir)
 
         const fileBaseName = parsedFilePath.base
@@ -340,9 +447,9 @@ class XcodeHostProject {
             isa: 'PBXFileReference',
             path: this.encodePath(fileBaseName),
             sourceTree: '"<group>"',
-            lastKnownFileType: isPackage ? '"wrapper.plug-in"' : 'sourcecode.swift',
+            lastKnownFileType: isBundleDir ? '"wrapper.plug-in"' : 'sourcecode.swift',
         }
-        if (!isPackage) {
+        if (!isBundleDir) {
             pbxFile.fileEncoding = 4
         }
         this.project.pbxFileReferenceSection()[fileKey] = pbxFile
@@ -353,13 +460,13 @@ class XcodeHostProject {
         this.project.addToPbxGroup(file, fatherGroup.key)
 
 
-        for (const targetKey of this.compileTargetKeys) {
+        for (const targetKey of this.getCompileTargetKeys(this.getCompileTargets(bundles))) {
             file.uuid = this.project.generateUuid()
-            file.group = isPackage ? 'Resources' : 'Sources'
+            file.group = isBundleDir ? 'Resources' : 'Sources'
             this.project.addToPbxBuildFileSection(file)
 
             file.target = targetKey
-            if (isPackage) {
+            if (isBundleDir) {
                 this.project.addToPbxResourcesBuildPhase(file)
             } else {
                 this.project.addToPbxSourcesBuildPhase(file)

@@ -22,15 +22,13 @@ describe('SwiftHostClassGenerator', () => {
             '    ']
 
         expectedFactoryMethod = [
-            '    class func bjsFactory(_ jsObject: JSValue) -> Class1 {',
-            '        return Class1(jsObject)',
-            '    }',
-            '    ']
+            '    class func bjsFactory(_ jsObject: JSValue) -> Class1 { Class1(jsObject) }',
+        ]
 
         expectedModulePathVar = [
-            '    override class var bjsModulePath: String {',
-            '        return "/module/path"',
-            '    }']
+            '    private static var _bjsLocator: BjsLocator = BjsLocator("Project1", "Class1")',
+            '    override class var bjsLocator: BjsLocator { _bjsLocator }',
+        ]
     })
 
     function getCode(constructors, properties, methods, superclassName) {
@@ -38,7 +36,7 @@ describe('SwiftHostClassGenerator', () => {
             ? new Class(superclassName, `${superclassName} description`, [], [], [], null, false, 'superModule/path')
             : null
         const clazz = new Class('Class1', 'class description', constructors, properties, methods, superclass, false, 'module/path')
-        return clazz.generator.forHosting().swift.getSource()
+        return clazz.generator.forHosting('Project1').swift.getSource()
     }
 
     test('empty class without inheritance', () => {
@@ -47,8 +45,8 @@ describe('SwiftHostClassGenerator', () => {
         t.expectCode(code,
             ...expectedImports,
             ...expectedClassDeclaration,
-            ...expectedFactoryMethod,
             ...expectedModulePathVar,
+            ...expectedFactoryMethod,
             '}')
     })
 
@@ -59,11 +57,8 @@ describe('SwiftHostClassGenerator', () => {
             ...expectedImports,
             'class Class1: Superclass {',
             '    ',
-            '    override class func bjsFactory(_ jsObject: JSValue) -> Class1 {',
-            '        return Class1(jsObject)',
-            '    }',
-            '    ',
             ...expectedModulePathVar,
+            '    override class func bjsFactory(_ jsObject: JSValue) -> Class1 { Class1(jsObject) }',
             '}')
     })
 
@@ -90,28 +85,28 @@ describe('SwiftHostClassGenerator', () => {
             ...expectedClassDeclaration,
             '    class var staticProperty1:Int? {',
             '        get {',
-            '            return Bjs.get.getInt(Bjs.get.getProperty(self.bjsClass, "staticProperty1"))',
+            '            return bjs.getInt(bjs.getProperty(self.bjsClass, "staticProperty1"))',
             '        }',
             '        set {',
-            '            Bjs.get.setProperty(self.bjsClass, "staticProperty1", Bjs.get.putPrimitive(newValue))',
+            '            bjs.setProperty(self.bjsClass, "staticProperty1", bjs.putPrimitive(newValue))',
             '        }',
             '    }',
             '    ',
             '    class var staticProperty2:Int? {',
             '        get {',
-            '            return Bjs.get.getInt(Bjs.get.getProperty(self.bjsClass, "staticProperty2"))',
+            '            return bjs.getInt(bjs.getProperty(self.bjsClass, "staticProperty2"))',
             '        }',
             '        set {',
-            '            Bjs.get.setProperty(self.bjsClass, "staticProperty2", Bjs.get.putPrimitive(newValue))',
+            '            bjs.setProperty(self.bjsClass, "staticProperty2", bjs.putPrimitive(newValue))',
             '        }',
             '    }',
             '    ',
             '    class func staticMethod1() -> Int? {',
-            '        return Bjs.get.getInt(Bjs.get.call(self.bjsClass, "staticMethod1"))',
+            '        return bjs.getInt(bjs.call(self.bjsClass, "staticMethod1"))',
             '    }',
             '    ',
             '    class func staticMethod2() -> Int? {',
-            '        return Bjs.get.getInt(Bjs.get.call(self.bjsClass, "staticMethod2"))',
+            '        return bjs.getInt(bjs.call(self.bjsClass, "staticMethod2"))',
             '    }',
             '    ',
             '    convenience init() {',
@@ -120,32 +115,32 @@ describe('SwiftHostClassGenerator', () => {
             '    ',
             '    var instanceProperty1:Int? {',
             '        get {',
-            '            return Bjs.get.getInt(bjsGetProperty("instanceProperty1"))',
+            '            return Class1.bjs.getInt(bjsGetProperty("instanceProperty1"))',
             '        }',
             '        set {',
-            '            bjsSetProperty("instanceProperty1", Bjs.get.putPrimitive(newValue))',
+            '            bjsSetProperty("instanceProperty1", Class1.bjs.putPrimitive(newValue))',
             '        }',
             '    }',
             '    ',
             '    var instanceProperty2:Int? {',
             '        get {',
-            '            return Bjs.get.getInt(bjsGetProperty("instanceProperty2"))',
+            '            return Class1.bjs.getInt(bjsGetProperty("instanceProperty2"))',
             '        }',
             '        set {',
-            '            bjsSetProperty("instanceProperty2", Bjs.get.putPrimitive(newValue))',
+            '            bjsSetProperty("instanceProperty2", Class1.bjs.putPrimitive(newValue))',
             '        }',
             '    }',
             '    ',
             '    func instanceMethod1() -> Int? {',
-            '        return Bjs.get.getInt(bjsCall("instanceMethod1"))',
+            '        return Class1.bjs.getInt(bjsCall("instanceMethod1"))',
             '    }',
             '    ',
             '    func instanceMethod2() -> Int? {',
-            '        return Bjs.get.getInt(bjsCall("instanceMethod2"))',
+            '        return Class1.bjs.getInt(bjsCall("instanceMethod2"))',
             '    }',
             '    ',
-            ...expectedFactoryMethod,
             ...expectedModulePathVar,
+            ...expectedFactoryMethod,
             '}')
     })
 

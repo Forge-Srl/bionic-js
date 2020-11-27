@@ -16,7 +16,7 @@ class SwiftArrayTypeGenerator extends SwiftTypeGenerator {
         const elementJsIniRet = this.elementTypeGenerator.getJsIniRet(elementNativeIniRet, context)
         return IniRet.create()
             .editRet(ret =>
-                ret.append('Bjs.get.putArray(').append(nativeIniRet.returningCode).append(', {').newLineIndenting()
+                ret.append(`${context.bjsEntrance}.putArray(`).append(nativeIniRet.returningCode).append(', {').newLineIndenting()
                     .append(elementJsIniRet.initializationCode)
                     .append('return ').append(elementJsIniRet.returningCode).newLineDeindenting()
                     .append('})'))
@@ -27,7 +27,7 @@ class SwiftArrayTypeGenerator extends SwiftTypeGenerator {
         const elementJsIniRet = IniRet.create().appendRet('$0')
         const elementNativeIniRet = this.elementTypeGenerator.getNativeIniRet(elementJsIniRet, context)
         return IniRet.create()
-            .editRet(ret => ret.append('Bjs.get.getArray(').append(jsIniRet.returningCode).append(', {').newLineIndenting()
+            .editRet(ret => ret.append(`${context.bjsEntrance}.getArray(`).append(jsIniRet.returningCode).append(', {').newLineIndenting()
                 .append(elementNativeIniRet.initializationCode)
                 .append('return ').append(elementNativeIniRet.returningCode).newLineDeindenting()
                 .append('})'))

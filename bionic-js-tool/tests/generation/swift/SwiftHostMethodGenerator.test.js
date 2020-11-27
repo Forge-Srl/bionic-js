@@ -22,20 +22,16 @@ describe('SwiftHostMethodGenerator', () => {
 
         expectedFooter = [
             '    ',
-            '    class func bjsFactory(_ jsObject: JSValue) -> Class1 {',
-            '        return Class1(jsObject)',
-            '    }',
-            '    ',
-            '    override class var bjsModulePath: String {',
-            '        return "/module/path"',
-            '    }',
+            '    private static var _bjsLocator: BjsLocator = BjsLocator("Project1", "Class1")',
+            '    override class var bjsLocator: BjsLocator { _bjsLocator }',
+            '    class func bjsFactory(_ jsObject: JSValue) -> Class1 { Class1(jsObject) }',
             '}']
     })
 
     function getCode(isMethodStatic, methodReturnType, methodParameters, methodName = 'method1') {
         const class1 = new Class('Class1', '', [], [], [new Method(methodName, 'method description', isMethodStatic,
             methodReturnType, methodParameters)], null, false, 'module/path')
-        return class1.generator.forHosting().swift.getSource()
+        return class1.generator.forHosting('Project1').swift.getSource()
     }
 
     function newParam(type, name) {
@@ -70,7 +66,7 @@ describe('SwiftHostMethodGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             '    class func method1() {',
-            '        _ = Bjs.get.call(self.bjsClass, "method1")',
+            '        _ = bjs.call(self.bjsClass, "method1")',
             '    }',
             ...expectedFooter)
     })
@@ -81,7 +77,7 @@ describe('SwiftHostMethodGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             '    func method1(_ boolParam: Bool?) -> Int? {',
-            '        return Bjs.get.getInt(bjsCall("method1", Bjs.get.putPrimitive(boolParam)))',
+            '        return Class1.bjs.getInt(bjsCall("method1", Class1.bjs.putPrimitive(boolParam)))',
             '    }',
             ...expectedFooter)
     })
@@ -95,7 +91,7 @@ describe('SwiftHostMethodGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             '    func method1(_ boolParam: Bool?, _ intParam: Int?) {',
-            '        _ = bjsCall("method1", Bjs.get.putPrimitive(boolParam), Bjs.get.putPrimitive(intParam))',
+            '        _ = bjsCall("method1", Class1.bjs.putPrimitive(boolParam), Class1.bjs.putPrimitive(intParam))',
             '    }',
             ...expectedFooter)
     })
@@ -111,9 +107,9 @@ describe('SwiftHostMethodGenerator', () => {
             '        let jsFunc_bjs1: @convention(block) () -> Void = {',
             '            nativeFunc_bjs0!()',
             '        }',
-            '        let jsFunc_bjs2 = bjsCall("method1", Bjs.get.putFunc(nativeFunc_bjs0, jsFunc_bjs1))',
-            '        return Bjs.get.getFunc(jsFunc_bjs2) {',
-            '            _ = Bjs.get.funcCall(jsFunc_bjs2)',
+            '        let jsFunc_bjs2 = bjsCall("method1", Class1.bjs.putFunc(nativeFunc_bjs0, jsFunc_bjs1))',
+            '        return Class1.bjs.getFunc(jsFunc_bjs2) {',
+            '            _ = Class1.bjs.funcCall(jsFunc_bjs2)',
             '        }',
             '    }',
             ...expectedFooter)

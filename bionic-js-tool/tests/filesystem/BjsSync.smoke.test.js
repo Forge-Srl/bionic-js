@@ -1,54 +1,42 @@
 const t = require('../test-utils')
 const copydir = require('copy-dir')
-const {hostFilePaths, packageFilePaths, forbiddenPackageFilePaths} = require('../../testing-code/swift/files')
+const {hostFiles, bundleFiles} = require('../../testing-code/swift/files')
 
 describe('Bjs smoke tests', () => {
 
-    let BjsSync, Log, Configuration, Directory
+    let BjsSync, Log, BjsConfiguration, Directory
 
     beforeEach(() => {
         BjsSync = t.requireModule('filesystem/BjsSync').BjsSync
         Log = t.requireModule('filesystem/Log').Log
-        Configuration = t.requireModule('filesystem/configuration/Configuration').Configuration
+        BjsConfiguration = t.requireModule('filesystem/configuration/BjsConfiguration').BjsConfiguration
         Directory = t.requireModule('filesystem/Directory').Directory
     })
 
     function expectLog(expectedLog, actualLogString) {
-        let actualLog = actualLogString.split('\n')
+        const actualRows = actualLogString.split('\n')
+        const errors = []
 
-        for (let a = 0; a < actualLog.length; a++) {
-            const actualMsg = actualLog[a]
-
-            const matches = expectedMsg => {
-                return expectedMsg instanceof RegExp ? expectedMsg.test(actualMsg) : expectedMsg === actualMsg
+        for (let rowId = 0; rowId < expectedLog.length; rowId++) {
+            const expectedRow = expectedLog[rowId]
+            if (rowId >= actualRows.length) {
+                errors.push(`Expected log row "${expectedRow}" not found in actual logs`)
+                break
             }
-            let matching = false
-            for (let e = 0; e < expectedLog.length; e++) {
-                const expectedMsg = expectedLog[e]
-
-                if (matches(expectedMsg)) {
-                    expectedLog = expectedLog.filter((_, index) => index !== e)
-                    matching = true
-                    break
-                }
-            }
-            if (!matching) {
-                throw new Error(`Log row "${actualMsg}" (row ${a}) not found in expected log\nActual log:\n${actualLogString}`)
+            const actualRow = actualRows[rowId]
+            if (expectedRow instanceof RegExp ? !expectedRow.test(actualRow) : expectedRow !== actualRow) {
+                errors.push(`Log row(${rowId}) "${actualRow}" doesn't match with expected row: "${expectedRow}"`)
             }
         }
-        if (expectedLog.length) {
-            throw new Error(`Expected log messages not logged:\n${expectedLog.join('\n')}\nActual log:\n${actualLogString}`)
+        if (actualRows.length > expectedLog.length) {
+            errors.push('Actual log rows exceed expected rows')
         }
-    }
-
-    async function expectCode(actualCodeFile, expectedCodeFile) {
-        const expectedContent = await expectedCodeFile.getContent()
-        const actualContent = await actualCodeFile.getContent()
-        expect(actualContent).toEqual(expectedContent)
+        if (errors.length > 0) {
+            throw Error(errors.join('\n'))
+        }
     }
 
     const getProjectDir = projectName => new Directory(__dirname).getSubDir(`../../testing-code/swift/${projectName}`)
-    const getGuestDir = () => new Directory(__dirname).getSubDir('../../testing-code/guest')
 
     async function doSmokeTest(startProjectName, expectedErrors, expectedWarnings, expectedInfos) {
         await Directory.runInTempDir(async tempDir => {
@@ -56,8 +44,8 @@ describe('Bjs smoke tests', () => {
             const startProjectDir = getProjectDir(startProjectName)
             copydir.sync(startProjectDir.absolutePath, tempDir.absolutePath, {utimes: true, mode: true, cover: true})
 
-            const configuration = Configuration.fromPath(t.getModuleAbsolutePath('testing-code/bjs.config.js'))
-            configuration.configObj.hostTargets[0].xcodeProjectPath = tempDir.getSubFile('HostProject.xcodeproj').absolutePath
+            const configuration = BjsConfiguration.fromPath(t.getModuleAbsolutePath('testing-code/bjs.config.js'))
+            configuration.configObj.hostProjects[0].projectPath = tempDir.getSubFile('HostProject.xcodeproj').absolutePath
             const log = new Log(true)
             const bjsSync = new BjsSync(configuration, log)
             await bjsSync.sync()
@@ -68,25 +56,12 @@ describe('Bjs smoke tests', () => {
 
             const projectWithFilesDir = getProjectDir('project-with-host-files')
             const hostDir = 'HostProject/host'
-            for (const hostFilePath of hostFilePaths) {
-                const expectedHostFile = projectWithFilesDir.getSubDir(hostDir).getSubFile(hostFilePath)
-                const actualHostFile = tempDir.getSubDir(hostDir).getSubFile(hostFilePath)
-                await expectCode(actualHostFile, expectedHostFile)
-            }
-
-            const packageDir = 'HostProject/host/package.bundle'
-            for (const packageFilePath of packageFilePaths) {
-                const expectedPackageFile = projectWithFilesDir.getSubDir(packageDir).getSubFile(packageFilePath)
-                const actualPackageFile = tempDir.getSubDir(packageDir).getSubFile(packageFilePath)
-                await expectCode(actualPackageFile, expectedPackageFile)
-            }
-
-            const guestDir = getGuestDir()
-            for (const forbiddenPackageFilePath of forbiddenPackageFilePaths) {
-                const guestFile = guestDir.getSubFile(forbiddenPackageFilePath)
-                const forbiddenPackageFile = tempDir.getSubDir(packageDir).getSubFile(forbiddenPackageFilePath)
-                expect(await guestFile.exists()).toBe(true)
-                expect(await forbiddenPackageFile.exists()).toBe(false)
+            for (const file of [...hostFiles, ...bundleFiles]) {
+                const expectedFile = projectWithFilesDir.getSubDir(hostDir).getSubFile(file.path)
+                const actualFile = tempDir.getSubDir(hostDir).getSubFile(file.path)
+                const expectedContent = await expectedFile.getContent()
+                const actualContent = await actualFile.getContent()
+                await expect(actualContent).toEqual(expectedContent)
             }
         })
     }
@@ -101,28 +76,23 @@ describe('Bjs smoke tests', () => {
                 '',
             ],
             [
-                'Bionic.js - v0.2.0',
+                'Bionic.js - v1.0.1',
                 '',
-                'Extracting schemas from guest files...',
-                'Opening host project...',
-                'Generating host files...',
-                'Generating package files...',
-                'Generating virtual files...',
-                'Saving host project...',
+                'Analyzing guest files dependencies',
+                'Extracting schemas from guest files',
+                'Generating bundles',
+                'Opening Swift host project',
+                'Writing bundles',
+                'Writing host files',
+                'Writing Swift host project',
                 '',
-                'Package files',
-                ...packageFilePaths.map(packageFile => ` [+] ${packageFile}`),
+                'Project files',
+                ...bundleFiles.map(file => ` [+] Bundle "${file.bundle}"`),
+                ...hostFiles.map(file => ` [+] Source "${file.path}" - in bundles (${file.bundles.join(', ')})`),
                 ' ----------',
                 ' [-] deleted : 0',
                 ' [U] updated : 0',
-                ' [+] added : 18',
-                '',
-                'Host files',
-                ...hostFilePaths.map(hostFile => ` [+] ${hostFile}`),
-                ' ----------',
-                ' [-] deleted : 0',
-                ' [U] updated : 0',
-                ' [+] added : 7',
+                ' [+] added : 12',
                 '',
                 /Processing time: \d\.\d\ds/,
                 '',
@@ -138,22 +108,17 @@ describe('Bjs smoke tests', () => {
                 '',
             ],
             [
-                'Bionic.js - v0.2.0',
+                'Bionic.js - v1.0.1',
                 '',
-                'Extracting schemas from guest files...',
-                'Opening host project...',
-                'Generating host files...',
-                'Generating package files...',
-                'Generating virtual files...',
-                'Saving host project...',
+                'Analyzing guest files dependencies',
+                'Extracting schemas from guest files',
+                'Generating bundles',
+                'Opening Swift host project',
+                'Writing bundles',
+                'Writing host files',
+                'Writing Swift host project',
                 '',
-                'Package files',
-                ' ----------',
-                ' [-] deleted : 0',
-                ' [U] updated : 0',
-                ' [+] added : 0',
-                '',
-                'Host files',
+                'Project files',
                 ' ----------',
                 ' [-] deleted : 0',
                 ' [U] updated : 0',

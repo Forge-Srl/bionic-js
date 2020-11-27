@@ -3,31 +3,33 @@ const {SWIFT_FILE_EXT} = require('./fileExtensions')
 
 class SwiftHostFile extends HostFile {
 
-    static build(exportedFile, targetConfig) {
-        const guestFile = exportedFile.guestFile
-        const newFileName = `${guestFile.name}${exportedFile.schema.isNative ? 'Wrapper' : ''}`
-        return new SwiftHostFile(guestFile.composeNewPath(targetConfig.hostDirPath, newFileName, SWIFT_FILE_EXT),
-            targetConfig.hostDirPath, exportedFile)
+    static build(annotatedFile, hostProjectConfig, projectName) {
+        const guestFile = annotatedFile.guestFile
+        const newFileName = `${guestFile.name}${annotatedFile.schema.isNative ? 'BjsWrapper' : ''}`
+        return new SwiftHostFile(guestFile.composeNewPath(hostProjectConfig.hostDir.path, newFileName, SWIFT_FILE_EXT),
+            hostProjectConfig.hostDir.path, annotatedFile, projectName)
     }
 
     async generate(hostProject) {
-        const schema = this.exportedFile.schema
+        const guestFile = this.annotatedFile.guestFile
+        const schema = this.annotatedFile.schema
+
         const schemaGenerator = schema.generator
-        const hostClassGenerator = schemaGenerator.forHosting().swift
+        const hostClassGenerator = schemaGenerator.forHosting(this.projectName).swift
 
         const hostFileGenerator = schema.isNative
-            ? schemaGenerator.forWrapping(hostClassGenerator).swift
+            ? schemaGenerator.forWrapping(hostClassGenerator, this.projectName).swift
             : hostClassGenerator
 
         let hostFileContent
         try {
             hostFileContent = hostFileGenerator.getSource()
         } catch (error) {
-            error.message = `generating host code from guest file "${this.exportedFile.guestFile.relativePath}"\n${error.message}`
+            error.message = `generating host code from guest file "${guestFile.relativePath}"\n${error.message}`
             throw error
         }
 
-        await hostProject.setHostFileContent(this.relativePath, hostFileContent)
+        await hostProject.setHostFileContent(this.relativePath, guestFile.bundles, hostFileContent)
     }
 }
 

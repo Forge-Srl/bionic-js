@@ -5,7 +5,7 @@ const {CodeBlock} = require('../code/CodeBlock')
 class SwiftHostConstructorGenerator extends SwiftMethodGenerator {
 
     getCode() {
-        const constructorContext = new GenerationContext()
+        const constructorContext = new GenerationContext(this.classSchema.name)
         const argumentsListIniRet = this.getArgumentsListJsIniRet(constructorContext)
 
         return CodeBlock.create()

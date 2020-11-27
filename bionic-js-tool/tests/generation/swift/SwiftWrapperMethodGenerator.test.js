@@ -17,7 +17,7 @@ describe('SwiftWrapperMethodGenerator', () => {
     function getCode(isMethodStatic, methodReturnType, methodParameters) {
         const class1 = new Class('Class1', '', [], [], [new Method('method1', 'method description', isMethodStatic,
             methodReturnType, methodParameters)], null, true, 'module/path')
-        return class1.generator.forWrapping().swift.getSource()
+        return class1.generator.forWrapping(undefined, 'Project1').swift.getSource()
     }
 
     function newParam(type, name) {
@@ -28,12 +28,15 @@ describe('SwiftWrapperMethodGenerator', () => {
         'import JavaScriptCore',
         'import Bjs',
         '',
-        'class Class1Wrapper: BjsNativeWrapper {',
-        '    ',
-        '    override class var name: String { return "Class1" }',
-        '    override class var wrapperPath: String { return "/module/path" }',
+        'class Class1BjsWrapper: BjsNativeWrapper {',
         '    ',
     ]
+
+    const expectedFooter = [
+        '    ',
+        '    private static var _bjsLocator: BjsLocator = BjsLocator("Project1", "Class1")',
+        '    override class var bjsLocator: BjsLocator { _bjsLocator }',
+        '}']
 
     function getFunctionsExportCode(functionExports = []) {
         return [
@@ -44,7 +47,7 @@ describe('SwiftWrapperMethodGenerator', () => {
             '    ',
             '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
             '        _ = nativeExports.exportBindFunction({',
-            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self), $0)',
+            '            bjs.bindNative(bjs.getBound($1, Class1.self), $0)',
             '        } as @convention(block) (JSValue, JSValue) -> Void)',
             '    }']
     }
@@ -58,10 +61,10 @@ describe('SwiftWrapperMethodGenerator', () => {
             '    ',
             '    private class func bjs_method1() -> @convention(block) (JSValue) -> Void {',
             '        return {',
-            '            Bjs.get.getWrapped($0, Class1.self)!.method1()',
+            '            bjs.getWrapped($0, Class1.self)!.method1()',
             '        }',
             '    }',
-            '}')
+            ...expectedFooter)
     })
 
     test('void return, no params, static', () => {
@@ -76,7 +79,7 @@ describe('SwiftWrapperMethodGenerator', () => {
             '            Class1.method1()',
             '        }',
             '    }',
-            '}')
+            ...expectedFooter)
     })
 
     test('void return, primitive param, static', () => {
@@ -88,10 +91,10 @@ describe('SwiftWrapperMethodGenerator', () => {
             '    ',
             '    private class func bjsStatic_method1() -> @convention(block) (JSValue) -> Void {',
             '        return {',
-            '            Class1.method1(Bjs.get.getBool($0))',
+            '            Class1.method1(bjs.getBool($0))',
             '        }',
             '    }',
-            '}')
+            ...expectedFooter)
     })
 
     test('primitive return, primitive param', () => {
@@ -103,10 +106,10 @@ describe('SwiftWrapperMethodGenerator', () => {
             '    ',
             '    private class func bjs_method1() -> @convention(block) (JSValue, JSValue) -> JSValue {',
             '        return {',
-            '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.method1(Bjs.get.getBool($1)))',
+            '            return bjs.putPrimitive(bjs.getWrapped($0, Class1.self)!.method1(bjs.getBool($1)))',
             '        }',
             '    }',
-            '}')
+            ...expectedFooter)
     })
 
     test('multiple primitive params', () => {
@@ -121,10 +124,10 @@ describe('SwiftWrapperMethodGenerator', () => {
             '    ',
             '    private class func bjs_method1() -> @convention(block) (JSValue, JSValue, JSValue) -> Void {',
             '        return {',
-            '            Bjs.get.getWrapped($0, Class1.self)!.method1(Bjs.get.getBool($1), Bjs.get.getInt($2))',
+            '            bjs.getWrapped($0, Class1.self)!.method1(bjs.getBool($1), bjs.getInt($2))',
             '        }',
             '    }',
-            '}')
+            ...expectedFooter)
     })
 
     test('void lambda return, void lambda param', () => {
@@ -138,15 +141,15 @@ describe('SwiftWrapperMethodGenerator', () => {
             '    private class func bjs_method1() -> @convention(block) (JSValue, JSValue) -> JSValue {',
             '        return {',
             '            let jsFunc_bjs0 = $1',
-            '            let nativeFunc_bjs1 = Bjs.get.getWrapped($0, Class1.self)!.method1(Bjs.get.getFunc(jsFunc_bjs0) {',
-            '                _ = Bjs.get.funcCall(jsFunc_bjs0)',
+            '            let nativeFunc_bjs1 = bjs.getWrapped($0, Class1.self)!.method1(bjs.getFunc(jsFunc_bjs0) {',
+            '                _ = bjs.funcCall(jsFunc_bjs0)',
             '            })',
             '            let jsFunc_bjs2: @convention(block) () -> Void = {',
             '                nativeFunc_bjs1!()',
             '            }',
-            '            return Bjs.get.putFunc(nativeFunc_bjs1, jsFunc_bjs2)',
+            '            return bjs.putFunc(nativeFunc_bjs1, jsFunc_bjs2)',
             '        }',
             '    }',
-            '}')
+            ...expectedFooter)
     })
 })

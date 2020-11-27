@@ -5,27 +5,23 @@ class TeslaRoadster: MotorVehicle {
     
     class var `default`:TeslaRoadster? {
         get {
-            return Bjs.get.getObj(Bjs.get.getProperty(self.bjsClass, "default"), TeslaRoadster.bjsFactory)
+            return bjs.getObj(bjs.getProperty(self.bjsClass, "default"), TeslaRoadster.bjsFactory)
         }
     }
     
     var serialized:BjsAnyObject {
         get {
-            return Bjs.get.getAny(bjsGetProperty("serialized"))
+            return TeslaRoadster.bjs.getAny(bjsGetProperty("serialized"))
         }
     }
     
     var canTravelInTheSpace:Bool? {
         get {
-            return Bjs.get.getBool(bjsGetProperty("canTravelInTheSpace"))
+            return TeslaRoadster.bjs.getBool(bjsGetProperty("canTravelInTheSpace"))
         }
     }
     
-    override class func bjsFactory(_ jsObject: JSValue) -> TeslaRoadster {
-        return TeslaRoadster(jsObject)
-    }
-    
-    override class var bjsModulePath: String {
-        return "/TeslaRoadster"
-    }
+    private static var _bjsLocator: BjsLocator = BjsLocator("BeautifulVehicles", "TeslaRoadster")
+    override class var bjsLocator: BjsLocator { _bjsLocator }
+    override class func bjsFactory(_ jsObject: JSValue) -> TeslaRoadster { TeslaRoadster(jsObject) }
 }

@@ -1,7 +1,11 @@
 class GenerationContext {
 
-    constructor(lastUniqueId = 0) {
-        Object.assign(this, {lastUniqueId})
+    constructor(entranceClassName, lastUniqueId = 0) {
+        Object.assign(this, {entranceClassName, lastUniqueId})
+    }
+
+    get bjsEntrance() {
+        return this.entranceClassName ? `${this.entranceClassName}.bjs` : 'bjs'
     }
 
     getUniqueIdentifier(prefix) {

@@ -36,12 +36,12 @@ class SwiftTypeGenerator extends CodeGenerator {
 
     getJsIniRet(nativeIniRet, context) {
         return IniRet.create()
-            .appendRet('Bjs.get.putPrimitive(').append(nativeIniRet).appendRet(')')
+            .appendRet(`${context.bjsEntrance}.putPrimitive(`).append(nativeIniRet).appendRet(')')
     }
 
     getNativeIniRet(jsIniRet, context) {
         return IniRet.create()
-            .appendRet(`Bjs.get.${this.getJsToPrimitiveMethodName()}(`).append(jsIniRet).appendRet(')')
+            .appendRet(`${context.bjsEntrance}.${this.getJsToPrimitiveMethodName()}(`).append(jsIniRet).appendRet(')')
     }
 }
 

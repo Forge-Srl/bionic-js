@@ -9,12 +9,12 @@ class SwiftJsClassTypeGenerator extends SwiftTypeGenerator {
 
     getJsIniRet(nativeIniRet, context) {
         return IniRet.create()
-            .appendRet('Bjs.get.putObj(').append(nativeIniRet).appendRet(')')
+            .appendRet(`${context.bjsEntrance}.putObj(`).append(nativeIniRet).appendRet(')')
     }
 
     getNativeIniRet(jsIniRet, context) {
         return IniRet.create()
-            .appendRet('Bjs.get.getObj(').appendRet(jsIniRet.returningCode).appendRet(`, ${this.schema.className}.bjsFactory)`)
+            .appendRet(`${context.bjsEntrance}.getObj(`).appendRet(jsIniRet.returningCode).appendRet(`, ${this.schema.className}.bjsFactory)`)
             .appendIni(jsIniRet.initializationCode)
     }
 }

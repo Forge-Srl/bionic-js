@@ -2,15 +2,15 @@ const {File} = require('./File')
 
 class HostEnvironmentFile extends File {
 
-    static build(nativePackageFiles, targetConfig) {
-        const exportFieldName = `${targetConfig.hostLanguage}HostEnvironmentFile`
+    static build(nativeFiles, bundleName, hostProjectConfig, projectName) {
+        const exportFieldName = `${hostProjectConfig.language}HostEnvironmentFile`
         const LanguageHostEnvironmentFile = require(`./${exportFieldName}`)[exportFieldName]
-        return LanguageHostEnvironmentFile.build(nativePackageFiles, targetConfig)
+        return LanguageHostEnvironmentFile.build(nativeFiles, bundleName, hostProjectConfig, projectName)
     }
 
-    constructor(path, hostDir, packageName, nativePackageFiles) {
-        super(path, hostDir)
-        Object.assign(this, {packageName, nativePackageFiles})
+    constructor(path, hostDirPath, bundleName, nativeFiles, projectName) {
+        super(path, hostDirPath)
+        Object.assign(this, {bundleName, nativeFiles, projectName})
     }
 }
 

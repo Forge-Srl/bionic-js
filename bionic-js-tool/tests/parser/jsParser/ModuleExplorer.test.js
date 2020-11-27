@@ -25,6 +25,14 @@ describe('ModuleExplorer', () => {
         expect(classNodes[0].id.name).toBe('Class1')
     })
 
+    test('classNodes named module.exports', () => {
+        const explorer = getExplorer(`class Class1 {}\nmodule.exports = {ClassName: Class1}`)
+
+        const classNodes = explorer.classNodes
+        expect(classNodes.length).toBe(1)
+        expect(classNodes[0].id.name).toBe('Class1')
+    })
+
     test('classNodes export', () => {
         const explorer = getExplorer(`export class Class1 {}`)
 
@@ -35,6 +43,14 @@ describe('ModuleExplorer', () => {
 
     test('classNodes export default', () => {
         const explorer = getExplorer(`export default class Class1 {}`)
+
+        const classNodes = explorer.classNodes
+        expect(classNodes.length).toBe(1)
+        expect(classNodes[0].id.name).toBe('Class1')
+    })
+
+    test('classNodes named export', () => {
+        const explorer = getExplorer(`class Class1 {}\nexport {Class1 as ClassName}`)
 
         const classNodes = explorer.classNodes
         expect(classNodes.length).toBe(1)

@@ -5,12 +5,12 @@ class SwiftNativeRefTypeGenerator extends SwiftJsClassTypeGenerator {
 
     getJsIniRet(nativeIniRet, context) {
         return IniRet.create()
-            .appendRet('Bjs.get.putNative(').append(nativeIniRet).appendRet(')')
+            .appendRet(`${context.bjsEntrance}.putNative(`).append(nativeIniRet).appendRet(')')
     }
 
     getNativeIniRet(jsIniRet, context) {
         return IniRet.create()
-            .appendRet('Bjs.get.getNative(').append(jsIniRet).appendRet(`, ${this.schema.className}.self)`)
+            .appendRet(`${context.bjsEntrance}.getNative(`).append(jsIniRet).appendRet(`, ${this.schema.className}.self)`)
     }
 }
 

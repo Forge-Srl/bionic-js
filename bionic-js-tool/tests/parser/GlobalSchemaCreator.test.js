@@ -2,28 +2,28 @@ const t = require('../test-utils')
 
 describe('GlobalSchemaCreator', () => {
 
-    let GlobalSchemaCreator, ModuleSchemaCreator, ExportedFile
+    let GlobalSchemaCreator, ModuleSchemaCreator, AnnotatedGuestFile
 
     function requireGlobalSchemaCreator() {
         GlobalSchemaCreator = t.requireModule('parser/GlobalSchemaCreator').GlobalSchemaCreator
     }
 
-    function requireExportedFile() {
-        ExportedFile = t.requireModule('filesystem/ExportedFile').ExportedFile
+    function requireAnnotatedGuestFile() {
+        AnnotatedGuestFile = t.requireModule('filesystem/AnnotatedGuestFile').AnnotatedGuestFile
     }
 
     beforeEach(() => {
         t.resetModulesCache()
         ModuleSchemaCreator = t.mockAndRequireModule('parser/ModuleSchemaCreator').ModuleSchemaCreator
         requireGlobalSchemaCreator()
-        requireExportedFile()
+        requireAnnotatedGuestFile()
     })
 
     test('moduleCreatorPromises', async () => {
         const schemaCreator = new GlobalSchemaCreator()
-        const guestFile1 = {isExportable: true}
-        const guestFile2 = {isExportable: false}
-        const guestFile3 = {isExportable: true}
+        const guestFile1 = {isJavascript: true}
+        const guestFile2 = {isJavascript: false}
+        const guestFile3 = {isJavascript: true}
         schemaCreator.guestFiles = [guestFile1, guestFile2, guestFile3]
 
         ModuleSchemaCreator.build.mockImplementationOnce(async guestFile => {
@@ -72,9 +72,9 @@ describe('GlobalSchemaCreator', () => {
             .toThrow('class Class1 in module "/module2" was already exported in module "/module1"')
     })
 
-    test('getExportedFiles', async () => {
+    test('getAnnotatedFiles', async () => {
         t.resetModulesCache()
-        const {ExportedFile} = t.mockAndRequireModule('filesystem/ExportedFile')
+        const {AnnotatedGuestFile} = t.mockAndRequireModule('filesystem/AnnotatedGuestFile')
         requireGlobalSchemaCreator()
 
         const guestFile1 = {path: 'path1'}
@@ -100,41 +100,41 @@ describe('GlobalSchemaCreator', () => {
         schemaCreator.getModuleCreators = async () => expectedModuleCreators
 
         const expectedNativeClassesMap = new Map([['GuestFile1', false], ['GuestFile2', true]])
-        ExportedFile.mockImplementationOnce((guestFile, schema) => {
+        AnnotatedGuestFile.mockImplementationOnce((guestFile, schema) => {
             expect(guestFile).toBe(guestFile1)
             expect(schema).toBe('Class1-schema')
             return {
                 guestFile: guestFile1, exportsClass: true, exportsNativeClass: false, schema: {name: 'GuestFile1'},
                 resolveClassType: nativeClassesMap => {
                     expect(nativeClassesMap).toEqual(expectedNativeClassesMap)
-                    return 'ExportedFile1'
+                    return 'AnnotatedFile1'
                 },
             }
         })
-        ExportedFile.mockImplementationOnce((guestFile, schema) => {
+        AnnotatedGuestFile.mockImplementationOnce((guestFile, schema) => {
             expect(guestFile).toBe(guestFile2)
             expect(schema).toBe('Class2-schema')
             return {
                 guestFile: guestFile2, exportsClass: true, exportsNativeClass: true, schema: {name: 'GuestFile2'},
                 resolveClassType: nativeClassesMap => {
                     expect(nativeClassesMap).toEqual(expectedNativeClassesMap)
-                    return 'ExportedFile2'
+                    return 'AnnotatedFile2'
                 },
             }
         })
-        ExportedFile.mockImplementationOnce((guestFile, moduleCreator) => {
+        AnnotatedGuestFile.mockImplementationOnce((guestFile, moduleCreator) => {
             expect(guestFile).toBe(guestFile3)
             expect(moduleCreator).toBe(null)
             return {
                 guestFile: guestFile2, exportsClass: false,
                 resolveClassType: nativeClassesMap => {
                     expect(nativeClassesMap).toEqual(expectedNativeClassesMap)
-                    return 'ExportedFile3'
+                    return 'AnnotatedFile3'
                 },
             }
         })
 
-        const exportedFiles = await schemaCreator.getExportedFiles()
-        expect(exportedFiles).toEqual(['ExportedFile1', 'ExportedFile2', 'ExportedFile3'])
+        const annotatedFiles = await schemaCreator.getAnnotatedFiles()
+        expect(annotatedFiles).toEqual(['AnnotatedFile1', 'AnnotatedFile2', 'AnnotatedFile3'])
     })
 })

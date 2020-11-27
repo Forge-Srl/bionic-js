@@ -1,30 +1,60 @@
-const {FileWalker} = require('./FileWalker')
 const {FilesFilter} = require('./FilesFilter')
+const {File} = require('./File')
 const {GuestFile} = require('./GuestFile')
-const {JS_FILE_EXT, JSON_FILE_EXT} = require('./fileExtensions')
-const {NodeModule} = require('./NodeModule')
-const {GuestDependencyWalker} = require('./GuestDependencyWalker')
+const {Webpack} = require('./Webpack')
+const WebpackModuleClassName = 'NormalModule'
 
-class GuestWalker extends FileWalker {
+class GuestWalker {
 
     static build(config) {
-        const guestFilesFilter = new FilesFilter(config.guestIgnores, [JSON_FILE_EXT, JS_FILE_EXT])
-        return new GuestWalker(config.guestDirPath, guestFilesFilter)
+        const entryPaths = {}, guestFilesFilters = {}
+        for (const guestBundle of config.guestBundles) {
+            entryPaths[guestBundle.bundleName] = guestBundle.entryPaths
+            guestFilesFilters[guestBundle.bundleName] = guestBundle.ignoreExport ? new FilesFilter(guestBundle.ignoreExport) : null
+        }
+        return new GuestWalker(config.guestDirPath, entryPaths, guestFilesFilters)
     }
 
-    constructor(dirPath, filesFilter) {
-        super(dirPath, filesFilter, file => GuestFile.fromFile(file))
+    constructor(guestDirPath, entryPaths, guestFilesFilters) {
+        Object.assign(this, {guestDirPath, entryPaths, guestFilesFilters})
     }
 
-    async getDependenciesFiles() {
-        const depModules = await NodeModule.fromModulePath(this.dirPath).getDependencies()
-        const depFilesPromises = depModules.map(depModule => GuestDependencyWalker.build(depModule, this.dirPath).getFiles())
-        return (await Promise.all(depFilesPromises)).flat()
+    get webpack() {
+        if (!this._webpack) {
+            this._webpack = new Webpack({
+                mode: 'development',
+                context: this.guestDirPath,
+                entry: this.entryPaths,
+                output: {
+                    path: '/dev/null',
+                    filename: '[name].bundle.js',
+                },
+            }, Webpack.getVirtualFs())
+        }
+        return this._webpack
+    }
+
+    isFileToExport(file, chunkName) {
+        const filesFilter = this.guestFilesFilters[chunkName]
+        if (filesFilter) {
+            return !filesFilter.isToFilter(file)
+        }
+        return true
     }
 
     async getFiles() {
-        const guestFiles = (await Promise.all([super.getFiles(), this.getDependenciesFiles()])).flat()
-        return [...new Map(guestFiles.map(guestFile => [guestFile.absolutePath, guestFile])).values()]
+        const stats = await this.webpack.compile()
+        return stats.compilation.modules
+            .filter(module => module.constructor.name === WebpackModuleClassName)
+            .map(module => {
+                const file = new File(module.resource, this.guestDirPath)
+                const chunks = module.getChunks()
+                    .map(chunk => chunk.name)
+                    .filter(chunkName => this.isFileToExport(file, chunkName))
+                return {file, chunks}
+            })
+            .filter(module => module.chunks.length)
+            .map(module => GuestFile.fromFile(module.file, module.chunks))
     }
 }
 

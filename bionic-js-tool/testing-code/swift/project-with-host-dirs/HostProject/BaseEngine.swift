@@ -1,16 +1,14 @@
 import Bjs
 
-class BaseEngine: BjsExport {
+class Engine: BaseEngine {
     
-    func powerOn() {
+    init(_ fuelType: FuelType?) {
         
     }
     
-    func powerOff() {
-        
-    }
-    
-    func watch(_ callback: (() -> String?)?) {
-        
+    var fuelType:FuelType? {
+        get {
+            return nil
+        }
     }
 }

@@ -1,9 +1,9 @@
-const {Vehicle} = require('./libs/Vehicle')
+const {Bicycle} = require('./Bicycle')
 
-class GannaBicycle extends Vehicle {
+class GannaBicycle extends Bicycle {
 
     constructor() {
-        super(4, 1, 80)
+        super(4, 80)
     }
 
     get name() {

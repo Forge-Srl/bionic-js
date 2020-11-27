@@ -1,8 +1,10 @@
 const {Vehicle} = require('./Vehicle')
 const {Engine} = require('../native/Engine')
+const {ModuleA} = require('module-a')
 
 class MotorVehicle extends Vehicle {
 
+    // @bionic (Int, Int, Int, FuelType, Float, Float)
     constructor(weight, seats, maxSpeed, fuelType, maxRange, currentRange) {
         super(weight, seats, maxSpeed)
         this.engine = new Engine(fuelType)
@@ -15,7 +17,7 @@ class MotorVehicle extends Vehicle {
     // @bionic get delegate AppDelegate
 
     get description() {
-        return `${super.description}, it has an engine powered by ${this.engine.fuelType} with ${this.maxRange} km of range`
+        return `${super.description}, it has an engine powered by ${this.engine.fuelType.name} with ${this.maxRange} km of range`
     }
 
     // @bionic Bool
@@ -27,7 +29,7 @@ class MotorVehicle extends Vehicle {
     refuel() {
         const missingRange = this.maxRange - this.currentRange
         this.currentRange = this.maxRange
-        return this.engine.fuelCost * missingRange
+        return this.engine.fuelType.cost * missingRange
     }
 
     // @bionic (() => String)

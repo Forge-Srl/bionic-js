@@ -1,7 +1,7 @@
 const path = require('path')
 const {BjsSync} = require('../filesystem/BjsSync')
 const {Log} = require('../filesystem/Log')
-const {Configuration} = require('../filesystem/configuration/Configuration')
+const {BjsConfiguration} = require('../filesystem/configuration/BjsConfiguration')
 
 async function main(args, workingDir, log) {
     if (args.length === 0 || args[0].trim() === '') {
@@ -10,17 +10,15 @@ async function main(args, workingDir, log) {
     }
 
     const configAbsolutePath = path.resolve(workingDir, args[0])
-    const configuration = Configuration.fromPath(configAbsolutePath)
+    const configuration = BjsConfiguration.fromPath(configAbsolutePath)
     const bjsSync = new BjsSync(configuration, log)
     await bjsSync.sync()
 }
 
 const log = new Log()
 main(process.argv.slice(2), process.cwd(), log).then(() => {
-
     process.exit(log.processExitCode)
-}).catch(err => {
-
-    log.error(err)
+}).catch(error => {
+    log.error(error)
     process.exit(1)
 })

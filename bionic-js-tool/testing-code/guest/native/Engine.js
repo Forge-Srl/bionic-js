@@ -1,15 +1,16 @@
-const {fuelCosts} = require('./fuelCosts')
 const {BaseEngine} = require('./BaseEngine')
+require('../libs/FuelType')
 
 // @bionic native
 class Engine extends BaseEngine {
-    
-    // @bionic String
-    get fuelType() {
+
+    // @bionic (FuelType)
+    constructor(fuelType) {
+        super()
     }
-    
-    get fuelCost() {
-        return fuelCosts[this.fuelType]
+
+    // @bionic FuelType
+    get fuelType() {
     }
 }
 

@@ -49,7 +49,7 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
         return IniRet.create()
             .appendRet(this.schema.isStatic ?
                 `${this.classSchema.name}.${this.schema.name}` :
-                `Bjs.get.getWrapped($0, ${this.classSchema.name}.self)!.${this.schema.name}`)
+                `bjs.getWrapped($0, ${this.classSchema.name}.self)!.${this.schema.name}`)
     }
 
     getWrapperMethodName(propertyModifier) {

@@ -8,7 +8,7 @@ describe('SwiftWrapperClassGenerator', () => {
         const class1 = new Class('Class1', 'class description', [new Constructor('desc', [])], properties, methods,
             superclass, true, 'module/path')
         const hostClassGeneratorForScaffolding = withScaffold ? class1.generator.forHosting().swift : undefined
-        return class1.generator.forWrapping(hostClassGeneratorForScaffolding).swift.getSource()
+        return class1.generator.forWrapping(hostClassGeneratorForScaffolding, 'Project1').swift.getSource()
     }
 
     beforeEach(() => {
@@ -24,42 +24,39 @@ describe('SwiftWrapperClassGenerator', () => {
         'import JavaScriptCore',
         'import Bjs',
         '',
-        `class Class1Wrapper: ${superclassName} {`,
-        '    ',
-        '    override class var name: String { return "Class1" }',
-        '    override class var wrapperPath: String { return "/module/path" }',
+        `class Class1BjsWrapper: ${superclassName} {`,
         '    ',
     ]
-
-
-    const emptyClassExportFunctions = [
-        '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
-        '        return nativeExports',
-        '    }']
-
-    const emptyClassExportFunctionsWithInheritance = [
-        '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
-        '        return super.bjsExportFunctions(nativeExports)',
-        '    }']
 
     const emptyClassBindFunction = [
         '    ',
         '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
         '        _ = nativeExports.exportBindFunction({',
-        '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(), $0)',
+        '            bjs.bindNative(bjs.getBound($1, Class1.self) ?? Class1(), $0)',
         '        } as @convention(block) (JSValue, JSValue) -> Void)',
-        '    }',
+        '    }']
+
+    const expectedFooter = [
+        '    ',
+        '    private static var _bjsLocator: BjsLocator = BjsLocator("Project1", "Class1")',
+        '    override class var bjsLocator: BjsLocator { _bjsLocator }',
         '}']
 
     test('empty class without inheritance', () => t.expectCode(getCode([], []),
         ...getExpectedHeader(),
-        ...emptyClassExportFunctions,
-        ...emptyClassBindFunction))
+        '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
+        '        return nativeExports',
+        '    }',
+        ...emptyClassBindFunction,
+        ...expectedFooter))
 
     test('empty class with inheritance', () => t.expectCode(getCode([], [], new Class('Superclass')),
-        ...getExpectedHeader('SuperclassWrapper'),
-        ...emptyClassExportFunctionsWithInheritance,
-        ...emptyClassBindFunction))
+        ...getExpectedHeader('SuperclassBjsWrapper'),
+        '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
+        '        return super.bjsExportFunctions(nativeExports)',
+        '    }',
+        ...emptyClassBindFunction,
+        ...expectedFooter))
 
     test('class parts order', () => {
         const intType = new IntType()
@@ -98,82 +95,82 @@ describe('SwiftWrapperClassGenerator', () => {
             '    ',
             '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
             '        _ = nativeExports.exportBindFunction({',
-            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(), $0)',
+            '            bjs.bindNative(bjs.getBound($1, Class1.self) ?? Class1(), $0)',
             '        } as @convention(block) (JSValue, JSValue) -> Void)',
             '    }',
             '    ',
             '    private class func bjsStaticGet_staticProperty1() -> @convention(block) () -> JSValue {',
             '        return {',
-            '            return Bjs.get.putPrimitive(Class1.staticProperty1)',
+            '            return bjs.putPrimitive(Class1.staticProperty1)',
             '        }',
             '    }',
             '    ',
             '    private class func bjsStaticSet_staticProperty1() -> @convention(block) (JSValue) -> Void {',
             '        return {',
-            '            Class1.staticProperty1 = Bjs.get.getInt($0)',
+            '            Class1.staticProperty1 = bjs.getInt($0)',
             '        }',
             '    }',
             '    ',
             '    private class func bjsStaticGet_staticProperty2() -> @convention(block) () -> JSValue {',
             '        return {',
-            '            return Bjs.get.putPrimitive(Class1.staticProperty2)',
+            '            return bjs.putPrimitive(Class1.staticProperty2)',
             '        }',
             '    }',
             '    ',
             '    private class func bjsStaticSet_staticProperty2() -> @convention(block) (JSValue) -> Void {',
             '        return {',
-            '            Class1.staticProperty2 = Bjs.get.getInt($0)',
+            '            Class1.staticProperty2 = bjs.getInt($0)',
             '        }',
             '    }',
             '    ',
             '    private class func bjsStatic_staticMethod1() -> @convention(block) () -> JSValue {',
             '        return {',
-            '            return Bjs.get.putPrimitive(Class1.staticMethod1())',
+            '            return bjs.putPrimitive(Class1.staticMethod1())',
             '        }',
             '    }',
             '    ',
             '    private class func bjsStatic_staticMethod2() -> @convention(block) () -> JSValue {',
             '        return {',
-            '            return Bjs.get.putPrimitive(Class1.staticMethod2())',
+            '            return bjs.putPrimitive(Class1.staticMethod2())',
             '        }',
             '    }',
             '    ',
             '    private class func bjsGet_instanceProperty1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
-            '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.instanceProperty1)',
+            '            return bjs.putPrimitive(bjs.getWrapped($0, Class1.self)!.instanceProperty1)',
             '        }',
             '    }',
             '    ',
             '    private class func bjsSet_instanceProperty1() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
-            '            Bjs.get.getWrapped($0, Class1.self)!.instanceProperty1 = Bjs.get.getInt($1)',
+            '            bjs.getWrapped($0, Class1.self)!.instanceProperty1 = bjs.getInt($1)',
             '        }',
             '    }',
             '    ',
             '    private class func bjsGet_instanceProperty2() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
-            '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.instanceProperty2)',
+            '            return bjs.putPrimitive(bjs.getWrapped($0, Class1.self)!.instanceProperty2)',
             '        }',
             '    }',
             '    ',
             '    private class func bjsSet_instanceProperty2() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
-            '            Bjs.get.getWrapped($0, Class1.self)!.instanceProperty2 = Bjs.get.getInt($1)',
+            '            bjs.getWrapped($0, Class1.self)!.instanceProperty2 = bjs.getInt($1)',
             '        }',
             '    }',
             '    ',
             '    private class func bjs_instanceMethod1() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
-            '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.instanceMethod1())',
+            '            return bjs.putPrimitive(bjs.getWrapped($0, Class1.self)!.instanceMethod1())',
             '        }',
             '    }',
             '    ',
             '    private class func bjs_instanceMethod2() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
-            '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.instanceMethod2())',
+            '            return bjs.putPrimitive(bjs.getWrapped($0, Class1.self)!.instanceMethod2())',
             '        }',
             '    }',
-            '}')
+            ...expectedFooter)
     })
 
     test('class parts order, withScaffold', () => {
@@ -192,7 +189,7 @@ describe('SwiftWrapperClassGenerator', () => {
         const code = getCode(properties, methods, superclass, true)
 
         t.expectCode(code,
-            ...getExpectedHeader('SuperClassWrapper'),
+            ...getExpectedHeader('SuperClassBjsWrapper'),
             '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
             '        return super.bjsExportFunctions(nativeExports)',
             '            .exportFunction("bjsGet_property", bjsGet_property())',
@@ -202,28 +199,28 @@ describe('SwiftWrapperClassGenerator', () => {
             '    ',
             '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
             '        _ = nativeExports.exportBindFunction({',
-            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(), $0)',
+            '            bjs.bindNative(bjs.getBound($1, Class1.self) ?? Class1(), $0)',
             '        } as @convention(block) (JSValue, JSValue) -> Void)',
             '    }',
             '    ',
             '    private class func bjsGet_property() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
-            '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.property)',
+            '            return bjs.putPrimitive(bjs.getWrapped($0, Class1.self)!.property)',
             '        }',
             '    }',
             '    ',
             '    private class func bjsSet_property() -> @convention(block) (JSValue, JSValue) -> Void {',
             '        return {',
-            '            Bjs.get.getWrapped($0, Class1.self)!.property = Bjs.get.getInt($1)',
+            '            bjs.getWrapped($0, Class1.self)!.property = bjs.getInt($1)',
             '        }',
             '    }',
             '    ',
             '    private class func bjs_method() -> @convention(block) (JSValue) -> JSValue {',
             '        return {',
-            '            return Bjs.get.putPrimitive(Bjs.get.getWrapped($0, Class1.self)!.method())',
+            '            return bjs.putPrimitive(bjs.getWrapped($0, Class1.self)!.method())',
             '        }',
             '    }',
-            '}',
+            ...expectedFooter,
             '',
             '/* Class1 class scaffold:',
             '',

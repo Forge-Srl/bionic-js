@@ -4,9 +4,9 @@ const path = require('path')
 
 class FileWalker {
 
-    constructor(dirPath, filesFilter, fileFactory) {
+    constructor(dirPath, patterns) {
         Object.assign(this, {
-            dirPath, filesFilter, fileFactory,
+            dirPath, patterns,
             globOptions: {
                 cwd: dirPath,
                 onlyFiles: true,
@@ -15,11 +15,8 @@ class FileWalker {
     }
 
     async getFiles() {
-        const files = await fg(['**'], this.globOptions)
-        return files
-            .map(filePath => new File(path.resolve(this.dirPath, filePath), this.dirPath))
-            .filter(file => !this.filesFilter || !this.filesFilter.isToFilter(file))
-            .map(file => this.fileFactory ? this.fileFactory(file) : file)
+        const files = await fg(this.patterns, this.globOptions)
+        return files.map(filePath => new File(path.resolve(this.dirPath, filePath), this.dirPath))
     }
 }
 

@@ -17,13 +17,12 @@ describe('SwiftWrapperConstructorGenerator', () => {
 
     function getCode(constructorParameters, superclass = null) {
         const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], superclass, true, 'module/path')
-        return class1.generator.forWrapping().swift.getSource()
+        return class1.generator.forWrapping(undefined, 'Project1').swift.getSource()
     }
 
     function newParam(type, name) {
         return new Parameter(type, name, 'parameter description')
     }
-
 
     const exportFunctionsCode = [
         '    override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {',
@@ -43,12 +42,15 @@ describe('SwiftWrapperConstructorGenerator', () => {
         'import JavaScriptCore',
         'import Bjs',
         '',
-        `class Class1Wrapper: ${superclassName} {`,
-        '    ',
-        '    override class var name: String { return "Class1" }',
-        '    override class var wrapperPath: String { return "/module/path" }',
+        `class Class1BjsWrapper: ${superclassName} {`,
         '    ',
     ]
+
+    const expectedFooter = [
+        '    ',
+        '    private static var _bjsLocator: BjsLocator = BjsLocator("Project1", "Class1")',
+        '    override class var bjsLocator: BjsLocator { _bjsLocator }',
+        '}']
 
     test('no params', () => {
         const code = getCode([])
@@ -58,57 +60,60 @@ describe('SwiftWrapperConstructorGenerator', () => {
             ...exportFunctionsCode,
             '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
             '        _ = nativeExports.exportBindFunction({',
-            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(), $0)',
+            '            bjs.bindNative(bjs.getBound($1, Class1.self) ?? Class1(), $0)',
             '        } as @convention(block) (JSValue, JSValue) -> Void)',
             '    }',
-            '}')
+            ...expectedFooter)
     })
 
     test('no public constructor', () => {
         const code = new Class('Class1', '', [], [], [], null, true, 'module/path')
-            .generator.forWrapping().swift.getSource()
+            .generator.forWrapping(undefined, 'Project1').swift.getSource()
 
         t.expectCode(code,
             ...getExpectedHeader(),
             ...exportFunctionsCode,
             '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
             '        _ = nativeExports.exportBindFunction({',
-            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self), $0)',
+            '            bjs.bindNative(bjs.getBound($1, Class1.self), $0)',
             '        } as @convention(block) (JSValue, JSValue) -> Void)',
             '    }',
-            '}')
+            ...expectedFooter)
     })
 
     const publicConstructorWithIntParamBindCode = [
         '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
         '        _ = nativeExports.exportBindFunction({',
-        '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(Bjs.get.getInt($1)), $0)',
+        '            bjs.bindNative(bjs.getBound($1, Class1.self) ?? Class1(bjs.getInt($1)), $0)',
         '        } as @convention(block) (JSValue, JSValue) -> Void)',
         '    }',
-        '}',
     ]
 
     test('no public constructor, inherited public constructor', () => {
         const intPar = newParam(new IntType(), 'intParam')
         const superclass = new Class('Superclass', '', [new Constructor('', [intPar])], [], [], null, true, 'module/superPath')
-        const code = new Class('Class1', '', [], [], [], superclass, true, 'module/path').generator.forWrapping().swift.getSource()
+        const code = new Class('Class1', '', [], [], [], superclass, true, 'module/path')
+            .generator.forWrapping(undefined, 'Project1').swift.getSource()
 
         t.expectCode(code,
-            ...getExpectedHeader('SuperclassWrapper'),
+            ...getExpectedHeader('SuperclassBjsWrapper'),
             ...exportFunctionsCodeWithInheritance,
-            ...publicConstructorWithIntParamBindCode)
+            ...publicConstructorWithIntParamBindCode,
+            ...expectedFooter)
     })
 
     test('no public constructor, inherited public constructor from superSuperclass', () => {
         const intPar = newParam(new IntType(), 'intParam')
         const superSuperclass = new Class('SuperSuperclass', '', [new Constructor('', [intPar])], [], [], null, true, 'module/superSuperPath')
         const superclass = new Class('Superclass', '', [], [], [], superSuperclass, true, 'module/superPath')
-        const code = new Class('Class1', '', [], [], [], superclass, true, 'module/path').generator.forWrapping().swift.getSource()
+        const code = new Class('Class1', '', [], [], [], superclass, true, 'module/path')
+            .generator.forWrapping(undefined, 'Project1').swift.getSource()
 
         t.expectCode(code,
-            ...getExpectedHeader('SuperclassWrapper'),
+            ...getExpectedHeader('SuperclassBjsWrapper'),
             ...exportFunctionsCodeWithInheritance,
-            ...publicConstructorWithIntParamBindCode)
+            ...publicConstructorWithIntParamBindCode,
+            ...expectedFooter)
     })
 
     test('single primitive, no inherited public constructor', () => {
@@ -118,7 +123,8 @@ describe('SwiftWrapperConstructorGenerator', () => {
         t.expectCode(code,
             ...getExpectedHeader(),
             ...exportFunctionsCode,
-            ...publicConstructorWithIntParamBindCode)
+            ...publicConstructorWithIntParamBindCode,
+            ...expectedFooter)
     })
 
     test('single primitive, inherited public constructor with different signature', () => {
@@ -129,9 +135,10 @@ describe('SwiftWrapperConstructorGenerator', () => {
         const code = getCode([intPar], superclass)
 
         t.expectCode(code,
-            ...getExpectedHeader('SuperclassWrapper'),
+            ...getExpectedHeader('SuperclassBjsWrapper'),
             ...exportFunctionsCodeWithInheritance,
-            ...publicConstructorWithIntParamBindCode)
+            ...publicConstructorWithIntParamBindCode,
+            ...expectedFooter)
     })
 
     test('multiple primitives', () => {
@@ -145,10 +152,10 @@ describe('SwiftWrapperConstructorGenerator', () => {
             ...exportFunctionsCode,
             '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
             '        _ = nativeExports.exportBindFunction({',
-            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(Bjs.get.getBool($1), Bjs.get.getInt($2)), $0)',
+            '            bjs.bindNative(bjs.getBound($1, Class1.self) ?? Class1(bjs.getBool($1), bjs.getInt($2)), $0)',
             '        } as @convention(block) (JSValue, JSValue, JSValue) -> Void)',
             '    }',
-            '}')
+            ...expectedFooter)
     })
 
     test('void lambda', () => {
@@ -162,12 +169,12 @@ describe('SwiftWrapperConstructorGenerator', () => {
             '    override class func bjsBind(_ nativeExports: BjsNativeExports) {',
             '        _ = nativeExports.exportBindFunction({',
             '            let jsFunc_bjs0 = $1',
-            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(Bjs.get.getFunc(jsFunc_bjs0) {',
-            '                _ = Bjs.get.funcCall(jsFunc_bjs0)',
+            '            bjs.bindNative(bjs.getBound($1, Class1.self) ?? Class1(bjs.getFunc(jsFunc_bjs0) {',
+            '                _ = bjs.funcCall(jsFunc_bjs0)',
             '            }), $0)',
             '        } as @convention(block) (JSValue, JSValue) -> Void)',
             '    }',
-            '}')
+            ...expectedFooter)
     })
 
     test('void lambda, lambda returning primitive, primitive', () => {
@@ -186,17 +193,17 @@ describe('SwiftWrapperConstructorGenerator', () => {
             '            let jsFunc_bjs0 = $1',
             '            let jsFunc_bjs1 = $2',
             '            let jsFunc_bjs2 = $3',
-            '            Bjs.get.bindNative(Bjs.get.getBound($1, Class1.self) ?? Class1(Bjs.get.getFunc(jsFunc_bjs0) {',
-            '                _ = Bjs.get.funcCall(jsFunc_bjs0)',
-            '            }, Bjs.get.getFunc(jsFunc_bjs1) {',
-            '                return Bjs.get.getInt(Bjs.get.funcCall(jsFunc_bjs1))',
-            '            }, Bjs.get.getFunc(jsFunc_bjs2) {',
-            '                return Bjs.get.getArray(Bjs.get.funcCall(jsFunc_bjs2), {',
-            '                    return Bjs.get.getInt($0)',
+            '            bjs.bindNative(bjs.getBound($1, Class1.self) ?? Class1(bjs.getFunc(jsFunc_bjs0) {',
+            '                _ = bjs.funcCall(jsFunc_bjs0)',
+            '            }, bjs.getFunc(jsFunc_bjs1) {',
+            '                return bjs.getInt(bjs.funcCall(jsFunc_bjs1))',
+            '            }, bjs.getFunc(jsFunc_bjs2) {',
+            '                return bjs.getArray(bjs.funcCall(jsFunc_bjs2), {',
+            '                    return bjs.getInt($0)',
             '                })',
-            '            }, Bjs.get.getInt($4)), $0)',
+            '            }, bjs.getInt($4)), $0)',
             '        } as @convention(block) (JSValue, JSValue, JSValue, JSValue, JSValue) -> Void)',
             '    }',
-            '}')
+            ...expectedFooter)
     })
 })

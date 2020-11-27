@@ -1,66 +1,30 @@
-const {NODE_MODULES_DIR_NAME, PACKAGE_JSON_LOCK_FILE_NAME} = require('../NodeModule')
-const {XcodeHostTargetConfiguration} = require('./XcodeHostTargetConfiguration')
-
 class Configuration {
 
-    static fromPath(path) {
-        let configObj
-        try {
-            configObj = require(path)
-        } catch (error) {
-            error.message = `parsing the config file "${path}"\n${error.message}`
-            throw error
-        }
-        const config = new Configuration(configObj, path)
-        config.checkMandatoryProps('guestDirPath', 'hostTargets')
-        return config
+    constructor(configObj, locator, optionalKeys = [], mandatoryKeys = []) {
+        Object.assign(this, {configObj, locator, optionalKeys, mandatoryKeys})
     }
 
-    constructor(configObj, path) {
-        this.configObj = configObj
-        this.path = path
-    }
-
-    get errorLocationString() {
-        return `config file "${this.path}" ->`
-    }
-
-    get guestDirPath() {
-        return this.configObj.guestDirPath
-    }
-
-    get hostTargets() {
-        if (!this._hostTargets) {
-            const hostTargets = this.configObj.hostTargets
-            if (!Array.isArray(hostTargets)) {
-                throw new Error(`${this.errorLocationString} "hostTargets" is not an array`)
+    validate() {
+        const missingKeys = []
+        for (const keyName of this.mandatoryKeys) {
+            if (!this.configObj.hasOwnProperty(keyName)) {
+                missingKeys.push(keyName)
             }
-            this._hostTargets = hostTargets.map(targetObj => new XcodeHostTargetConfiguration(targetObj, this.path))
         }
-        return this._hostTargets
-    }
-
-    get guestIgnores() {
-        if (!this._guestIgnores) {
-            let guestIgnores = []
-            if (this.configObj.defaultGuestIgnores)
-                guestIgnores.push(this.configObj.defaultGuestIgnores)
-            else
-                guestIgnores = guestIgnores.concat([NODE_MODULES_DIR_NAME, PACKAGE_JSON_LOCK_FILE_NAME])
-
-            if (this.configObj.guestIgnores)
-                guestIgnores = guestIgnores.concat(this.configObj.guestIgnores)
-
-            this._guestIgnores = guestIgnores
+        if (missingKeys.length) {
+            throw new Error(`${this.locator} -> missing keys: "${missingKeys.join(', ')}"`)
         }
-        return this._guestIgnores
-    }
 
-    checkMandatoryProps(...propertyNames) {
-        for (const propertyName of propertyNames) {
-            if (!this.configObj.hasOwnProperty(propertyName)) {
-                throw new Error(`${this.errorLocationString} "${propertyName}" property is missing`)
+        const validationErrors = []
+        for (const keyName of [...this.mandatoryKeys, ...this.optionalKeys]) {
+            try {
+                (() => this[keyName])()
+            } catch (error) {
+                validationErrors.push(error.message)
             }
+        }
+        if (validationErrors.length) {
+            throw new Error(validationErrors.join('\n'))
         }
     }
 }

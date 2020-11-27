@@ -13,17 +13,13 @@ describe('BjsSyncStats', () => {
 
     test('logStats, no files', async () => {
         t.mockGetter(stats, 'processingTime', () => 1.23)
+
+        stats.setProjectFilesDiff({filesToDelete: [], filesToAdd: [], filesToUpdate: []})
         stats.logStats(log)
 
         expect(log.infoLog).toBe(
             '\n' +
-            'Package files\n' +
-            ' ----------\n' +
-            ' [-] deleted : 0\n' +
-            ' [U] updated : 0\n' +
-            ' [+] added : 0\n' +
-            '\n' +
-            'Host files\n' +
+            'Project files\n' +
             ' ----------\n' +
             ' [-] deleted : 0\n' +
             ' [U] updated : 0\n' +
@@ -36,43 +32,24 @@ describe('BjsSyncStats', () => {
     })
 
     test('logStats, with files', async () => {
-        stats.deletePackageFile('package1.del')
-        stats.deletePackageFile('package2.del')
-        stats.updatePackageFile('package1.upd')
-        stats.updatePackageFile('package2.upd')
-        stats.addPackageFile('package1.add')
-        stats.addPackageFile('package2.add')
-        stats.deleteHostFile('host1.del')
-        stats.deleteHostFile('host2.del')
-        stats.updateHostFile('host1.upd')
-        stats.updateHostFile('host2.upd')
-        stats.addHostFile('host1.add')
-        stats.addHostFile('host2.add')
-
         t.mockGetter(stats, 'processingTime', () => 1.23)
+
+        stats.setProjectFilesDiff({
+            filesToDelete: [{logText:'host.del'},{logText:'bundle.del'}],
+            filesToAdd: [{logText:'host.add'},{logText:'bundle.add'}],
+            filesToUpdate: [{logText:'host.upd'},{logText:'bundle.upd'}],
+        })
 
         stats.logStats(log)
         expect(log.infoLog).toBe(
             '\n' +
-            'Package files\n' +
-            ' [-] package1.del\n' +
-            ' [-] package2.del\n' +
-            ' [U] package1.upd\n' +
-            ' [U] package2.upd\n' +
-            ' [+] package1.add\n' +
-            ' [+] package2.add\n' +
-            ' ----------\n' +
-            ' [-] deleted : 2\n' +
-            ' [U] updated : 2\n' +
-            ' [+] added : 2\n' +
-            '\n' +
-            'Host files\n' +
-            ' [-] host1.del\n' +
-            ' [-] host2.del\n' +
-            ' [U] host1.upd\n' +
-            ' [U] host2.upd\n' +
-            ' [+] host1.add\n' +
-            ' [+] host2.add\n' +
+            'Project files\n' +
+            ' [-] bundle.del\n' +
+            ' [-] host.del\n' +
+            ' [U] bundle.upd\n' +
+            ' [U] host.upd\n' +
+            ' [+] bundle.add\n' +
+            ' [+] host.add\n' +
             ' ----------\n' +
             ' [-] deleted : 2\n' +
             ' [U] updated : 2\n' +

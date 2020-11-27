@@ -44,7 +44,7 @@ class SwiftWrapperConstructorGenerator extends SwiftMethodGenerator {
             .append('override class func bjsBind(_ nativeExports: BjsNativeExports) {').newLineIndenting()
             .append('_ = nativeExports.exportBindFunction({').newLineIndenting()
             .append(argumentsListNativeIniRet.initializationCode)
-            .append(`Bjs.get.bindNative(Bjs.get.getBound($1, ${this.classSchema.name}.self)`)
+            .append(`bjs.bindNative(bjs.getBound($1, ${this.classSchema.name}.self)`)
             .__.append(publicConstructorCall)
             .__.append(', $0)').newLineDeindenting()
             .append('} as @convention(block) (')

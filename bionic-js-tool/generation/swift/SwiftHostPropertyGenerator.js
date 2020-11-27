@@ -6,6 +6,11 @@ const {SwiftKeywords} = require('./SwiftKeywords')
 
 class SwiftHostPropertyGenerator extends CodeGenerator {
 
+    constructor(schema, classSchema) {
+        super(schema)
+        Object.assign(this, {classSchema})
+    }
+
     get typeGenerator() {
         return this.schema.type.generator.swift
     }
@@ -31,11 +36,11 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
             return null
 
         const jsValueIniRet = IniRet.create()
-            .appendRet(this.schema.isStatic ? 'Bjs.get.getProperty(self.bjsClass, ' : 'bjsGetProperty(')
+            .appendRet(this.schema.isStatic ? 'bjs.getProperty(self.bjsClass, ' : 'bjsGetProperty(')
             .__.appendRet(`"${this.schema.name}")`)
 
         const typeGen = this.typeGenerator
-        const getterContext = new GenerationContext()
+        const getterContext = new GenerationContext(this.schema.isStatic ? null : this.classSchema.name)
 
         return CodeBlock.create()
             .append('get {').newLineIndenting()
@@ -48,13 +53,13 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
         if (!this.hasSetter)
             return null
 
-        const setterContext = new GenerationContext()
+        const setterContext = new GenerationContext(this.schema.isStatic ? null : this.classSchema.name)
         const jsValueIniRet = this.typeGenerator.getJsIniRet(IniRet.create().appendRet('newValue'), setterContext)
 
         return CodeBlock.create()
             .append('set {').newLineIndenting()
             .append(jsValueIniRet.initializationCode)
-            .append(this.schema.isStatic ? 'Bjs.get.setProperty(self.bjsClass, ' : 'bjsSetProperty(')
+            .append(this.schema.isStatic ? 'bjs.setProperty(self.bjsClass, ' : 'bjsSetProperty(')
             .__.append(`"${this.schema.name}", `).append(jsValueIniRet.returningCode).append(')').newLineDeindenting()
             .append('}')
     }

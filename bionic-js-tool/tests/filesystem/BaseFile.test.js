@@ -2,7 +2,7 @@ const t = require('../test-utils')
 
 describe('BaseFile', () => {
 
-    let fs, BaseFile, filePath, baseFile, Directory
+    let fs, BaseFile, filePath, baseFile, Directory, File
 
     beforeEach(() => {
         t.resetModulesCache()
@@ -13,12 +13,28 @@ describe('BaseFile', () => {
         filePath = '/dir1/dir2/filePath.js'
         baseFile = new BaseFile(filePath, '/dir1')
         Directory = t.requireModule('filesystem/Directory').Directory
+        File = t.requireModule('filesystem/File').File
+    })
+
+    test('asFile', () => {
+        const file = baseFile.asFile
+        expect(file).toBeInstanceOf(File)
+        expect(file.path).toBe(filePath)
+        expect(file.rootDirPath).toBe('/dir1')
+    })
+
+    test('asDir', () => {
+        const dir = baseFile.asDir
+        expect(dir).toBeInstanceOf(Directory)
+        expect(dir.path).toBe(filePath)
+        expect(dir.rootDirPath).toBe('/dir1')
     })
 
     test('dir', () => {
         const dir = baseFile.dir
         expect(dir).toBeInstanceOf(Directory)
         expect(dir.path).toBe('/dir1/dir2')
+        expect(dir.rootDirPath).toBe('/dir1')
     })
 
     test('base', () => {
@@ -78,6 +94,11 @@ describe('BaseFile', () => {
             expect(baseFile.isInsideDir(...testCase.pathSegments)).toBe(testCase.result)
         })
     }
+
+    test('setRootDirPath', async () => {
+        expect(baseFile.rootDirPath).toBe('/dir1')
+        expect(baseFile.setRootDirPath('/newDir').rootDirPath).toBe('/newDir')
+    })
 
     test('exists', async () => {
         fs.access.mockImplementationOnce(async (path, mode) => {

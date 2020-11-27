@@ -1,11 +1,10 @@
 const {HostProject} = require('./HostProject')
 const {BjsSyncStats} = require('./BjsSyncStats')
 const {GuestWalker} = require('./GuestWalker')
+const {GuestBundler} = require('./GuestBundler')
 const {GlobalSchemaCreator} = require('../parser/GlobalSchemaCreator')
 const {HostFile} = require('./HostFile')
-const {PackageFile} = require('./PackageFile')
 const {HostEnvironmentFile} = require('./HostEnvironmentFile')
-const {BjsNativeObjectPackageFile} = require('./BjsNativeObjectPackageFile')
 const bjsVersion = require('../package.json').version
 
 class BjsSync {
@@ -18,62 +17,68 @@ class BjsSync {
         try {
             this.log.info(`Bionic.js - v${bjsVersion}\n\n`)
             const bjsSyncStats = new BjsSyncStats()
-            const guestFiles = await GuestWalker.build(this.configuration).getFiles()
-            const exportedFiles = await this.getExportedFiles(guestFiles)
+            this.configuration.validate()
 
-            for (const targetConfig of this.configuration.hostTargets) {
-                const hostProject = await this.openHostProject(targetConfig, bjsSyncStats)
-                await this.syncHostFiles(targetConfig, hostProject, exportedFiles)
-                await this.syncPackageFiles(targetConfig, hostProject, exportedFiles)
-                await this.syncVirtualFiles(targetConfig, hostProject, exportedFiles)
+            const guestFiles = await this.getGuestFiles()
+            const annotatedFiles = await this.getAnnotatedFiles(guestFiles)
+            const bundles = await this.generateBundles(annotatedFiles)
+
+            for (const projectConfig of this.configuration.hostProjects) {
+                const hostProject = await this.openHostProject(projectConfig, bjsSyncStats)
+                await this.syncBundles(hostProject, annotatedFiles, bundles)
+                await this.syncHostFiles(hostProject, annotatedFiles)
                 await this.saveHostProject(hostProject)
-                bjsSyncStats.logStats(this.log)
             }
+            bjsSyncStats.logStats(this.log)
         } catch (error) {
             this.log.error(error)
         }
     }
 
-    async getExportedFiles(guestFiles) {
-        this.log.info('Extracting schemas from guest files...\n')
-        const globalSchemaCreator = new GlobalSchemaCreator(guestFiles)
-        return await globalSchemaCreator.getExportedFiles()
+    async getGuestFiles() {
+        this.log.info('Analyzing guest files dependencies\n')
+        return await GuestWalker.build(this.configuration).getFiles()
     }
 
-    async openHostProject(targetConfig, bjsSyncStats) {
-        const hostProject = HostProject.build(targetConfig, this.log, bjsSyncStats)
-        this.log.info('Opening host project...\n')
+    async getAnnotatedFiles(guestFiles) {
+        this.log.info('Extracting schemas from guest files\n')
+        const globalSchemaCreator = new GlobalSchemaCreator(guestFiles)
+        return await globalSchemaCreator.getAnnotatedFiles()
+    }
+
+    async generateBundles(annotatedFiles) {
+        this.log.info('Generating bundles\n')
+        const bundler = GuestBundler.build(annotatedFiles, this.configuration)
+        return bundler.makeBundles()
+    }
+
+    async openHostProject(hostProjectConfig, bjsSyncStats) {
+        const hostProject = HostProject.build(hostProjectConfig, this.log, bjsSyncStats)
+        this.log.info(`Opening ${hostProjectConfig.language} host project\n`)
         await hostProject.open()
         return hostProject
     }
 
-    async syncHostFiles(targetConfig, hostProject, exportedFiles) {
-        this.log.info('Generating host files...\n')
-        await Promise.all(exportedFiles.filter(exportedFile => exportedFile.exportsClass).map(exportedFile => {
-            return HostFile.build(exportedFile, targetConfig).generate(hostProject)
-        }))
+    async syncHostFiles(hostProject, annotatedFiles) {
+        this.log.info('Writing host files\n')
+        await Promise.all(annotatedFiles.filter(annotatedFile => annotatedFile.exportsClass)
+            .map(annotatedFile => HostFile.build(annotatedFile, hostProject.configuration,
+                this.configuration.projectName).generate(hostProject)))
     }
 
-    async syncPackageFiles(targetConfig, hostProject, exportedFiles) {
-        this.log.info('Generating package files...\n')
-        await Promise.all(exportedFiles.map(exportedFile => {
-            return PackageFile.build(exportedFile, targetConfig).generate(hostProject)
-        }))
-    }
-
-    async syncVirtualFiles(targetConfig, hostProject, exportedFiles) {
-        this.log.info('Generating virtual files...\n')
-
-        const nativePackageFiles = exportedFiles.filter(exportedFile => exportedFile.exportsNativeClass)
-        const hostEnvironmentFile = HostEnvironmentFile.build(nativePackageFiles, targetConfig)
-        await hostEnvironmentFile.generate(hostProject)
-
-        const packageFile = BjsNativeObjectPackageFile.build(targetConfig)
-        await packageFile.generate(hostProject)
+    async syncBundles(hostProject, annotatedFiles, bundles) {
+        this.log.info('Writing bundles\n')
+        for (const {name: bundleName, content: bundleContent} of bundles) {
+            const hostEnvironmentFile = HostEnvironmentFile.build(annotatedFiles
+                    .filter(file => file.exportsNativeClass && file.guestFile.bundles.includes(bundleName)),
+                bundleName, hostProject.configuration, this.configuration.projectName)
+            await hostEnvironmentFile.generate(hostProject)
+            await hostProject.setBundleFileContent(bundleName, bundleContent)
+        }
     }
 
     async saveHostProject(hostProject) {
-        this.log.info('Saving host project...\n')
+        this.log.info(`Writing ${hostProject.configuration.language} host project\n`)
         await hostProject.save()
     }
 }

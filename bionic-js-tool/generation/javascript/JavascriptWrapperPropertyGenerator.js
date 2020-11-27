@@ -1,7 +1,5 @@
 const {CodeGenerator} = require('../CodeGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
-const {GenerationContext} = require('../code/GenerationContext')
-const {IniRet} = require('../code/IniRet')
 
 class JavascriptWrapperPropertyGenerator extends CodeGenerator {
 

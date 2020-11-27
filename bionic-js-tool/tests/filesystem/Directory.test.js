@@ -64,7 +64,7 @@ describe('Directory', () => {
     test('getFiles, not existing dir', async () => {
         await Directory.runInTempDir(async tempDir => {
             const dir1 = tempDir.getSubDir('dir1')
-            expect(dir1.getFiles()).rejects.toThrow(new Error(`directory "${dir1.path}" doesn't exists`))
+            await expect(dir1.getFiles()).rejects.toThrow(new Error(`directory "${dir1.path}" doesn't exists`))
         })
     })
 

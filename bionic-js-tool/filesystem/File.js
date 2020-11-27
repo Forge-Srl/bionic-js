@@ -5,12 +5,12 @@ const crypto = require('crypto'), sha256 = 'sha256', hex = 'hex'
 class File extends BaseFile {
 
     async getContent() {
+        const tracingError = new Error(`reading the file "${this.path}"`)
         try {
             return await fs.readFile(this.path, utf8)
-        } catch (e) {
-            const error = new Error(`reading the file "${this.path}"\n${e.message}`)
-            error.innerError = e
-            throw error
+        } catch (error) {
+            tracingError.message = `${tracingError.message}\n${error.message}`
+            throw tracingError
         }
     }
 

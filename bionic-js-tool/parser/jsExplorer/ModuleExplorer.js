@@ -9,7 +9,7 @@ class ModuleExplorer extends JsExplorer {
     }
 
     get classNodes() {
-        return this.depthSearch(this.node, this.selectTypes('ClassExpression', 'ClassDeclaration'))
+        return this.depthSearchClassNodes(this.node)
     }
 
     get classExplorers() {
@@ -20,30 +20,29 @@ class ModuleExplorer extends JsExplorer {
         return this._classExplorers
     }
 
-    selectTypes(...types) {
-        return node => types.includes(node.type)
-    }
-
-    depthSearch(node, matchFunction) {
-        if (matchFunction(node))
+    depthSearchClassNodes(node) {
+        if (!node || !node.type) {
+            return []
+        }
+        if (['ClassExpression', 'ClassDeclaration'].includes(node.type)) {
             return [node]
-
+        }
         switch (node.type) {
             case 'File':
-                return this.depthSearch(node.program, matchFunction)
+                return this.depthSearchClassNodes(node.program)
 
             case 'Program':
-                return node.body.flatMap(node => this.depthSearch(node, matchFunction))
+                return node.body.flatMap(node => this.depthSearchClassNodes(node))
 
             case 'ExpressionStatement':
-                return this.depthSearch(node.expression, matchFunction)
+                return this.depthSearchClassNodes(node.expression)
 
             case 'AssignmentExpression':
-                return this.depthSearch(node.right, matchFunction)
+                return this.depthSearchClassNodes(node.right)
 
             case 'ExportNamedDeclaration':
             case 'ExportDefaultDeclaration':
-                return this.depthSearch(node.declaration, matchFunction)
+                return this.depthSearchClassNodes(node.declaration)
 
             default:
                 return []

@@ -16,12 +16,12 @@ class SwiftHostMethodGenerator extends SwiftMethodGenerator {
     }
 
     getBodyCode() {
-        const methodContext = new GenerationContext()
+        const methodContext = new GenerationContext(this.schema.isStatic ? null : this.classSchema.name)
         const anyParameter = this.parameters.length
         const returnTypeGen = this.returnTypeGenerator
 
         const callIniRet = IniRet.create()
-            .appendRet(this.schema.isStatic ? 'Bjs.get.call(self.bjsClass, ' : 'bjsCall(').appendRet(`"${this.schema.name}"`)
+            .appendRet(this.schema.isStatic ? 'bjs.call(self.bjsClass, ' : 'bjsCall(').appendRet(`"${this.schema.name}"`)
             .__.appendRet(anyParameter ? ', ' : '').append(this.getArgumentsListJsIniRet(methodContext)).appendRet(')')
         return returnTypeGen.getNativeReturnCode(returnTypeGen.getNativeIniRet(callIniRet, methodContext), true)
 

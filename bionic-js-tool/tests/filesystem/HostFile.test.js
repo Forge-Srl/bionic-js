@@ -9,29 +9,31 @@ describe('HostFile', () => {
     })
 
     test('constructor', () => {
-        const hostFile = new HostFile('path', 'hostDir', 'exportedFile')
+        const hostFile = new HostFile('path', 'hostDir', 'annotatedFile', 'projectName')
 
         expect(hostFile.path).toBe('path')
         expect(hostFile.rootDirPath).toBe('hostDir')
-        expect(hostFile.exportedFile).toBe('exportedFile')
-
+        expect(hostFile.annotatedFile).toBe('annotatedFile')
+        expect(hostFile.projectName).toBe('projectName')
     })
 
     test('build', () => {
-        const expectedExportedFile = 'exportedFile'
-        const expectedTargetConfig = {hostLanguage: 'hLang'}
-        const expectedHostFile = 'hostFile'
+        const annotatedFile = 'annotatedFile'
+        const hostProjectConfig = {language: 'hLang'}
+        const projectName = 'projectName'
+        const hostFile = 'hostFile'
         const LangHostFile = class {
-            static build(exportedFile, targetConfig) {
-                expect(exportedFile).toBe(expectedExportedFile)
-                expect(targetConfig).toBe(expectedTargetConfig)
-                return expectedHostFile
+            static build(actualAnnotatedFile, actualHostProjectConfig, actualProjectName) {
+                expect(actualAnnotatedFile).toBe(annotatedFile)
+                expect(actualHostProjectConfig).toBe(hostProjectConfig)
+                expect(actualProjectName).toBe(projectName)
+                return hostFile
             }
         }
         t.mockAndRequireFakeModule('filesystem/hLangHostFile', 'hLangHostFile', LangHostFile)
 
-        const hostFile = HostFile.build(expectedExportedFile, expectedTargetConfig)
-        expect(hostFile).toBe(expectedHostFile)
+        const actualHostFile = HostFile.build(annotatedFile, hostProjectConfig, projectName)
+        expect(actualHostFile).toBe(hostFile)
     })
 
 })

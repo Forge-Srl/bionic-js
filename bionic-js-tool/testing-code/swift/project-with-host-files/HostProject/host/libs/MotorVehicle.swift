@@ -3,47 +3,47 @@ import Bjs
 
 class MotorVehicle: Vehicle {
     
+    convenience init(_ weight: Int?, _ seats: Int?, _ maxSpeed: Int?, _ fuelType: FuelType?, _ maxRange: Double?, _ currentRange: Double?) {
+        self.init(MotorVehicle.bjsClass, [MotorVehicle.bjs.putPrimitive(weight), MotorVehicle.bjs.putPrimitive(seats), MotorVehicle.bjs.putPrimitive(maxSpeed), MotorVehicle.bjs.putObj(fuelType), MotorVehicle.bjs.putPrimitive(maxRange), MotorVehicle.bjs.putPrimitive(currentRange)])
+    }
+    
     var isOnReserve:Bool? {
         get {
-            return Bjs.get.getBool(bjsGetProperty("isOnReserve"))
+            return MotorVehicle.bjs.getBool(bjsGetProperty("isOnReserve"))
         }
     }
     
     var engine:Engine? {
         get {
-            return Bjs.get.getWrapped(bjsGetProperty("engine"), Engine.self)
+            return MotorVehicle.bjs.getWrapped(bjsGetProperty("engine"), Engine.self)
         }
     }
     
     var rawEngine:Engine? {
         get {
-            return Bjs.get.getNative(bjsGetProperty("rawEngine"), Engine.self)
+            return MotorVehicle.bjs.getNative(bjsGetProperty("rawEngine"), Engine.self)
         }
     }
     
     var delegate:AppDelegate? {
         get {
-            return Bjs.get.getNative(bjsGetProperty("delegate"), AppDelegate.self)
+            return MotorVehicle.bjs.getNative(bjsGetProperty("delegate"), AppDelegate.self)
         }
     }
     
     func refuel() -> Double? {
-        return Bjs.get.getFloat(bjsCall("refuel"))
+        return MotorVehicle.bjs.getFloat(bjsCall("refuel"))
     }
     
     func watchEngine(_ observer: (() -> String?)?) {
         let nativeFunc_bjs0 = observer
         let jsFunc_bjs1: @convention(block) () -> JSValue = {
-            return Bjs.get.putPrimitive(nativeFunc_bjs0!())
+            return MotorVehicle.bjs.putPrimitive(nativeFunc_bjs0!())
         }
-        _ = bjsCall("watchEngine", Bjs.get.putFunc(nativeFunc_bjs0, jsFunc_bjs1))
+        _ = bjsCall("watchEngine", MotorVehicle.bjs.putFunc(nativeFunc_bjs0, jsFunc_bjs1))
     }
     
-    override class func bjsFactory(_ jsObject: JSValue) -> MotorVehicle {
-        return MotorVehicle(jsObject)
-    }
-    
-    override class var bjsModulePath: String {
-        return "/libs/MotorVehicle"
-    }
+    private static var _bjsLocator: BjsLocator = BjsLocator("BeautifulVehicles", "MotorVehicle")
+    override class var bjsLocator: BjsLocator { _bjsLocator }
+    override class func bjsFactory(_ jsObject: JSValue) -> MotorVehicle { MotorVehicle(jsObject) }
 }

@@ -1,30 +1,18 @@
-const hostFilePaths = [
-    'BjsEnvironment.swift', 'FerrariCalifornia.swift', 'TeslaRoadster.swift',
-    'libs/MotorVehicle.swift', 'libs/Vehicle.swift',
-    'native/BaseEngineWrapper.swift', 'native/EngineWrapper.swift']
+const hostFiles = [
+    {path: 'Bicycle.swift', bundles: ['Vehicles']},
+    {path: 'BjsMotorVehicles/BjsBeautifulVehicles.swift', bundles: ['MotorVehicles']},
+    {path: 'BjsVehicles/BjsBeautifulVehicles.swift', bundles: ['Vehicles']},
+    {path: 'FerrariCalifornia.swift', bundles: ['MotorVehicles']},
+    {path: 'TeslaRoadster.swift', bundles: ['MotorVehicles']},
+    {path: 'libs/FuelType.swift', bundles: ['MotorVehicles']},
+    {path: 'libs/MotorVehicle.swift', bundles: ['MotorVehicles']},
+    {path: 'libs/Vehicle.swift', bundles: ['MotorVehicles', 'Vehicles']},
+    {path: 'native/BaseEngineBjsWrapper.swift', bundles: ['MotorVehicles']},
+    {path: 'native/EngineBjsWrapper.swift', bundles: ['MotorVehicles']}]
 
-const packageFilePaths = [
-    'BjsNativeObject.js', 'FerrariCalifornia.js', 'GannaBicycle.js', 'package.json', 'TeslaRoadster.js',
-    'libs/MotorVehicle.js', 'libs/Vehicle.js',
-    'native/BaseEngine.js', 'native/Engine.js', 'native/fuelCosts.js',
-    'node_modules/module-a/ModuleA.js', 'node_modules/module-a/package.json',
-    'node_modules/module-b/ModuleB.js', 'node_modules/module-b/package.json',
-    'node_modules/module-c/ModuleC.js', 'node_modules/module-c/package.json',
-    'node_modules/module-c/node_modules/module-b/ModuleB.js', 'node_modules/module-c/node_modules/module-b/package.json',
+const bundleFiles = [
+    {path: 'BjsMotorVehicles/MotorVehicles.bjs.bundle/MotorVehicles.js', bundle: 'MotorVehicles'},
+    {path: 'BjsVehicles/Vehicles.bjs.bundle/Vehicles.js', bundle: 'Vehicles'},
 ]
 
-const forbiddenPackageFilePaths = [
-    'dependencies.txt', 'license.txt',
-    'node_modules/module-a/node_modules/module-c/ModuleC.js', 'node_modules/module-a/node_modules/module-c/package.json',
-    'node_modules/module-c/node_modules/module-d/ModuleD.js', 'node_modules/module-c/node_modules/module-d/package.json',
-    'tests/guest1-test.js',
-]
-
-const virtualFilePaths = [
-    'dependencies.txt', 'license.txt',
-    'node_modules/module-a/node_modules/module-c/ModuleC.js', 'node_modules/module-a/node_modules/module-c/package.json',
-    'node_modules/module-c/node_modules/module-d/ModuleD.js', 'node_modules/module-c/node_modules/module-d/package.json',
-    'tests/guest1-test.js',
-]
-
-module.exports = {hostFilePaths, packageFilePaths, forbiddenPackageFilePaths}
+module.exports = {hostFiles, bundleFiles}

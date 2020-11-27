@@ -25,20 +25,16 @@ describe('SwiftHostConstructorGenerator', () => {
 
         expectedFooter = [
             '    ',
-            '    class func bjsFactory(_ jsObject: JSValue) -> Class1 {',
-            '        return Class1(jsObject)',
-            '    }',
-            '    ',
-            '    override class var bjsModulePath: String {',
-            '        return "/module/path"',
-            '    }',
+            '    private static var _bjsLocator: BjsLocator = BjsLocator("Project1", "Class1")',
+            '    override class var bjsLocator: BjsLocator { _bjsLocator }',
+            '    class func bjsFactory(_ jsObject: JSValue) -> Class1 { Class1(jsObject) }',
             '}']
     })
 
     function getCode(constructorParameters) {
         const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)],
             [], [], null, false, 'module/path')
-        return class1.generator.forHosting().swift.getSource()
+        return class1.generator.forHosting("Project1").swift.getSource()
     }
 
     function newParam(type, name) {
@@ -64,7 +60,7 @@ describe('SwiftHostConstructorGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             '    convenience init(_ intParam: Int?) {',
-            '        self.init(Class1.bjsClass, [Bjs.get.putPrimitive(intParam)])',
+            '        self.init(Class1.bjsClass, [Class1.bjs.putPrimitive(intParam)])',
             '    }',
             ...expectedFooter)
     })
@@ -78,7 +74,7 @@ describe('SwiftHostConstructorGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             '    convenience init(_ boolParam: Bool?, _ intParam: Int?) {',
-            '        self.init(Class1.bjsClass, [Bjs.get.putPrimitive(boolParam), Bjs.get.putPrimitive(intParam)])',
+            '        self.init(Class1.bjsClass, [Class1.bjs.putPrimitive(boolParam), Class1.bjs.putPrimitive(intParam)])',
             '    }',
             ...expectedFooter)
     })
@@ -95,7 +91,7 @@ describe('SwiftHostConstructorGenerator', () => {
             '        let jsFunc_bjs1: @convention(block) () -> Void = {',
             '            nativeFunc_bjs0!()',
             '        }',
-            '        self.init(Class1.bjsClass, [Bjs.get.putFunc(nativeFunc_bjs0, jsFunc_bjs1)])',
+            '        self.init(Class1.bjsClass, [Class1.bjs.putFunc(nativeFunc_bjs0, jsFunc_bjs1)])',
             '    }',
             ...expectedFooter)
     })
@@ -117,15 +113,15 @@ describe('SwiftHostConstructorGenerator', () => {
             '        }',
             '        let nativeFunc_bjs2 = intNativeFunc',
             '        let jsFunc_bjs3: @convention(block) () -> JSValue = {',
-            '            return Bjs.get.putPrimitive(nativeFunc_bjs2!())',
+            '            return Class1.bjs.putPrimitive(nativeFunc_bjs2!())',
             '        }',
             '        let nativeFunc_bjs4 = arrayNativeFunc',
             '        let jsFunc_bjs5: @convention(block) () -> JSValue = {',
-            '            return Bjs.get.putArray(nativeFunc_bjs4!(), {',
-            '                return Bjs.get.putPrimitive($0)',
+            '            return Class1.bjs.putArray(nativeFunc_bjs4!(), {',
+            '                return Class1.bjs.putPrimitive($0)',
             '            })',
             '        }',
-            '        self.init(Class1.bjsClass, [Bjs.get.putFunc(nativeFunc_bjs0, jsFunc_bjs1), Bjs.get.putFunc(nativeFunc_bjs2, jsFunc_bjs3), Bjs.get.putFunc(nativeFunc_bjs4, jsFunc_bjs5), Bjs.get.putPrimitive(intPar)])',
+            '        self.init(Class1.bjsClass, [Class1.bjs.putFunc(nativeFunc_bjs0, jsFunc_bjs1), Class1.bjs.putFunc(nativeFunc_bjs2, jsFunc_bjs3), Class1.bjs.putFunc(nativeFunc_bjs4, jsFunc_bjs5), Class1.bjs.putPrimitive(intPar)])',
             '    }',
             ...expectedFooter)
     })
@@ -147,11 +143,11 @@ describe('SwiftHostConstructorGenerator', () => {
             '                let jsFunc_bjs5: @convention(block) () -> Void = {',
             '                    nativeFunc_bjs4!()',
             '                }',
-            '                return Bjs.get.putFunc(nativeFunc_bjs4, jsFunc_bjs5)',
+            '                return Class1.bjs.putFunc(nativeFunc_bjs4, jsFunc_bjs5)',
             '            }',
-            '            return Bjs.get.putFunc(nativeFunc_bjs2, jsFunc_bjs3)',
+            '            return Class1.bjs.putFunc(nativeFunc_bjs2, jsFunc_bjs3)',
             '        }',
-            '        self.init(Class1.bjsClass, [Bjs.get.putFunc(nativeFunc_bjs0, jsFunc_bjs1)])',
+            '        self.init(Class1.bjsClass, [Class1.bjs.putFunc(nativeFunc_bjs0, jsFunc_bjs1)])',
             '    }',
             ...expectedFooter)
     })
@@ -169,15 +165,15 @@ describe('SwiftHostConstructorGenerator', () => {
             '        let nativeFunc_bjs0 = func1TakingFunc2',
             '        let jsFunc_bjs1: @convention(block) (JSValue) -> Void = {',
             '            let jsFunc_bjs2 = $0',
-            '            nativeFunc_bjs0!(Bjs.get.getFunc(jsFunc_bjs2) {',
+            '            nativeFunc_bjs0!(Class1.bjs.getFunc(jsFunc_bjs2) {',
             '                let nativeFunc_bjs3 = $0',
             '                let jsFunc_bjs4: @convention(block) () -> Void = {',
             '                    nativeFunc_bjs3!()',
             '                }',
-            '                _ = Bjs.get.funcCall(jsFunc_bjs2, Bjs.get.putFunc(nativeFunc_bjs3, jsFunc_bjs4))',
+            '                _ = Class1.bjs.funcCall(jsFunc_bjs2, Class1.bjs.putFunc(nativeFunc_bjs3, jsFunc_bjs4))',
             '            })',
             '        }',
-            '        self.init(Class1.bjsClass, [Bjs.get.putFunc(nativeFunc_bjs0, jsFunc_bjs1)])',
+            '        self.init(Class1.bjsClass, [Class1.bjs.putFunc(nativeFunc_bjs0, jsFunc_bjs1)])',
             '    }',
             ...expectedFooter)
     })
@@ -193,23 +189,23 @@ describe('SwiftHostConstructorGenerator', () => {
         t.expectCode(code,
             ...expectedHeader,
             '    convenience init(_ arrayOfLambda1: [((_ arrayOfVoidLambdas: [(() -> Void)?]?) -> [(() -> Void)?]?)?]?) {',
-            '        self.init(Class1.bjsClass, [Bjs.get.putArray(arrayOfLambda1, {',
+            '        self.init(Class1.bjsClass, [Class1.bjs.putArray(arrayOfLambda1, {',
             '            let nativeFunc_bjs0 = $0',
             '            let jsFunc_bjs1: @convention(block) (JSValue) -> JSValue = {',
-            '                return Bjs.get.putArray(nativeFunc_bjs0!(Bjs.get.getArray($0, {',
+            '                return Class1.bjs.putArray(nativeFunc_bjs0!(Class1.bjs.getArray($0, {',
             '                    let jsFunc_bjs2 = $0',
-            '                    return Bjs.get.getFunc(jsFunc_bjs2) {',
-            '                        _ = Bjs.get.funcCall(jsFunc_bjs2)',
+            '                    return Class1.bjs.getFunc(jsFunc_bjs2) {',
+            '                        _ = Class1.bjs.funcCall(jsFunc_bjs2)',
             '                    }',
             '                })), {',
             '                    let nativeFunc_bjs3 = $0',
             '                    let jsFunc_bjs4: @convention(block) () -> Void = {',
             '                        nativeFunc_bjs3!()',
             '                    }',
-            '                    return Bjs.get.putFunc(nativeFunc_bjs3, jsFunc_bjs4)',
+            '                    return Class1.bjs.putFunc(nativeFunc_bjs3, jsFunc_bjs4)',
             '                })',
             '            }',
-            '            return Bjs.get.putFunc(nativeFunc_bjs0, jsFunc_bjs1)',
+            '            return Class1.bjs.putFunc(nativeFunc_bjs0, jsFunc_bjs1)',
             '        })])',
             '    }',
             ...expectedFooter)

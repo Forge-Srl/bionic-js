@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C56F032A2541E91A00B221DA /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A22234A1A0E002FD95C /* Vehicle.swift */; };
+		C56F03432541ECA200B221DA /* BjsBeautifulVehicles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56F03412541ECA200B221DA /* BjsBeautifulVehicles.swift */; };
+		C56F041A2542D85100B221DA /* Bjs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5B80A3F234A1B19002FD95C /* Bjs.framework */; };
+		C56F04632542D8AB00B221DA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5966C922349378B00EE670C /* SceneDelegate.swift */; };
+		C56F047E2542D91A00B221DA /* BjsBeautifulVehicles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56F03412541ECA200B221DA /* BjsBeautifulVehicles.swift */; };
+		C56F04832542D92000B221DA /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A22234A1A0E002FD95C /* Vehicle.swift */; };
+		C56F04972546A8FE00B221DA /* MotorVehicles.bjs.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C56F04962546A8FE00B221DA /* MotorVehicles.bjs.bundle */; };
+		C56F049D2546A90700B221DA /* Vehicles.bjs.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C56F049C2546A90700B221DA /* Vehicles.bjs.bundle */; };
+		C56F04A62546A94B00B221DA /* Vehicles.bjs.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C56F049C2546A90700B221DA /* Vehicles.bjs.bundle */; };
 		C5966C912349378B00EE670C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5966C902349378B00EE670C /* AppDelegate.swift */; };
 		C5966C932349378B00EE670C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5966C922349378B00EE670C /* SceneDelegate.swift */; };
 		C5966C952349378B00EE670C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5966C942349378B00EE670C /* ContentView.swift */; };
@@ -21,32 +30,29 @@
 		C5B80A062349FF10002FD95C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5966C9B2349378F00EE670C /* LaunchScreen.storyboard */; };
 		C5B80A082349FF10002FD95C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5966C962349378F00EE670C /* Assets.xcassets */; };
 		C5B80A0E2349FF52002FD95C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5966C902349378B00EE670C /* AppDelegate.swift */; };
-		C5B80A18234A1A0E002FD95C /* TeslaRoadster.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A16234A1A0E002FD95C /* TeslaRoadster.swift */; };
-		C5B80A23234A1A0E002FD95C /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A22234A1A0E002FD95C /* Vehicle.swift */; };
-		C5B80A24234A1A0E002FD95C /* BjsEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A15234A1A0E002FD95C /* BjsEnvironment.swift */; };
-		C5B80A25234A1A0E002FD95C /* BjsEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A15234A1A0E002FD95C /* BjsEnvironment.swift */; };
-		C5B80A26234A1A0E002FD95C /* MotorVehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A17234A1A0E002FD95C /* MotorVehicle.swift */; };
+		C5B80A25234A1A0E002FD95C /* BjsBeautifulVehicles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A15234A1A0E002FD95C /* BjsBeautifulVehicles.swift */; };
 		C5B80A27234A1A0E002FD95C /* MotorVehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A17234A1A0E002FD95C /* MotorVehicle.swift */; };
 		C5B80A28234A1A0E002FD95C /* TeslaRoadster.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A16234A1A0E002FD95C /* TeslaRoadster.swift */; };
-		C5B80A2A234A1A0E002FD95C /* FerrariCalifornia.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A19234A1A0E002FD95C /* FerrariCalifornia.swift */; };
 		C5B80A2B234A1A0E002FD95C /* FerrariCalifornia.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A19234A1A0E002FD95C /* FerrariCalifornia.swift */; };
 		C5B80A36234A1A0E002FD95C /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A22234A1A0E002FD95C /* Vehicle.swift */; };
-		C5B80A3C234A1A8B002FD95C /* package.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C5B80A3B234A1A8B002FD95C /* package.bundle */; };
-		C5B80A3D234A1A8B002FD95C /* package.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C5B80A3B234A1A8B002FD95C /* package.bundle */; };
 		C5B80A40234A1B19002FD95C /* Bjs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5B80A3F234A1B19002FD95C /* Bjs.framework */; };
 		C5B80A41234A1B19002FD95C /* Bjs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5B80A3F234A1B19002FD95C /* Bjs.framework */; };
-		C5B80A43234A1BED002FD95C /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A42234A1BED002FD95C /* Engine.swift */; };
 		C5B80A44234A1BED002FD95C /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A42234A1BED002FD95C /* Engine.swift */; };
-		C5E300F2251A4C6F009410C2 /* BaseEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E300B6251A27DF009410C2 /* BaseEngine.swift */; };
+		C5E1713325713D1C00DE8C57 /* Bicycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E1713225713D1C00DE8C57 /* Bicycle.swift */; };
+		C5E1713825713D2D00DE8C57 /* Bicycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E1713225713D1C00DE8C57 /* Bicycle.swift */; };
+		C5E1713E25713D5A00DE8C57 /* FuelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E1713D25713D5A00DE8C57 /* FuelType.swift */; };
+		C5E300C9251A3197009410C2 /* EngineBjsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A38234A1A8B002FD95C /* EngineBjsWrapper.swift */; };
+		C5E300DB251A319B009410C2 /* BaseEngineBjsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E300B1251A2683009410C2 /* BaseEngineBjsWrapper.swift */; };
 		C5E300F3251A4C6F009410C2 /* BaseEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E300B6251A27DF009410C2 /* BaseEngine.swift */; };
-		C5E300C9251A3197009410C2 /* EngineWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A38234A1A8B002FD95C /* EngineWrapper.swift */; };
-		C5E300CD251A3197009410C2 /* EngineWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B80A38234A1A8B002FD95C /* EngineWrapper.swift */; };
-		C5E300D7251A319A009410C2 /* BaseEngineWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E300B1251A2683009410C2 /* BaseEngineWrapper.swift */; };
-		C5E300DB251A319B009410C2 /* BaseEngineWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E300B1251A2683009410C2 /* BaseEngineWrapper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		C5966C8D2349378B00EE670C /* HostProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C54D4B92254B279000597281 /* UnusedTarget.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = UnusedTarget.plist; sourceTree = "<group>"; };
+		C56F02EE2541E7AF00B221DA /* UnusedTarget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnusedTarget.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C56F03412541ECA200B221DA /* BjsBeautifulVehicles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsBeautifulVehicles.swift; sourceTree = "<group>"; };
+		C56F04962546A8FE00B221DA /* MotorVehicles.bjs.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MotorVehicles.bjs.bundle; sourceTree = "<group>"; };
+		C56F049C2546A90700B221DA /* Vehicles.bjs.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Vehicles.bjs.bundle; sourceTree = "<group>"; };
+		C5966C8D2349378B00EE670C /* BicycleTarget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BicycleTarget.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5966C902349378B00EE670C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C5966C922349378B00EE670C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = socecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		C5966C942349378B00EE670C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -54,23 +60,31 @@
 		C5966C9C2349378F00EE670C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C5B809FD2349FE28002FD95C /* HostProjectTarget2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostProjectTarget2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5B80A0C2349FF10002FD95C /* HostProjectTarget3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostProjectTarget3.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C5B80A15234A1A0E002FD95C /* BjsEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsEnvironment.swift; sourceTree = "<group>"; };
+		C5B80A15234A1A0E002FD95C /* BjsBeautifulVehicles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsBeautifulVehicles.swift; sourceTree = "<group>"; };
 		C5B80A16234A1A0E002FD95C /* TeslaRoadster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeslaRoadster.swift; sourceTree = "<group>"; };
 		C5B80A17234A1A0E002FD95C /* MotorVehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotorVehicle.swift; sourceTree = "<group>"; };
 		C5B80A19234A1A0E002FD95C /* FerrariCalifornia.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FerrariCalifornia.swift; sourceTree = "<group>"; };
 		C5B80A22234A1A0E002FD95C /* Vehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vehicle.swift; sourceTree = "<group>"; };
-		C5B80A38234A1A8B002FD95C /* EngineWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineWrapper.swift; sourceTree = "<group>"; };
-		C5B80A3B234A1A8B002FD95C /* package.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = package.bundle; sourceTree = "<group>"; };
+		C5B80A38234A1A8B002FD95C /* EngineBjsWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineBjsWrapper.swift; sourceTree = "<group>"; };
 		C5B80A3F234A1B19002FD95C /* Bjs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bjs.framework; sourceTree = "<group>"; };
 		C5B80A42234A1BED002FD95C /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
-		C5B80A46234A860A002FD95C /* target1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = target1.plist; sourceTree = "<group>"; };
-		C5B80A48234A8612002FD95C /* target2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = target2.plist; sourceTree = "<group>"; };
-		C5B80A4A234A861C002FD95C /* target3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = target3.plist; sourceTree = "<group>"; };
-		C5E300B1251A2683009410C2 /* BaseEngineWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseEngineWrapper.swift; sourceTree = "<group>"; };
+		C5B80A46234A860A002FD95C /* BicycleTarget.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BicycleTarget.plist; sourceTree = "<group>"; };
+		C5B80A48234A8612002FD95C /* MotorVehiclesTarget.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MotorVehiclesTarget.plist; sourceTree = "<group>"; };
+		C5B80A4A234A861C002FD95C /* VehiclesTarget.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = VehiclesTarget.plist; sourceTree = "<group>"; };
+		C5E1713225713D1C00DE8C57 /* Bicycle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bicycle.swift; sourceTree = "<group>"; };
+		C5E1713D25713D5A00DE8C57 /* FuelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelType.swift; sourceTree = "<group>"; };
+		C5E300B1251A2683009410C2 /* BaseEngineBjsWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseEngineBjsWrapper.swift; sourceTree = "<group>"; };
 		C5E300B6251A27DF009410C2 /* BaseEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseEngine.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C56F02E72541E7AF00B221DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C5966C8A2349378B00EE670C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -91,12 +105,31 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C56F041A2542D85100B221DA /* Bjs.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C502FCE8255BFD12007DCF40 /* BjsVehicles */ = {
+			isa = PBXGroup;
+			children = (
+				C56F03412541ECA200B221DA /* BjsBeautifulVehicles.swift */,
+				C56F049C2546A90700B221DA /* Vehicles.bjs.bundle */,
+			);
+			path = BjsVehicles;
+			sourceTree = "<group>";
+		};
+		C502FCE9255BFD1D007DCF40 /* BjsMotorVehicles */ = {
+			isa = PBXGroup;
+			children = (
+				C5B80A15234A1A0E002FD95C /* BjsBeautifulVehicles.swift */,
+				C56F04962546A8FE00B221DA /* MotorVehicles.bjs.bundle */,
+			);
+			path = BjsMotorVehicles;
+			sourceTree = "<group>";
+		};
 		C5966C842349378B00EE670C = {
 			isa = PBXGroup;
 			children = (
@@ -108,9 +141,10 @@
 		C5966C8E2349378B00EE670C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C5966C8D2349378B00EE670C /* HostProject.app */,
+				C5966C8D2349378B00EE670C /* BicycleTarget.app */,
 				C5B809FD2349FE28002FD95C /* HostProjectTarget2.app */,
 				C5B80A0C2349FF10002FD95C /* HostProjectTarget3.app */,
+				C56F02EE2541E7AF00B221DA /* UnusedTarget.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -126,9 +160,10 @@
 				C5966C922349378B00EE670C /* SceneDelegate.swift */,
 				C5966C942349378B00EE670C /* ContentView.swift */,
 				C5966C962349378F00EE670C /* Assets.xcassets */,
-				C5B80A46234A860A002FD95C /* target1.plist */,
-				C5B80A48234A8612002FD95C /* target2.plist */,
-				C5B80A4A234A861C002FD95C /* target3.plist */,
+				C5B80A46234A860A002FD95C /* BicycleTarget.plist */,
+				C5B80A48234A8612002FD95C /* MotorVehiclesTarget.plist */,
+				C54D4B92254B279000597281 /* UnusedTarget.plist */,
+				C5B80A4A234A861C002FD95C /* VehiclesTarget.plist */,
 				C5966C9B2349378F00EE670C /* LaunchScreen.storyboard */,
 			);
 			path = HostProject;
@@ -146,12 +181,13 @@
 		C5B80A14234A19DB002FD95C /* host */ = {
 			isa = PBXGroup;
 			children = (
-				C5B80A15234A1A0E002FD95C /* BjsEnvironment.swift */,
+				C5E1713225713D1C00DE8C57 /* Bicycle.swift */,
 				C5B80A19234A1A0E002FD95C /* FerrariCalifornia.swift */,
 				C5B80A16234A1A0E002FD95C /* TeslaRoadster.swift */,
 				C5B80A29234A1A0E002FD95C /* libs */,
 				C5B80A37234A1A0E002FD95C /* native */,
-				C5B80A3B234A1A8B002FD95C /* package.bundle */,
+				C502FCE9255BFD1D007DCF40 /* BjsMotorVehicles */,
+				C502FCE8255BFD12007DCF40 /* BjsVehicles */,
 			);
 			path = host;
 			sourceTree = "<group>";
@@ -159,6 +195,7 @@
 		C5B80A29234A1A0E002FD95C /* libs */ = {
 			isa = PBXGroup;
 			children = (
+				C5E1713D25713D5A00DE8C57 /* FuelType.swift */,
 				C5B80A17234A1A0E002FD95C /* MotorVehicle.swift */,
 				C5B80A22234A1A0E002FD95C /* Vehicle.swift */,
 			);
@@ -168,8 +205,8 @@
 		C5B80A37234A1A0E002FD95C /* native */ = {
 			isa = PBXGroup;
 			children = (
-				C5E300B1251A2683009410C2 /* BaseEngineWrapper.swift */,
-				C5B80A38234A1A8B002FD95C /* EngineWrapper.swift */,
+				C5E300B1251A2683009410C2 /* BaseEngineBjsWrapper.swift */,
+				C5B80A38234A1A8B002FD95C /* EngineBjsWrapper.swift */,
 			);
 			path = native;
 			sourceTree = "<group>";
@@ -209,9 +246,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C5966C8C2349378B00EE670C /* HostProject */ = {
+		C56F02E32541E7AF00B221DA /* UnusedTarget */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C5966CA12349378F00EE670C /* Build configuration list for PBXNativeTarget "HostProject" */;
+			buildConfigurationList = C56F02EB2541E7AF00B221DA /* Build configuration list for PBXNativeTarget "UnusedTarget" */;
+			buildPhases = (
+				C56F02E42541E7AF00B221DA /* Sources */,
+				C56F02E72541E7AF00B221DA /* Frameworks */,
+				C56F02E82541E7AF00B221DA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UnusedTarget;
+			productName = HostProject;
+			productReference = C56F02EE2541E7AF00B221DA /* UnusedTarget.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C5966C8C2349378B00EE670C /* BicycleTarget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C5966CA12349378F00EE670C /* Build configuration list for PBXNativeTarget "BicycleTarget" */;
 			buildPhases = (
 				C5966C892349378B00EE670C /* Sources */,
 				C5966C8A2349378B00EE670C /* Frameworks */,
@@ -221,14 +275,14 @@
 			);
 			dependencies = (
 			);
-			name = HostProject;
+			name = BicycleTarget;
 			productName = HostProject;
-			productReference = C5966C8D2349378B00EE670C /* HostProject.app */;
+			productReference = C5966C8D2349378B00EE670C /* BicycleTarget.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C5B809F02349FE28002FD95C /* HostProjectTarget2 */ = {
+		C5B809F02349FE28002FD95C /* MotorVehiclesTarget */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C5B809FA2349FE28002FD95C /* Build configuration list for PBXNativeTarget "HostProjectTarget2" */;
+			buildConfigurationList = C5B809FA2349FE28002FD95C /* Build configuration list for PBXNativeTarget "MotorVehiclesTarget" */;
 			buildPhases = (
 				C5B809F12349FE28002FD95C /* Sources */,
 				C5B809F52349FE28002FD95C /* Frameworks */,
@@ -238,14 +292,14 @@
 			);
 			dependencies = (
 			);
-			name = HostProjectTarget2;
+			name = MotorVehiclesTarget;
 			productName = HostProject;
 			productReference = C5B809FD2349FE28002FD95C /* HostProjectTarget2.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C5B809FF2349FF10002FD95C /* HostProjectTarget3 */ = {
+		C5B809FF2349FF10002FD95C /* VehiclesTarget */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C5B80A092349FF10002FD95C /* Build configuration list for PBXNativeTarget "HostProjectTarget3" */;
+			buildConfigurationList = C5B80A092349FF10002FD95C /* Build configuration list for PBXNativeTarget "VehiclesTarget" */;
 			buildPhases = (
 				C5B80A002349FF10002FD95C /* Sources */,
 				C5B80A042349FF10002FD95C /* Frameworks */,
@@ -255,7 +309,7 @@
 			);
 			dependencies = (
 			);
-			name = HostProjectTarget3;
+			name = VehiclesTarget;
 			productName = HostProject;
 			productReference = C5B80A0C2349FF10002FD95C /* HostProjectTarget3.app */;
 			productType = "com.apple.product-type.application";
@@ -267,7 +321,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1100;
-				LastUpgradeCheck = 1110;
+				LastUpgradeCheck = 1210;
 				ORGANIZATIONNAME = "Marco Vanetti";
 				TargetAttributes = {
 					C5966C8C2349378B00EE670C = {
@@ -288,21 +342,29 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C5966C8C2349378B00EE670C /* HostProject */,
-				C5B809F02349FE28002FD95C /* HostProjectTarget2 */,
-				C5B809FF2349FF10002FD95C /* HostProjectTarget3 */,
+				C5966C8C2349378B00EE670C /* BicycleTarget */,
+				C5B809F02349FE28002FD95C /* MotorVehiclesTarget */,
+				C5B809FF2349FF10002FD95C /* VehiclesTarget */,
+				C56F02E32541E7AF00B221DA /* UnusedTarget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		C56F02E82541E7AF00B221DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C5966C8B2349378B00EE670C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C56F04A62546A94B00B221DA /* Vehicles.bjs.bundle in Resources */,
 				C5966C9D2349378F00EE670C /* LaunchScreen.storyboard in Resources */,
 				C5966C972349378F00EE670C /* Assets.xcassets in Resources */,
-				C5B80A3C234A1A8B002FD95C /* package.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,8 +373,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5B809F72349FE28002FD95C /* LaunchScreen.storyboard in Resources */,
+				C56F04972546A8FE00B221DA /* MotorVehicles.bjs.bundle in Resources */,
 				C5B809F92349FE28002FD95C /* Assets.xcassets in Resources */,
-				C5B80A3D234A1A8B002FD95C /* package.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,28 +384,30 @@
 			files = (
 				C5B80A062349FF10002FD95C /* LaunchScreen.storyboard in Resources */,
 				C5B80A082349FF10002FD95C /* Assets.xcassets in Resources */,
+				C56F049D2546A90700B221DA /* Vehicles.bjs.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C56F02E42541E7AF00B221DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C5966C892349378B00EE670C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				C5966C912349378B00EE670C /* AppDelegate.swift in Sources */,
 				C5966C932349378B00EE670C /* SceneDelegate.swift in Sources */,
-				C5B80A43234A1BED002FD95C /* Engine.swift in Sources */,
-				C5E300F2251A4C6F009410C2 /* BaseEngine.swift in Sources */,
-				C5E300CD251A3197009410C2 /* EngineWrapper.swift in Sources */,
+				C56F047E2542D91A00B221DA /* BjsBeautifulVehicles.swift in Sources */,
+				C5E1713325713D1C00DE8C57 /* Bicycle.swift in Sources */,
+				C56F04832542D92000B221DA /* Vehicle.swift in Sources */,
 				C5966C952349378B00EE670C /* ContentView.swift in Sources */,
-				C5B80A24234A1A0E002FD95C /* BjsEnvironment.swift in Sources */,
-				C5B80A2A234A1A0E002FD95C /* FerrariCalifornia.swift in Sources */,
-				C5E300D7251A319A009410C2 /* BaseEngineWrapper.swift in Sources */,
-				C5B80A18234A1A0E002FD95C /* TeslaRoadster.swift in Sources */,
-				C5B80A26234A1A0E002FD95C /* MotorVehicle.swift in Sources */,
-				C5B80A23234A1A0E002FD95C /* Vehicle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,12 +420,13 @@
 				C5E300F3251A4C6F009410C2 /* BaseEngine.swift in Sources */,
 				C5B80A44234A1BED002FD95C /* Engine.swift in Sources */,
 				C5B809F42349FE28002FD95C /* ContentView.swift in Sources */,
-				C5E300C9251A3197009410C2 /* EngineWrapper.swift in Sources */,
-				C5B80A25234A1A0E002FD95C /* BjsEnvironment.swift in Sources */,
+				C5E300C9251A3197009410C2 /* EngineBjsWrapper.swift in Sources */,
+				C5B80A25234A1A0E002FD95C /* BjsBeautifulVehicles.swift in Sources */,
 				C5B80A2B234A1A0E002FD95C /* FerrariCalifornia.swift in Sources */,
-				C5E300DB251A319B009410C2 /* BaseEngineWrapper.swift in Sources */,
+				C5E300DB251A319B009410C2 /* BaseEngineBjsWrapper.swift in Sources */,
 				C5B80A28234A1A0E002FD95C /* TeslaRoadster.swift in Sources */,
 				C5B80A27234A1A0E002FD95C /* MotorVehicle.swift in Sources */,
+				C5E1713E25713D5A00DE8C57 /* FuelType.swift in Sources */,
 				C5B80A36234A1A0E002FD95C /* Vehicle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -370,7 +435,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C56F04632542D8AB00B221DA /* SceneDelegate.swift in Sources */,
 				C5B80A0E2349FF52002FD95C /* AppDelegate.swift in Sources */,
+				C56F03432541ECA200B221DA /* BjsBeautifulVehicles.swift in Sources */,
+				C5E1713825713D2D00DE8C57 /* Bicycle.swift in Sources */,
+				C56F032A2541E91A00B221DA /* Vehicle.swift in Sources */,
 				C5B80A032349FF10002FD95C /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -389,6 +458,42 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		C56F02EC2541E7AF00B221DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = HostProject/UnusedTarget.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = organization.HostProject;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C56F02ED2541E7AF00B221DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = HostProject/UnusedTarget.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = organization.HostProject;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		C5966C9F2349378F00EE670C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -415,6 +520,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -425,6 +531,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/HostProject";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -475,6 +582,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -485,6 +593,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/HostProject";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -509,12 +618,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/HostProject/frameworks",
-					"$(PROJECT_DIR)/HostProject",
-				);
-				INFOPLIST_FILE = HostProject/target1.plist;
+				INFOPLIST_FILE = HostProject/BicycleTarget.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -532,12 +636,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/HostProject/frameworks",
-					"$(PROJECT_DIR)/HostProject",
-				);
-				INFOPLIST_FILE = HostProject/target1.plist;
+				INFOPLIST_FILE = HostProject/BicycleTarget.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -555,12 +654,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/HostProject/frameworks",
-					"$(PROJECT_DIR)/HostProject",
-				);
-				INFOPLIST_FILE = HostProject/target2.plist;
+				INFOPLIST_FILE = HostProject/MotorVehiclesTarget.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -578,12 +672,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/HostProject/frameworks",
-					"$(PROJECT_DIR)/HostProject",
-				);
-				INFOPLIST_FILE = HostProject/target2.plist;
+				INFOPLIST_FILE = HostProject/MotorVehiclesTarget.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -601,7 +690,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = HostProject/target3.plist;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/HostProject",
+				);
+				INFOPLIST_FILE = HostProject/VehiclesTarget.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -619,7 +712,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = HostProject/target3.plist;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/HostProject",
+				);
+				INFOPLIST_FILE = HostProject/VehiclesTarget.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -634,6 +731,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C56F02EB2541E7AF00B221DA /* Build configuration list for PBXNativeTarget "UnusedTarget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C56F02EC2541E7AF00B221DA /* Debug */,
+				C56F02ED2541E7AF00B221DA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C5966C882349378B00EE670C /* Build configuration list for PBXProject "HostProject" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -643,7 +749,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C5966CA12349378F00EE670C /* Build configuration list for PBXNativeTarget "HostProject" */ = {
+		C5966CA12349378F00EE670C /* Build configuration list for PBXNativeTarget "BicycleTarget" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C5966CA22349378F00EE670C /* Debug */,
@@ -652,7 +758,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C5B809FA2349FE28002FD95C /* Build configuration list for PBXNativeTarget "HostProjectTarget2" */ = {
+		C5B809FA2349FE28002FD95C /* Build configuration list for PBXNativeTarget "MotorVehiclesTarget" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C5B809FB2349FE28002FD95C /* Debug */,
@@ -661,7 +767,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C5B80A092349FF10002FD95C /* Build configuration list for PBXNativeTarget "HostProjectTarget3" */ = {
+		C5B80A092349FF10002FD95C /* Build configuration list for PBXNativeTarget "VehiclesTarget" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C5B80A0A2349FF10002FD95C /* Debug */,

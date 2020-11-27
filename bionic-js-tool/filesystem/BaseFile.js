@@ -7,6 +7,16 @@ class BaseFile {
         Object.assign(this, {path: filePath, rootDirPath})
     }
 
+    get asFile() {
+        const {File} = require('./File')
+        return new File(this.path, this.rootDirPath)
+    }
+
+    get asDir() {
+        const {Directory} = require('./Directory')
+        return new Directory(this.path, this.rootDirPath)
+    }
+
     get dir() {
         const {Directory} = require('./Directory')
         return new Directory(path.parse(this.path).dir, this.rootDirPath)
@@ -44,6 +54,11 @@ class BaseFile {
         const dirPath = path.resolve(...dirPathSegments)
         const dirRelativePath = path.relative(dirPath, this.absolutePath)
         return dirRelativePath.match(/^\.\.[\/\\]/) === null
+    }
+
+    setRootDirPath(rootDirPath) {
+        this.rootDirPath = rootDirPath
+        return this
     }
 
     async exists() {

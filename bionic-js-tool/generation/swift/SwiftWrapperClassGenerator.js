@@ -4,9 +4,9 @@ const {CodeBlock} = require('../code/CodeBlock')
 
 class SwiftWrapperClassGenerator extends ClassGenerator {
 
-    constructor(schema, hostClassGenerator) {
+    constructor(schema, hostClassGenerator, projectName) {
         super(schema)
-        Object.assign(this, {hostClassGenerator})
+        Object.assign(this, {hostClassGenerator, projectName})
     }
 
     get constructors() {
@@ -28,15 +28,12 @@ class SwiftWrapperClassGenerator extends ClassGenerator {
     }
 
     getHeaderCode() {
-        const superclassName = this.schema.superclass ? this.schema.superclass.name : 'BjsNative'
+        const superclassName = this.schema.superclass ? `${this.schema.superclass.name}BjsWrapper` : 'BjsNativeWrapper'
         return CodeBlock.create()
             .append('import JavaScriptCore').newLine()
             .append('import Bjs').newLine()
             .newLine()
-            .append(`class ${this.schema.name}Wrapper: ${superclassName}Wrapper {`).newLineIndenting()
-            .newLine()
-            .append(`override class var name: String { return "${this.schema.name}" }`).newLine()
-            .append(`override class var wrapperPath: String { return "${this.schema.moduleLoadingPath}" }`).newLine()
+            .append(`class ${this.schema.name}BjsWrapper: ${superclassName} {`).newLineIndenting()
             .newLine()
     }
 
@@ -71,11 +68,14 @@ class SwiftWrapperClassGenerator extends ClassGenerator {
                     .newLine()
                     .append(classPartGenerator.getCode()),
             ))
-            .newLineDeindenting()
+            .newLine()
     }
 
     getFooterCode() {
-        const footerCode = CodeBlock.create()
+        const footerCode = CodeBlock.create().newLine()
+            .append(`private static var _bjsLocator: BjsLocator = BjsLocator("${this.projectName}", "${this.schema.name}")`)
+            .__.newLine()
+            .append(`override class var bjsLocator: BjsLocator { _bjsLocator }`).newLineDeindenting()
             .append('}')
 
         if (this.hostClassGenerator) {

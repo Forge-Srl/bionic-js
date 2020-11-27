@@ -9,30 +9,34 @@ describe('HostEnvironmentFile', () => {
     })
 
     test('constructor', () => {
-        const hostFile = new HostEnvironmentFile('path', 'hostDir', 'packageName', 'nativePackageFiles')
+        const hostFile = new HostEnvironmentFile('path', 'hostDir', 'bundleName', 'nativeFiles', 'projectName')
 
         expect(hostFile.path).toBe('path')
         expect(hostFile.rootDirPath).toBe('hostDir')
-        expect(hostFile.packageName).toBe('packageName')
-        expect(hostFile.nativePackageFiles).toBe('nativePackageFiles')
+        expect(hostFile.bundleName).toBe('bundleName')
+        expect(hostFile.nativeFiles).toBe('nativeFiles')
+        expect(hostFile.projectName).toBe('projectName')
 
     })
 
     test('build', () => {
-        const expectedNativePackageFiles = 'nativePackageFiles'
-        const expectedTargetConfig = {hostLanguage: 'hLang'}
-        const expectedHostFile = 'hostFile'
+        const nativeFiles = 'nativeFiles'
+        const bundleName = 'bundleName'
+        const hostProjectConfig = {language: 'hLang'}
+        const projectName = 'projectName'
+        const hostFile = 'hostFile'
         const LangHostFile = class {
-            static build(nativePackageFiles, targetConfig) {
-                expect(nativePackageFiles).toBe(expectedNativePackageFiles)
-                expect(targetConfig).toBe(expectedTargetConfig)
-                return expectedHostFile
+            static build(actualNativeFiles, actualBundleName, actualHostProjectConfig, actualProjectName) {
+                expect(actualNativeFiles).toBe(nativeFiles)
+                expect(actualBundleName).toBe(bundleName)
+                expect(actualHostProjectConfig).toBe(hostProjectConfig)
+                expect(actualProjectName).toBe(projectName)
+                return hostFile
             }
         }
         t.mockAndRequireFakeModule('filesystem/hLangHostEnvironmentFile', 'hLangHostEnvironmentFile', LangHostFile)
 
-        const hostFile = HostEnvironmentFile.build(expectedNativePackageFiles, expectedTargetConfig)
-        expect(hostFile).toBe(expectedHostFile)
+        const actualHostFile = HostEnvironmentFile.build(nativeFiles, bundleName, hostProjectConfig, projectName)
+        expect(actualHostFile).toBe(hostFile)
     })
-
 })

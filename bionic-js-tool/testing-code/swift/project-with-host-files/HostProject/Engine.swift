@@ -1,8 +1,14 @@
-class Engine: BaseEngine {
+import Bjs
 
-    var fuelType:String? {
+class Engine: BaseEngine {
+    
+    init(_ fuelType: FuelType?) {
+        
+    }
+    
+    var fuelType:FuelType? {
         get {
-            
+            return nil
         }
     }
 }
