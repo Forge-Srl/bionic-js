@@ -7,21 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C502FCDC255AEC5C007DCF40 /* BjsLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C502FCDB255AEC5C007DCF40 /* BjsLocator.swift */; };
+		C502FCE4255AFA55007DCF40 /* BjsLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C502FCDB255AEC5C007DCF40 /* BjsLocator.swift */; };
 		C537B18E20A1C8CC008CA398 /* BjsAnyObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C537B18D20A1C8CC008CA398 /* BjsAnyObject.swift */; };
 		C537B19020A1C906008CA398 /* BjsNativeObjectIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C537B18F20A1C906008CA398 /* BjsNativeObjectIdentifier.swift */; };
 		C559FB5A1FFEDBBC00E6DEDA /* BjsFileInfoTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB591FFEDBBC00E6DEDA /* BjsFileInfoTest.swift */; };
-		C559FB711FFEDD0F00E6DEDA /* BjsBootstrap.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C559FB651FFEDD0E00E6DEDA /* BjsBootstrap.bundle */; };
 		C559FB721FFEDD0F00E6DEDA /* BjsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB661FFEDD0E00E6DEDA /* BjsBundle.swift */; };
 		C559FB751FFEDD0F00E6DEDA /* BjsNativeWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB691FFEDD0E00E6DEDA /* BjsNativeWrapper.swift */; };
 		C559FB761FFEDD0F00E6DEDA /* BjsException.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6A1FFEDD0E00E6DEDA /* BjsException.swift */; };
 		C559FB771FFEDD0F00E6DEDA /* BjsNativeExports.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6B1FFEDD0E00E6DEDA /* BjsNativeExports.swift */; };
 		C559FB781FFEDD0F00E6DEDA /* Bjs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6C1FFEDD0E00E6DEDA /* Bjs.swift */; };
 		C559FB791FFEDD0F00E6DEDA /* BjsFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6D1FFEDD0E00E6DEDA /* BjsFileInfo.swift */; };
-		C559FB7A1FFEDD0F00E6DEDA /* BjsModules.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6E1FFEDD0F00E6DEDA /* BjsModules.swift */; };
 		C559FB7B1FFEDD0F00E6DEDA /* BjsContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6F1FFEDD0F00E6DEDA /* BjsContext.swift */; };
 		C559FB7C1FFEDD0F00E6DEDA /* BjsObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB701FFEDD0F00E6DEDA /* BjsObject.swift */; };
 		C57C8FFA20AC68C5007CFA3B /* BjsLibTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57C8FF920AC68C5007CFA3B /* BjsLibTest.swift */; };
-		C57C8FFD20AC6BA8007CFA3B /* BjsBootstrap.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C559FB651FFEDD0E00E6DEDA /* BjsBootstrap.bundle */; };
 		C57C8FFE20AC6BAC007CFA3B /* Bjs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6C1FFEDD0E00E6DEDA /* Bjs.swift */; };
 		C57C8FFF20AC6BAC007CFA3B /* BjsAnyObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C537B18D20A1C8CC008CA398 /* BjsAnyObject.swift */; };
 		C57C900020AC6BAC007CFA3B /* BjsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB661FFEDD0E00E6DEDA /* BjsBundle.swift */; };
@@ -29,7 +28,6 @@
 		C57C900220AC6BAC007CFA3B /* BjsContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6F1FFEDD0F00E6DEDA /* BjsContext.swift */; };
 		C57C900520AC6BAC007CFA3B /* BjsException.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6A1FFEDD0E00E6DEDA /* BjsException.swift */; };
 		C57C900620AC6BAC007CFA3B /* BjsFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6D1FFEDD0E00E6DEDA /* BjsFileInfo.swift */; };
-		C57C900720AC6BAC007CFA3B /* BjsModules.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6E1FFEDD0F00E6DEDA /* BjsModules.swift */; };
 		C57C900820AC6BAC007CFA3B /* BjsNativeExports.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB6B1FFEDD0E00E6DEDA /* BjsNativeExports.swift */; };
 		C57C900920AC6BAC007CFA3B /* BjsNativeWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C559FB691FFEDD0E00E6DEDA /* BjsNativeWrapper.swift */; };
 		C57C900A20AC6BAC007CFA3B /* BjsNativeObjectIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C537B18F20A1C906008CA398 /* BjsNativeObjectIdentifier.swift */; };
@@ -38,14 +36,18 @@
 		C587576B216140B800AA6221 /* ToyComponent1Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C587576A216140B800AA6221 /* ToyComponent1Wrapper.swift */; };
 		C587576D2161624500AA6221 /* UserOfToyComponent1.swift in Sources */ = {isa = PBXBuildFile; fileRef = C587576C2161624500AA6221 /* UserOfToyComponent1.swift */; };
 		C587576F216171AC00AA6221 /* ToyComponent1Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = C587576E216171AC00AA6221 /* ToyComponent1Test.swift */; };
+		C5986318255C2CB000DBCFA6 /* BjsProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5986317255C2CB000DBCFA6 /* BjsProject.swift */; };
+		C5986319255C2CB000DBCFA6 /* BjsProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5986317255C2CB000DBCFA6 /* BjsProject.swift */; };
+		C598631D255C988800DBCFA6 /* BjsTestProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C598631C255C988800DBCFA6 /* BjsTestProject.swift */; };
 		C5F993DE20B6A71400356DFD /* ToyClass1Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F993DC20B6A71400356DFD /* ToyClass1Test.swift */; };
 		C5F993DF20B6A71400356DFD /* ToyClass2Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F993DD20B6A71400356DFD /* ToyClass2Test.swift */; };
 		C5F993E620B6A8AC00356DFD /* ToyClass1.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F993E320B6A8AC00356DFD /* ToyClass1.swift */; };
 		C5F993E720B6A8AC00356DFD /* ToyClass2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F993E420B6A8AC00356DFD /* ToyClass2.swift */; };
-		C5F993E920B6EF5A00356DFD /* test.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C5F993E820B6EF5A00356DFD /* test.bundle */; };
+		C5F993E920B6EF5A00356DFD /* test.bjs.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C5F993E820B6EF5A00356DFD /* test.bjs.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C502FCDB255AEC5C007DCF40 /* BjsLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BjsLocator.swift; sourceTree = "<group>"; };
 		C537B18D20A1C8CC008CA398 /* BjsAnyObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BjsAnyObject.swift; sourceTree = "<group>"; };
 		C537B18F20A1C906008CA398 /* BjsNativeObjectIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BjsNativeObjectIdentifier.swift; sourceTree = "<group>"; };
 		C559FB4B1FFEDBBC00E6DEDA /* Bjs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bjs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -53,14 +55,12 @@
 		C559FB541FFEDBBC00E6DEDA /* BjsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BjsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C559FB591FFEDBBC00E6DEDA /* BjsFileInfoTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BjsFileInfoTest.swift; sourceTree = "<group>"; };
 		C559FB5B1FFEDBBC00E6DEDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C559FB651FFEDD0E00E6DEDA /* BjsBootstrap.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = BjsBootstrap.bundle; sourceTree = "<group>"; };
 		C559FB661FFEDD0E00E6DEDA /* BjsBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsBundle.swift; sourceTree = "<group>"; };
 		C559FB691FFEDD0E00E6DEDA /* BjsNativeWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsNativeWrapper.swift; sourceTree = "<group>"; };
 		C559FB6A1FFEDD0E00E6DEDA /* BjsException.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsException.swift; sourceTree = "<group>"; };
 		C559FB6B1FFEDD0E00E6DEDA /* BjsNativeExports.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsNativeExports.swift; sourceTree = "<group>"; };
 		C559FB6C1FFEDD0E00E6DEDA /* Bjs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bjs.swift; sourceTree = "<group>"; };
 		C559FB6D1FFEDD0E00E6DEDA /* BjsFileInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsFileInfo.swift; sourceTree = "<group>"; };
-		C559FB6E1FFEDD0F00E6DEDA /* BjsModules.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsModules.swift; sourceTree = "<group>"; };
 		C559FB6F1FFEDD0F00E6DEDA /* BjsContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsContext.swift; sourceTree = "<group>"; };
 		C559FB701FFEDD0F00E6DEDA /* BjsObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsObject.swift; sourceTree = "<group>"; };
 		C57C8FF920AC68C5007CFA3B /* BjsLibTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BjsLibTest.swift; sourceTree = "<group>"; };
@@ -69,11 +69,13 @@
 		C587576A216140B800AA6221 /* ToyComponent1Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyComponent1Wrapper.swift; sourceTree = "<group>"; };
 		C587576C2161624500AA6221 /* UserOfToyComponent1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserOfToyComponent1.swift; sourceTree = "<group>"; };
 		C587576E216171AC00AA6221 /* ToyComponent1Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyComponent1Test.swift; sourceTree = "<group>"; };
+		C5986317255C2CB000DBCFA6 /* BjsProject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BjsProject.swift; sourceTree = "<group>"; };
+		C598631C255C988800DBCFA6 /* BjsTestProject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BjsTestProject.swift; sourceTree = "<group>"; };
 		C5F993DC20B6A71400356DFD /* ToyClass1Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToyClass1Test.swift; sourceTree = "<group>"; };
 		C5F993DD20B6A71400356DFD /* ToyClass2Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToyClass2Test.swift; sourceTree = "<group>"; };
 		C5F993E320B6A8AC00356DFD /* ToyClass1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToyClass1.swift; sourceTree = "<group>"; };
 		C5F993E420B6A8AC00356DFD /* ToyClass2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToyClass2.swift; sourceTree = "<group>"; };
-		C5F993E820B6EF5A00356DFD /* test.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = test.bundle; sourceTree = "<group>"; };
+		C5F993E820B6EF5A00356DFD /* test.bjs.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = test.bjs.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,7 +129,6 @@
 		C559FB4D1FFEDBBC00E6DEDA /* Bjs */ = {
 			isa = PBXGroup;
 			children = (
-				C559FB651FFEDD0E00E6DEDA /* BjsBootstrap.bundle */,
 				C559FB6C1FFEDD0E00E6DEDA /* Bjs.swift */,
 				C537B18D20A1C8CC008CA398 /* BjsAnyObject.swift */,
 				C559FB661FFEDD0E00E6DEDA /* BjsBundle.swift */,
@@ -136,11 +137,12 @@
 				C559FB6A1FFEDD0E00E6DEDA /* BjsException.swift */,
 				C584E43421636C4B00A38028 /* BjsExport.swift */,
 				C559FB6D1FFEDD0E00E6DEDA /* BjsFileInfo.swift */,
-				C559FB6E1FFEDD0F00E6DEDA /* BjsModules.swift */,
+				C502FCDB255AEC5C007DCF40 /* BjsLocator.swift */,
 				C559FB6B1FFEDD0E00E6DEDA /* BjsNativeExports.swift */,
 				C537B18F20A1C906008CA398 /* BjsNativeObjectIdentifier.swift */,
 				C559FB691FFEDD0E00E6DEDA /* BjsNativeWrapper.swift */,
 				C559FB4F1FFEDBBC00E6DEDA /* Info.plist */,
+				C5986317255C2CB000DBCFA6 /* BjsProject.swift */,
 			);
 			path = Bjs;
 			sourceTree = "<group>";
@@ -151,18 +153,9 @@
 				C5103695225F065000732A17 /* Tests */,
 				C5875767216135F800AA6221 /* Components */,
 				C5F993E120B6A8AC00356DFD /* Bjs */,
-				C57D1A8F227994C000CEAFB1 /* BjsWrappers */,
 				C559FB5B1FFEDBBC00E6DEDA /* Info.plist */,
 			);
 			path = BjsTests;
-			sourceTree = "<group>";
-		};
-		C57D1A8F227994C000CEAFB1 /* BjsWrappers */ = {
-			isa = PBXGroup;
-			children = (
-				C587576A216140B800AA6221 /* ToyComponent1Wrapper.swift */,
-			);
-			path = BjsWrappers;
 			sourceTree = "<group>";
 		};
 		C5875767216135F800AA6221 /* Components */ = {
@@ -176,9 +169,11 @@
 		C5F993E120B6A8AC00356DFD /* Bjs */ = {
 			isa = PBXGroup;
 			children = (
-				C5F993E820B6EF5A00356DFD /* test.bundle */,
+				C5F993E820B6EF5A00356DFD /* test.bjs.bundle */,
 				C5F993E320B6A8AC00356DFD /* ToyClass1.swift */,
+				C598631C255C988800DBCFA6 /* BjsTestProject.swift */,
 				C5F993E420B6A8AC00356DFD /* ToyClass2.swift */,
+				C587576A216140B800AA6221 /* ToyComponent1Wrapper.swift */,
 				C587576C2161624500AA6221 /* UserOfToyComponent1.swift */,
 			);
 			path = Bjs;
@@ -239,7 +234,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1210;
 				ORGANIZATIONNAME = bionicjs.com;
 				TargetAttributes = {
 					C559FB4A1FFEDBBC00E6DEDA = {
@@ -259,6 +254,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = C559FB411FFEDBBC00E6DEDA;
 			productRefGroup = C559FB4C1FFEDBBC00E6DEDA /* Products */;
@@ -276,7 +272,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C559FB711FFEDD0F00E6DEDA /* BjsBootstrap.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,8 +279,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C57C8FFD20AC6BA8007CFA3B /* BjsBootstrap.bundle in Resources */,
-				C5F993E920B6EF5A00356DFD /* test.bundle in Resources */,
+				C5F993E920B6EF5A00356DFD /* test.bjs.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,15 +293,16 @@
 				C559FB781FFEDD0F00E6DEDA /* Bjs.swift in Sources */,
 				C559FB751FFEDD0F00E6DEDA /* BjsNativeWrapper.swift in Sources */,
 				C559FB7C1FFEDD0F00E6DEDA /* BjsObject.swift in Sources */,
+				C5986318255C2CB000DBCFA6 /* BjsProject.swift in Sources */,
 				C559FB771FFEDD0F00E6DEDA /* BjsNativeExports.swift in Sources */,
 				C559FB7B1FFEDD0F00E6DEDA /* BjsContext.swift in Sources */,
-				C559FB7A1FFEDD0F00E6DEDA /* BjsModules.swift in Sources */,
 				C559FB761FFEDD0F00E6DEDA /* BjsException.swift in Sources */,
 				C584E43521636C4B00A38028 /* BjsExport.swift in Sources */,
 				C559FB721FFEDD0F00E6DEDA /* BjsBundle.swift in Sources */,
 				C537B19020A1C906008CA398 /* BjsNativeObjectIdentifier.swift in Sources */,
 				C559FB791FFEDD0F00E6DEDA /* BjsFileInfo.swift in Sources */,
 				C537B18E20A1C8CC008CA398 /* BjsAnyObject.swift in Sources */,
+				C502FCDC255AEC5C007DCF40 /* BjsLocator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -320,8 +315,8 @@
 				C5F993DE20B6A71400356DFD /* ToyClass1Test.swift in Sources */,
 				C57C8FFA20AC68C5007CFA3B /* BjsLibTest.swift in Sources */,
 				C5F993E620B6A8AC00356DFD /* ToyClass1.swift in Sources */,
+				C598631D255C988800DBCFA6 /* BjsTestProject.swift in Sources */,
 				C5F993E720B6A8AC00356DFD /* ToyClass2.swift in Sources */,
-				C57C900720AC6BAC007CFA3B /* BjsModules.swift in Sources */,
 				C57C900020AC6BAC007CFA3B /* BjsBundle.swift in Sources */,
 				C587576B216140B800AA6221 /* ToyComponent1Wrapper.swift in Sources */,
 				C57C900120AC6BAC007CFA3B /* BjsObject.swift in Sources */,
@@ -331,6 +326,8 @@
 				C57C900A20AC6BAC007CFA3B /* BjsNativeObjectIdentifier.swift in Sources */,
 				C57C8FFE20AC6BAC007CFA3B /* Bjs.swift in Sources */,
 				C5F993DF20B6A71400356DFD /* ToyClass2Test.swift in Sources */,
+				C5986319255C2CB000DBCFA6 /* BjsProject.swift in Sources */,
+				C502FCE4255AFA55007DCF40 /* BjsLocator.swift in Sources */,
 				C57C900920AC6BAC007CFA3B /* BjsNativeWrapper.swift in Sources */,
 				C587576F216171AC00AA6221 /* ToyComponent1Test.swift in Sources */,
 				C587576D2161624500AA6221 /* UserOfToyComponent1.swift in Sources */,
@@ -367,6 +364,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -430,6 +428,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -474,7 +473,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Bjs/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bionicjs.Bjs;
@@ -498,7 +497,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Bjs/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bionicjs.Bjs;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";

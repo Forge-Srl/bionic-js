@@ -7,8 +7,8 @@ import JavaScriptCore
 
 open class BjsNativeWrapper {
     
-    open class var wrapperPath: String { return "" }
-    open class var name: String { return "" }
+    open class var bjsLocator: BjsLocator { BjsLocator() }
+    open class var bjs: Bjs { bjsLocator.get }
    
     class func bjsGetNativeFunctions(_ context: BjsContext) -> JSValue? {
         let nativeExports = context.createNativeExports()

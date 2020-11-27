@@ -9,7 +9,6 @@ class ToyClass1Test: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        Bjs.setBundle(ToyClass1Test.self, "test")
         testDateTimestamp = 472867200
         testDate = Date(timeIntervalSince1970: testDateTimestamp)
         bjsObj = ToyClass1()
@@ -175,7 +174,7 @@ class ToyClass1Test: XCTestCase {
     }
     
     func testParamsFunc_nil() {
-        ToyClass1.paramsFunc(nil, nil, nil, nil, nil, BjsAnyObject(Bjs.get.jsNull), nil, nil, nil)
+        ToyClass1.paramsFunc(nil, nil, nil, nil, nil, ToyClass1.bjs.anyNull, nil, nil, nil)
         XCTAssertEqual(ToyClass1.log, "called paramsFunc with params: null, null, null, null, null, null, null, null, null")
     }
     
@@ -292,7 +291,7 @@ class ToyClass1Test: XCTestCase {
     func testReturningLambdaWithParamsFunc_nil() {
         let lambda = ToyClass1.returningLambdaWithParamsFunc()
         XCTAssertEqual(ToyClass1.log, "called returningLambdaWithParamsFunc")
-        let lambdaRetValue = lambda!(nil, BjsAnyObject(Bjs.get.jsNull), nil, nil)
+        let lambdaRetValue = lambda!(nil, ToyClass1.bjs.anyNull, nil, nil)
         XCTAssertEqual(ToyClass1.log, "called returned lambda with params: null, null, null, null")
         XCTAssertEqual(lambdaRetValue, "lambda returning value")
     }

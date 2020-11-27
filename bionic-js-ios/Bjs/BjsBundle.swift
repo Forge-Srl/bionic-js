@@ -27,7 +27,6 @@ public class BjsBundle {
     func loadFile(_ requirePath: String) -> String? {
         do {
             guard let filePath = getFilePath(requirePath) else {
-                
                 throw LoadError.Error("error")
             }
             let fileUrl = URL(fileURLWithPath: filePath)

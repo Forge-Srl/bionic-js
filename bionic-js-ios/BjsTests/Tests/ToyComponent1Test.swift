@@ -7,11 +7,7 @@ class ToyComponent1Test: XCTestCase {
     let objectsCount = 100
     
     override func setUp() {
-        super.setUp()
-        
-        Bjs.setBundle(ToyComponent1Test.self, "test")
-        Bjs.get.clearJsEnvironment()
-        Bjs.get.addNativeWrapper(ToyComponent1Wrapper.self)
+        super.setUp()        
     }
     
     func testWrapped_getSum() {
@@ -70,11 +66,10 @@ class ToyComponent1Test: XCTestCase {
     }
     
     func allocationTestEnd() {
-        //JSGarbageCollect(Bjs.get.context.jsContext.jsGlobalContextRef)
         DispatchQueue.global().async {
             // At least 90% of allocated objects should be deallocated
             while ToyComponent1.deallocCounter < (self.objectsCount / 10) * 9 {
-                JSGarbageCollect(Bjs.get.context.jsContext.jsGlobalContextRef)
+                JSGarbageCollect(ToyComponent1BjsWrapper.bjs.context.jsContext.jsGlobalContextRef)
                 sleep(1)
             }
             self.testExpectation.fulfill()

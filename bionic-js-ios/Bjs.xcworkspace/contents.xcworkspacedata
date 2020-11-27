@@ -4,7 +4,4 @@
    <FileRef
       location = "group:Bjs.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:BjsTestApp.xcodeproj">
-   </FileRef>
 </Workspace>

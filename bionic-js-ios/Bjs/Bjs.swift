@@ -6,33 +6,57 @@
 import JavaScriptCore
 
 public class Bjs {
-    static let bjsWrapperObjFieldName = "bjsWrapperObj"
-    static let bjsWrapperObjFieldUnboundValue = "unbound"
-    static let bjsNativeObjFieldName = "bjsNativeObj"
-    static var bjsBundle: BjsBundle? = nil
     
     public typealias Factory<T: BjsObject> = (_ jsObj: JSValue) -> T
-    public static var get = Bjs()
+        
+    private static let bjsWrapperObjFieldName = "bjsWrapperObj",
+                       bjsWrapperObjFieldUnboundValue = "unbound",
+                       bjsNativeObjFieldName = "bjsNativeObj"
+    
+    private static var projects = [String : Bjs]()
+    
     public var jsNull: JSValue { return context.createJsNull() }
     public var anyNull: BjsAnyObject { return getAny(jsNull) }
+
+    let projectName: String
     
-    let context: BjsModules
-    var jsValueToNative: [BjsNativeObjectIdentifier : BjsObject]
-    var modulesCache: [String : JSValue]
-    
-    init() {
-        if Bjs.bjsBundle == nil {
-            fatalError("BjsEnvironment.initialize() must be called before using Bjs classes")
-        }
-        context = BjsModules(Bjs.bjsBundle!)
-        jsValueToNative = [BjsNativeObjectIdentifier : BjsObject]()
+    var context: BjsContext!,
+        jsValueToNative = [BjsNativeObjectIdentifier : BjsObject](), // TODO: remove BjsNativeObjectIdentifier and leave simpler JSValue keys
         modulesCache = [String : JSValue]()
+
+    
+    static func get(_ projectName: String) -> Bjs {
+        if let cachedBjs = projects[projectName] {
+            return cachedBjs
+        } else {
+            let bjs = Bjs(projectName)
+            if let initializerClass = NSClassFromString("Bjs\(projectName)") {
+                (initializerClass as! BjsProject.Type).initialize(bjs)
+            }
+            projects[projectName] = bjs
+            return bjs
+        }
     }
     
-    public static func setBundle(_ forClass: AnyClass, _ name: String) {
-        bjsBundle = BjsBundle(forClass, name)
+    init(_ projectName: String) {
+        self.projectName = projectName
+    }
+        
+    public func loadBundle(_ forClass: AnyClass, _ bundleName: String) {
+        jsValueToNative.removeAll()
+        modulesCache.removeAll()
+        context = BjsContext(projectName)
+        
+        let bundle = BjsBundle(forClass, "\(bundleName).bjs")
+        guard let bundleContent = bundle.loadFile("\(bundleName).js") else {
+            fatalError("cannot load bundle \"\(bundleName)\" file")
+        }
+        _ = context.executeJs(bundleContent)
     }
     
+    public func addNativeWrapper(_ nativeWrapperClass: BjsNativeWrapper.Type) {
+        context.addNativeWrappers(nativeWrapperClass)
+    }
     
     // JS FUNCTIONS CALL
     
@@ -79,9 +103,7 @@ public class Bjs {
             let jsWrapperObj = jsObj.objectForKeyedSubscript(Bjs.bjsWrapperObjFieldName)
             if jsWrapperObj == nil || jsWrapperObj!.isUndefined {
                 jsObj.setObject(Bjs.bjsWrapperObjFieldUnboundValue, forKeyedSubscript: Bjs.bjsWrapperObjFieldName as NSString)
-                let bjsClassName = nativeWrapperClass.wrapperPath.split(separator: "/").last
-                let wrapperClass = self.loadModule(nativeWrapperClass.wrapperPath).objectForKeyedSubscript(bjsClassName)
-                let newJsWrapperObj = wrapperClass!.construct(withArguments: [jsObj])!
+                let newJsWrapperObj = self.loadModule(nativeWrapperClass.bjsLocator.moduleName).construct(withArguments: [jsObj])!
                 //unprotect(newJsWrapperObj) TODO
                 
                 return newJsWrapperObj
@@ -194,7 +216,7 @@ public class Bjs {
                 }
             }
         } else {
-            Bjs.get.context.logError("Js object is not an array as expected")
+            context.logError("js object is not an array as expected")
         }
         let immutableArray = Array(bjsArray)
         return immutableArray
@@ -220,27 +242,25 @@ public class Bjs {
         }
     }
     
-    public func addNativeWrapper(_ nativeWrapperClass: BjsNativeWrapper.Type) {
-        context.addNativeWrappers(nativeWrapperClass)
-    }
-    
     
     // MODULES AND ENVIRONMENT
     
-    public func loadModule(_ modulePath: String) -> JSValue {
-        if let cachedModule = modulesCache[modulePath] {
+    func loadModule(_ moduleName: String) -> JSValue {
+        if let cachedModule = modulesCache[moduleName] {
             return cachedModule
         }
-        let module = context.load(modulePath)
-        modulesCache[modulePath] = module
+        if context == nil {
+            fatalError("Bjs context was not initialized")
+        }
+        guard let export = context.getModule(moduleName) else {
+            fatalError("module \"\(moduleName)\" was not found in Bjs bundle")
+        }
+        var module = export.objectForKeyedSubscript(moduleName)!
+        if module.isUndefined {
+            module = export
+        }
+        modulesCache[moduleName] = module
         return module
-    }
-    
-    public func clearJsEnvironment() {
-        context.removeAllNativeWrappers()
-        context.clearNodeLoader()
-        jsValueToNative.removeAll()
-        modulesCache.removeAll()
     }
     
     
@@ -258,8 +278,8 @@ public class Bjs {
         let nativeObjectIdentifier = BjsNativeObjectIdentifier(jsObj, type(of:bjsObj))
         if jsValueToNative[nativeObjectIdentifier] == nil {
             jsValueToNative[nativeObjectIdentifier] = bjsObj
-            return;
+            return
         }
-        context.logError("bjs object was already created from this js object")
+        context.logError("bjs object \"\(String(describing: bjsObj.self))\" was initialized with a js object already bound with another bjs object")
     }
 }

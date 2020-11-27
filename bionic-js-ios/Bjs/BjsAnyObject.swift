@@ -18,6 +18,6 @@ public class BjsAnyObject {
     }
     
     public func getObject<T : BjsObject>(_ bjsFactory: Bjs.Factory<T>) -> T? {
-        return Bjs.get.getObj(jsObj, bjsFactory)
+        return T.self.bjs.getObj(jsObj, bjsFactory)
     }
 }

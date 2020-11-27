@@ -8,23 +8,23 @@ import JavaScriptCore
 
 open class BjsObject : Hashable {
     
-    open class var bjsModulePath: String { return "" }
+    open class var bjsLocator: BjsLocator { BjsLocator() }
+    open class var bjs: Bjs { bjsLocator.get }
+    private var bjs: Bjs { type(of:self).bjsLocator.get }
+    
     public let bjsObj: JSValue
     
     public init(_ jsObj: JSValue) {
         bjsObj = jsObj
-        Bjs.get.createNativeObj(jsObj, self)
+        bjs.createNativeObj(jsObj, self)
     }
     
     public init(_ jsClass: JSValue, _ arguments: [Any?]) {
         bjsObj = jsClass.construct(withArguments: arguments.map({$0 as Any}))
-        Bjs.get.createNativeObj(bjsObj, self)
+        bjs.createNativeObj(bjsObj, self)
     }
     
-    public class var bjsClass: JSValue {
-        let bjsClassName = bjsModulePath.split(separator: "/").last
-        return Bjs.get.loadModule(bjsModulePath).objectForKeyedSubscript(bjsClassName)
-    }
+    public class var bjsClass: JSValue { bjs.loadModule(bjsLocator.moduleName) }
     
     
     // JS FUNCTIONS CALL
@@ -46,7 +46,7 @@ open class BjsObject : Hashable {
     
     
     public func castTo<T: BjsObject>(_ bjsFactory: Bjs.Factory<T>) -> T? {
-        return Bjs.get.getObj(self.bjsObj, bjsFactory)
+        return bjs.getObj(self.bjsObj, bjsFactory)
     }
     
     public func hash(into hasher: inout Hasher) {

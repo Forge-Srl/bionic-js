@@ -5,16 +5,15 @@ class ToyClass2Test: XCTestCase {
     
     var testDate: Date!
     var testDateTimestamp: Double!
-    var bjsObj: ToyClass2!
+    var toyObj: ToyClass2!
     var toy: ToyClass2!
     
     override func setUp() {
         super.setUp()
-        Bjs.setBundle(ToyClass2Test.self, "test")
         testDateTimestamp = 472867200
         testDate = Date(timeIntervalSince1970: testDateTimestamp)
-        bjsObj = ToyClass2(false)
-        bjsObj.log = "any object"
+        toyObj = ToyClass2(false)
+        toyObj.log = "any object"
         
         toy = ToyClass2(false)
         XCTAssertEqual(toy.log, "called constructor without params")
@@ -49,14 +48,14 @@ class ToyClass2Test: XCTestCase {
     func testAnyAutoProp() {
         XCTAssertTrue(toy.anyAutoProp.jsObj.isUndefined)
         
-        toy.anyAutoProp = BjsAnyObject(bjsObj)
+        toy.anyAutoProp = BjsAnyObject(toyObj)
         XCTAssertEqual(toy.anyAutoProp.getObject(ToyClass2.bjsFactory)!.log, "any object")
     }
     
     func testBjsObjAutoProp() {
         XCTAssertNil(toy.bjsObjAutoProp)
         
-        toy.bjsObjAutoProp = bjsObj
+        toy.bjsObjAutoProp = toyObj
         XCTAssertEqual(toy.bjsObjAutoProp!.log, "any object")
     }
     
@@ -114,8 +113,8 @@ class ToyClass2Test: XCTestCase {
     func testBjsObjArrayAutoProp() {
         XCTAssertNil(toy.bjsObjArrayAutoProp)
         
-        toy.bjsObjArrayAutoProp = [[[bjsObj]]]
-        XCTAssertEqual(toy.bjsObjArrayAutoProp, [[[bjsObj]]])
+        toy.bjsObjArrayAutoProp = [[[toyObj]]]
+        XCTAssertEqual(toy.bjsObjArrayAutoProp, [[[toyObj]]])
         
         toy.bjsObjArrayAutoProp = [[[], []]]
         XCTAssertEqual(toy.bjsObjArrayAutoProp, [[[], []]])
@@ -126,14 +125,14 @@ class ToyClass2Test: XCTestCase {
         toy.bjsObjArrayAutoProp = []
         XCTAssertEqual(toy.bjsObjArrayAutoProp, [])
         
-        toy.bjsObjArrayAutoProp = [nil, [nil], [[nil]], [[bjsObj, nil]]]
-        XCTAssertEqual(toy.bjsObjArrayAutoProp, [nil, [nil], [[nil]], [[bjsObj, nil]]])
+        toy.bjsObjArrayAutoProp = [nil, [nil], [[nil]], [[toyObj, nil]]]
+        XCTAssertEqual(toy.bjsObjArrayAutoProp, [nil, [nil], [[nil]], [[toyObj, nil]]])
     }
     
     func testAnyArrayAutoProp() {
         XCTAssertNil(toy.anyArrayAutoProp)
         
-        let anyObj = BjsAnyObject(bjsObj.bjsObj)
+        let anyObj = BjsAnyObject(toyObj.bjsObj)
         
         toy.anyArrayAutoProp = [[[ anyObj ]]]
         XCTAssertEqual(toy.anyArrayAutoProp![0]![0]![0].getObject(ToyClass2.bjsFactory)?.log, "any object")
@@ -180,7 +179,7 @@ class ToyClass2Test: XCTestCase {
     
     func testParamsFunc() {
         let testExpectation = expectation(description: "called")
-        toy.paramsFunc(true, testDate, 01.984, 01984, "1984", BjsAnyObject(bjsObj.bjsObj), bjsObj,
+        toy.paramsFunc(true, testDate, 01.984, 01984, "1984", BjsAnyObject(toyObj.bjsObj), toyObj,
                        [1,2,3]) { () -> String? in
             testExpectation.fulfill()
             return "lambda return value"
@@ -190,7 +189,7 @@ class ToyClass2Test: XCTestCase {
     }
     
     func testParamsFunc_nil() {
-        toy.paramsFunc(nil, nil, nil, nil, nil, BjsAnyObject(Bjs.get.jsNull), nil, nil, nil)
+        toy.paramsFunc(nil, nil, nil, nil, nil, ToyClass2.bjs.anyNull, nil, nil, nil)
         XCTAssertEqual(toy.log, "called paramsFunc with params: null, null, null, null, null, null, null, null, null")
     }
     
@@ -299,7 +298,7 @@ class ToyClass2Test: XCTestCase {
     func testReturningLambdaWithParamsFunc() {
         let lambda = toy.returningLambdaWithParamsFunc()
         XCTAssertEqual(toy.log, "called returningLambdaWithParamsFunc")
-        let lambdaRetValue = lambda!(1984, BjsAnyObject(bjsObj.bjsObj), bjsObj, [1,2,3])
+        let lambdaRetValue = lambda!(1984, BjsAnyObject(toyObj.bjsObj), toyObj, [1,2,3])
         XCTAssertEqual(toy.log, "called returned lambda with params: 1984, any object, any object, [1,2,3]")
         XCTAssertEqual(lambdaRetValue, "lambda returning value")
     }
@@ -307,7 +306,7 @@ class ToyClass2Test: XCTestCase {
     func testReturningLambdaWithParamsFunc_nil() {
         let lambda = toy.returningLambdaWithParamsFunc()
         XCTAssertEqual(toy.log, "called returningLambdaWithParamsFunc")
-        let lambdaRetValue = lambda!(nil, BjsAnyObject(Bjs.get.jsNull), nil, nil)
+        let lambdaRetValue = lambda!(nil, ToyClass2.bjs.anyNull, nil, nil)
         XCTAssertEqual(toy.log, "called returned lambda with params: null, null, null, null")
         XCTAssertEqual(lambdaRetValue, "lambda returning value")
     }

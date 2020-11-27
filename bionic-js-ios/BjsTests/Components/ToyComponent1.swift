@@ -1,3 +1,4 @@
+import JavaScriptCore
 import Bjs
 
 class ToyComponent1: BjsExport {

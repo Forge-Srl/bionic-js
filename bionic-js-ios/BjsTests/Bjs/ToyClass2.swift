@@ -1,8 +1,6 @@
 import JavaScriptCore
 import Bjs
 
-// TODO: allineare i metodi con ToyClass1 e aggiungere test mancanti
-
 class ToyClass2: ToyClass1 {
     
     // CONSTRUCTOR
@@ -15,41 +13,41 @@ class ToyClass2: ToyClass1 {
     // INSTANCE PROPERTIES
     
     var nativeAutoProp: String? {
-        get { return Bjs.get.getString(bjsGetProperty("nativeAutoProp")) }
+        get { return ToyClass2.bjs.getString(bjsGetProperty("nativeAutoProp")) }
         set { bjsSetProperty("nativeAutoProp", newValue)}
     }
     
     var anyAutoProp: BjsAnyObject {
-        get { return Bjs.get.getAny(bjsGetProperty("anyAutoProp")) }
+        get { return ToyClass2.bjs.getAny(bjsGetProperty("anyAutoProp")) }
         set { bjsSetProperty("anyAutoProp", newValue.jsObj)}
     }
     
     var bjsObjAutoProp: ToyClass2? {
-        get { return Bjs.get.getObj(bjsGetProperty("bjsObjAutoProp"), ToyClass2.bjsFactory) }
-        set { bjsSetProperty("bjsObjAutoProp", Bjs.get.putObj(newValue))}
+        get { return ToyClass2.bjs.getObj(bjsGetProperty("bjsObjAutoProp"), ToyClass2.bjsFactory) }
+        set { bjsSetProperty("bjsObjAutoProp", ToyClass2.bjs.putObj(newValue))}
     }
     
     var lambdaAutoProp: ((_ strIn: String?) -> String?)? {
         get {
             let __jsFunc0 = bjsGetProperty("lambdaAutoProp")
-            return Bjs.get.getFunc(__jsFunc0) {
-                return Bjs.get.getString(Bjs.get.funcCall(__jsFunc0, $0))
+            return ToyClass2.bjs.getFunc(__jsFunc0) {
+                return ToyClass2.bjs.getString(ToyClass2.bjs.funcCall(__jsFunc0, $0))
             }
         }
         set {
             let __func0: @convention(block) (JSValue) -> JSValue = {
-                return Bjs.get.putPrimitive(newValue!(Bjs.get.getString($0)))
+                return ToyClass2.bjs.putPrimitive(newValue!(ToyClass2.bjs.getString($0)))
             }
-            bjsSetProperty("lambdaAutoProp", Bjs.get.putFunc(newValue, __func0))
+            bjsSetProperty("lambdaAutoProp", ToyClass2.bjs.putFunc(newValue, __func0))
         }
     }
     
     var nativeArrayAutoProp: [[[String?]?]?]? {
         get {
-            return Bjs.get.getArray(bjsGetProperty("nativeArrayAutoProp"), {
-                return Bjs.get.getArray($0, {
-                    return Bjs.get.getArray($0, {
-                        return Bjs.get.getString($0)
+            return ToyClass2.bjs.getArray(bjsGetProperty("nativeArrayAutoProp"), {
+                return ToyClass2.bjs.getArray($0, {
+                    return ToyClass2.bjs.getArray($0, {
+                        return ToyClass2.bjs.getString($0)
                     })
                 })
             })
@@ -61,19 +59,19 @@ class ToyClass2: ToyClass1 {
     
     var bjsObjArrayAutoProp: [[[ToyClass2?]?]?]? {
         get {
-            return Bjs.get.getArray(bjsGetProperty("bjsObjArrayAutoProp"), {
-                return Bjs.get.getArray($0, {
-                    return Bjs.get.getArray($0, {
-                        return Bjs.get.getObj($0, ToyClass2.bjsFactory)
+            return ToyClass2.bjs.getArray(bjsGetProperty("bjsObjArrayAutoProp"), {
+                return ToyClass2.bjs.getArray($0, {
+                    return ToyClass2.bjs.getArray($0, {
+                        return ToyClass2.bjs.getObj($0, ToyClass2.bjsFactory)
                     })
                 })
             })
         }
         set {
-            bjsSetProperty("bjsObjArrayAutoProp", Bjs.get.putArray(newValue, {
-                return Bjs.get.putArray($0, {
-                    return Bjs.get.putArray($0, {
-                        return Bjs.get.putObj($0)
+            bjsSetProperty("bjsObjArrayAutoProp", ToyClass2.bjs.putArray(newValue, {
+                return ToyClass2.bjs.putArray($0, {
+                    return ToyClass2.bjs.putArray($0, {
+                        return ToyClass2.bjs.putObj($0)
                     })
                 })
             }))
@@ -82,18 +80,18 @@ class ToyClass2: ToyClass1 {
     
     var anyArrayAutoProp: [[[BjsAnyObject]?]?]? {
         get {
-            return Bjs.get.getArray(bjsGetProperty("anyArrayAutoProp"), {
-                return Bjs.get.getArray($0, {
-                    return Bjs.get.getArray($0, {
-                        return Bjs.get.getAny($0)
+            return ToyClass2.bjs.getArray(bjsGetProperty("anyArrayAutoProp"), {
+                return ToyClass2.bjs.getArray($0, {
+                    return ToyClass2.bjs.getArray($0, {
+                        return ToyClass2.bjs.getAny($0)
                     })
                 })
             })
         }
         set {
-            bjsSetProperty("anyArrayAutoProp", Bjs.get.putArray(newValue, {
-                return Bjs.get.putArray($0, {
-                    return Bjs.get.putArray($0, {
+            bjsSetProperty("anyArrayAutoProp", ToyClass2.bjs.putArray(newValue, {
+                return ToyClass2.bjs.putArray($0, {
+                    return ToyClass2.bjs.putArray($0, {
                         return $0.jsObj
                     })
                 })
@@ -103,25 +101,25 @@ class ToyClass2: ToyClass1 {
     
     var lambdaArrayAutoProp: [[[((_ strIn: String?) -> String?)?]?]?]? {
         get {
-            return Bjs.get.getArray(bjsGetProperty("lambdaArrayAutoProp"), {
-                return Bjs.get.getArray($0, {
-                    return Bjs.get.getArray($0, { __jsFunc0 in
-                        return Bjs.get.getFunc(__jsFunc0) {
-                            return Bjs.get.getString(Bjs.get.funcCall(__jsFunc0, $0))
+            return ToyClass2.bjs.getArray(bjsGetProperty("lambdaArrayAutoProp"), {
+                return ToyClass2.bjs.getArray($0, {
+                    return ToyClass2.bjs.getArray($0, { __jsFunc0 in
+                        return ToyClass2.bjs.getFunc(__jsFunc0) {
+                            return ToyClass2.bjs.getString(ToyClass2.bjs.funcCall(__jsFunc0, $0))
                         }
                     })
                 })
             })
         }
         set {
-            bjsSetProperty("lambdaArrayAutoProp", Bjs.get.putArray(newValue, {
-                return Bjs.get.putArray($0, {
-                    return Bjs.get.putArray($0, {
+            bjsSetProperty("lambdaArrayAutoProp", ToyClass2.bjs.putArray(newValue, {
+                return ToyClass2.bjs.putArray($0, {
+                    return ToyClass2.bjs.putArray($0, {
                         __func0 in
                         let __jsFunc0: @convention(block) (JSValue) -> JSValue = {
-                            return Bjs.get.putPrimitive(__func0!(Bjs.get.getString($0)))
+                            return ToyClass2.bjs.putPrimitive(__func0!(ToyClass2.bjs.getString($0)))
                         }
-                        return Bjs.get.putFunc(__func0, __jsFunc0)
+                        return ToyClass2.bjs.putFunc(__func0, __jsFunc0)
                     })
                 })
             }))
@@ -129,7 +127,7 @@ class ToyClass2: ToyClass1 {
     }
     
     var prop: String? {
-        get { return Bjs.get.getString(bjsGetProperty("prop")) }
+        get { return ToyClass2.bjs.getString(bjsGetProperty("prop")) }
         set { bjsSetProperty("prop", newValue)}
     }
     
@@ -144,53 +142,53 @@ class ToyClass2: ToyClass1 {
         let __func0: @convention(block) () -> String? = {
             return lambda!()
         }
-        _ = bjsCall("paramsFunc", bool, date, float, int, string, any.jsObj, Bjs.get.putObj(bjsObj), Bjs.get.putArray(array, {
-            return Bjs.get.putPrimitive($0)
-        }), Bjs.get.putFunc(lambda, __func0))
+        _ = bjsCall("paramsFunc", bool, date, float, int, string, any.jsObj, ToyClass2.bjs.putObj(bjsObj), ToyClass2.bjs.putArray(array, {
+            return ToyClass2.bjs.putPrimitive($0)
+        }), ToyClass2.bjs.putFunc(lambda, __func0))
     }
     
     func boolFunc() -> Bool? {
-        return Bjs.get.getBool(bjsCall("retValueFunc"))
+        return ToyClass2.bjs.getBool(bjsCall("retValueFunc"))
     }
     
     func dateFunc() -> Date? {
-        return Bjs.get.getDate(bjsCall("retValueFunc"))
+        return ToyClass2.bjs.getDate(bjsCall("retValueFunc"))
     }
     
     func floatFunc() -> Double? {
-        return Bjs.get.getFloat(bjsCall("retValueFunc"))
+        return ToyClass2.bjs.getFloat(bjsCall("retValueFunc"))
     }
     
     func intFunc() -> Int? {
-        return Bjs.get.getInt(bjsCall("retValueFunc"))
+        return ToyClass2.bjs.getInt(bjsCall("retValueFunc"))
     }
     
     func stringFunc() -> String? {
-        return Bjs.get.getString(bjsCall("retValueFunc"))
+        return ToyClass2.bjs.getString(bjsCall("retValueFunc"))
     }
     
     func lambdaVoidFunc(_ lambda: (() -> Void)?) -> (() -> Void)? {
         let __func0: @convention(block) () -> Void = {
             lambda!()
         }
-        let __jsFunc0 = bjsCall("lambdaVoidFunc", Bjs.get.putFunc(lambda, __func0))
-        return Bjs.get.getFunc(__jsFunc0) {
-            _ = Bjs.get.funcCall(__jsFunc0)
+        let __jsFunc0 = bjsCall("lambdaVoidFunc", ToyClass2.bjs.putFunc(lambda, __func0))
+        return ToyClass2.bjs.getFunc(__jsFunc0) {
+            _ = ToyClass2.bjs.funcCall(__jsFunc0)
         }
     }
     
     func lambdaWithParamsFunc(_ lambda: ((_ int: Int?, _ nullStr: String?, _ any: BjsAnyObject, _ obj: ToyClass2?) -> String?)?) {
         let __func0: @convention(block) (JSValue, JSValue, JSValue, JSValue) -> JSValue = {
-            return Bjs.get.putPrimitive(lambda!(Bjs.get.getInt($0), Bjs.get.getString($1), Bjs.get.getAny($2), Bjs.get.getObj($3, ToyClass2.bjsFactory)))
+            return ToyClass2.bjs.putPrimitive(lambda!(ToyClass2.bjs.getInt($0), ToyClass2.bjs.getString($1), ToyClass2.bjs.getAny($2), ToyClass2.bjs.getObj($3, ToyClass2.bjsFactory)))
         }
-        _ = bjsCall("lambdaWithParamsFunc", Bjs.get.putFunc(lambda, __func0))
+        _ = bjsCall("lambdaWithParamsFunc", ToyClass2.bjs.putFunc(lambda, __func0))
     }
     
     func returningLambdaWithParamsFunc() -> ((_ int: Int?, _ any: BjsAnyObject, _ obj: ToyClass1?, _ array: [Int?]?) -> String?)? {
         let __jsFunc0 = bjsCall("returningLambdaWithParamsFunc")
-        return Bjs.get.getFunc(__jsFunc0) {
-            return Bjs.get.getString(Bjs.get.funcCall(__jsFunc0, $0, $1.jsObj, Bjs.get.putObj($2), Bjs.get.putArray($3, {
-                return Bjs.get.putPrimitive($0)
+        return ToyClass2.bjs.getFunc(__jsFunc0) {
+            return ToyClass2.bjs.getString(ToyClass2.bjs.funcCall(__jsFunc0, $0, $1.jsObj, ToyClass2.bjs.putObj($2), ToyClass2.bjs.putArray($3, {
+                return ToyClass2.bjs.putPrimitive($0)
             })))
         }
     }
@@ -198,11 +196,7 @@ class ToyClass2: ToyClass1 {
     
     // BJS HELPERS
     
-    override class var bjsModulePath: String {
-        return "/src/ToyClass2"
-    }
-    
-    override class func bjsFactory(_ jsObject: JSValue) -> ToyClass2 {
-        return ToyClass2(jsObject)
-    }
+    private static var _bjsLocator = BjsLocator("TestProject", "ToyClass2")
+    override class var bjsLocator: BjsLocator { _bjsLocator }
+    override class func bjsFactory(_ jsObject: JSValue) -> ToyClass2 { ToyClass2(jsObject) }
 }

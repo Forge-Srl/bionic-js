@@ -13,99 +13,99 @@ class ToyClass1: BjsObject {
     // STATIC PROPERTIES
     
     class var nativeAutoProp: String? {
-        get { return Bjs.get.getString(Bjs.get.getProperty(self.bjsClass, "nativeAutoProp")) }
-        set { Bjs.get.setProperty(self.bjsClass, "nativeAutoProp", newValue)}
+        get { return bjs.getString(bjs.getProperty(self.bjsClass, "nativeAutoProp")) }
+        set { bjs.setProperty(self.bjsClass, "nativeAutoProp", newValue)}
     }
     
     class var anyAutoProp: BjsAnyObject {
-        get { return Bjs.get.getAny(Bjs.get.getProperty(self.bjsClass, "anyAutoProp")) }
-        set { Bjs.get.setProperty(self.bjsClass, "anyAutoProp", newValue.jsObj)}
+        get { return bjs.getAny(bjs.getProperty(self.bjsClass, "anyAutoProp")) }
+        set { bjs.setProperty(self.bjsClass, "anyAutoProp", newValue.jsObj)}
     }
     
     class var bjsObjAutoProp: ToyClass1? {
-        get { return Bjs.get.getObj(Bjs.get.getProperty(self.bjsClass, "bjsObjAutoProp"), ToyClass1.bjsFactory) }
-        set { Bjs.get.setProperty(self.bjsClass, "bjsObjAutoProp", Bjs.get.putObj(newValue))}
+        get { return bjs.getObj(bjs.getProperty(self.bjsClass, "bjsObjAutoProp"), ToyClass1.bjsFactory) }
+        set { bjs.setProperty(self.bjsClass, "bjsObjAutoProp", bjs.putObj(newValue))}
     }
     
     class var lambdaAutoProp: ((_ strIn: String?) -> String?)? {
         get {
-            let __jsFunc = Bjs.get.getProperty(self.bjsClass, "lambdaAutoProp")
-            return Bjs.get.getFunc(__jsFunc) {
-                return Bjs.get.getString(Bjs.get.funcCall(__jsFunc, Bjs.get.putPrimitive($0)))
+            let __jsFunc = bjs.getProperty(self.bjsClass, "lambdaAutoProp")
+            return bjs.getFunc(__jsFunc) {
+                return bjs.getString(bjs.funcCall(__jsFunc, bjs.putPrimitive($0)))
             }
         }
         set {
             let __func: @convention(block) (JSValue) -> JSValue = { string in
-                return Bjs.get.putPrimitive(newValue!(Bjs.get.getString(string)))
+                return bjs.putPrimitive(newValue!(bjs.getString(string)))
             }
-            Bjs.get.setProperty(self.bjsClass, "lambdaAutoProp", Bjs.get.putFunc(newValue, __func))
+            bjs.setProperty(self.bjsClass, "lambdaAutoProp", bjs.putFunc(newValue, __func))
         }
     }
     
     class var nativeArrayAutoProp: [[[String?]?]?]? {
         get {
-            return Bjs.get.getArray(Bjs.get.getProperty(self.bjsClass, "nativeArrayAutoProp"),
-                { Bjs.get.getArray($0, { Bjs.get.getArray($0, { Bjs.get.getString($0) }) }) })
+            return bjs.getArray(bjs.getProperty(self.bjsClass, "nativeArrayAutoProp"),
+                                 { bjs.getArray($0, { bjs.getArray($0, { bjs.getString($0) }) }) })
         }
         set {
-            Bjs.get.setProperty(self.bjsClass, "nativeArrayAutoProp", newValue)
+            bjs.setProperty(self.bjsClass, "nativeArrayAutoProp", newValue)
         }
     }
     
     class var bjsObjArrayAutoProp: [[[ToyClass1?]?]?]? {
         get {
-            return Bjs.get.getArray(Bjs.get.getProperty(self.bjsClass, "bjsObjArrayAutoProp"),
-                        { Bjs.get.getArray($0, { Bjs.get.getArray($0, { Bjs.get.getObj($0, ToyClass1.bjsFactory) }) }) })
+            return bjs.getArray(bjs.getProperty(self.bjsClass, "bjsObjArrayAutoProp"),
+                                 { bjs.getArray($0, { bjs.getArray($0, { bjs.getObj($0, ToyClass1.bjsFactory) }) }) })
         }
         set {
-            Bjs.get.setProperty(self.bjsClass, "bjsObjArrayAutoProp",
-                Bjs.get.putArray(newValue, { Bjs.get.putArray($0, { Bjs.get.putArray($0, { Bjs.get.putObj($0) }) }) }))
+            bjs.setProperty(self.bjsClass, "bjsObjArrayAutoProp",
+                             bjs.putArray(newValue, { bjs.putArray($0, { bjs.putArray($0, { bjs.putObj($0) }) }) }))
         }
     }
     
     class var anyArrayAutoProp: [[[BjsAnyObject]?]?]? {
         get {
-            return Bjs.get.getArray(Bjs.get.getProperty(self.bjsClass, "anyArrayAutoProp"),
-                                    { Bjs.get.getArray($0, { Bjs.get.getArray($0, { Bjs.get.getAny($0) }) }) })
+            return bjs.getArray(bjs.getProperty(self.bjsClass, "anyArrayAutoProp"),
+                                 { bjs.getArray($0, { bjs.getArray($0, { bjs.getAny($0) }) }) })
         }
         set {
-            Bjs.get.setProperty(self.bjsClass, "anyArrayAutoProp",
-                Bjs.get.putArray(newValue, { Bjs.get.putArray($0, { Bjs.get.putArray($0, { $0.jsObj }) }) }))
+            bjs.setProperty(self.bjsClass, "anyArrayAutoProp",
+                             bjs.putArray(newValue, { bjs.putArray($0, { bjs.putArray($0, { $0.jsObj }) }) }))
         }
     }
     
     class var lambdaArrayAutoProp: [[[((_ strIn: String?) -> String?)?]?]?]? {
         get {
-            return Bjs.get.getArray(Bjs.get.getProperty(self.bjsClass, "lambdaArrayAutoProp"),
-                                    { Bjs.get.getArray($0, { Bjs.get.getArray($0, { __jsFunc in
-                                        return Bjs.get.getFunc(__jsFunc) { string in
-                                            return Bjs.get.getString(Bjs.get.funcCall(__jsFunc, string))
-                                        }
-                                    }) }) }
+            return bjs.getArray(bjs.getProperty(self.bjsClass, "lambdaArrayAutoProp"),
+                                 { bjs.getArray($0, { bjs.getArray($0, { __jsFunc in
+                                    return bjs.getFunc(__jsFunc) { string in
+                                        return bjs.getString(bjs.funcCall(__jsFunc, string))
+                                    }
+                                 }) }) }
             )
         }
         set {
-            Bjs.get.setProperty(self.bjsClass, "lambdaArrayAutoProp",
-                                Bjs.get.putArray(newValue, { Bjs.get.putArray($0, { Bjs.get.putArray($0, { __func in
-                                    let __jsFunc: @convention(block) (JSValue) -> JSValue = { string in
-                                        return Bjs.get.putPrimitive(__func!(Bjs.get.getString(string)))
-                                    }
-                                    return Bjs.get.putFunc(__func, __jsFunc)
-                                }) }) })
+            bjs.setProperty(self.bjsClass, "lambdaArrayAutoProp",
+                             bjs.putArray(newValue, { bjs.putArray($0, { bjs.putArray($0, { __func in
+                                let __jsFunc: @convention(block) (JSValue) -> JSValue = { string in
+                                    return bjs.putPrimitive(__func!(bjs.getString(string)))
+                                }
+                                return bjs.putFunc(__func, __jsFunc)
+                             }) }) })
             )
         }
     }
     
     class var prop: String? {
-        get { return Bjs.get.getString(Bjs.get.getProperty(self.bjsClass, "prop")) }
-        set { Bjs.get.setProperty(self.bjsClass, "prop", newValue)}
+        get { return bjs.getString(bjs.getProperty(self.bjsClass, "prop")) }
+        set { bjs.setProperty(self.bjsClass, "prop", newValue)}
     }
     
     
     // STATIC METHODS
     
     class func voidFunc() {
-        _ = Bjs.get.call(self.bjsClass, "voidFunc")
+        _ = bjs.call(self.bjsClass, "voidFunc")
     }
     
     class func paramsFunc(_ bool: Bool?, _ date: Date?, _ float: Double?, _ int: Int?,
@@ -114,74 +114,70 @@ class ToyClass1: BjsObject {
         let __func: @convention(block) () -> String? = {
             return lambda!()
         }
-        _ = Bjs.get.call(self.bjsClass, "paramsFunc", bool, date, float, int, string, any.jsObj,
-                         Bjs.get.putObj(bjsObj), Bjs.get.putArray(array, { Bjs.get.putPrimitive($0) }),
-                         Bjs.get.putFunc(lambda, __func))
+        _ = bjs.call(self.bjsClass, "paramsFunc", bool, date, float, int, string, any.jsObj,
+                      bjs.putObj(bjsObj), bjs.putArray(array, { bjs.putPrimitive($0) }),
+                      bjs.putFunc(lambda, __func))
     }
     
     class func boolFunc() -> Bool? {
-        return Bjs.get.getBool(Bjs.get.call(self.bjsClass, "retValueFunc"))
+        return bjs.getBool(bjs.call(self.bjsClass, "retValueFunc"))
     }
     
     class func dateFunc() -> Date? {
-        return Bjs.get.getDate(Bjs.get.call(self.bjsClass, "retValueFunc"))
+        return bjs.getDate(bjs.call(self.bjsClass, "retValueFunc"))
     }
     
     class func floatFunc() -> Double? {
-        return Bjs.get.getFloat(Bjs.get.call(self.bjsClass, "retValueFunc"))
+        return bjs.getFloat(bjs.call(self.bjsClass, "retValueFunc"))
     }
     
     class func intFunc() -> Int? {
-        return Bjs.get.getInt(Bjs.get.call(self.bjsClass, "retValueFunc"))
+        return bjs.getInt(bjs.call(self.bjsClass, "retValueFunc"))
     }
     
     class func stringFunc() -> String? {
-        return Bjs.get.getString(Bjs.get.call(self.bjsClass, "retValueFunc"))
+        return bjs.getString(bjs.call(self.bjsClass, "retValueFunc"))
     }
     
     class func lambdaVoidFunc(_ lambda: (() -> Void)?) -> (() -> Void)? {
         let __func: @convention(block) () -> Void = {
             lambda!()
         }
-        let __jsFunc = Bjs.get.call(self.bjsClass, "lambdaVoidFunc", Bjs.get.putFunc(lambda, __func))
-        return Bjs.get.getFunc(__jsFunc) {
-            _ = Bjs.get.funcCall(__jsFunc)
+        let __jsFunc = bjs.call(self.bjsClass, "lambdaVoidFunc", bjs.putFunc(lambda, __func))
+        return bjs.getFunc(__jsFunc) {
+            _ = bjs.funcCall(__jsFunc)
         }
     }
     
     class func lambdaWithParamsFunc(_ lambda: ((_ int: Int?, _ nullStr: String?, _ any: BjsAnyObject, _ obj: ToyClass1?) -> String?)?) {
         let __func: @convention(block) (JSValue, JSValue, JSValue, JSValue) -> JSValue = { int, nullStr, any, obj in
-            return Bjs.get.putPrimitive(lambda!(Bjs.get.getInt(int), Bjs.get.getString(nullStr), Bjs.get.getAny(any), Bjs.get.getObj(obj, ToyClass1.bjsFactory)))
+            return bjs.putPrimitive(lambda!(bjs.getInt(int), bjs.getString(nullStr), bjs.getAny(any), bjs.getObj(obj, ToyClass1.bjsFactory)))
         }
-        _ = Bjs.get.call(self.bjsClass, "lambdaWithParamsFunc", Bjs.get.putFunc(lambda, __func))
+        _ = bjs.call(self.bjsClass, "lambdaWithParamsFunc", bjs.putFunc(lambda, __func))
     }
     
     class func returningLambdaWithParamsFunc() ->
-        ((_ int: Int?, _ any: BjsAnyObject, _ obj: ToyClass1?, _ array: [Int?]?) -> String?)? {
-            let __jsFunc = Bjs.get.call(self.bjsClass, "returningLambdaWithParamsFunc")
-            return Bjs.get.getFunc(__jsFunc) { int, any, obj, array in
-                return Bjs.get.getString(Bjs.get.funcCall(__jsFunc, int, any.jsObj, Bjs.get.putObj(obj),
-                            Bjs.get.putArray(array, { Bjs.get.putPrimitive($0) })))
-            }
+    ((_ int: Int?, _ any: BjsAnyObject, _ obj: ToyClass1?, _ array: [Int?]?) -> String?)? {
+        let __jsFunc = bjs.call(self.bjsClass, "returningLambdaWithParamsFunc")
+        return bjs.getFunc(__jsFunc) { int, any, obj, array in
+            return bjs.getString(bjs.funcCall(__jsFunc, int, any.jsObj, bjs.putObj(obj),
+                                                bjs.putArray(array, { bjs.putPrimitive($0) })))
+        }
     }
     
     
     // BJS HELPERS
     
-    override class var bjsModulePath: String {
-        return "/src/ToyClass1"
-    }
-    
-    class func bjsFactory(_ jsObject: JSValue) -> ToyClass1 {
-        return ToyClass1(jsObject)
-    }
+    private static var _bjsLocator = BjsLocator("TestProject", "ToyClass1")
+    override class var bjsLocator: BjsLocator { _bjsLocator }
+    class func bjsFactory(_ jsObject: JSValue) -> ToyClass1 { ToyClass1(jsObject)}
     
     
     // TESTING HELPERS
     
     class var log: String {
-        get { return Bjs.get.getProperty(self.bjsClass, "log").toString() }
-        set { Bjs.get.setProperty(self.bjsClass, "log", newValue) }
+        get { return bjs.getProperty(self.bjsClass, "log").toString() }
+        set { bjs.setProperty(self.bjsClass, "log", newValue) }
     }
     
     var log: String {
@@ -190,7 +186,7 @@ class ToyClass1: BjsObject {
     }
     
     class func evalAndSetValue(_ jsToEval: String) {
-        _ = Bjs.get.call(self.bjsClass, "setValue", jsToEval)
+        _ = bjs.call(self.bjsClass, "setValue", jsToEval)
     }
     
     func evalAndSetValue(_ jsToEval: String) {
