@@ -1,0 +1,16 @@
+# Custom
+testing-code/host
+
+# IntelliJ
+**/.idea/workspace.xml
+
+# Node.js
+/node_modules
+
+# Coverages
+**/core/coverage
+**/parser/coverage
+
+#Xcode
+**/xcuserdata
+Bjs.framework
