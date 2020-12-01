@@ -34,7 +34,7 @@ public class BjsNativeExportsTest {
 
     @Test
     public void exportBindFunction() {
-        FunctionCallback functionCallback = jsReferences -> null;
+        FunctionCallback<?> functionCallback = jsReferences -> null;
 
         doReturn(nativeExports).when(nativeExports).exportFunction("bjsBind", functionCallback);
         assertEquals(nativeExports, nativeExports.exportBindFunction(functionCallback));
@@ -43,10 +43,10 @@ public class BjsNativeExportsTest {
     @Test
     public void exportFunction() {
         String name = "name";
-        FunctionCallback functionCallback = jsReferences -> null;
-        JSObject jsObject = mock(JSObject.class);
+        FunctionCallback<?> functionCallback = jsReferences -> null;
+        JSObject<?> jsObject = mock(JSObject.class);
         JSReference reference = mock(JSReference.class);
-        JSFunction jsFunction = mock(JSFunction.class);
+        JSFunction<?> jsFunction = mock(JSFunction.class);
 
         when(runtime.resolveReference(exportsObject)).thenReturn(jsObject);
         when(runtime.newReference(JSType.Function)).thenReturn(reference);

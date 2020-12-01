@@ -1,7 +1,9 @@
 package bionic.js;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,14 +20,10 @@ import java.util.stream.Collectors;
 
 class BjsBundle
 {
-    private static final int FILE = 0;
-    private static final int DIRECTORY = 1;
-    private static final int NOT_FOUND = -2;
-
     private final Class<?> clazz;
     final String name;
 
-    BjsBundle(Class<?> forClass, String name)
+    BjsBundle(@NonNull Class<?> forClass, @NonNull String name)
     {
         this.name = name;
         this.clazz = forClass;
@@ -36,7 +34,7 @@ class BjsBundle
         return clazz.getClassLoader();
     }
 
-    String getFullPathName(String requirePath)
+    String getFullPathName(@NonNull String requirePath)
     {
         String bundleDir = name + ".bundle";
         return requirePath.equals("/")
@@ -46,60 +44,8 @@ class BjsBundle
                 : String.format("%s/%s", bundleDir, requirePath);
     }
 
-    int getFileStat(String requirePath)
-    {
-        String path = getFullPathName(requirePath);
-        // 1. Try to load file assuming it's outside of the jar.
-        try
-        {
-            URL resource = getLoader().getResource(path);
-            if (resource != null)
-            {
-                File file = new File(resource.toURI());
-                if (file.exists())
-                {
-                    return file.isDirectory() ? DIRECTORY : FILE;
-                }
-            }
-        }
-        catch (URISyntaxException e)
-        {
-            // Ignore. We try loading the file with a different strategy
-        }
-
-        // 2. Try to load file assuming it's inside of the jar (i.e. as stream).
-        if (!path.endsWith("/"))
-        {
-            try (InputStream fileStream = getLoader().getResourceAsStream(path))
-            {
-                if (fileStream != null)
-                {
-                    return FILE;
-                }
-            }
-            catch (IOException e)
-            {
-                // Ignore. We try loading the file with a different strategy
-            }
-            path = path + "/";
-        }
-
-        try (InputStream fileStream = getLoader().getResourceAsStream(path))
-        {
-            if (fileStream != null)
-            {
-                return DIRECTORY;
-            }
-        }
-        catch (IOException e)
-        {
-            // Ignore.
-        }
-
-        return NOT_FOUND;
-    }
-
-    String loadFile(String requirePath)
+    @CheckForNull
+    String loadFile(@NonNull String requirePath)
     {
         String filePath = getFullPathName(requirePath);
         Charset charset = StandardCharsets.UTF_8;
