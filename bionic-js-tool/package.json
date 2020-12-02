@@ -2,8 +2,14 @@
   "name": "bionicjs",
   "version": "1.0.1",
   "description": "Bionic.js",
-  "author": "Marco Vanetti",
-  "license": "SEE LICENSE IN license.txt",
+  "homepage": "https://github.com/Forge-Srl/bionic-js",
+  "license": "MIT",
+  "author": "Forge S.r.l.",
+  "maintainers": [
+    {
+      "name": "Marco Vanetti"
+    }
+  ],
   "private": true,
   "scripts": {
     "test": "jest",
