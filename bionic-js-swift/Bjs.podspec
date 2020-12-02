@@ -28,7 +28,7 @@ Pod::Spec.new do |spec|
   BionicJs is built to effectively run and integrate JS code in Swift and ObjectiveC projects
                    DESC
 
-  spec.homepage     = "https://www.bionicjs.com"
+  spec.homepage     = "https://github.com/Forge-Srl/bionic-js"
   # spec.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
 
@@ -39,8 +39,7 @@ Pod::Spec.new do |spec|
   #  Popular ones are 'MIT', 'BSD' and 'Apache License, Version 2.0'.
   #
 
-  spec.license      = "MIT"
-  # spec.license      = { :type => "MIT", :file => "FILE_LICENSE" }
+  spec.license      = { :type => "MIT", :file => "../LICENSE.md" }
 
 
   # ――― Author Metadata  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -53,10 +52,7 @@ Pod::Spec.new do |spec|
   #  profile URL.
   #
 
-  spec.author             = { "Marco Vanetti" => "marco.vanetti@gmail.com" }
-  # Or just: spec.author    = "Marco Vanetti"
-  # spec.authors            = { "Marco Vanetti" => "marco.vanetti@gmail.com" }
-  # spec.social_media_url   = "https://twitter.com/Marco Vanetti"
+  spec.authors             = { "Marco Vanetti" => "marco.vanetti@gmail.com" }
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
