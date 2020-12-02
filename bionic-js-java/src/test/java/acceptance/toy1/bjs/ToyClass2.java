@@ -1,4 +1,4 @@
-package acceptance.toy1;
+package acceptance.toy1.bjs;
 
 import bionic.js.*;
 import jjbridge.api.runtime.JSReference;
@@ -36,36 +36,36 @@ public class ToyClass2 extends ToyClass1
 
     // INSTANCE PROPERTIES
 
-    public String getNativeAutoProp() {
+    public String nativeAutoProp() {
         return bjs.getString(bjsGetProperty("nativeAutoProp"));
     }
 
-    public void setNativeAutoProp(String value) {
+    public void nativeAutoProp(String value) {
         bjsSetProperty("nativeAutoProp", bjs.putPrimitive(value));
     }
 
-    public BjsAnyObject getAnyAutoProp() {
+    public BjsAnyObject anyAutoProp() {
         return bjs.getAny(bjsGetProperty("anyAutoProp"));
     }
 
-    public void setAnyAutoProp(BjsAnyObject value) {
+    public void anyAutoProp(BjsAnyObject value) {
         bjsSetProperty("anyAutoProp", value.jsObj);
     }
 
-    public ToyClass2 getBjsObjAutoProp() {
+    public ToyClass2 bjsObjAutoProp() {
         return bjs.getObj(bjsGetProperty("bjsObjAutoProp"), bjsFactory, ToyClass2.class);
     }
 
-    public void setBjsObjAutoProp(ToyClass2 value) {
+    public void bjsObjAutoProp(ToyClass2 value) {
         bjsSetProperty("bjsObjAutoProp", bjs.putObj(value));
     }
 
-    public Lambda.F1<String, String> getLambdaAutoProp() {
+    public Lambda.F1<String, String> lambdaAutoProp() {
         JSReference jsFunc = bjsGetProperty("lambdaAutoProp");
         return bjs.getFunc(jsFunc, s -> bjs.getString(bjs.funcCall(jsFunc, bjs.putPrimitive(s))));
     }
 
-    public void setLambdaAutoProp(Lambda.F1<String, String> value) {
+    public void lambdaAutoProp(Lambda.F1<String, String> value) {
         FunctionCallback<?> functionCallback = jsReferences -> {
             jsReferences = bjs.ensureArraySize(jsReferences, 1);
             return bjs.putPrimitive(value.apply(bjs.getString(jsReferences[0])));
@@ -73,20 +73,20 @@ public class ToyClass2 extends ToyClass1
         bjsSetProperty("lambdaAutoProp", bjs.putFunc(value, functionCallback));
     }
 
-    public String[][][] getNativeArrayAutoProp() {
+    public String[][][] nativeArrayAutoProp() {
         JSReference nativeArrayAutoProp = bjsGetProperty("nativeArrayAutoProp");
         return bjs.getArray(nativeArrayAutoProp, r0 ->
                 bjs.getArray(r0, r1 ->
                         bjs.getArray(r1, bjs::getString, String.class), String[].class), String[][].class);
     }
-    public void setNativeArrayAutoProp(String[][][] value) {
+    public void nativeArrayAutoProp(String[][][] value) {
         JSReference propertyValue = bjs.putArray(value, nv0 ->
                 bjs.putArray(nv0, nv1 ->
                         bjs.putArray(nv1, bjs::putPrimitive)));
         bjsSetProperty("nativeArrayAutoProp", propertyValue);
     }
 
-    public ToyClass2[][][] getBjsObjArrayAutoProp() {
+    public ToyClass2[][][] bjsObjArrayAutoProp() {
         JSReference nativeArrayAutoProp = bjsGetProperty("bjsObjArrayAutoProp");
         return bjs.getArray(nativeArrayAutoProp, r0 ->
                         bjs.getArray(r0, r1 ->
@@ -96,20 +96,20 @@ public class ToyClass2 extends ToyClass1
                                 ToyClass2[].class),
                 ToyClass2[][].class);
     }
-    public void setBjsObjArrayAutoProp(ToyClass2[][][] value) {
+    public void bjsObjArrayAutoProp(ToyClass2[][][] value) {
         JSReference propertyValue = bjs.putArray(value, nv0 ->
                 bjs.putArray(nv0, nv1 ->
                         bjs.putArray(nv1, bjs::putObj)));
         bjsSetProperty("bjsObjArrayAutoProp", propertyValue);
     }
 
-    public BjsAnyObject[][][] getAnyArrayAutoProp() {
+    public BjsAnyObject[][][] anyArrayAutoProp() {
         JSReference nativeArrayAutoProp = bjsGetProperty("anyArrayAutoProp");
         return bjs.getArray(nativeArrayAutoProp, r0 ->
                 bjs.getArray(r0, r1 ->
                         bjs.getArray(r1, bjs::getAny, BjsAnyObject.class), BjsAnyObject[].class), BjsAnyObject[][].class);
     }
-    public void setAnyArrayAutoProp(BjsAnyObject[][][] value) {
+    public void anyArrayAutoProp(BjsAnyObject[][][] value) {
         JSReference propertyValue = bjs.putArray(value, nv0 ->
                 bjs.putArray(nv0, nv1 ->
                         bjs.putArray(nv1, nv2 ->
@@ -117,7 +117,7 @@ public class ToyClass2 extends ToyClass1
         bjsSetProperty("anyArrayAutoProp", propertyValue);
     }
 
-    public Lambda.F1<String, String>[][][] getLambdaArrayAutoProp() {
+    public Lambda.F1<String, String>[][][] lambdaArrayAutoProp() {
         JSReference nativeArrayAutoProp = bjsGetProperty("lambdaArrayAutoProp");
         return bjs.getArray(nativeArrayAutoProp, r0 ->
                 bjs.getArray(r0, r1 ->
@@ -125,7 +125,7 @@ public class ToyClass2 extends ToyClass1
                                         bjs.getFunc(r2, s -> bjs.getString(bjs.funcCall(r2, bjs.putPrimitive(s)))),
                                 Lambda.F1.class), Lambda.F1[].class), Lambda.F1[][].class);
     }
-    public void setLambdaArrayAutoProp(Lambda.F1<String, String>[][][] value) {
+    public void lambdaArrayAutoProp(Lambda.F1<String, String>[][][] value) {
         JSReference propertyValue = bjs.putArray(value, nv0 ->
                 bjs.putArray(nv0, nv1 ->
                         bjs.putArray(nv1, nv2 -> {
@@ -138,10 +138,10 @@ public class ToyClass2 extends ToyClass1
         bjsSetProperty("lambdaArrayAutoProp", propertyValue);
     }
 
-    public String getProp() {
+    public String prop() {
         return bjs.getString(bjsGetProperty("prop"));
     }
-    public void setProp(String value) {
+    public void prop(String value) {
         bjsSetProperty("prop", bjs.putPrimitive(value));
     }
 

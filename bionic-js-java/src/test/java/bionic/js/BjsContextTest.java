@@ -73,6 +73,7 @@ public class BjsContextTest {
 
         assertNull(ValidDummyWrapper.capturedNativeExport);
         runtime.referenceBuilder = jsType -> mock(JSReference.class);
+        runtime.resolver = (jsReference, jsType) -> mock(JSObject.class);
         JSReference module = context.getNativeModule("ValidDummyWrapper");
         assertNotNull(ValidDummyWrapper.capturedNativeExport);
         assertEquals(module, ValidDummyWrapper.capturedNativeExport.getExportsObject());

@@ -9,13 +9,17 @@ import jjbridge.api.value.strategy.FunctionCallback;
 
 public class BjsNativeExports
 {
+    private static final String nativeObjectName = "bjsNative";
     private final JSRuntime runtime;
     private final JSReference exportsObject;
+    private final JSReference nativeObject;
 
     BjsNativeExports(JSRuntime runtime)
     {
         this.runtime = runtime;
         this.exportsObject = runtime.newReference(JSType.Object);
+        this.nativeObject = runtime.newReference(JSType.Object);
+        ((JSObject<?>) runtime.resolveReference(this.exportsObject)).set(nativeObjectName, this.nativeObject);
     }
 
     public JSReference getExportsObject()
@@ -30,7 +34,7 @@ public class BjsNativeExports
 
     public BjsNativeExports exportFunction(String name, FunctionCallback<?> callback)
     {
-        JSObject<?> obj = runtime.resolveReference(exportsObject);
+        JSObject<?> obj = runtime.resolveReference(nativeObject);
         JSReference function = runtime.newReference(JSType.Function);
         JSFunction<?> jsFunction = runtime.resolveReference(function);
         jsFunction.setFunction(callback);

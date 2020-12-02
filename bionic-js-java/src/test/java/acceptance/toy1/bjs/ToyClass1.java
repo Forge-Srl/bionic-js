@@ -1,4 +1,4 @@
-package acceptance.toy1;
+package acceptance.toy1.bjs;
 
 import bionic.js.Bjs;
 import bionic.js.BjsAnyObject;
@@ -41,36 +41,36 @@ public class ToyClass1 extends BjsObject
 
     // STATIC PROPERTIES
 
-    public static String getNativeAutoProp_static() {
+    public static String nativeAutoProp_static() {
         return bjs.getString(bjs.getProperty(bjsClass, "nativeAutoProp"));
     }
 
-    public static void setNativeAutoProp_static(String value) {
+    public static void nativeAutoProp_static(String value) {
         bjs.setProperty(bjsClass, "nativeAutoProp", bjs.putPrimitive(value));
     }
 
-    public static BjsAnyObject getAnyAutoProp_static() {
+    public static BjsAnyObject anyAutoProp_static() {
         return bjs.getAny(bjs.getProperty(bjsClass, "anyAutoProp"));
     }
 
-    public static void setAnyAutoProp_static(BjsAnyObject value) {
+    public static void anyAutoProp_static(BjsAnyObject value) {
         bjs.setProperty(bjsClass, "anyAutoProp", value.jsObj);
     }
 
-    public static ToyClass1 getBjsObjAutoProp_static() {
+    public static ToyClass1 bjsObjAutoProp_static() {
         return bjs.getObj(bjs.getProperty(bjsClass, "bjsObjAutoProp"), bjsFactory, ToyClass1.class);
     }
 
-    public static void setBjsObjAutoProp_static(ToyClass1 value) {
+    public static void bjsObjAutoProp_static(ToyClass1 value) {
         bjs.setProperty(bjsClass, "bjsObjAutoProp", bjs.putObj(value));
     }
 
-    public static Lambda.F1<String, String> getLambdaAutoProp_static() {
+    public static Lambda.F1<String, String> lambdaAutoProp_static() {
         JSReference jsFunc = bjs.getProperty(bjsClass, "lambdaAutoProp");
         return bjs.getFunc(jsFunc, s -> bjs.getString(bjs.funcCall(jsFunc, bjs.putPrimitive(s))));
     }
 
-    public static void setLambdaAutoProp_static(Lambda.F1<String, String> value) {
+    public static void lambdaAutoProp_static(Lambda.F1<String, String> value) {
         FunctionCallback<?> functionCallback = jsReferences -> {
             jsReferences = bjs.ensureArraySize(jsReferences, 1);
             return bjs.putPrimitive(value.apply(bjs.getString(jsReferences[0])));
@@ -78,20 +78,20 @@ public class ToyClass1 extends BjsObject
         bjs.setProperty(bjsClass, "lambdaAutoProp", bjs.putFunc(value, functionCallback));
     }
 
-    public static String[][][] getNativeArrayAutoProp_static() {
+    public static String[][][] nativeArrayAutoProp_static() {
         JSReference nativeArrayAutoProp = bjs.getProperty(bjsClass, "nativeArrayAutoProp");
         return bjs.getArray(nativeArrayAutoProp, r0 ->
                 bjs.getArray(r0, r1 ->
                         bjs.getArray(r1, bjs::getString, String.class), String[].class), String[][].class);
     }
-    public static void setNativeArrayAutoProp_static(String[][][] value) {
+    public static void nativeArrayAutoProp_static(String[][][] value) {
         JSReference propertyValue = bjs.putArray(value, nv0 ->
                 bjs.putArray(nv0, nv1 ->
                         bjs.putArray(nv1, bjs::putPrimitive)));
         bjs.setProperty(bjsClass, "nativeArrayAutoProp", propertyValue);
     }
 
-    public static ToyClass1[][][] getBjsObjArrayAutoProp_static() {
+    public static ToyClass1[][][] bjsObjArrayAutoProp_static() {
         JSReference nativeArrayAutoProp = bjs.getProperty(bjsClass, "bjsObjArrayAutoProp");
         return bjs.getArray(nativeArrayAutoProp, r0 ->
                         bjs.getArray(r0, r1 ->
@@ -101,20 +101,20 @@ public class ToyClass1 extends BjsObject
                                 ToyClass1[].class),
                 ToyClass1[][].class);
     }
-    public static void setBjsObjArrayAutoProp_static(ToyClass1[][][] value) {
+    public static void bjsObjArrayAutoProp_static(ToyClass1[][][] value) {
         JSReference propertyValue = bjs.putArray(value, nv0 ->
                 bjs.putArray(nv0, nv1 ->
                         bjs.putArray(nv1, bjs::putObj)));
         bjs.setProperty(bjsClass, "bjsObjArrayAutoProp", propertyValue);
     }
 
-    public static BjsAnyObject[][][] getAnyArrayAutoProp_static() {
+    public static BjsAnyObject[][][] anyArrayAutoProp_static() {
         JSReference nativeArrayAutoProp = bjs.getProperty(bjsClass, "anyArrayAutoProp");
         return bjs.getArray(nativeArrayAutoProp, r0 ->
                 bjs.getArray(r0, r1 ->
                         bjs.getArray(r1, bjs::getAny, BjsAnyObject.class), BjsAnyObject[].class), BjsAnyObject[][].class);
     }
-    public static void setAnyArrayAutoProp_static(BjsAnyObject[][][] value) {
+    public static void anyArrayAutoProp_static(BjsAnyObject[][][] value) {
         JSReference propertyValue = bjs.putArray(value, nv0 ->
                 bjs.putArray(nv0, nv1 ->
                         bjs.putArray(nv1, nv2 ->
@@ -122,7 +122,7 @@ public class ToyClass1 extends BjsObject
         bjs.setProperty(bjsClass, "anyArrayAutoProp", propertyValue);
     }
 
-    public static Lambda.F1<String, String>[][][] getLambdaArrayAutoProp_static() {
+    public static Lambda.F1<String, String>[][][] lambdaArrayAutoProp_static() {
         JSReference nativeArrayAutoProp = bjs.getProperty(bjsClass, "lambdaArrayAutoProp");
         return bjs.getArray(nativeArrayAutoProp, r0 ->
                 bjs.getArray(r0, r1 ->
@@ -130,7 +130,7 @@ public class ToyClass1 extends BjsObject
                                         bjs.getFunc(r2, s -> bjs.getString(bjs.funcCall(r2, bjs.putPrimitive(s)))),
                                 Lambda.F1.class), Lambda.F1[].class), Lambda.F1[][].class);
     }
-    public static void setLambdaArrayAutoProp_static(Lambda.F1<String, String>[][][] value) {
+    public static void lambdaArrayAutoProp_static(Lambda.F1<String, String>[][][] value) {
         JSReference propertyValue = bjs.putArray(value, nv0 ->
                 bjs.putArray(nv0, nv1 ->
                         bjs.putArray(nv1, nv2 -> {
@@ -143,10 +143,10 @@ public class ToyClass1 extends BjsObject
         bjs.setProperty(bjsClass, "lambdaArrayAutoProp", propertyValue);
     }
 
-    public static String getProp_static() {
+    public static String prop_static() {
         return bjs.getString(bjs.getProperty(bjsClass, "prop"));
     }
-    public static void setProp_static(String value) {
+    public static void prop_static(String value) {
         bjs.setProperty(bjsClass, "prop", bjs.putPrimitive(value));
     }
 
@@ -216,17 +216,17 @@ public class ToyClass1 extends BjsObject
     }
 
     // TESTING HELPERS
-    public static String getLog_static() {
+    public static String log_static() {
         return bjs.getString(bjs.getProperty(bjsClass, "log"));
     }
-    public static void setLog_static(String value) {
+    public static void log_static(String value) {
         bjs.setProperty(bjsClass, "log", bjs.putPrimitive(value));
     }
 
-    public String getLog() {
+    public String log() {
         return bjs.getString(bjsGetProperty("log"));
     }
-    public void setLog(String value) {
+    public void log(String value) {
         bjsSetProperty("log", bjs.putPrimitive(value));
     }
 

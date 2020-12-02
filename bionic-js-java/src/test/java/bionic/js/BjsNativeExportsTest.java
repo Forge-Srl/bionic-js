@@ -19,12 +19,18 @@ import static org.mockito.Mockito.*;
 public class BjsNativeExportsTest {
     @Mock private JSRuntime runtime;
     @Mock private JSReference exportsObject;
+    @Mock private JSReference nativeObject;
+    @Mock private JSObject<?> obj;
     private BjsNativeExports nativeExports;
 
     @BeforeEach
     public void before() {
-        when(runtime.newReference(JSType.Object)).thenReturn(exportsObject);
+        when(runtime.newReference(JSType.Object))
+                .thenReturn(exportsObject)
+                .thenReturn(nativeObject);
+        when(runtime.resolveReference(exportsObject)).thenReturn(obj);
         nativeExports = spy(new BjsNativeExports(runtime));
+        verify(obj).set("bjsNative", nativeObject);
     }
 
     @Test
@@ -48,7 +54,7 @@ public class BjsNativeExportsTest {
         JSReference reference = mock(JSReference.class);
         JSFunction<?> jsFunction = mock(JSFunction.class);
 
-        when(runtime.resolveReference(exportsObject)).thenReturn(jsObject);
+        when(runtime.resolveReference(nativeObject)).thenReturn(jsObject);
         when(runtime.newReference(JSType.Function)).thenReturn(reference);
         when(runtime.resolveReference(reference)).thenReturn(jsFunction);
 

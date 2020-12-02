@@ -1,6 +1,7 @@
 package acceptance.toy1;
 
-import bionic.js.Bjs;
+import acceptance.toy1.bjs.BjsTestProject;
+import acceptance.toy1.bjs.ToyClass2;
 import bionic.js.BjsAnyObject;
 import bionic.js.Lambda;
 import jjbridge.api.value.JSType;
@@ -24,7 +25,7 @@ public class ToyClass2Test
     @BeforeAll
     public static void beforeClass()
     {
-        Bjs.setDefaultRuntime(new V8Engine().newRuntime());
+        BjsTestProject.setJsEngine(new V8Engine());
     }
 
     @BeforeEach
@@ -33,186 +34,186 @@ public class ToyClass2Test
         testDateTimestamp = 472867200000D;
         testDate = Date.from(Instant.ofEpochMilli(testDateTimestamp.longValue()));
         toyObj = new ToyClass2(false);
-        toyObj.setLog("any object");
+        toyObj.log("any object");
         
         toy = new ToyClass2(false);
-        assertEquals("called constructor without params", toy.getLog());
+        assertEquals("called constructor without params", toy.log());
     }
 
     @Test
     public void testConstructorParam() {
         toy = new ToyClass2(true);
-        assertEquals("called constructor with params: true", toy.getLog());
+        assertEquals("called constructor with params: true", toy.log());
     }
 
     @Test
     public void testConstructorNullParam() {
         toy = new ToyClass2((Boolean) null);
-        assertEquals("called constructor without params", toy.getLog());
+        assertEquals("called constructor without params", toy.log());
     }
 
     @Test
     public void testNativeAutoProp()
     {
-        assertNull(toy.getNativeAutoProp());
+        assertNull(toy.nativeAutoProp());
 
-        toy.setNativeAutoProp("1984!");
-        assertEquals("1984!", toy.getNativeAutoProp());
+        toy.nativeAutoProp("1984!");
+        assertEquals("1984!", toy.nativeAutoProp());
 
-        toy.setNativeAutoProp(null);
-        assertNull(toy.getNativeAutoProp());
+        toy.nativeAutoProp(null);
+        assertNull(toy.nativeAutoProp());
     }
 
     @Test
     public void testAnyAutoProp() {
-        assertEquals(toy.getAnyAutoProp().jsObj.getActualType(), JSType.Undefined);
+        assertEquals(toy.anyAutoProp().jsObj.getActualType(), JSType.Undefined);
 
-        toy.setAnyAutoProp(new BjsAnyObject(toyObj));
-        assertEquals("any object", toy.getAnyAutoProp().getObject(ToyClass2.bjsFactory, ToyClass2.class).getLog());
+        toy.anyAutoProp(new BjsAnyObject(toyObj));
+        assertEquals("any object", toy.anyAutoProp().getObject(ToyClass2.bjsFactory, ToyClass2.class).log());
     }
 
     @Test
     public void testBjsObjAutoProp() {
-        assertNull(toy.getBjsObjAutoProp());
+        assertNull(toy.bjsObjAutoProp());
 
-        toy.setBjsObjAutoProp(toyObj);
-        assertEquals("any object", toy.getBjsObjAutoProp().getLog());
+        toy.bjsObjAutoProp(toyObj);
+        assertEquals("any object", toy.bjsObjAutoProp().log());
     }
 
     @Test
     public void testLambdaAutoProp() {
-        assertNull(toy.getLambdaAutoProp());
+        assertNull(toy.lambdaAutoProp());
 
-        toy.setLambdaAutoProp(string -> string == null ? "null!" : string + " 1984!");
-        assertEquals("null!", toy.getLambdaAutoProp().apply(null));
-        assertEquals("W 1984!", toy.getLambdaAutoProp().apply("W"));
+        toy.lambdaAutoProp(string -> string == null ? "null!" : string + " 1984!");
+        assertEquals("null!", toy.lambdaAutoProp().apply(null));
+        assertEquals("W 1984!", toy.lambdaAutoProp().apply("W"));
 
-        toy.setLambdaAutoProp(null);
-        assertNull(toy.getLambdaAutoProp());
+        toy.lambdaAutoProp(null);
+        assertNull(toy.lambdaAutoProp());
 
-        toy.setLambdaAutoProp(string -> null);
-        assertNull(toy.getLambdaAutoProp().apply("x"));
+        toy.lambdaAutoProp(string -> null);
+        assertNull(toy.lambdaAutoProp().apply("x"));
     }
 
     @Test
     public void testLambdaAutoProp_putNullToJs() {
         String nullTest = "(this.lambdaAutoProp() === null)";
 
-        toy.setLambdaAutoProp(string -> "hey");
+        toy.lambdaAutoProp(string -> "hey");
         toy.evalAndSetValue(nullTest);
         assertFalse(toy.boolFunc());
 
-        toy.setLambdaAutoProp(string -> null);
+        toy.lambdaAutoProp(string -> null);
         toy.evalAndSetValue(nullTest);
         assertTrue(toy.boolFunc());
     }
 
     @Test
     public void testNativeArrayAutoProp() {
-        assertNull(toy.getNativeArrayAutoProp());
+        assertNull(toy.nativeArrayAutoProp());
 
-        toy.setNativeArrayAutoProp(new String[][][]{{{"a", "b"}}});
-        assertArrayEquals(new String[][][]{{{"a", "b"}}}, toy.getNativeArrayAutoProp());
+        toy.nativeArrayAutoProp(new String[][][]{{{"a", "b"}}});
+        assertArrayEquals(new String[][][]{{{"a", "b"}}}, toy.nativeArrayAutoProp());
 
-        toy.setNativeArrayAutoProp(new String[][][]{{{}, {}}});
-        assertArrayEquals(new String[][][]{{{}, {}}}, toy.getNativeArrayAutoProp());
+        toy.nativeArrayAutoProp(new String[][][]{{{}, {}}});
+        assertArrayEquals(new String[][][]{{{}, {}}}, toy.nativeArrayAutoProp());
 
-        toy.setNativeArrayAutoProp(new String[][][]{{}, {}});
-        assertArrayEquals(new String[][][]{{}, {}}, toy.getNativeArrayAutoProp());
+        toy.nativeArrayAutoProp(new String[][][]{{}, {}});
+        assertArrayEquals(new String[][][]{{}, {}}, toy.nativeArrayAutoProp());
 
-        toy.setNativeArrayAutoProp(new String[][][]{});
-        assertArrayEquals(new String[][][]{}, toy.getNativeArrayAutoProp());
+        toy.nativeArrayAutoProp(new String[][][]{});
+        assertArrayEquals(new String[][][]{}, toy.nativeArrayAutoProp());
 
-        toy.setNativeArrayAutoProp(new String[][][]{null, {null}, {{null}}, {{"test", null}, null}});
-        assertArrayEquals(new String[][][]{null, {null}, {{null}}, {{"test", null}, null}}, toy.getNativeArrayAutoProp());
+        toy.nativeArrayAutoProp(new String[][][]{null, {null}, {{null}}, {{"test", null}, null}});
+        assertArrayEquals(new String[][][]{null, {null}, {{null}}, {{"test", null}, null}}, toy.nativeArrayAutoProp());
     }
 
     @Test
     public void testBjsObjArrayAutoProp() {
-        assertNull(toy.getBjsObjArrayAutoProp());
+        assertNull(toy.bjsObjArrayAutoProp());
 
-        toy.setBjsObjArrayAutoProp(new ToyClass2[][][]{{{toyObj}}});
-        assertArrayEquals(new ToyClass2[][][]{{{toyObj}}}, toy.getBjsObjArrayAutoProp());
+        toy.bjsObjArrayAutoProp(new ToyClass2[][][]{{{toyObj}}});
+        assertArrayEquals(new ToyClass2[][][]{{{toyObj}}}, toy.bjsObjArrayAutoProp());
 
-        toy.setBjsObjArrayAutoProp(new ToyClass2[][][]{{{}, {}}});
-        assertArrayEquals(new ToyClass2[][][]{{{}, {}}}, toy.getBjsObjArrayAutoProp());
+        toy.bjsObjArrayAutoProp(new ToyClass2[][][]{{{}, {}}});
+        assertArrayEquals(new ToyClass2[][][]{{{}, {}}}, toy.bjsObjArrayAutoProp());
 
-        toy.setBjsObjArrayAutoProp(new ToyClass2[][][]{{}, {}});
-        assertArrayEquals(new ToyClass2[][][]{{}, {}}, toy.getBjsObjArrayAutoProp());
+        toy.bjsObjArrayAutoProp(new ToyClass2[][][]{{}, {}});
+        assertArrayEquals(new ToyClass2[][][]{{}, {}}, toy.bjsObjArrayAutoProp());
 
-        toy.setBjsObjArrayAutoProp(new ToyClass2[][][]{});
-        assertArrayEquals(new ToyClass2[][][]{}, toy.getBjsObjArrayAutoProp());
+        toy.bjsObjArrayAutoProp(new ToyClass2[][][]{});
+        assertArrayEquals(new ToyClass2[][][]{}, toy.bjsObjArrayAutoProp());
 
-        toy.setBjsObjArrayAutoProp(new ToyClass2[][][]{null, {null}, {{null}}, {{toyObj, null}, null}});
-        assertArrayEquals(new ToyClass2[][][]{null, {null}, {{null}}, {{toyObj, null}, null}}, toy.getBjsObjArrayAutoProp());
+        toy.bjsObjArrayAutoProp(new ToyClass2[][][]{null, {null}, {{null}}, {{toyObj, null}, null}});
+        assertArrayEquals(new ToyClass2[][][]{null, {null}, {{null}}, {{toyObj, null}, null}}, toy.bjsObjArrayAutoProp());
     }
 
     @Test
     public void testAnyArrayAutoProp() {
-        assertNull(toy.getAnyArrayAutoProp());
+        assertNull(toy.anyArrayAutoProp());
 
         BjsAnyObject anyObj = new BjsAnyObject(toyObj);
 
-        toy.setAnyArrayAutoProp(new BjsAnyObject[][][]{{{anyObj}}});
-        assertEquals("any object", toy.getAnyArrayAutoProp()[0][0][0].getObject(ToyClass2.bjsFactory, ToyClass2.class).getLog());
+        toy.anyArrayAutoProp(new BjsAnyObject[][][]{{{anyObj}}});
+        assertEquals("any object", toy.anyArrayAutoProp()[0][0][0].getObject(ToyClass2.bjsFactory, ToyClass2.class).log());
 
-        toy.setAnyArrayAutoProp(new BjsAnyObject[][][]{{{}}});
-        assertEquals(0, toy.getAnyArrayAutoProp()[0][0].length);
+        toy.anyArrayAutoProp(new BjsAnyObject[][][]{{{}}});
+        assertEquals(0, toy.anyArrayAutoProp()[0][0].length);
     }
 
     @Test
     public void testLambdaArrayAutoProp() {
-        assertNull(toy.getLambdaArrayAutoProp());
+        assertNull(toy.lambdaArrayAutoProp());
 
         Lambda.F1<String, String> lambda1a = s -> (s != null ? s : "") + "-1a";
         Lambda.F1<String, String> lambda1b = s -> (s != null ? s : "") + "-1b";
         Lambda.F1<String, String> lambda2a = s -> (s != null ? s : "") + "-2a";
 
-        toy.setLambdaArrayAutoProp(new Lambda.F1[][][]{{{lambda1a, lambda1b}, {lambda2a, null}}});
+        toy.lambdaArrayAutoProp(new Lambda.F1[][][]{{{lambda1a, lambda1b}, {lambda2a, null}}});
 
-        assertEquals("test-1a", toy.getLambdaArrayAutoProp()[0][0][0].apply("test"));
-        assertEquals("test-1b", toy.getLambdaArrayAutoProp()[0][0][1].apply("test"));
-        assertEquals("test-2a", toy.getLambdaArrayAutoProp()[0][1][0].apply("test"));
-        assertNull(toy.getLambdaArrayAutoProp()[0][1][1]);
+        assertEquals("test-1a", toy.lambdaArrayAutoProp()[0][0][0].apply("test"));
+        assertEquals("test-1b", toy.lambdaArrayAutoProp()[0][0][1].apply("test"));
+        assertEquals("test-2a", toy.lambdaArrayAutoProp()[0][1][0].apply("test"));
+        assertNull(toy.lambdaArrayAutoProp()[0][1][1]);
 
-        toy.setLambdaArrayAutoProp(new Lambda.F1[][][]{{{}}});
-        assertEquals(0, toy.getLambdaArrayAutoProp()[0][0].length);
+        toy.lambdaArrayAutoProp(new Lambda.F1[][][]{{{}}});
+        assertEquals(0, toy.lambdaArrayAutoProp()[0][0].length);
     }
 
     @Test
     public void testProp() {
-        assertEquals("1984!", toy.getProp());
+        assertEquals("1984!", toy.prop());
 
-        toy.setProp("test value");
-        assertEquals("test value", toy.getProp());
+        toy.prop("test value");
+        assertEquals("test value", toy.prop());
 
-        toy.setProp(null);
-        assertEquals("1984!", toy.getProp());
+        toy.prop(null);
+        assertEquals("1984!", toy.prop());
     }
 
     @Test
     public void testVoidFunc() {
         toy.voidFunc();
-        assertEquals("called voidFunc", toy.getLog());
+        assertEquals("called voidFunc", toy.log());
     }
 
     @Test
     public void testParamsFunc() {
         toy.paramsFunc(true, testDate, 01.984, 1984, "1984", new BjsAnyObject(toyObj), toyObj,
                 new Integer[]{1,2,3}, () -> "lambda return value");
-        assertEquals("called paramsFunc with params: true, 1984-12-26T00:00:00.000Z, 1.984, 1984, 1984, any object, any object, [1,2,3], lambda return value", toy.getLog());
+        assertEquals("called paramsFunc with params: true, 1984-12-26T00:00:00.000Z, 1.984, 1984, 1984, any object, any object, [1,2,3], lambda return value", toy.log());
     }
 
     @Test
     public void testParamsFunc_null() {
         toy.paramsFunc(null, null, null, null, null, ToyClass2.bjs.anyNull(), null, null, null);
-        assertEquals("called paramsFunc with params: null, null, null, null, null, null, null, null, null", toy.getLog());
+        assertEquals("called paramsFunc with params: null, null, null, null, null, null, null, null, null", toy.log());
     }
 
     @Test
     public void testBoolFunc() {
         assertNull(toy.boolFunc());
-        assertEquals("called retValueFunc", toy.getLog());
+        assertEquals("called retValueFunc", toy.log());
 
         toy.evalAndSetValue("null");
         assertNull(toy.boolFunc());
@@ -230,7 +231,7 @@ public class ToyClass2Test
     @Test
     public void testDateFunc() {
         assertNull(toy.dateFunc());
-        assertEquals("called retValueFunc", toy.getLog());
+        assertEquals("called retValueFunc", toy.log());
 
         toy.evalAndSetValue("null");
         assertNull(toy.dateFunc());
@@ -242,7 +243,7 @@ public class ToyClass2Test
     @Test
     public void testFloatFunc() {
         assertNull(toy.floatFunc());
-        assertEquals("called retValueFunc", toy.getLog());
+        assertEquals("called retValueFunc", toy.log());
 
         toy.evalAndSetValue("null");
         assertNull(toy.floatFunc());
@@ -257,7 +258,7 @@ public class ToyClass2Test
     @Test
     public void testIntFunc() {
         assertNull(toy.intFunc());
-        assertEquals("called retValueFunc", toy.getLog());
+        assertEquals("called retValueFunc", toy.log());
 
         toy.evalAndSetValue("null");
         assertNull(toy.intFunc());
@@ -272,7 +273,7 @@ public class ToyClass2Test
     @Test
     public void testStringFunc() {
         assertNull(toy.stringFunc());
-        assertEquals("called retValueFunc", toy.getLog());
+        assertEquals("called retValueFunc", toy.log());
 
         toy.evalAndSetValue("null");
         assertNull(toy.stringFunc());
@@ -286,12 +287,12 @@ public class ToyClass2Test
         Boolean[] check = new Boolean[] {false};
 
         Lambda.F0<Void> jsLambda = toy.lambdaVoidFunc(() -> {
-           assertEquals("calling lambda", toy.getLog());
+           assertEquals("calling lambda", toy.log());
            check[0] = true;
            return null;
         });
 
-        assertEquals("called lambdaVoidFunc", toy.getLog());
+        assertEquals("called lambdaVoidFunc", toy.log());
         jsLambda.apply();
         assertTrue(check[0]);
 
@@ -302,31 +303,31 @@ public class ToyClass2Test
     @Test
     public void testLambdaWithParamsFunc() {
         toy.lambdaWithParamsFunc((integer, nullStr, any, obj) -> {
-            assertEquals("called lambdaWithParamsFunc", toy.getLog());
+            assertEquals("called lambdaWithParamsFunc", toy.log());
             assertEquals(1984, (int) integer);
             assertNull(nullStr);
-            assertEquals("hello 84", any.getObject(ToyClass2.bjsFactory, ToyClass2.class).getLog());
-            assertEquals("hello 84", obj.getLog());
+            assertEquals("hello 84", any.getObject(ToyClass2.bjsFactory, ToyClass2.class).log());
+            assertEquals("hello 84", obj.log());
             return "1984!";
         });
-        assertEquals("called lambda with result: 1984!", toy.getLog());
+        assertEquals("called lambda with result: 1984!", toy.log());
     }
 
     @Test
     public void testReturningLambdaWithParamsFunc() {
         Lambda.F4<Integer, BjsAnyObject, ToyClass2, Integer[], String> lambda = toy.returningLambdaWithParamsFunc();
-        assertEquals("called returningLambdaWithParamsFunc", toy.getLog());
+        assertEquals("called returningLambdaWithParamsFunc", toy.log());
         String lambdaRetValue = lambda.apply(1984, new BjsAnyObject(toyObj), toyObj, new Integer[]{1,2,3});
-        assertEquals("called returned lambda with params: 1984, any object, any object, [1,2,3]", toy.getLog());
+        assertEquals("called returned lambda with params: 1984, any object, any object, [1,2,3]", toy.log());
         assertEquals("lambda returning value", lambdaRetValue);
     }
 
     @Test
     public void testReturningLambdaWithParamsFunc_null() {
         Lambda.F4<Integer, BjsAnyObject, ToyClass2, Integer[], String> lambda = toy.returningLambdaWithParamsFunc();
-        assertEquals("called returningLambdaWithParamsFunc", toy.getLog());
+        assertEquals("called returningLambdaWithParamsFunc", toy.log());
         String lambdaRetValue = lambda.apply(null, ToyClass2.bjs.anyNull(), null, null);
-        assertEquals("called returned lambda with params: null, null, null, null", toy.getLog());
+        assertEquals("called returned lambda with params: null, null, null, null", toy.log());
         assertEquals("lambda returning value", lambdaRetValue);
     }
 }
