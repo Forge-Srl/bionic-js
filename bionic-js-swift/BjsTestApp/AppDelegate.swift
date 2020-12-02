@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  BjsTestApp
-//
-//  Created by Marco Vanetti
-//  Copyright © 2019 Forge srl. All rights reserved.
-//
-
 import UIKit
 
 @UIApplicationMain

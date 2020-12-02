@@ -1,5 +1,6 @@
 package bionic.js;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import jjbridge.api.runtime.JSReference;
 
 import java.lang.annotation.ElementType;
@@ -11,19 +12,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 
-public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends TypeInfo<B>
+public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends BjsTypeInfo<B>
 {
     private static final HashMap<Class<?>, BjsNativeWrapperTypeInfo<?>> cachedInfo = new HashMap<>();
     private final BjsFunctionExporter exporter;
-    final String wrapperPath;
-    final String name;
 
-    private BjsNativeWrapperTypeInfo(Class<B> nativeWrapper, String wrapperPath, String name,
-                                     BjsFunctionExporter exporter)
+    private BjsNativeWrapperTypeInfo(Class<B> nativeWrapper, BjsLocator locator, BjsFunctionExporter exporter)
     {
-        super(nativeWrapper);
-        this.wrapperPath = wrapperPath;
-        this.name = name;
+        super(nativeWrapper, locator);
         this.exporter = exporter;
     }
 
@@ -34,47 +30,12 @@ public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends Typ
         return nativeExport.getExportsObject();
     }
 
-    public static <N extends BjsExport, T extends BjsNativeWrapper<N>> BjsNativeWrapperTypeInfo<T> get(Class<T> clazz)
+    public static <N extends BjsExport, T extends BjsNativeWrapper<N>> BjsNativeWrapperTypeInfo<T> get(
+            @NonNull Class<T> clazz)
     {
         if (!cachedInfo.containsKey(clazz))
         {
-            WrapperPath path = clazz.getAnnotation(WrapperPath.class);
-            if (path == null)
-            {
-                throw new RuntimeException("Class has no WrapperPath annotation");
-            }
-
-            Name name = clazz.getAnnotation(Name.class);
-            if (name == null)
-            {
-                throw new RuntimeException("Class has no Name annotation");
-            }
-
-            BjsFunctionExporter exporter = null;
-            for (Method m : clazz.getDeclaredMethods())
-            {
-                if (m.isAnnotationPresent(Exporter.class) && Modifier.isStatic(m.getModifiers()))
-                {
-                    exporter = nativeExport ->
-                    {
-                        try
-                        {
-                            m.invoke(null, nativeExport);
-                        }
-                        catch (IllegalAccessException | InvocationTargetException e)
-                        {
-                            throw new RuntimeException(e);
-                        }
-                    };
-                    break;
-                }
-            }
-            if (exporter == null)
-            {
-                throw new RuntimeException("Class has no method with Exporter annotation");
-            }
-
-            cachedInfo.put(clazz, new BjsNativeWrapperTypeInfo<>(clazz, path.path(), name.name(), exporter));
+            cachedInfo.put(clazz, new BjsNativeWrapperTypeInfo<>(clazz, getLocator(clazz), getFunctionExporter(clazz)));
         }
 
         @SuppressWarnings("unchecked")
@@ -82,23 +43,31 @@ public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends Typ
         return typeInfo;
     }
 
+    public static BjsFunctionExporter getFunctionExporter(@NonNull Class<?> clazz)
+    {
+        for (Method m : clazz.getDeclaredMethods())
+        {
+            if (m.isAnnotationPresent(Exporter.class) && Modifier.isStatic(m.getModifiers()))
+            {
+                return nativeExport ->
+                {
+                    try
+                    {
+                        m.invoke(null, nativeExport);
+                    }
+                    catch (IllegalAccessException | InvocationTargetException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                };
+            }
+        }
+        throw new RuntimeException("Class has no method with Exporter annotation");
+    }
+
     interface BjsFunctionExporter
     {
         void bjsExportFunctions(BjsNativeExports nativeExport);
-    }
-
-    @Target(ElementType.TYPE)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface WrapperPath
-    {
-        String path();
-    }
-
-    @Target(ElementType.TYPE)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface Name
-    {
-        String name();
     }
 
     @Target(ElementType.METHOD)

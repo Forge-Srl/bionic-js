@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const path = require('path')
 const {BjsSync} = require('../filesystem/BjsSync')
 const {Log} = require('../filesystem/Log')

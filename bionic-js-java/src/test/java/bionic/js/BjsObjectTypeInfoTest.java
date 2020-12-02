@@ -4,16 +4,15 @@ import bionic.js.testutils.TestWithBjsMock;
 import jjbridge.api.runtime.JSReference;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BjsObjectTypeInfoTest extends TestWithBjsMock {
     @Test
     public void get_exception() {
         class DummyWrong extends BjsObject {
             private DummyWrong(JSReference jsObject) {
-                super(jsObject);
+                super(DummyWrong.class, jsObject);
             }
         }
 
@@ -24,21 +23,19 @@ public class BjsObjectTypeInfoTest extends TestWithBjsMock {
 
     @Test
     public void get() {
-        JSReference mock = mock(JSReference.class);
-        final String path = "/some/path";
+        final String project = "project";
+        final String module = "module";
 
-        @BjsObjectTypeInfo.BjsModulePath(path = path)
+        @BjsObjectTypeInfo.BjsLocation(project = project, module = module)
         class Dummy extends BjsObject {
             private Dummy(JSReference jsObject) {
-                super(jsObject);
+                super(Dummy.class, jsObject);
             }
         }
 
         BjsObjectTypeInfo<Dummy> info = BjsObjectTypeInfo.get(Dummy.class);
-        when(Bjs.get().loadModule(path)).thenReturn(mock);
-
-        JSReference result = info.bjsClass();
-        assertEquals(mock, result);
+        assertEquals(project, info.bjsLocator.projectName);
+        assertEquals(module, info.bjsLocator.moduleName);
 
         //assertion for cache
         BjsObjectTypeInfo<Dummy> info2 = BjsObjectTypeInfo.get(Dummy.class);

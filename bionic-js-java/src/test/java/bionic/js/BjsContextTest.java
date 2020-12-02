@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -19,19 +21,62 @@ public class BjsContextTest {
     private JSRuntimeForTest runtime;
     private BjsContext context;
 
+    @BjsTypeInfo.BjsLocation(project = "", module = "")
+    private static class InvalidDummyWrapper extends BjsNativeWrapper<BjsExport> {
+        @BjsNativeWrapperTypeInfo.Exporter
+        static void exporter(BjsNativeExports nativeExport) {}
+    }
+
+    @BjsTypeInfo.BjsLocation(project = "dummy", module = "ValidDummyWrapper")
+    private static class ValidDummyWrapper extends BjsNativeWrapper<BjsExport> {
+        public static BjsNativeExports capturedNativeExport = null;
+
+        @BjsNativeWrapperTypeInfo.Exporter
+        static void exporter(BjsNativeExports nativeExport) {
+            capturedNativeExport = nativeExport;
+        }
+    }
+
     @BeforeEach
     public void before() {
         runtime = new JSRuntimeForTest(null, null, null, null);
-        FunctionCallback[] callbacks = prepareForAssertGlobalSetting(runtime, new String[]{"setTimeout","clearTimeout"});
+        FunctionCallback<?>[] callbacks = prepareForAssertGlobalSetting(runtime, new String[]{
+                "setTimeout","clearTimeout","bjsNativeRequire","bjsSetModuleLoader"
+        });
 
-        context = new BjsContext(runtime);
+        context = new BjsContext(runtime, "SomeProject");
 
         assertEquals(context.setTimeoutCallback, callbacks[0]);
         assertEquals(context.clearTimeoutCallback, callbacks[1]);
+        assertEquals(context.bjsNativeRequireCallback, callbacks[2]);
+        assertEquals(context.bjsSetModuleLoaderCallback, callbacks[3]);
         runtime.referenceBuilder = null;
         runtime.globalObject = null;
         runtime.resolver = null;
         runtime.scriptRunner = null;
+    }
+
+    @Test
+    public void addNativeWrappers_invalid() {
+        assertThrows(RuntimeException.class, () -> context.addNativeWrappers(InvalidDummyWrapper.class));
+    }
+
+    @Test
+    public void addNativeWrappers_alreadyAdded() {
+        context.addNativeWrappers(ValidDummyWrapper.class);
+        assertThrows(RuntimeException.class, () -> context.addNativeWrappers(ValidDummyWrapper.class));
+    }
+
+    @Test
+    public void getNativeModule() {
+        context.addNativeWrappers(ValidDummyWrapper.class);
+
+        assertNull(ValidDummyWrapper.capturedNativeExport);
+        runtime.referenceBuilder = jsType -> mock(JSReference.class);
+        runtime.resolver = (jsReference, jsType) -> mock(JSObject.class);
+        JSReference module = context.getNativeModule("ValidDummyWrapper");
+        assertNotNull(ValidDummyWrapper.capturedNativeExport);
+        assertEquals(module, ValidDummyWrapper.capturedNativeExport.getExportsObject());
     }
 
     @Test
@@ -117,7 +162,7 @@ public class BjsContextTest {
         JSReference reference = mock(JSReference.class);
         when(reference.getActualType()).thenReturn(type);
         when(reference.getNominalType()).thenReturn(type);
-        JSDate jsValue = mock(JSDate.class);
+        JSDate<?> jsValue = mock(JSDate.class);
         Date date = new Date(1584554);
 
         doAnswer(invocation -> {
@@ -173,11 +218,11 @@ public class BjsContextTest {
         JSReference reference = mock(JSReference.class);
         when(reference.getActualType()).thenReturn(type);
         when(reference.getNominalType()).thenReturn(type);
-        JSFunction jsValue = mock(JSFunction.class);
-        FunctionCallback callback = jsReferences -> null;
+        JSFunction<?> jsValue = mock(JSFunction.class);
+        FunctionCallback<?> callback = jsReferences -> null;
 
         doAnswer(invocation -> {
-            FunctionCallback value = invocation.getArgument(0);
+            FunctionCallback<?> value = invocation.getArgument(0);
             assertEquals(callback, value);
             return null;
         }).when(jsValue).setFunction(any());
@@ -232,7 +277,7 @@ public class BjsContextTest {
         when(reference.getActualType()).thenReturn(type);
         when(reference.getNominalType()).thenReturn(type);
 
-        JSFunction jsValue = mock(JSFunction.class);
+        JSFunction<?> jsValue = mock(JSFunction.class);
 
         doAnswer(invocation -> {
             JSReference functionReference = invocation.getArgument(0);
@@ -277,7 +322,31 @@ public class BjsContextTest {
         assertNull(context.executeJs("script", "path"));
     }
 
-    private <T extends JSPrimitive> JSReference newPrimitiveCommonAssert(JSType type, Class<T> tClass, Answer setAnswer) {
+    @Test
+    public void logError() {
+        PrintStream original = System.err;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(out));
+
+        context.logError("Some error");
+        assertEquals("Bjs \"SomeProject\" error: Some error\n", out.toString());
+
+        System.setErr(original);
+    }
+
+    @Test
+    public void logInfo() {
+        PrintStream original = System.out;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+
+        context.logInfo("Some info");
+        assertEquals("Bjs \"SomeProject\" info: Some info\n", out.toString());
+
+        System.setOut(original);
+    }
+
+    private <T extends JSPrimitive<?>> JSReference newPrimitiveCommonAssert(JSType type, Class<T> tClass, Answer setAnswer) {
         JSReference reference = mock(JSReference.class);
         when(reference.getActualType()).thenReturn(type);
         when(reference.getNominalType()).thenReturn(type);
@@ -298,15 +367,15 @@ public class BjsContextTest {
         return reference;
     }
 
-    private static FunctionCallback[] prepareForAssertGlobalSetting(JSRuntimeForTest runtime, String[] names) {
-        FunctionCallback[] callbacks = new FunctionCallback[names.length];
+    private static FunctionCallback<?>[] prepareForAssertGlobalSetting(JSRuntimeForTest runtime, String[] names) {
+        FunctionCallback<?>[] callbacks = new FunctionCallback[names.length];
 
         JSReference functionReference = mock(JSReference.class);
         when(functionReference.getActualType()).thenReturn(JSType.Function);
         when(functionReference.getNominalType()).thenReturn(JSType.Function);
 
         int[] funcCounter = new int[1];
-        JSFunction jsFunction = mock(JSFunction.class);
+        JSFunction<?> jsFunction = mock(JSFunction.class);
         doAnswer(invocation -> {
             callbacks[funcCounter[0]] = invocation.getArgument(0);
             return null;
@@ -316,17 +385,17 @@ public class BjsContextTest {
         when(objectReference.getActualType()).thenReturn(JSType.Object);
         when(objectReference.getNominalType()).thenReturn(JSType.Object);
 
-        JSObject jsObject = mock(JSObject.class);
+        JSObject<?> jsObject = mock(JSObject.class);
 
         int[] refCounter = new int[1];
         runtime.referenceBuilder = jsType -> {
             refCounter[0]++;
-            if (refCounter[0] == 1 || refCounter[0] == 2)
+            if (refCounter[0] <= callbacks.length)
             {
                 assertEquals(JSType.Function, jsType);
                 return functionReference;
             }
-            else if (refCounter[0] == 3)
+            else if (refCounter[0] == callbacks.length + 1)
             {
                 assertEquals(JSType.Object, jsType);
                 return objectReference;

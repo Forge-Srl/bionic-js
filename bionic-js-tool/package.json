@@ -2,8 +2,14 @@
   "name": "bionicjs",
   "version": "1.0.1",
   "description": "Bionic.js",
-  "author": "Marco Vanetti",
-  "license": "SEE LICENSE IN license.txt",
+  "homepage": "https://github.com/Forge-Srl/bionic-js",
+  "license": "MIT",
+  "author": "Forge S.r.l.",
+  "maintainers": [
+    {
+      "name": "Marco Vanetti"
+    }
+  ],
   "bin": {
     "bionicjs": "./cli/bjsSyncCli.js"
   },
@@ -25,13 +31,13 @@
   ],
   "dependencies": {
     "@babel/parser": "^7.12.7",
-    "fast-glob": "*",
+    "fast-glob": "^3.2.4",
     "ignore": "^5.1.8",
-    "memfs": "*",
+    "memfs": "^3.2.0",
     "memory-fs": "^0.5.0",
     "mkdirp": "^1.0.4",
     "rimraf": "^3.0.2",
-    "touch": "*",
+    "touch": "^3.1.0",
     "uuid": "^8.3.1",
     "webpack": "^5.9.0",
     "xcode": "^3.0.1"
@@ -39,6 +45,6 @@
   "devDependencies": {
     "copy-dir": "^1.3.0",
     "jest-cli": "^26.6.3",
-    "pegjs": "*"
+    "pegjs": "^0.10.0"
   }
 }

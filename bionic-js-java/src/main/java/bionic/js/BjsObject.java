@@ -4,39 +4,49 @@ import jjbridge.api.runtime.JSReference;
 
 import java.util.Objects;
 
-public class BjsObject
+public abstract class BjsObject
 {
+    private final BjsLocator locator;
     final JSReference jsObject;
 
-    public BjsObject(JSReference jsObject)
+    protected <T extends BjsObject> BjsObject(Class<T> type, JSReference jsObject)
     {
+        this.locator = BjsObjectTypeInfo.get(type).bjsLocator;
         this.jsObject = jsObject;
-        Bjs.get().createNativeObject(this.jsObject, this);
+        bjs().createNativeObject(this.jsObject, this);
     }
 
-    public <T extends BjsObject> BjsObject(Class<T> type, JSReference[] arguments)
+    protected <T extends BjsObject> BjsObject(Class<T> type, JSReference[] arguments)
     {
-        this(Bjs.get().constructObject(BjsObjectTypeInfo.get(type).bjsClass(), arguments));
+        BjsObjectTypeInfo<T> typeInfo = BjsObjectTypeInfo.get(type);
+        this.locator = typeInfo.bjsLocator;
+        this.jsObject = bjs().constructObject(typeInfo.bjsClass(), arguments);
+        bjs().createNativeObject(this.jsObject, this);
+    }
+
+    private Bjs bjs()
+    {
+        return locator.get();
     }
 
     public JSReference bjsCall(String name, JSReference... arguments)
     {
-        return Bjs.get().call(jsObject, name, arguments);
+        return bjs().call(jsObject, name, arguments);
     }
 
     public JSReference bjsGetProperty(String name)
     {
-        return Bjs.get().getProperty(jsObject, name);
+        return bjs().getProperty(jsObject, name);
     }
 
     public void bjsSetProperty(String name, JSReference value)
     {
-        Bjs.get().setProperty(jsObject, name, value);
+        bjs().setProperty(jsObject, name, value);
     }
 
     public <T extends BjsObject> T castTo(Bjs.JSReferenceConverter<T> converter, Class<T> clazz)
     {
-        return Bjs.get().getObj(this.jsObject, converter, clazz);
+        return bjs().getObj(this.jsObject, converter, clazz);
     }
 
     @Override

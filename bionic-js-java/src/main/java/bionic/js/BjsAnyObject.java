@@ -18,6 +18,6 @@ public class BjsAnyObject
 
     public <T extends BjsObject> T getObject(Bjs.JSReferenceConverter<T> converter, Class<T> clazz)
     {
-        return Bjs.get().getObj(jsObj, converter, clazz);
+        return BjsObjectTypeInfo.get(clazz).bjsLocator.get().getObj(jsObj, converter, clazz);
     }
 }

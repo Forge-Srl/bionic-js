@@ -36,7 +36,7 @@ public class TimeoutHandlerTest {
     public void runDelayed_singleInvocation() throws InterruptedException {
         int[] value = new int[1];
 
-        JSFunction function = mock(JSFunction.class);
+        JSFunction<?> function = mock(JSFunction.class);
         doAnswer(invocation -> {
             value[0] = 2;
             return null;
@@ -58,7 +58,7 @@ public class TimeoutHandlerTest {
         final int n = 35;
         final int delay = 140;
 
-        JSFunction function = mock(JSFunction.class);
+        JSFunction<?> function = mock(JSFunction.class);
         doAnswer(invocation -> {
             value[0] += increment;
             return null;
@@ -83,7 +83,7 @@ public class TimeoutHandlerTest {
     public void runDelayed_remove() throws InterruptedException {
         int[] value = new int[] {0};
 
-        JSFunction function = mock(JSFunction.class);
+        JSFunction<?> function = mock(JSFunction.class);
         doAnswer(invocation -> {
             value[0] = 999;
             return null;

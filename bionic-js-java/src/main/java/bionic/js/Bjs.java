@@ -1,6 +1,7 @@
 package bionic.js;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jjbridge.api.runtime.JSReference;
 import jjbridge.api.runtime.JSRuntime;
@@ -19,6 +20,7 @@ import jjbridge.api.value.strategy.FunctionCallback;
 import java.lang.reflect.Array;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Bjs
 {
@@ -26,54 +28,96 @@ public class Bjs
     private static final String BJS_NATIVE_OBJ_FIELD_NAME = "bjsNativeObj";
     private static final String BJS_WRAPPER_OBJ_FIELD_NAME = "bjsWrapperObj";
     private static final String UNBOUND = "unbound";
+    private static final Map<String, Bjs> projects = new HashMap<>();
 
     private static JSRuntime defaultRuntime;
-    private static BjsBundle bjsBundle;
-    private static Bjs get;
 
-    private final BjsModules context;
+    private final String projectName;
     private final HashMap<BjsNativeObjectIdentifier<?>, BjsObject> jsValueToNative;
     private final HashMap<String, JSReference> modulesCache;
-    @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-    public final JSReference jsNull;
-    @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-    public final JSReference jsUndefined;
+
+    private BjsContext context;
 
     public static void setDefaultRuntime(JSRuntime runtime)
     {
         defaultRuntime = runtime;
     }
 
-    public static void setBundle(Class<?> forClass, String name)
+    public static synchronized Bjs get(String packageName, @NonNull String projectName)
     {
-        bjsBundle = new BjsBundle(forClass, name);
-    }
+        String fullClassName = packageName == null || packageName.isEmpty()
+                ? "Bjs" + projectName
+                : packageName + ".Bjs" + projectName;
 
-    public static synchronized Bjs get()
-    {
-        if (get == null)
+        if (projects.containsKey(fullClassName))
         {
-            get = new Bjs();
+            return projects.get(fullClassName);
         }
-        return get;
+        else
+        {
+            Bjs bjs = new Bjs(projectName);
+            try
+            {
+                Class<?> initializerClass = Class.forName(fullClassName);
+                Class<? extends BjsProject> projectClass = initializerClass.asSubclass(BjsProject.class);
+                BjsProjectTypeInfo.get(projectClass).initialize(bjs);
+            }
+            catch (ClassNotFoundException e)
+            {
+                throw new RuntimeException(e);
+            }
+
+            projects.put(fullClassName, bjs);
+            return bjs;
+        }
     }
 
-    private Bjs()
+    private Bjs(@NonNull String projectName)
+    {
+        this.projectName = projectName;
+        this.jsValueToNative = new HashMap<>();
+        this.modulesCache = new HashMap<>();
+    }
+
+    public void loadBundle(@NonNull Class<?> forClass, @NonNull String bundleName)
     {
         if (defaultRuntime == null)
         {
-            throw new NullPointerException("JSRuntime must be set before using Bjs");
+            throw new NullPointerException("JSRuntime must be set before loading a bundle");
         }
-        if (bjsBundle == null)
-        {
-            throw new NullPointerException("BjsEnvironment.initialize() must be called before using Bjs classes");
-        }
-        this.context = new BjsModules(defaultRuntime, bjsBundle);
-        this.jsValueToNative = new HashMap<>();
-        this.modulesCache = new HashMap<>();
 
-        this.jsNull = context.createJsNull();
-        this.jsUndefined = context.createJsUndefined();
+        jsValueToNative.clear();
+        modulesCache.clear();
+        context = new BjsContext(defaultRuntime, projectName);
+
+        BjsBundle bundle = new BjsBundle(forClass, bundleName + ".bjs");
+        String file = bundle.loadFile(bundleName + ".js");
+        if (file == null)
+        {
+            throw new RuntimeException("Cannot load bundle " + bundleName + " file");
+        }
+        context.executeJs(file, bundleName + ".bjs/" + bundleName + ".js");
+    }
+
+    public <B extends BjsNativeWrapper<T>, T extends BjsExport> void addNativeWrappers(
+            @NonNull Class<B> nativeWrapperClass)
+    {
+        context.addNativeWrappers(nativeWrapperClass);
+    }
+
+    public JSReference jsNull()
+    {
+        return context.createJsNull();
+    }
+
+    public BjsAnyObject anyNull()
+    {
+        return getAny(jsNull());
+    }
+
+    public JSReference jsUndefined()
+    {
+        return context.createJsUndefined();
     }
 
     // JS FUNCTIONS CALL
@@ -104,34 +148,34 @@ public class Bjs
     // PUT (NATIVE -> JS)
     public JSReference putPrimitive(Boolean primitive)
     {
-        return primitive == null ? jsNull : context.newBoolean(primitive);
+        return primitive == null ? jsNull() : context.newBoolean(primitive);
     }
 
     public JSReference putPrimitive(Integer primitive)
     {
-        return primitive == null ? jsNull : context.newInteger(primitive);
+        return primitive == null ? jsNull() : context.newInteger(primitive);
     }
 
     public JSReference putPrimitive(Double primitive)
     {
-        return primitive == null ? jsNull : context.newDouble(primitive);
+        return primitive == null ? jsNull() : context.newDouble(primitive);
     }
 
     public JSReference putPrimitive(String primitive)
     {
-        return primitive == null ? jsNull : context.newString(primitive);
+        return primitive == null ? jsNull() : context.newString(primitive);
     }
 
     public JSReference putPrimitive(Date primitive)
     {
-        return primitive == null ? jsNull : context.newDate(primitive);
+        return primitive == null ? jsNull() : context.newDate(primitive);
     }
 
     public <T> JSReference putNative(T nativeObject)
     {
         if (nativeObject == null)
         {
-            return jsNull;
+            return jsNull();
         }
         else
         {
@@ -146,7 +190,7 @@ public class Bjs
     {
         if (nativeObject == null)
         {
-            return jsNull;
+            return jsNull();
         }
 
         JSReference jsNative = putNative(nativeObject);
@@ -155,7 +199,7 @@ public class Bjs
         {
             setProperty(jsNative, BJS_WRAPPER_OBJ_FIELD_NAME, context.newString(UNBOUND));
 
-            JSReference wrapperClass = loadModule(BjsNativeWrapperTypeInfo.get(nativeWrapperClass).wrapperPath);
+            JSReference wrapperClass = BjsNativeWrapperTypeInfo.get(nativeWrapperClass).bjsClass();
             return constructObject(wrapperClass, new JSReference[]{jsNative});
         }
         else
@@ -166,19 +210,19 @@ public class Bjs
 
     public JSReference putObj(BjsObject bjsObject)
     {
-        return bjsObject == null ? jsNull : bjsObject.jsObject;
+        return bjsObject == null ? jsNull() : bjsObject.jsObject;
     }
 
     public <F extends Lambda.Function> JSReference putFunc(F nativeFunc, FunctionCallback<?> jsFuncCallback)
     {
-        return nativeFunc == null ? jsNull : context.newFunction(jsFuncCallback);
+        return nativeFunc == null ? jsNull() : context.newFunction(jsFuncCallback);
     }
 
     public <T> JSReference putArray(T[] nativeArray, NativeConverter<T> converter)
     {
         if (nativeArray == null)
         {
-            return jsNull;
+            return jsNull();
         }
 
         JSReference reference = context.newArray();
@@ -342,11 +386,6 @@ public class Bjs
         }
     }
 
-    public <B extends BjsNativeWrapper<T>, T extends BjsExport> void addNativeWrapper(Class<B> nativeWrapperClass)
-    {
-        context.addNativeWrappers(BjsNativeWrapperTypeInfo.get(nativeWrapperClass));
-    }
-
     public JSReference[] ensureArraySize(JSReference[] in, int size)
     {
         if (in.length >= size)
@@ -357,31 +396,36 @@ public class Bjs
         JSReference[] out = new JSReference[size];
         for (int i = 0; i < out.length; i++)
         {
-            out[i] = i < in.length ? in[i] : jsUndefined;
+            out[i] = i < in.length ? in[i] : jsUndefined();
         }
         return out;
     }
 
     // MODULES AND ENVIRONMENT
 
-    public JSReference loadModule(String modulePath)
+    public JSReference loadModule(@NonNull String moduleName)
     {
-        if (modulesCache.containsKey(modulePath))
+        if (modulesCache.containsKey(moduleName))
         {
-            return modulesCache.get(modulePath);
+            return modulesCache.get(moduleName);
+        }
+        if (this.context == null)
+        {
+            throw new RuntimeException("Bjs context was not initialized");
+        }
+        JSReference export = context.getModule(moduleName);
+        if (isNullOrUndefined(export))
+        {
+            throw new RuntimeException("Module " + moduleName + " was not found in Bjs bundle");
+        }
+        JSReference module = getProperty(export, moduleName);
+        if (module.getActualType() == JSType.Undefined)
+        {
+            module = export;
         }
 
-        JSReference module = context.load(modulePath);
-        modulesCache.put(modulePath, module);
+        modulesCache.put(moduleName, module);
         return module;
-    }
-
-    public void clearJsEnvironment()
-    {
-        context.removeAllNativeWrappers();
-        context.clearNodeLoader();
-        jsValueToNative.clear();
-        modulesCache.clear();
     }
 
     private boolean isNullOrUndefined(JSReference jsReference)
@@ -404,7 +448,10 @@ public class Bjs
         if (!jsValueToNative.containsKey(identifier))
         {
             jsValueToNative.put(identifier, bjsObject);
+            return;
         }
+        context.logError("Bjs object " + bjsObject.getClass().getSimpleName()
+                + " was initialized with a js object already bound with another bjs object");
     }
 
     public interface JSReferenceConverter<T>

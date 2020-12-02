@@ -1,3 +1,4 @@
+// TODO: remove
 class JsonSerializable {
 
     static fromObj(obj) {
