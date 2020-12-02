@@ -4,12 +4,12 @@
   "description": "Bionic.js",
   "author": "Marco Vanetti",
   "license": "SEE LICENSE IN license.txt",
-  "private": true,
+  "bin": {
+    "bionicjs": "./cli/bjsSyncCli.js"
+  },
   "scripts": {
     "test": "jest",
-    "compile-parser": "node node_modules/pegjs/bin/pegjs --allowed-start-rules \"TagLine, Tags, BionicTag, DescriptionTag\" -o parser/annotation/Parser.js parser/annotation/pegjsSrc/Parser.pegjs",
-    "Lunch-PRO-ios-package": "node ./cli/bjsSyncCli.js ../lunch-ios/lunch-js-core/export/pro-ios-bjs.config.js",
-    "Lunch-DEV-ios-package": "node ./cli/bjsSyncCli.js ../lunch-ios/lunch-js-core/export/dev-ios-bjs.config.js"
+    "compile-parser": "node node_modules/pegjs/bin/pegjs --allowed-start-rules \"TagLine, Tags, BionicTag, DescriptionTag\" -o parser/annotation/Parser.js parser/annotation/pegjsSrc/Parser.pegjs"
   },
   "jest-comment": "the transform:{} config is to disable transpillation and avoid problems while debugging async code",
   "jest": {
@@ -24,21 +24,21 @@
     "/schema"
   ],
   "dependencies": {
-    "@babel/parser": "*",
+    "@babel/parser": "^7.12.7",
     "fast-glob": "*",
-    "ignore": "*",
+    "ignore": "^5.1.8",
     "memfs": "*",
-    "memory-fs": "*",
-    "mkdirp": "*",
-    "rimraf": "*",
+    "memory-fs": "^0.5.0",
+    "mkdirp": "^1.0.4",
+    "rimraf": "^3.0.2",
     "touch": "*",
-    "uuid": "*",
-    "webpack": "*",
-    "xcode": "*"
+    "uuid": "^8.3.1",
+    "webpack": "^5.9.0",
+    "xcode": "^3.0.1"
   },
   "devDependencies": {
-    "copy-dir": "*",
-    "jest-cli": "*",
+    "copy-dir": "^1.3.0",
+    "jest-cli": "^26.6.3",
     "pegjs": "*"
   }
 }
