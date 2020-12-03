@@ -1,0 +1,19 @@
+{
+  "name": "Bjs",
+  "version": "0.1.0",
+  "summary": "Run effectively JS code in Swift and ObjectiveC projects",
+  "description": "BionicJs is built to effectively run and integrate JS code in Swift and ObjectiveC projects",
+  "homepage": "https://www.bionicjs.com",
+  "license": "MIT",
+  "authors": {
+    "Marco Vanetti": "marco.vanetti@gmail.com"
+  },
+  "platforms": {
+    "ios": "10.0"
+  },
+  "source": {
+    "http": "file:/Users/marcovanetti/Repos/bionic-js/bionic-js-swift/Bjs.zip"
+  },
+  "source_files": "Bjs",
+  "resources": "Bjs/BjsBootstrap.bundle"
+}

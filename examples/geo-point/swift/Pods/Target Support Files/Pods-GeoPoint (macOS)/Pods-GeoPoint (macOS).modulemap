@@ -1,0 +1,6 @@
+framework module Pods_GeoPoint__macOS_ {
+  umbrella header "Pods-GeoPoint (macOS)-umbrella.h"
+
+  export *
+  module * { export * }
+}

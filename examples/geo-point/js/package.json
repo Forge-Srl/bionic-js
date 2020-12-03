@@ -1,0 +1,8 @@
+{
+  "name": "geo-point",
+  "version": "1.0.0",
+  "description": "Business logic for calculating the distance between geo-points",
+  "main": "GeoPoint.js",
+  "author": "Forge Srl",
+  "license": "MIT"
+}
