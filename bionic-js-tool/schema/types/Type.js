@@ -1,15 +1,13 @@
-const {JsonSerializable} = require('../../JsonSerializable')
 const {TypeGeneratorFactory} = require('../../generation/factory/TypeGeneratorFactory')
 const getTypeClasses = require('./getTypeClasses')
 
-class Type extends JsonSerializable {
+class Type {
 
     static fromObj(obj) {
         return getTypeClasses()[obj.type].fromObj(obj)
     }
 
     constructor() {
-        super()
         Object.assign(this, {typeName: this.constructor.typeName})
     }
 
@@ -27,6 +25,10 @@ class Type extends JsonSerializable {
 
     resolveClassType(nativeClassesMap) {
         return this
+    }
+
+    isEqualTo(otherType) {
+        return JSON.stringify(this) === JSON.stringify(otherType)
     }
 }
 

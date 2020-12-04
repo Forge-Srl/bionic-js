@@ -34,7 +34,6 @@
     "fast-glob": "^3.2.4",
     "ignore": "^5.1.8",
     "memfs": "^3.2.0",
-    "memory-fs": "^0.5.0",
     "mkdirp": "^1.0.4",
     "rimraf": "^3.0.2",
     "touch": "^3.1.0",

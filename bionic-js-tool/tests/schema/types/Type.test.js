@@ -56,4 +56,35 @@ describe('Type', () => {
     test('resolveClassType', () => {
         expect(type.resolveClassType()).toBe(type)
     })
+
+    test('isEqualTo', () => {
+        class Type1 extends Type {
+            static get typeName() {
+                return 'Type1'
+            }
+        }
+        class Type2 extends Type {
+            static get typeName() {
+                return 'Type2'
+            }
+        }
+        class Type1Similar extends Type {
+            static get typeName() {
+                return 'Type1'
+            }
+            constructor() {
+                super();
+                this.field = 'different'
+            }
+        }
+        class Type1Clone extends Type {
+            static get typeName() {
+                return 'Type1'
+            }
+        }
+
+        expect(new Type1().isEqualTo(new Type2())).toBe(false)
+        expect(new Type1().isEqualTo(new Type1Similar())).toBe(false)
+        expect(new Type1().isEqualTo(new Type1Clone())).toBe(true)
+    })
 })

@@ -9,7 +9,7 @@ describe('Webpack', () => {
     })
 
     test('compile, configuration error', async () => {
-        const webpack = new Webpack({entry: {}})
+        const webpack = new Webpack({entry: null})
         await expect(webpack.compile()).rejects.toThrow('cannot configure Webpack\nInvalid configuration object.')
     })
 

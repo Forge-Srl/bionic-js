@@ -1,7 +1,6 @@
-const {JsonSerializable} = require('../JsonSerializable')
 const {GeneratorFactory} = require('../generation/factory/GeneratorFactory')
 
-class Generable extends JsonSerializable {
+class Generable {
 
     get generator() {
         return new GeneratorFactory(this)

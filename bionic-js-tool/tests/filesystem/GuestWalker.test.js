@@ -23,11 +23,11 @@ describe('GuestWalker', () => {
             expect(guestFile.rootDirPath).toBe(guestDirPath)
         })
 
-        const actualRelativePaths = actualGuestFiles.map(guestFile => guestFile.relativePath).sort()
+        const actualRelativePaths = actualGuestFiles.map(guestFile => guestFile.relativePath)
         expect(actualRelativePaths).toEqual(expectedRelativePaths)
 
         const actualBundles = actualRelativePaths
-            .map(relativePath => actualGuestFiles.find(guestFile => guestFile.relativePath === relativePath).bundles.sort())
+            .map(relativePath => actualGuestFiles.find(guestFile => guestFile.relativePath === relativePath).bundles)
         expect(actualBundles).toEqual(expectedBundles)
     }
 

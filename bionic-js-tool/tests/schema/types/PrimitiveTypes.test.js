@@ -23,19 +23,6 @@ describe('Primitive types', () => {
             })
     })
 
-    describe('clone', () => {
-        for (const typeName of primitives)
-            test(typeName, () => {
-                const TypeClass = getTypeClass(typeName)
-
-                const type = new TypeClass()
-                const typeClone = type.clone
-
-                expect(typeClone).not.toBe(type)
-                expect(typeClone).toEqual(type)
-            })
-    })
-
     describe('isValid', () => {
         for (const typeName of primitives)
             test(typeName, () => {
