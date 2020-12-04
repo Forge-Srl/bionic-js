@@ -2,13 +2,8 @@ package acceptance.toy1.components;
 
 import acceptance.toy1.bjs.ToyComponent1BjsExport;
 
-public class ToyComponent1 extends ToyComponent1BjsExport
+public class ToyComponent1 implements ToyComponent1BjsExport
 {
-    static {
-        Wrapper.registerImplementation(ToyComponent1.class);
-        System.out.println("Implementation registered!");
-    }
-
     private String number1;
     private String number2;
 
@@ -23,7 +18,6 @@ public class ToyComponent1 extends ToyComponent1BjsExport
 
     public ToyComponent1(String number1, String number2)
     {
-        super(number1, number2);
         this.number1 = number1;
         this.number2 = number2;
     }

@@ -1,6 +1,10 @@
 package acceptance.toy1.bjs;
 
-import bionic.js.*;
+import bionic.js.Bjs;
+import bionic.js.BjsAnyObject;
+import bionic.js.BjsObjectTypeInfo;
+import bionic.js.BjsTypeInfo;
+import bionic.js.Lambda;
 import jjbridge.api.runtime.JSReference;
 import jjbridge.api.value.strategy.FunctionCallback;
 
@@ -14,11 +18,11 @@ public class ToyClass2 extends ToyClass1
     public static final Bjs bjs = BjsObjectTypeInfo.get(ToyClass2.class).bjsLocator.get();
     private static final JSReference bjsClass = BjsObjectTypeInfo.get(ToyClass2.class).bjsClass();
 
-    protected <T extends BjsObject> ToyClass2(Class<T> type, JSReference jsObject) {
+    protected <T extends ToyClass1> ToyClass2(Class<T> type, JSReference jsObject) {
         super(type, jsObject);
     }
 
-    protected <T extends BjsObject> ToyClass2(Class<T> type, JSReference[] arguments) {
+    protected <T extends ToyClass1> ToyClass2(Class<T> type, JSReference[] arguments) {
         super(type, arguments);
     }
 

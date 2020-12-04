@@ -55,8 +55,24 @@ public class UserOfToyComponent1 extends BjsObject
                 bjs.putWrapped(toy2, ToyComponent1BjsExport.Wrapper.class)));
     }
 
+    public static Integer getSum2(ToyComponent2BjsExport toy1, ToyComponent1BjsExport toy2)
+    {
+        return bjs.getInteger(bjs.call(bjsClass, "getSum2", bjs.putWrapped(toy1, ToyComponent2BjsExport.Wrapper.class),
+                bjs.putWrapped(toy2, ToyComponent1BjsExport.Wrapper.class)));
+    }
+
     public static Boolean isLastToy(ToyComponent1BjsExport toy)
     {
         return bjs.getBoolean(bjs.call(bjsClass, "isLastToy", bjs.putWrapped(toy, ToyComponent1BjsExport.Wrapper.class)));
+    }
+
+    public static Double piSum()
+    {
+        return bjs.getDouble(bjs.call(bjsClass, "piSum"));
+    }
+
+    public static Integer additionalValue(ToyComponent2BjsExport toy)
+    {
+        return bjs.getInteger(bjs.call(bjsClass, "additionalValue", bjs.putWrapped(toy, ToyComponent2BjsExport.Wrapper.class)));
     }
 }

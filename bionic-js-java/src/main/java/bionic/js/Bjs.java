@@ -363,7 +363,7 @@ public class Bjs
     public <T extends BjsExport> T getBound(JSReference jsObject, Class<T> nativeClass)
     {
         Object obj = getNative(jsObject);
-        if (obj != null && obj.getClass().equals(nativeClass))
+        if (obj != null && nativeClass.isAssignableFrom(obj.getClass()))
         {
             JSReference bjsWrapperObj = getProperty(jsObject, BJS_WRAPPER_OBJ_FIELD_NAME);
             if (UNBOUND.equals(getString(bjsWrapperObj)))
