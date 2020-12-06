@@ -6,7 +6,6 @@ import acceptance.toy1.components.ToyComponent1;
 import acceptance.toy1.components.ToyComponent2;
 import jjbridge.engine.v8.V8Engine;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,10 +49,12 @@ public class ToyComponent1Test
     }
 
     @Test
-    @Disabled
     public void interactingWithSubclass3() {
-        // TODO fix
-        assertEquals(2, UserOfToyComponent1.getSum2(new ToyComponent2("0", "0"), new ToyComponent1("0", "0")));
+        assertEquals(0, UserOfToyComponent1.getSum(new ToyComponent1("0", "0"), new ToyComponent1("0", "0")));
+        assertEquals(3, UserOfToyComponent1.getSum(new ToyComponent2("0", "0"), new ToyComponent1("0", "0")));
+        assertEquals(3, UserOfToyComponent1.getSum2(new ToyComponent2("0", "0"), new ToyComponent1("0", "0")));
+        assertEquals(0, UserOfToyComponent1.getSum(new ToyComponent1("0", "0"), new ToyComponent2("0", "0")));
+        assertEquals(4, UserOfToyComponent1.getSum(new ToyComponent2("0", "0"), new ToyComponent2("0", "0")));
         assertEquals(4, UserOfToyComponent1.getSum2(new ToyComponent2("0", "0"), new ToyComponent2("0", "0")));
     }
 }

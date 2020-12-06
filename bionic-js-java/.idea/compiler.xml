@@ -6,11 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="bionic-js-java" />
         <module name="bionic-js" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="bionic-js" target="1.8" />
+      <module name="bionic-js-java" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
