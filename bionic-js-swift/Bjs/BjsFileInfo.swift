@@ -1,5 +1,3 @@
-import UIKit
-
 class BjsFileInfo {
     
     private var _directory, _fullPathWithoutExt, _name, _nameWithoutExt, _ext: String?

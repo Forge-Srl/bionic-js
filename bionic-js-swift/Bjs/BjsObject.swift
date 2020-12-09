@@ -1,4 +1,3 @@
-import UIKit
 import JavaScriptCore
 
 open class BjsObject : Hashable {
