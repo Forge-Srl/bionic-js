@@ -254,6 +254,13 @@ describe('XcodeHostProject', () => {
         })
     })
 
+    test('getGroupByDirPath, root dir', async () => {
+        await getProjectWithoutHostFiles(async project => {
+            const libsGroup = project.getGroupByDirPath('')
+            expect(libsGroup.key).toBe('C5966C842349378B00EE670C')
+        })
+    })
+
     test('getGroupByDirPath', async () => {
         await getProjectWithoutHostFiles(async project => {
             const libsGroup = project.getGroupByDirPath('HostProject')
