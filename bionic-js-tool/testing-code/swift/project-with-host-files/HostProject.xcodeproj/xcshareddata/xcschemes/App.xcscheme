@@ -57,8 +57,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C56F02E32541E7AF00B221DA"
-               BuildableName = "UnusedTarget.app"
-               BlueprintName = "UnusedTarget"
+               BuildableName = "Unused (target).app"
+               BlueprintName = "Unused (target)"
                ReferencedContainer = "container:HostProject.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

@@ -11,11 +11,11 @@ module.exports = {
     outputMode: "development",
     hostProjects: [{
         language: "swift",
-        projectPath: "./swift/HelloJsWorld.xcodeproj",
+        projectPath: path.resolve(__dirname, "./swift/HelloJsWorld.xcodeproj"),
         hostDirName: "Bjs",
         targetBundles: {
             MainBundle: {
-                compileTargets: ["HelloJsWorld"],
+                compileTargets: ["HelloJsWorld (iOS)", "HelloJsWorld (macOS)"],
             },
         },
     }],
