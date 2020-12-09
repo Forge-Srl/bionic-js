@@ -66,7 +66,7 @@ describe('XcodeHostProject', () => {
 
     test('getCompileTargetKeys', async () => {
         await getProjectWithoutHostFiles(async project => {
-            const targetKeys = project.getCompileTargetKeys(['BicycleTarget', 'MotorVehiclesTarget', 'VehiclesTarget', 'UnusedTarget'])
+            const targetKeys = project.getCompileTargetKeys(['BicycleTarget', 'MotorVehiclesTarget', 'VehiclesTarget', 'Unused (target)'])
             expect(targetKeys).toStrictEqual(['C5966C8C2349378B00EE670C', 'C5B809F02349FE28002FD95C', 'C5B809FF2349FF10002FD95C', 'C56F02B42541E25D00B221DA'])
         })
     })

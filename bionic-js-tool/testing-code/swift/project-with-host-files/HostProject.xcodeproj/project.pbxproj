@@ -48,7 +48,7 @@
 
 /* Begin PBXFileReference section */
 		C54D4B92254B279000597281 /* UnusedTarget.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = UnusedTarget.plist; sourceTree = "<group>"; };
-		C56F02EE2541E7AF00B221DA /* UnusedTarget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnusedTarget.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C56F02EE2541E7AF00B221DA /* Unused (target).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Unused (target).app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C56F03412541ECA200B221DA /* BjsBeautifulVehicles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BjsBeautifulVehicles.swift; sourceTree = "<group>"; };
 		C56F04962546A8FE00B221DA /* MotorVehicles.bjs.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MotorVehicles.bjs.bundle; sourceTree = "<group>"; };
 		C56F049C2546A90700B221DA /* Vehicles.bjs.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Vehicles.bjs.bundle; sourceTree = "<group>"; };
@@ -144,7 +144,7 @@
 				C5966C8D2349378B00EE670C /* BicycleTarget.app */,
 				C5B809FD2349FE28002FD95C /* HostProjectTarget2.app */,
 				C5B80A0C2349FF10002FD95C /* HostProjectTarget3.app */,
-				C56F02EE2541E7AF00B221DA /* UnusedTarget.app */,
+				C56F02EE2541E7AF00B221DA /* Unused (target).app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -246,9 +246,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C56F02E32541E7AF00B221DA /* UnusedTarget */ = {
+		C56F02E32541E7AF00B221DA /* Unused (target) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C56F02EB2541E7AF00B221DA /* Build configuration list for PBXNativeTarget "UnusedTarget" */;
+			buildConfigurationList = C56F02EB2541E7AF00B221DA /* Build configuration list for PBXNativeTarget "Unused (target)" */;
 			buildPhases = (
 				C56F02E42541E7AF00B221DA /* Sources */,
 				C56F02E72541E7AF00B221DA /* Frameworks */,
@@ -258,9 +258,9 @@
 			);
 			dependencies = (
 			);
-			name = UnusedTarget;
+			name = "Unused (target)";
 			productName = HostProject;
-			productReference = C56F02EE2541E7AF00B221DA /* UnusedTarget.app */;
+			productReference = C56F02EE2541E7AF00B221DA /* Unused (target).app */;
 			productType = "com.apple.product-type.application";
 		};
 		C5966C8C2349378B00EE670C /* BicycleTarget */ = {
@@ -345,7 +345,7 @@
 				C5966C8C2349378B00EE670C /* BicycleTarget */,
 				C5B809F02349FE28002FD95C /* MotorVehiclesTarget */,
 				C5B809FF2349FF10002FD95C /* VehiclesTarget */,
-				C56F02E32541E7AF00B221DA /* UnusedTarget */,
+				C56F02E32541E7AF00B221DA /* Unused (target) */,
 			);
 		};
 /* End PBXProject section */
@@ -731,7 +731,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C56F02EB2541E7AF00B221DA /* Build configuration list for PBXNativeTarget "UnusedTarget" */ = {
+		C56F02EB2541E7AF00B221DA /* Build configuration list for PBXNativeTarget "Unused (target)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C56F02EC2541E7AF00B221DA /* Debug */,

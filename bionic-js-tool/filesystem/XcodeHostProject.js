@@ -77,7 +77,8 @@ class XcodeHostProject {
         const allTargets = this.allTargetKeys.map(targetKey => ({key: targetKey, obj: targetObjects[targetKey]}))
         const targetKeys = []
         for (const compileTargetName of compileTargets) {
-            const compileTarget = allTargets.find(target => target.obj.name === compileTargetName)
+            const compileTarget = allTargets.find(target =>
+                target.obj.name === compileTargetName || target.obj.name === `"${compileTargetName}"`)
             if (!compileTarget) {
                 throw new Error(`compile target "${compileTargetName}" not found in the Xcode project`)
             }
