@@ -1,5 +1,3 @@
-import UIKit
-
 public class BjsBundle {
     
     let bundle: Bundle

@@ -1,4 +1,3 @@
-import UIKit
 import JavaScriptCore
 
 public class BjsNativeExports {
