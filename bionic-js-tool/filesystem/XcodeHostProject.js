@@ -149,14 +149,13 @@ class XcodeHostProject {
 
     getGroupByDirPath(dirPath, fatherGroup = this.mainGroup) {
         dirPath = this.normalizeRelativePath(dirPath)
+        if (dirPath === fatherGroup.relativePath)
+            return fatherGroup
 
         for (const child of fatherGroup.children) {
             const childGroup = this.getGroupByKey(child.value, fatherGroup)
             if (!childGroup)
                 continue
-
-            if (childGroup.relativePath === dirPath)
-                return childGroup
 
             const targetGroup = this.getGroupByDirPath(dirPath, childGroup)
             if (targetGroup)

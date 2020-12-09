@@ -1,7 +1,9 @@
-module.exports = class HelloJsWorld {
+class HelloJsWorld {
     
-    // bionic String
+    // @bionic String
     static get hello() {
         return "Hello from JavaScript"
     }
 }
+
+module.exports = {HelloJsWorld}

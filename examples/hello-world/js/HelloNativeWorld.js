@@ -1,7 +1,9 @@
 // @bionic native
-module.exports = class HelloNativeWorld {
+class HelloNativeWorld {
     
-    // bionic String
+    // @bionic String
     static get hello() {
     }
 }
+
+module.exports = {HelloNativeWorld}

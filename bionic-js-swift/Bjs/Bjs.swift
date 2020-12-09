@@ -248,11 +248,11 @@ public class Bjs {
             fatalError("Bjs context was not initialized")
         }
         guard let export = context.getModule(moduleName) else {
-            fatalError("module \"\(moduleName)\" was not found in Bjs bundle")
+            fatalError("JS module \"\(moduleName)\" was not found in Bjs bundle")
         }
-        var module = export.objectForKeyedSubscript(moduleName)!
+        let module = export.objectForKeyedSubscript(moduleName)!
         if module.isUndefined {
-            module = export
+            fatalError("JS module \"\(moduleName)\" must be exported with the notation \"module.exports = {\(moduleName)}\"")
         }
         modulesCache[moduleName] = module
         return module

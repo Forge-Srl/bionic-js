@@ -3,7 +3,7 @@ target 'HelloJsWorld (iOS)' do
   use_frameworks!
 
   # Pods for HelloJsWorld (iOS)
-  pod 'bionicjs', :path => '../../../bionic-js-swift'
+  pod 'Bjs', :path => '../../../bionic-js-swift'
 
 end
 
@@ -12,6 +12,6 @@ target 'HelloJsWorld (macOS)' do
   use_frameworks!
 
   # Pods for HelloJsWorld (macOS)
-  pod 'bionicjs', :path => '../../../bionic-js-swift'
+  pod 'Bjs', :path => '../../../bionic-js-swift'
 
 end

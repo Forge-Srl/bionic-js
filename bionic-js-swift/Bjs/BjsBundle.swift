@@ -1,3 +1,7 @@
+#if !os(macOS)
+import UIKit
+#endif
+
 public class BjsBundle {
     
     let bundle: Bundle
