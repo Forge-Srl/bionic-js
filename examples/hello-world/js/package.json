@@ -1,0 +1,8 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "Business logic to say hello to the world",
+  "main": "HelloWorld.js",
+  "author": "Forge Srl",
+  "license": "MIT"
+}

@@ -1,0 +1,17 @@
+target 'HelloJsWorld (iOS)' do
+  platform :ios, '10.0'
+  use_frameworks!
+
+  # Pods for HelloJsWorld (iOS)
+  pod 'Bjs', :path => '../../../bionic-js-swift'
+
+end
+
+target 'HelloJsWorld (macOS)' do
+  platform :macos, '10.12'
+  use_frameworks!
+
+  # Pods for HelloJsWorld (macOS)
+  pod 'Bjs', :path => '../../../bionic-js-swift'
+
+end

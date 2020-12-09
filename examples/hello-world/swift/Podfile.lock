@@ -1,0 +1,16 @@
+PODS:
+  - Bjs (1.0.0)
+
+DEPENDENCIES:
+  - Bjs (from `../../../bionic-js-swift`)
+
+EXTERNAL SOURCES:
+  Bjs:
+    :path: "../../../bionic-js-swift"
+
+SPEC CHECKSUMS:
+  Bjs: b99181e1f1062b5f22deb0645c4163ae0255625f
+
+PODFILE CHECKSUM: 92ecdcc062b4e874742528eecd487925426bfb27
+
+COCOAPODS: 1.9.1

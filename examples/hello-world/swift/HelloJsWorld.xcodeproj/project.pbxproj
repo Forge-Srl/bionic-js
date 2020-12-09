@@ -1,0 +1,611 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		68DF6C420D027AB872BEF8AA /* Pods_HelloJsWorld__iOS_.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB591B65AADEC947D9B6A0A /* Pods_HelloJsWorld__iOS_.framework */; };
+		7F3D8F87D7EF858D94823D08 /* Pods_HelloJsWorld__macOS_.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06DC3A6A35A1358C17B369D4 /* Pods_HelloJsWorld__macOS_.framework */; };
+		C50AFCEB25811188002309FD /* HelloJsWorldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50AFCD825811186002309FD /* HelloJsWorldApp.swift */; };
+		C50AFCEC25811188002309FD /* HelloJsWorldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50AFCD825811186002309FD /* HelloJsWorldApp.swift */; };
+		C50AFCED25811188002309FD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50AFCD925811186002309FD /* ContentView.swift */; };
+		C50AFCEE25811188002309FD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50AFCD925811186002309FD /* ContentView.swift */; };
+		C50AFCEF25811188002309FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C50AFCDA25811188002309FD /* Assets.xcassets */; };
+		C50AFCF025811188002309FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C50AFCDA25811188002309FD /* Assets.xcassets */; };
+		C5F941F625813D8A0060CCAB /* HelloNativeWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F941F525813D8A0060CCAB /* HelloNativeWorld.swift */; };
+		C5F941F725813D8A0060CCAB /* HelloNativeWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F941F525813D8A0060CCAB /* HelloNativeWorld.swift */; };
+		B8789E1718F44497803CD938 /* BjsHelloJsWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641EB31A9D4A4F3D9B4198BD /* BjsHelloJsWorld.swift */; };
+		B0C3AFC291B9412E913D7528 /* BjsHelloJsWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641EB31A9D4A4F3D9B4198BD /* BjsHelloJsWorld.swift */; };
+		F786FED44BF54D1DB20A9A20 /* MainBundle.bjs.bundle in Resources */ = {isa = PBXBuildFile; fileRef = EDE553C47533406980B25491 /* MainBundle.bjs.bundle */; };
+		EC3DEFB06E36450AAC80D3A3 /* MainBundle.bjs.bundle in Resources */ = {isa = PBXBuildFile; fileRef = EDE553C47533406980B25491 /* MainBundle.bjs.bundle */; };
+		5C9A4C612E9B4BD59757EE4B /* HelloJsWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980504B9812A432B840F498E /* HelloJsWorld.swift */; };
+		89A50E03AB4240C3A350D332 /* HelloJsWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980504B9812A432B840F498E /* HelloJsWorld.swift */; };
+		7A8EDC9B1C794D0295D07F87 /* HelloNativeWorldBjsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A1AB28FBF7F4F3A9D9F7F69 /* HelloNativeWorldBjsWrapper.swift */; };
+		B5E5057D204D4CF99F0E05D7 /* HelloNativeWorldBjsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A1AB28FBF7F4F3A9D9F7F69 /* HelloNativeWorldBjsWrapper.swift */; };
+		5F2230F54F044B0580A62555 /* HelloWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C19B71A5224821AE59CD9B /* HelloWorld.swift */; };
+		5EB974280F474264A800A0BC /* HelloWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C19B71A5224821AE59CD9B /* HelloWorld.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		06DC3A6A35A1358C17B369D4 /* Pods_HelloJsWorld__macOS_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HelloJsWorld__macOS_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3977B1B31622672C3FBFBFBF /* Pods-HelloJsWorld (macOS).debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HelloJsWorld (macOS).debug.xcconfig"; path = "Target Support Files/Pods-HelloJsWorld (macOS)/Pods-HelloJsWorld (macOS).debug.xcconfig"; sourceTree = "<group>"; };
+		841DB0CB61CCB2A8AB1E941D /* Pods-HelloJsWorld (iOS).release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HelloJsWorld (iOS).release.xcconfig"; path = "Target Support Files/Pods-HelloJsWorld (iOS)/Pods-HelloJsWorld (iOS).release.xcconfig"; sourceTree = "<group>"; };
+		BCB591B65AADEC947D9B6A0A /* Pods_HelloJsWorld__iOS_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HelloJsWorld__iOS_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C50AFCD825811186002309FD /* HelloJsWorldApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloJsWorldApp.swift; sourceTree = "<group>"; };
+		C50AFCD925811186002309FD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		C50AFCDA25811188002309FD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C50AFCDF25811188002309FD /* HelloJsWorld.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloJsWorld.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C50AFCE225811188002309FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C50AFCE725811188002309FD /* HelloJsWorld.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloJsWorld.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C50AFCE925811188002309FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C50AFCEA25811188002309FD /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
+		C5F941F525813D8A0060CCAB /* HelloNativeWorld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloNativeWorld.swift; sourceTree = "<group>"; };
+		D05F6061E393F33FBF6CBD82 /* Pods-HelloJsWorld (macOS).release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HelloJsWorld (macOS).release.xcconfig"; path = "Target Support Files/Pods-HelloJsWorld (macOS)/Pods-HelloJsWorld (macOS).release.xcconfig"; sourceTree = "<group>"; };
+		E60ACF8B3D2ACA7662893822 /* Pods-HelloJsWorld (iOS).debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HelloJsWorld (iOS).debug.xcconfig"; path = "Target Support Files/Pods-HelloJsWorld (iOS)/Pods-HelloJsWorld (iOS).debug.xcconfig"; sourceTree = "<group>"; };
+		641EB31A9D4A4F3D9B4198BD /* BjsHelloJsWorld.swift */ = {isa = PBXFileReference; path = BjsHelloJsWorld.swift; sourceTree = "<group>"; lastKnownFileType = sourcecode.swift; fileEncoding = 4; };
+		EDE553C47533406980B25491 /* MainBundle.bjs.bundle */ = {isa = PBXFileReference; path = MainBundle.bjs.bundle; sourceTree = "<group>"; lastKnownFileType = "wrapper.plug-in"; };
+		980504B9812A432B840F498E /* HelloJsWorld.swift */ = {isa = PBXFileReference; path = HelloJsWorld.swift; sourceTree = "<group>"; lastKnownFileType = sourcecode.swift; fileEncoding = 4; };
+		2A1AB28FBF7F4F3A9D9F7F69 /* HelloNativeWorldBjsWrapper.swift */ = {isa = PBXFileReference; path = HelloNativeWorldBjsWrapper.swift; sourceTree = "<group>"; lastKnownFileType = sourcecode.swift; fileEncoding = 4; };
+		76C19B71A5224821AE59CD9B /* HelloWorld.swift */ = {isa = PBXFileReference; path = HelloWorld.swift; sourceTree = "<group>"; lastKnownFileType = sourcecode.swift; fileEncoding = 4; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C50AFCDC25811188002309FD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68DF6C420D027AB872BEF8AA /* Pods_HelloJsWorld__iOS_.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C50AFCE425811188002309FD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F3D8F87D7EF858D94823D08 /* Pods_HelloJsWorld__macOS_.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		422B4AB4620CC36E5F750C4D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BCB591B65AADEC947D9B6A0A /* Pods_HelloJsWorld__iOS_.framework */,
+				06DC3A6A35A1358C17B369D4 /* Pods_HelloJsWorld__macOS_.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4F4503753DEA45EEADD15789 /* BjsMainBundle */ = {
+			isa = PBXGroup;
+			children = (
+				641EB31A9D4A4F3D9B4198BD /* BjsHelloJsWorld.swift */,
+				EDE553C47533406980B25491 /* MainBundle.bjs.bundle */,
+			);
+			path = BjsMainBundle;
+			sourceTree = "<group>";
+		};
+		92D347CE6B8D4854BF6A8A7C /* Bjs */ = {
+			isa = PBXGroup;
+			children = (
+				4F4503753DEA45EEADD15789 /* BjsMainBundle */,
+				980504B9812A432B840F498E /* HelloJsWorld.swift */,
+				2A1AB28FBF7F4F3A9D9F7F69 /* HelloNativeWorldBjsWrapper.swift */,
+				76C19B71A5224821AE59CD9B /* HelloWorld.swift */,
+			);
+			path = Bjs;
+			sourceTree = "<group>";
+		};
+		C50AFCD225811186002309FD = {
+			isa = PBXGroup;
+			children = (
+				C50AFCD725811186002309FD /* Shared */,
+				C50AFCE125811188002309FD /* iOS */,
+				C50AFCE825811188002309FD /* macOS */,
+				C50AFCE025811188002309FD /* Products */,
+				DF8F58009BE6E2E45CE9998F /* Pods */,
+				422B4AB4620CC36E5F750C4D /* Frameworks */,
+				92D347CE6B8D4854BF6A8A7C /* Bjs */,
+			);
+			sourceTree = "<group>";
+		};
+		C50AFCD725811186002309FD /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				C50AFCD825811186002309FD /* HelloJsWorldApp.swift */,
+				C50AFCD925811186002309FD /* ContentView.swift */,
+				C50AFCDA25811188002309FD /* Assets.xcassets */,
+				C5F941F525813D8A0060CCAB /* HelloNativeWorld.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		C50AFCE025811188002309FD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C50AFCDF25811188002309FD /* HelloJsWorld.app */,
+				C50AFCE725811188002309FD /* HelloJsWorld.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C50AFCE125811188002309FD /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				C50AFCE225811188002309FD /* Info.plist */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		C50AFCE825811188002309FD /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+				C50AFCE925811188002309FD /* Info.plist */,
+				C50AFCEA25811188002309FD /* macOS.entitlements */,
+			);
+			path = macOS;
+			sourceTree = "<group>";
+		};
+		DF8F58009BE6E2E45CE9998F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E60ACF8B3D2ACA7662893822 /* Pods-HelloJsWorld (iOS).debug.xcconfig */,
+				841DB0CB61CCB2A8AB1E941D /* Pods-HelloJsWorld (iOS).release.xcconfig */,
+				3977B1B31622672C3FBFBFBF /* Pods-HelloJsWorld (macOS).debug.xcconfig */,
+				D05F6061E393F33FBF6CBD82 /* Pods-HelloJsWorld (macOS).release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C50AFCDE25811188002309FD /* HelloJsWorld (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C50AFCF325811188002309FD /* Build configuration list for PBXNativeTarget "HelloJsWorld (iOS)" */;
+			buildPhases = (
+				180C42D51BF81ECC12D9DE75 /* [CP] Check Pods Manifest.lock */,
+				C50AFCDB25811188002309FD /* Sources */,
+				C50AFCDC25811188002309FD /* Frameworks */,
+				C50AFCDD25811188002309FD /* Resources */,
+				3BB0C58097A2408B2EB64604 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "HelloJsWorld (iOS)";
+			productName = "HelloJsWorld (iOS)";
+			productReference = C50AFCDF25811188002309FD /* HelloJsWorld.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C50AFCE625811188002309FD /* HelloJsWorld (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C50AFCF625811188002309FD /* Build configuration list for PBXNativeTarget "HelloJsWorld (macOS)" */;
+			buildPhases = (
+				1CE27AFBFEBFBF8DB886B692 /* [CP] Check Pods Manifest.lock */,
+				C50AFCE325811188002309FD /* Sources */,
+				C50AFCE425811188002309FD /* Frameworks */,
+				C50AFCE525811188002309FD /* Resources */,
+				C10E35F80DAB4E2F6DFC8AD6 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "HelloJsWorld (macOS)";
+			productName = "HelloJsWorld (macOS)";
+			productReference = C50AFCE725811188002309FD /* HelloJsWorld.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C50AFCD325811186002309FD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1220;
+				LastUpgradeCheck = 1220;
+				TargetAttributes = {
+					C50AFCDE25811188002309FD = {
+						CreatedOnToolsVersion = 12.2;
+					};
+					C50AFCE625811188002309FD = {
+						CreatedOnToolsVersion = 12.2;
+					};
+				};
+			};
+			buildConfigurationList = C50AFCD625811186002309FD /* Build configuration list for PBXProject "HelloJsWorld" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C50AFCD225811186002309FD;
+			productRefGroup = C50AFCE025811188002309FD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C50AFCDE25811188002309FD /* HelloJsWorld (iOS) */,
+				C50AFCE625811188002309FD /* HelloJsWorld (macOS) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C50AFCDD25811188002309FD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C50AFCEF25811188002309FD /* Assets.xcassets in Resources */,
+				F786FED44BF54D1DB20A9A20 /* MainBundle.bjs.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C50AFCE525811188002309FD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C50AFCF025811188002309FD /* Assets.xcassets in Resources */,
+				EC3DEFB06E36450AAC80D3A3 /* MainBundle.bjs.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		180C42D51BF81ECC12D9DE75 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HelloJsWorld (iOS)-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		1CE27AFBFEBFBF8DB886B692 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HelloJsWorld (macOS)-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3BB0C58097A2408B2EB64604 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HelloJsWorld (iOS)/Pods-HelloJsWorld (iOS)-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HelloJsWorld (iOS)/Pods-HelloJsWorld (iOS)-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HelloJsWorld (iOS)/Pods-HelloJsWorld (iOS)-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C10E35F80DAB4E2F6DFC8AD6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HelloJsWorld (macOS)/Pods-HelloJsWorld (macOS)-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HelloJsWorld (macOS)/Pods-HelloJsWorld (macOS)-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HelloJsWorld (macOS)/Pods-HelloJsWorld (macOS)-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C50AFCDB25811188002309FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C50AFCED25811188002309FD /* ContentView.swift in Sources */,
+				C5F941F625813D8A0060CCAB /* HelloNativeWorld.swift in Sources */,
+				C50AFCEB25811188002309FD /* HelloJsWorldApp.swift in Sources */,
+				B8789E1718F44497803CD938 /* BjsHelloJsWorld.swift in Sources */,
+				5C9A4C612E9B4BD59757EE4B /* HelloJsWorld.swift in Sources */,
+				7A8EDC9B1C794D0295D07F87 /* HelloNativeWorldBjsWrapper.swift in Sources */,
+				5F2230F54F044B0580A62555 /* HelloWorld.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C50AFCE325811188002309FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C50AFCEE25811188002309FD /* ContentView.swift in Sources */,
+				C5F941F725813D8A0060CCAB /* HelloNativeWorld.swift in Sources */,
+				C50AFCEC25811188002309FD /* HelloJsWorldApp.swift in Sources */,
+				B0C3AFC291B9412E913D7528 /* BjsHelloJsWorld.swift in Sources */,
+				89A50E03AB4240C3A350D332 /* HelloJsWorld.swift in Sources */,
+				B5E5057D204D4CF99F0E05D7 /* HelloNativeWorldBjsWrapper.swift in Sources */,
+				5EB974280F474264A800A0BC /* HelloWorld.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C50AFCF125811188002309FD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C50AFCF225811188002309FD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		C50AFCF425811188002309FD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E60ACF8B3D2ACA7662893822 /* Pods-HelloJsWorld (iOS).debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = srl.forge.HelloJsWorld;
+				PRODUCT_NAME = HelloJsWorld;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C50AFCF525811188002309FD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 841DB0CB61CCB2A8AB1E941D /* Pods-HelloJsWorld (iOS).release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = srl.forge.HelloJsWorld;
+				PRODUCT_NAME = HelloJsWorld;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C50AFCF725811188002309FD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3977B1B31622672C3FBFBFBF /* Pods-HelloJsWorld (macOS).debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = srl.forge.HelloJsWorld;
+				PRODUCT_NAME = HelloJsWorld;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C50AFCF825811188002309FD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D05F6061E393F33FBF6CBD82 /* Pods-HelloJsWorld (macOS).release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = srl.forge.HelloJsWorld;
+				PRODUCT_NAME = HelloJsWorld;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C50AFCD625811186002309FD /* Build configuration list for PBXProject "HelloJsWorld" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C50AFCF125811188002309FD /* Debug */,
+				C50AFCF225811188002309FD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C50AFCF325811188002309FD /* Build configuration list for PBXNativeTarget "HelloJsWorld (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C50AFCF425811188002309FD /* Debug */,
+				C50AFCF525811188002309FD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C50AFCF625811188002309FD /* Build configuration list for PBXNativeTarget "HelloJsWorld (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C50AFCF725811188002309FD /* Debug */,
+				C50AFCF825811188002309FD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C50AFCD325811186002309FD /* Project object */;
+}
