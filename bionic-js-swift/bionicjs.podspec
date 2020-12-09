@@ -1,5 +1,5 @@
 #
-#  Be sure to run `pod spec lint Bjs.podspec' to ensure this is a
+#  Be sure to run `pod spec lint bionicjs.podspec' to ensure this is a
 #  valid spec and to remove all comments including this before submitting the spec.
 #
 #  To learn more about Podspec attributes see https://guides.cocoapods.org/syntax/podspec.html
@@ -15,8 +15,8 @@ Pod::Spec.new do |spec|
   #  summary should be tweet-length, and the description more in depth.
   #
 
-  spec.name         = "Bjs"
-  spec.version      = "0.1.0"
+  spec.name         = "bionicjs"
+  spec.version      = "1.0.0"
   spec.summary      = "Run effectively JS code in Swift and ObjectiveC projects"
 
   # This description is used to generate tags and improve search results.
@@ -25,7 +25,10 @@ Pod::Spec.new do |spec|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   spec.description  = <<-DESC
-  BionicJs is built to effectively run and integrate JS code in Swift and ObjectiveC projects
+  Bionic.js let you share the business logic between different native languages without using any framework and without writing a single line of bridging code.
+  1. write code once in JavaScript (ECMAScript 6)
+  2. annotate classes to be exported
+  3. use JS classes from native Swift and ObjectiveC code, as if they were native classes
                    DESC
 
   spec.homepage     = "https://github.com/Forge-Srl/bionic-js"
@@ -52,7 +55,10 @@ Pod::Spec.new do |spec|
   #  profile URL.
   #
 
-  spec.authors             = { "Marco Vanetti" => "marco.vanetti@gmail.com" }
+  spec.author             = { "Marco Vanetti" => "marco.vanetti@gmail.com" }
+  # Or just: spec.author    = "Marco Vanetti"
+  # spec.authors            = { "Marco Vanetti" => "marco.vanetti@gmail.com" }
+  # spec.social_media_url   = "https://twitter.com/Marco Vanetti"
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
@@ -65,9 +71,9 @@ Pod::Spec.new do |spec|
 
   #  When using multiple platforms
   spec.ios.deployment_target = "10.0"
-  # spec.osx.deployment_target = "10.7"
+  spec.osx.deployment_target = "10.12"
   # spec.watchos.deployment_target = "2.0"
-  # spec.tvos.deployment_target = "9.0"
+  spec.tvos.deployment_target = "10.0"
 
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -77,6 +83,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.source       = { :http => 'file:' + __dir__ + '/Bjs.zip' }
+  #spec.source       = { :git => "http://EXAMPLE/bionicjs.git", :tag => "#{spec.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -88,7 +95,8 @@ Pod::Spec.new do |spec|
   #
 
   spec.source_files  = "Bjs"
-  # spec.exclude_files = "BjsTestApp", "BjsTests"
+  #spec.source_files  = "Classes", "Classes/**/*.{h,m}"
+  #spec.exclude_files = "Classes/Exclude"
 
   # spec.public_header_files = "Classes/**/*.h"
 
@@ -101,7 +109,7 @@ Pod::Spec.new do |spec|
   #  non-essential files like tests, examples and documentation.
   #
 
-  spec.resource  = "Bjs/BjsBootstrap.bundle"
+  # spec.resource  = "icon.png"
   # spec.resources = "Resources/*.png"
 
   # spec.preserve_paths = "FilesToSave", "MoreFilesToSave"
