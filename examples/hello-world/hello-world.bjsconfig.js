@@ -1,21 +1,21 @@
 const path = require('path')
 
 module.exports = {
-    projectName: "HelloWorld",
+    projectName: "HelloJsWorld",
     guestDirPath: path.resolve(__dirname, "./js"),
     guestBundles: {
-        BusinessLogic: { 
+        MainBundle: { 
             entryPaths: ['./HelloWorld'],
         },
     },
     outputMode: "development",
     hostProjects: [{
         language: "swift",
-        projectPath: "./swift/HelloWorld.xcodeproj",
+        projectPath: "./swift/HelloJsWorld.xcodeproj",
         hostDirName: "Bjs",
         targetBundles: {
-            BusinessLogic: {
-                compileTargets: ["HelloWorld"],
+            MainBundle: {
+                compileTargets: ["HelloJsWorld"],
             },
         },
     }],
