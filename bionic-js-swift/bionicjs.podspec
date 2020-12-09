@@ -15,7 +15,7 @@ Pod::Spec.new do |spec|
   #  summary should be tweet-length, and the description more in depth.
   #
 
-  spec.name         = "bionicjs"
+  spec.name         = "Bjs"
   spec.version      = "1.0.0"
   spec.summary      = "Run effectively JS code in Swift and ObjectiveC projects"
 

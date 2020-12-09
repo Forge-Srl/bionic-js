@@ -1,3 +1,7 @@
+#if !os(macOS)
+import UIKit
+#endif
+
 class BjsFileInfo {
     
     private var _directory, _fullPathWithoutExt, _name, _nameWithoutExt, _ext: String?
