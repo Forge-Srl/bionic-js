@@ -14,7 +14,9 @@ public class BjsNativeWrapperTypeInfoTest {
 
     @Test
     public void get_exception_WrapperLocation() {
-        class DummyWrong extends BjsNativeWrapper<BjsExport> {}
+        class DummyWrong extends BjsNativeWrapper<BjsExport> {
+            protected DummyWrong(Class<BjsExport> realImplementation) { super(realImplementation); }
+        }
 
         assertThrows(RuntimeException.class, () -> {
             BjsNativeWrapperTypeInfo<DummyWrong> info = BjsNativeWrapperTypeInfo.get(DummyWrong.class);
@@ -24,7 +26,9 @@ public class BjsNativeWrapperTypeInfoTest {
     @Test
     public void get_exception_Exporter() {
         @BjsTypeInfo.BjsLocation(project = project, module = module)
-        class DummyWrong extends BjsNativeWrapper<BjsExport> {}
+        class DummyWrong extends BjsNativeWrapper<BjsExport> {
+            protected DummyWrong(Class<BjsExport> realImplementation) { super(realImplementation); }
+        }
 
         assertThrows(RuntimeException.class, () -> {
             BjsNativeWrapperTypeInfo<DummyWrong> info = BjsNativeWrapperTypeInfo.get(DummyWrong.class);
@@ -55,7 +59,7 @@ public class BjsNativeWrapperTypeInfoTest {
     @BjsTypeInfo.BjsLocation(project = project, module = module)
     static class Dummy extends BjsNativeWrapper<BjsExport> {
         private static BjsNativeExports valueToCheck;
-
+        protected Dummy(Class<BjsExport> realImplementation) { super(realImplementation); }
         @BjsNativeWrapperTypeInfo.Exporter
         static void bjsExportFunctions(BjsNativeExports nativeExport) {
             assertEquals(nativeExport, valueToCheck);

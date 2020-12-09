@@ -12,15 +12,6 @@ describe('JsRefType', () => {
         expect(JsRefType.typeName).toBe('JsRef')
     })
 
-    test('clone', () => {
-        const jsRefType = new JsRefType()
-        const jsRefTypeClone = jsRefType.clone
-
-        expect(jsRefType).not.toBe(jsRefTypeClone)
-        expect(jsRefType).toEqual(jsRefTypeClone)
-        expect(jsRefTypeClone).toBeInstanceOf(JsRefType)
-    })
-
     test('resolveClassType', () => {
         const jsRefType = new JsRefType('Class1')
         expect(jsRefType.resolveClassType(null)).toBe(jsRefType)

@@ -23,6 +23,7 @@ public class BjsContextTest {
 
     @BjsTypeInfo.BjsLocation(project = "", module = "")
     private static class InvalidDummyWrapper extends BjsNativeWrapper<BjsExport> {
+        protected InvalidDummyWrapper(Class<BjsExport> realImplementation) { super(realImplementation); }
         @BjsNativeWrapperTypeInfo.Exporter
         static void exporter(BjsNativeExports nativeExport) {}
     }
@@ -30,7 +31,7 @@ public class BjsContextTest {
     @BjsTypeInfo.BjsLocation(project = "dummy", module = "ValidDummyWrapper")
     private static class ValidDummyWrapper extends BjsNativeWrapper<BjsExport> {
         public static BjsNativeExports capturedNativeExport = null;
-
+        protected ValidDummyWrapper(Class<BjsExport> realImplementation) { super(realImplementation); }
         @BjsNativeWrapperTypeInfo.Exporter
         static void exporter(BjsNativeExports nativeExport) {
             capturedNativeExport = nativeExport;

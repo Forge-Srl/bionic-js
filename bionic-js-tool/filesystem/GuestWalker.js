@@ -44,17 +44,19 @@ class GuestWalker {
 
     async getFiles() {
         const stats = await this.webpack.compile()
-        return stats.compilation.modules
+        return [...stats.compilation.modules]
             .filter(module => module.constructor.name === WebpackModuleClassName)
             .map(module => {
                 const file = new File(module.resource, this.guestDirPath)
-                const chunks = module.getChunks()
+                const chunks = stats.compilation.chunkGraph.getModuleChunks(module)
                     .map(chunk => chunk.name)
                     .filter(chunkName => this.isFileToExport(file, chunkName))
+                    .sort()
                 return {file, chunks}
             })
             .filter(module => module.chunks.length)
             .map(module => GuestFile.fromFile(module.file, module.chunks))
+            .sort((a, b) => a.path > b.path ? 1 : a.path < b.path ? -1 : 0)
     }
 }
 

@@ -1,12 +1,10 @@
 const webpack = require('webpack')
 const {createFsFromVolume, Volume} = require('memfs')
-const joinPath = require('memory-fs/lib/join')
 
 class Webpack {
 
     static getVirtualFs() {
-        const virtualFs = createFsFromVolume(new Volume())
-        return virtualFs.join ? virtualFs : Object.assign(Object.create(virtualFs), {join: joinPath})
+        return createFsFromVolume(new Volume())
     }
 
     constructor(webpackConfig, outputFileSystem, inputFileSystem) {
@@ -23,6 +21,7 @@ class Webpack {
                 if (this.inputFileSystem) {
                     compiler = Object.assign(compiler, {inputFileSystem: this.inputFileSystem})
                 }
+                compiler.intermediateFileSystem = Webpack.getVirtualFs()
                 this._compiler = compiler
             } catch (error) {
                 error.message = `cannot configure Webpack\n${error.message}`

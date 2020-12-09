@@ -194,37 +194,37 @@ moduleLoaders.set('ToyComponent1', () => {
         
         // @bionic Float
         static get pi() {
-            return bjsNative.bjsStaticGet_pi()
+            return this.bjsNative.bjsStaticGet_pi()
         }
         
         // @bionic (Int, Int) => Int
         static sum(number1, number2) {
-            return bjsNative.bjsStatic_sum(number1, number2)
+            return this.bjsNative.bjsStatic_sum(number1, number2)
         }
         
         // @bionic Int
         get number1() {
-            return bjsNative.bjsGet_number1(this)
+            return this.constructor.bjsNative.bjsGet_number1(this)
         }
         
         // @bionic Int
         set number1(newValue) {
-            bjsNative.bjsSet_number1(this, newValue)
+            this.constructor.bjsNative.bjsSet_number1(this, newValue)
         }
         
         // @bionic Int
         get number2() {
-            return bjsNative.bjsGet_number2(this)
+            return this.constructor.bjsNative.bjsGet_number2(this)
         }
         
         // @bionic Int
         set number2(newValue) {
-            bjsNative.bjsSet_number2(this, newValue)
+            this.constructor.bjsNative.bjsSet_number2(this, newValue)
         }
         
         // @bionic (Int) => Int
         getSum(offset) {
-            return bjsNative.bjs_getSum(this, offset)
+            return this.constructor.bjsNative.bjs_getSum(this, offset)
         }
         
         // @bionic (ToyComponent1) => Int
@@ -235,10 +235,30 @@ moduleLoaders.set('ToyComponent1', () => {
     return {ToyComponent1}
 })
 
+moduleLoaders.set('ToyComponent2', () => {
+
+    const {ToyComponent1} = require('ToyComponent1')
+    const {bjsNative} = bjsNativeRequire('ToyComponent2')
+
+    class ToyComponent2 extends ToyComponent1 {
+
+        static get bjsNative() {
+            return bjsNative
+        }
+
+        // @bionic () => Int
+        additionalMethod() {
+            return this.constructor.bjsNative.bjs_additionalMethod(this)
+        }
+    }
+    return {ToyComponent2}
+})
+
 moduleLoaders.set('UserOfToyComponent1', () => {
     
     const {ToyComponent1} = require('ToyComponent1')
-    
+    const {ToyComponent2} = require('ToyComponent2')
+
     class UserOfToyComponent1 {
         
         // @bionic ToyComponent1
@@ -271,6 +291,21 @@ moduleLoaders.set('UserOfToyComponent1', () => {
         // @bionic (ToyComponent1, ToyComponent1) => Int
         static getSum(toy1, toy2) {
             return toy1.getToySum(toy2)
+        }
+
+        // @bionic (ToyComponent2, ToyComponent1) => Int
+        static getSum2(toy1, toy2) {
+            return toy1.getToySum(toy2)
+        }
+
+        // @bionic () => Float
+        static piSum() {
+            return ToyComponent2.pi + ToyComponent1.pi
+        }
+
+        // @bionic (ToyComponent2) => Int
+        static additionalValue(toy) {
+            return toy.additionalMethod()
         }
     }
     return {UserOfToyComponent1}

@@ -12,5 +12,6 @@ public class BjsTestProject extends BjsProject
         initProject();
         bjs.loadBundle(BjsTestProject.class, "test");
         bjs.addNativeWrappers(ToyComponent1BjsExport.Wrapper.class);
+        bjs.addNativeWrappers(ToyComponent2BjsExport.Wrapper.class);
     }
 }

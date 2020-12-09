@@ -3,6 +3,7 @@ package acceptance.toy1;
 import acceptance.toy1.bjs.BjsTestProject;
 import acceptance.toy1.bjs.UserOfToyComponent1;
 import acceptance.toy1.components.ToyComponent1;
+import acceptance.toy1.components.ToyComponent2;
 import jjbridge.engine.v8.V8Engine;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -35,5 +36,25 @@ public class ToyComponent1Test
         ToyComponent1 toy = new ToyComponent1("1", "2");
         UserOfToyComponent1.lastToy(toy);
         assertEquals(toy, UserOfToyComponent1.lastToy());
+    }
+
+    @Test
+    public void interactingWithSubclass() {
+        assertEquals(ToyComponent1.PI() + ToyComponent1.PI(), UserOfToyComponent1.piSum());
+    }
+
+    @Test
+    public void interactingWithSubclass2() {
+        assertEquals(69420, UserOfToyComponent1.additionalValue(new ToyComponent2("0", "0")));
+    }
+
+    @Test
+    public void interactingWithSubclass3() {
+        assertEquals(0, UserOfToyComponent1.getSum(new ToyComponent1("0", "0"), new ToyComponent1("0", "0")));
+        assertEquals(3, UserOfToyComponent1.getSum(new ToyComponent2("0", "0"), new ToyComponent1("0", "0")));
+        assertEquals(3, UserOfToyComponent1.getSum2(new ToyComponent2("0", "0"), new ToyComponent1("0", "0")));
+        assertEquals(0, UserOfToyComponent1.getSum(new ToyComponent1("0", "0"), new ToyComponent2("0", "0")));
+        assertEquals(4, UserOfToyComponent1.getSum(new ToyComponent2("0", "0"), new ToyComponent2("0", "0")));
+        assertEquals(4, UserOfToyComponent1.getSum2(new ToyComponent2("0", "0"), new ToyComponent2("0", "0")));
     }
 }

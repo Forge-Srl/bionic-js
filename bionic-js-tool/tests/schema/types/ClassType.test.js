@@ -16,14 +16,6 @@ describe('ClassType', () => {
         expect(ClassType.typeName).toBe('Class')
     })
 
-    test('clone', () => {
-        const classObj = new ClassType('className')
-        const classObjClone = classObj.clone
-
-        expect(classObj).not.toBe(classObjClone)
-        expect(classObj).toEqual(classObjClone)
-    })
-
     test('constructor', () => {
         const arrayType = new ClassType('class...')
         expect(arrayType.typeName).toBe('Class')
