@@ -16,18 +16,21 @@ public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends Bjs
 {
     private static final HashMap<Class<?>, BjsNativeWrapperTypeInfo<?>> cachedInfo = new HashMap<>();
     private final BjsFunctionExporter exporter;
+    private final BjsBinder binder;
 
-    private BjsNativeWrapperTypeInfo(Class<B> nativeWrapper, BjsLocator locator, BjsFunctionExporter exporter)
+    private BjsNativeWrapperTypeInfo(Class<B> nativeWrapper, BjsLocator locator, BjsFunctionExporter exporter,
+                                     BjsBinder binder)
     {
         super(nativeWrapper, locator);
         this.exporter = exporter;
+        this.binder = binder;
     }
 
     JSReference bjsGetNativeFunctions(BjsContext context)
     {
         BjsNativeExports nativeExport = context.createNativeExports();
-        exporter.bjsExportFunctions(nativeExport);
-        return nativeExport.getExportsObject();
+        binder.bjsBind(nativeExport);
+        return exporter.bjsExportFunctions(nativeExport).getExportsObject();
     }
 
     public static <N extends BjsExport, T extends BjsNativeWrapper<N>> BjsNativeWrapperTypeInfo<T> get(
@@ -35,7 +38,8 @@ public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends Bjs
     {
         if (!cachedInfo.containsKey(clazz))
         {
-            cachedInfo.put(clazz, new BjsNativeWrapperTypeInfo<>(clazz, getLocator(clazz), getFunctionExporter(clazz)));
+            cachedInfo.put(clazz, new BjsNativeWrapperTypeInfo<>(clazz, getLocator(clazz), getFunctionExporter(clazz),
+                    getBinder(clazz)));
         }
 
         @SuppressWarnings("unchecked")
@@ -53,7 +57,7 @@ public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends Bjs
                 {
                     try
                     {
-                        m.invoke(null, nativeExport);
+                        return (BjsNativeExports) m.invoke(null, nativeExport);
                     }
                     catch (IllegalAccessException | InvocationTargetException e)
                     {
@@ -65,14 +69,47 @@ public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends Bjs
         throw new RuntimeException("Class has no method with Exporter annotation");
     }
 
+    public static BjsBinder getBinder(@NonNull Class<?> clazz)
+    {
+        for (Method m : clazz.getDeclaredMethods())
+        {
+            if (m.isAnnotationPresent(Binder.class) && Modifier.isStatic(m.getModifiers()))
+            {
+                return nativeExport ->
+                {
+                    try
+                    {
+                        m.invoke(null, nativeExport);
+                    }
+                    catch (IllegalAccessException | InvocationTargetException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                };
+            }
+        }
+        throw new RuntimeException("Class has no method with Binder annotation");
+    }
+
     interface BjsFunctionExporter
     {
-        void bjsExportFunctions(BjsNativeExports nativeExport);
+        BjsNativeExports bjsExportFunctions(BjsNativeExports nativeExport);
+    }
+
+    interface BjsBinder
+    {
+        void bjsBind(BjsNativeExports nativeExport);
     }
 
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Exporter
+    {
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Binder
     {
     }
 }

@@ -36,6 +36,20 @@ public class BjsNativeWrapperTypeInfoTest {
     }
 
     @Test
+    public void get_exception_Binder() {
+        @BjsTypeInfo.BjsLocation(project = project, module = module)
+        class DummyWrong extends BjsNativeWrapper<BjsExport> {
+            protected DummyWrong(Class<BjsExport> realImplementation) { super(realImplementation); }
+            @BjsNativeWrapperTypeInfo.Exporter
+            BjsNativeExports bjsExportFunctions(BjsNativeExports nativeExport) { return nativeExport; }
+        }
+
+        assertThrows(RuntimeException.class, () -> {
+            BjsNativeWrapperTypeInfo<DummyWrong> info = BjsNativeWrapperTypeInfo.get(DummyWrong.class);
+        });
+    }
+
+    @Test
     public void get() {
         BjsContext context = mock(BjsContext.class);
         BjsNativeExports nativeExports = mock(BjsNativeExports.class);
@@ -61,7 +75,12 @@ public class BjsNativeWrapperTypeInfoTest {
         private static BjsNativeExports valueToCheck;
         protected Dummy(Class<BjsExport> realImplementation) { super(realImplementation); }
         @BjsNativeWrapperTypeInfo.Exporter
-        static void bjsExportFunctions(BjsNativeExports nativeExport) {
+        static BjsNativeExports bjsExportFunctions(BjsNativeExports nativeExport) {
+            assertEquals(nativeExport, valueToCheck);
+            return nativeExport;
+        }
+        @BjsNativeWrapperTypeInfo.Binder
+        static void bjsBind_(BjsNativeExports nativeExport) {
             assertEquals(nativeExport, valueToCheck);
         }
     }

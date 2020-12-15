@@ -33,9 +33,12 @@ public class BjsContextTest {
         public static BjsNativeExports capturedNativeExport = null;
         protected ValidDummyWrapper(Class<BjsExport> realImplementation) { super(realImplementation); }
         @BjsNativeWrapperTypeInfo.Exporter
-        static void exporter(BjsNativeExports nativeExport) {
+        static BjsNativeExports exporter(BjsNativeExports nativeExport) {
             capturedNativeExport = nativeExport;
+            return nativeExport;
         }
+        @BjsNativeWrapperTypeInfo.Binder
+        static void bjsBind_(BjsNativeExports nativeExport) {}
     }
 
     @BeforeEach

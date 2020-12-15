@@ -15,21 +15,27 @@ public interface ToyComponent2BjsExport extends ToyComponent1BjsExport
     @BjsTypeInfo.BjsLocation(project = "TestProject", module = "ToyComponent2")
     class Wrapper<T extends ToyComponent2BjsExport> extends ToyComponent1BjsExport.Wrapper<T>
     {
-        @BjsNativeWrapperTypeInfo.Exporter
-        public static void bjsExportFunctions(BjsNativeExports nativeExports) {
-            Wrapper<?> singleton = new Wrapper<>(getClass(ToyComponent2BjsExport.class, "ToyComponent2"));
+        private static Wrapper<?> wrapper;
+        private static Wrapper<?> getInstance()
+        {
+            if (wrapper == null)
+            {
+                wrapper = new Wrapper<>(getClass(ToyComponent2BjsExport.class, "ToyComponent2"));
+            }
+            return wrapper;
+        }
 
-            nativeExports
-                    .exportFunction("bjsStaticGet_pi", singleton.bjsStaticGet_pi())
-                    .exportFunction("bjsStatic_sum", singleton.bjsStatic_sum())
-                    .exportFunction("bjsGet_number1", singleton.bjsGet_number1())
-                    .exportFunction("bjsSet_number1", singleton.bjsSet_number1())
-                    .exportFunction("bjsGet_number2", singleton.bjsGet_number2())
-                    .exportFunction("bjsSet_number2", singleton.bjsSet_number2())
-                    .exportFunction("bjs_getSum", singleton.bjs_getSum())
-                    .exportFunction("bjs_getToySum", singleton.bjs_getToySum())
-                    .exportFunction("bjs_additionalMethod", singleton.bjs_additionalMethod())
-                    .exportBindFunction(singleton.bjsBind());
+        @BjsNativeWrapperTypeInfo.Exporter
+        public static BjsNativeExports bjsExportFunctions(BjsNativeExports nativeExports) {
+            Wrapper<?> singleton = getInstance();
+
+            return ToyComponent1BjsExport.Wrapper.bjsExportFunctions(nativeExports)
+                    .exportFunction("bjs_additionalMethod", singleton.bjs_additionalMethod());
+        }
+
+        @BjsNativeWrapperTypeInfo.Binder
+        public static void bjsBind_(BjsNativeExports nativeExports) {
+            nativeExports.exportBindFunction(getInstance().bjsBind());
         }
 
         protected Wrapper(Class<T> realImplementation)
