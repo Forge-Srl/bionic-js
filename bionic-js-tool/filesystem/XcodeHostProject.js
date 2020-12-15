@@ -220,6 +220,9 @@ class XcodeHostProject {
             const bundlesSet = new Set()
             const targets = fileToProcess.targets ? fileToProcess.targets : []
             targets.forEach(target => {
+                if (target.startsWith('"') && target.endsWith('"')) {
+                    target = target.substr(1, target.length - 2)
+                }
                 const bundle = targetKeysBundleMap.get(target)
                 if (bundle) {
                     bundlesSet.add(bundle)
