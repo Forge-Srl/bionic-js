@@ -1,5 +1,5 @@
-const {HelloJsWorld} = require('./HelloJsWorld')
-const {HelloNativeWorld} = require('./HelloNativeWorld')
+import {HelloJsWorld} from './HelloJsWorld'
+import {HelloNativeWorld} from './HelloNativeWorld'
 
 class HelloWorld {
     
@@ -9,4 +9,4 @@ class HelloWorld {
     }
 }
 
-module.exports = {HelloWorld}
+export {HelloWorld}

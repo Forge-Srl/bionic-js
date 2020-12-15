@@ -17,16 +17,16 @@
 		C50AFCF025811188002309FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C50AFCDA25811188002309FD /* Assets.xcassets */; };
 		C5F941F625813D8A0060CCAB /* HelloNativeWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F941F525813D8A0060CCAB /* HelloNativeWorld.swift */; };
 		C5F941F725813D8A0060CCAB /* HelloNativeWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F941F525813D8A0060CCAB /* HelloNativeWorld.swift */; };
-		B8789E1718F44497803CD938 /* BjsHelloJsWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641EB31A9D4A4F3D9B4198BD /* BjsHelloJsWorld.swift */; };
-		B0C3AFC291B9412E913D7528 /* BjsHelloJsWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641EB31A9D4A4F3D9B4198BD /* BjsHelloJsWorld.swift */; };
-		F786FED44BF54D1DB20A9A20 /* MainBundle.bjs.bundle in Resources */ = {isa = PBXBuildFile; fileRef = EDE553C47533406980B25491 /* MainBundle.bjs.bundle */; };
-		EC3DEFB06E36450AAC80D3A3 /* MainBundle.bjs.bundle in Resources */ = {isa = PBXBuildFile; fileRef = EDE553C47533406980B25491 /* MainBundle.bjs.bundle */; };
-		5C9A4C612E9B4BD59757EE4B /* HelloJsWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980504B9812A432B840F498E /* HelloJsWorld.swift */; };
-		89A50E03AB4240C3A350D332 /* HelloJsWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980504B9812A432B840F498E /* HelloJsWorld.swift */; };
-		7A8EDC9B1C794D0295D07F87 /* HelloNativeWorldBjsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A1AB28FBF7F4F3A9D9F7F69 /* HelloNativeWorldBjsWrapper.swift */; };
-		B5E5057D204D4CF99F0E05D7 /* HelloNativeWorldBjsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A1AB28FBF7F4F3A9D9F7F69 /* HelloNativeWorldBjsWrapper.swift */; };
-		5F2230F54F044B0580A62555 /* HelloWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C19B71A5224821AE59CD9B /* HelloWorld.swift */; };
-		5EB974280F474264A800A0BC /* HelloWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C19B71A5224821AE59CD9B /* HelloWorld.swift */; };
+		2E38E67804064659A5C01FA2 /* BjsHelloJsWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = E06868758C5C468F8F750F2E /* BjsHelloJsWorld.swift */; };
+		8AD2CFA65476463298BB5A98 /* BjsHelloJsWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = E06868758C5C468F8F750F2E /* BjsHelloJsWorld.swift */; };
+		92BB629E4DC04CE4B8A96B95 /* MainBundle.bjs.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F6235A2DEAE34B3882A6FDD7 /* MainBundle.bjs.bundle */; };
+		2318010F344B48B49E930CA0 /* MainBundle.bjs.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F6235A2DEAE34B3882A6FDD7 /* MainBundle.bjs.bundle */; };
+		C85B3B593EAF4A6F8F4C0E76 /* HelloJsWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D334E361729477DB20C14FC /* HelloJsWorld.swift */; };
+		1886E875C878437292014EB3 /* HelloJsWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D334E361729477DB20C14FC /* HelloJsWorld.swift */; };
+		63924BF859CF4C8BB2E6CFC9 /* HelloNativeWorldBjsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755F106C897E4C1ABE807A0C /* HelloNativeWorldBjsWrapper.swift */; };
+		763A04DF3D314FC183A1C2F6 /* HelloNativeWorldBjsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755F106C897E4C1ABE807A0C /* HelloNativeWorldBjsWrapper.swift */; };
+		14D6C2848BC349A98B956940 /* HelloWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAB11D3653B4ABC8765E40C /* HelloWorld.swift */; };
+		0F01159B15384F62B21190BF /* HelloWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAB11D3653B4ABC8765E40C /* HelloWorld.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,11 +45,11 @@
 		C5F941F525813D8A0060CCAB /* HelloNativeWorld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloNativeWorld.swift; sourceTree = "<group>"; };
 		D05F6061E393F33FBF6CBD82 /* Pods-HelloJsWorld (macOS).release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HelloJsWorld (macOS).release.xcconfig"; path = "Target Support Files/Pods-HelloJsWorld (macOS)/Pods-HelloJsWorld (macOS).release.xcconfig"; sourceTree = "<group>"; };
 		E60ACF8B3D2ACA7662893822 /* Pods-HelloJsWorld (iOS).debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HelloJsWorld (iOS).debug.xcconfig"; path = "Target Support Files/Pods-HelloJsWorld (iOS)/Pods-HelloJsWorld (iOS).debug.xcconfig"; sourceTree = "<group>"; };
-		641EB31A9D4A4F3D9B4198BD /* BjsHelloJsWorld.swift */ = {isa = PBXFileReference; path = BjsHelloJsWorld.swift; sourceTree = "<group>"; lastKnownFileType = sourcecode.swift; fileEncoding = 4; };
-		EDE553C47533406980B25491 /* MainBundle.bjs.bundle */ = {isa = PBXFileReference; path = MainBundle.bjs.bundle; sourceTree = "<group>"; lastKnownFileType = "wrapper.plug-in"; };
-		980504B9812A432B840F498E /* HelloJsWorld.swift */ = {isa = PBXFileReference; path = HelloJsWorld.swift; sourceTree = "<group>"; lastKnownFileType = sourcecode.swift; fileEncoding = 4; };
-		2A1AB28FBF7F4F3A9D9F7F69 /* HelloNativeWorldBjsWrapper.swift */ = {isa = PBXFileReference; path = HelloNativeWorldBjsWrapper.swift; sourceTree = "<group>"; lastKnownFileType = sourcecode.swift; fileEncoding = 4; };
-		76C19B71A5224821AE59CD9B /* HelloWorld.swift */ = {isa = PBXFileReference; path = HelloWorld.swift; sourceTree = "<group>"; lastKnownFileType = sourcecode.swift; fileEncoding = 4; };
+		E06868758C5C468F8F750F2E /* BjsHelloJsWorld.swift */ = {isa = PBXFileReference; path = BjsHelloJsWorld.swift; sourceTree = "<group>"; lastKnownFileType = sourcecode.swift; fileEncoding = 4; };
+		F6235A2DEAE34B3882A6FDD7 /* MainBundle.bjs.bundle */ = {isa = PBXFileReference; path = MainBundle.bjs.bundle; sourceTree = "<group>"; lastKnownFileType = "wrapper.plug-in"; };
+		3D334E361729477DB20C14FC /* HelloJsWorld.swift */ = {isa = PBXFileReference; path = HelloJsWorld.swift; sourceTree = "<group>"; lastKnownFileType = sourcecode.swift; fileEncoding = 4; };
+		755F106C897E4C1ABE807A0C /* HelloNativeWorldBjsWrapper.swift */ = {isa = PBXFileReference; path = HelloNativeWorldBjsWrapper.swift; sourceTree = "<group>"; lastKnownFileType = sourcecode.swift; fileEncoding = 4; };
+		DEAB11D3653B4ABC8765E40C /* HelloWorld.swift */ = {isa = PBXFileReference; path = HelloWorld.swift; sourceTree = "<group>"; lastKnownFileType = sourcecode.swift; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,8 +84,8 @@
 		4F4503753DEA45EEADD15789 /* BjsMainBundle */ = {
 			isa = PBXGroup;
 			children = (
-				641EB31A9D4A4F3D9B4198BD /* BjsHelloJsWorld.swift */,
-				EDE553C47533406980B25491 /* MainBundle.bjs.bundle */,
+				E06868758C5C468F8F750F2E /* BjsHelloJsWorld.swift */,
+				F6235A2DEAE34B3882A6FDD7 /* MainBundle.bjs.bundle */,
 			);
 			path = BjsMainBundle;
 			sourceTree = "<group>";
@@ -94,9 +94,9 @@
 			isa = PBXGroup;
 			children = (
 				4F4503753DEA45EEADD15789 /* BjsMainBundle */,
-				980504B9812A432B840F498E /* HelloJsWorld.swift */,
-				2A1AB28FBF7F4F3A9D9F7F69 /* HelloNativeWorldBjsWrapper.swift */,
-				76C19B71A5224821AE59CD9B /* HelloWorld.swift */,
+				3D334E361729477DB20C14FC /* HelloJsWorld.swift */,
+				755F106C897E4C1ABE807A0C /* HelloNativeWorldBjsWrapper.swift */,
+				DEAB11D3653B4ABC8765E40C /* HelloWorld.swift */,
 			);
 			path = Bjs;
 			sourceTree = "<group>";
@@ -245,7 +245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C50AFCEF25811188002309FD /* Assets.xcassets in Resources */,
-				F786FED44BF54D1DB20A9A20 /* MainBundle.bjs.bundle in Resources */,
+				92BB629E4DC04CE4B8A96B95 /* MainBundle.bjs.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,7 +254,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C50AFCF025811188002309FD /* Assets.xcassets in Resources */,
-				EC3DEFB06E36450AAC80D3A3 /* MainBundle.bjs.bundle in Resources */,
+				2318010F344B48B49E930CA0 /* MainBundle.bjs.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,10 +349,10 @@
 				C50AFCED25811188002309FD /* ContentView.swift in Sources */,
 				C5F941F625813D8A0060CCAB /* HelloNativeWorld.swift in Sources */,
 				C50AFCEB25811188002309FD /* HelloJsWorldApp.swift in Sources */,
-				B8789E1718F44497803CD938 /* BjsHelloJsWorld.swift in Sources */,
-				5C9A4C612E9B4BD59757EE4B /* HelloJsWorld.swift in Sources */,
-				7A8EDC9B1C794D0295D07F87 /* HelloNativeWorldBjsWrapper.swift in Sources */,
-				5F2230F54F044B0580A62555 /* HelloWorld.swift in Sources */,
+				2E38E67804064659A5C01FA2 /* BjsHelloJsWorld.swift in Sources */,
+				C85B3B593EAF4A6F8F4C0E76 /* HelloJsWorld.swift in Sources */,
+				63924BF859CF4C8BB2E6CFC9 /* HelloNativeWorldBjsWrapper.swift in Sources */,
+				14D6C2848BC349A98B956940 /* HelloWorld.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -363,10 +363,10 @@
 				C50AFCEE25811188002309FD /* ContentView.swift in Sources */,
 				C5F941F725813D8A0060CCAB /* HelloNativeWorld.swift in Sources */,
 				C50AFCEC25811188002309FD /* HelloJsWorldApp.swift in Sources */,
-				B0C3AFC291B9412E913D7528 /* BjsHelloJsWorld.swift in Sources */,
-				89A50E03AB4240C3A350D332 /* HelloJsWorld.swift in Sources */,
-				B5E5057D204D4CF99F0E05D7 /* HelloNativeWorldBjsWrapper.swift in Sources */,
-				5EB974280F474264A800A0BC /* HelloWorld.swift in Sources */,
+				8AD2CFA65476463298BB5A98 /* BjsHelloJsWorld.swift in Sources */,
+				1886E875C878437292014EB3 /* HelloJsWorld.swift in Sources */,
+				763A04DF3D314FC183A1C2F6 /* HelloNativeWorldBjsWrapper.swift in Sources */,
+				0F01159B15384F62B21190BF /* HelloWorld.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
