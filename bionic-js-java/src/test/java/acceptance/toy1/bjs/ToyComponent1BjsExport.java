@@ -24,11 +24,21 @@ public interface ToyComponent1BjsExport extends BjsExport
     @BjsTypeInfo.BjsLocation(project = "TestProject", module = "ToyComponent1")
     class Wrapper<T extends ToyComponent1BjsExport> extends BjsNativeWrapper<T>
     {
-        @BjsNativeWrapperTypeInfo.Exporter
-        public static void bjsExportFunctions(BjsNativeExports nativeExports) {
-            Wrapper<?> singleton = new Wrapper<>(getClass(ToyComponent1BjsExport.class, "ToyComponent1"));
+        private static Wrapper<?> wrapper;
+        private static Wrapper<?> getInstance()
+        {
+            if (wrapper == null)
+            {
+                wrapper = new Wrapper<>(getClass(ToyComponent1BjsExport.class, "ToyComponent1"));
+            }
+            return wrapper;
+        }
 
-            nativeExports
+        @BjsNativeWrapperTypeInfo.Exporter
+        public static BjsNativeExports bjsExportFunctions(BjsNativeExports nativeExports) {
+            Wrapper<?> singleton = getInstance();
+
+            return nativeExports
                     .exportFunction("bjsStaticGet_pi", singleton.bjsStaticGet_pi())
                     .exportFunction("bjsStatic_sum", singleton.bjsStatic_sum())
                     .exportFunction("bjsGet_number1", singleton.bjsGet_number1())
@@ -36,8 +46,12 @@ public interface ToyComponent1BjsExport extends BjsExport
                     .exportFunction("bjsGet_number2", singleton.bjsGet_number2())
                     .exportFunction("bjsSet_number2", singleton.bjsSet_number2())
                     .exportFunction("bjs_getSum", singleton.bjs_getSum())
-                    .exportFunction("bjs_getToySum", singleton.bjs_getToySum())
-                    .exportBindFunction(singleton.bjsBind());
+                    .exportFunction("bjs_getToySum", singleton.bjs_getToySum());
+        }
+
+        @BjsNativeWrapperTypeInfo.Binder
+        public static void bjsBind_(BjsNativeExports nativeExports) {
+            nativeExports.exportBindFunction(getInstance().bjsBind());
         }
 
         protected Wrapper(Class<T> realImplementation)
