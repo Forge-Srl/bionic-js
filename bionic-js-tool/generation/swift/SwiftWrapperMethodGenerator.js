@@ -1,6 +1,6 @@
 const {SwiftMethodGenerator} = require('./SwiftMethodGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
-const {GenerationContext} = require('../code/GenerationContext')
+const {SwiftGenerationContext} = require('./SwiftGenerationContext')
 const {IniRet} = require('../code/IniRet')
 const {NativeClassType} = require('../../schema/types/NativeClassType')
 const {Parameter} = require('../../schema/Parameter')
@@ -42,7 +42,7 @@ class SwiftWrapperMethodGenerator extends SwiftMethodGenerator {
     }
 
     getCode() {
-        const methodContext = new GenerationContext()
+        const methodContext = new SwiftGenerationContext()
         const argumentsListNativeIniRet = this.getArgumentsListNativeIniRet(methodContext, this.parametersIndexShift)
 
         const callIniRet = IniRet.create()

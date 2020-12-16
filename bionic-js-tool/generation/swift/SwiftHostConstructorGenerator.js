@@ -1,11 +1,11 @@
 const {SwiftMethodGenerator} = require('./SwiftMethodGenerator')
-const {GenerationContext} = require('../code/GenerationContext')
+const {SwiftGenerationContext} = require('./SwiftGenerationContext')
 const {CodeBlock} = require('../code/CodeBlock')
 
 class SwiftHostConstructorGenerator extends SwiftMethodGenerator {
 
     getCode() {
-        const constructorContext = new GenerationContext(this.classSchema.name)
+        const constructorContext = new SwiftGenerationContext(this.classSchema.name)
         const argumentsListIniRet = this.getArgumentsListJsIniRet(constructorContext)
 
         return CodeBlock.create()

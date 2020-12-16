@@ -1,6 +1,6 @@
 const {CodeGenerator} = require('../CodeGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
-const {GenerationContext} = require('../code/GenerationContext')
+const {SwiftGenerationContext} = require('./SwiftGenerationContext')
 const {IniRet} = require('../code/IniRet')
 
 class SwiftWrapperPropertyGenerator extends CodeGenerator {
@@ -62,7 +62,7 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
             return null
 
         const typeGen = this.typeGenerator
-        const getterContext = new GenerationContext()
+        const getterContext = new SwiftGenerationContext()
 
         return CodeBlock.create()
             .append(`private class func ${this.getterWrapperMethodName}() -> @convention(block) (`)
@@ -78,7 +78,7 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
         if (!this.hasSetter)
             return null
 
-        const getterContext = new GenerationContext()
+        const getterContext = new SwiftGenerationContext()
         const nativeValueIniRet = this.typeGenerator.getNativeIniRet(IniRet.create().appendRet(this.schema.isStatic ? '$0' : '$1'), getterContext)
 
         return CodeBlock.create()

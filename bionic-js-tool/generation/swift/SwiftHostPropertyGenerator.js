@@ -1,6 +1,6 @@
 const {CodeGenerator} = require('../CodeGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
-const {GenerationContext} = require('../code/GenerationContext')
+const {SwiftGenerationContext} = require('./SwiftGenerationContext')
 const {IniRet} = require('../code/IniRet')
 const {SwiftKeywords} = require('./SwiftKeywords')
 
@@ -40,7 +40,7 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
             .__.appendRet(`"${this.schema.name}")`)
 
         const typeGen = this.typeGenerator
-        const getterContext = new GenerationContext(this.schema.isStatic ? null : this.classSchema.name)
+        const getterContext = new SwiftGenerationContext(this.schema.isStatic ? null : this.classSchema.name)
 
         return CodeBlock.create()
             .append('get {').newLineIndenting()
@@ -53,7 +53,7 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
         if (!this.hasSetter)
             return null
 
-        const setterContext = new GenerationContext(this.schema.isStatic ? null : this.classSchema.name)
+        const setterContext = new SwiftGenerationContext(this.schema.isStatic ? null : this.classSchema.name)
         const jsValueIniRet = this.typeGenerator.getJsIniRet(IniRet.create().appendRet('newValue'), setterContext)
 
         return CodeBlock.create()

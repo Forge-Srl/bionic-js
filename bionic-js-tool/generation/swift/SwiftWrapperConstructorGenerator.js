@@ -1,5 +1,5 @@
 const {SwiftMethodGenerator} = require('./SwiftMethodGenerator')
-const {GenerationContext} = require('../code/GenerationContext')
+const {SwiftGenerationContext} = require('./SwiftGenerationContext')
 const {CodeBlock} = require('../code/CodeBlock')
 const {VoidType} = require('../../schema/types/VoidType')
 const {NativeClassType} = require('../../schema/types/NativeClassType')
@@ -30,7 +30,7 @@ class SwiftWrapperConstructorGenerator extends SwiftMethodGenerator {
     }
 
     getCode() {
-        const constructorContext = new GenerationContext()
+        const constructorContext = new SwiftGenerationContext()
         const parametersToSkip = super.parameters.length ? 1 : 2
         const argumentsListNativeIniRet = this.getArgumentsListNativeIniRet(constructorContext, parametersToSkip)
 

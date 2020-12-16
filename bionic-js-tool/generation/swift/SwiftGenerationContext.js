@@ -1,4 +1,4 @@
-class GenerationContext {
+class SwiftGenerationContext {
 
     constructor(entranceClassName, lastUniqueId = 0) {
         Object.assign(this, {entranceClassName, lastUniqueId})
@@ -13,4 +13,4 @@ class GenerationContext {
     }
 }
 
-module.exports = {GenerationContext}
+module.exports = {SwiftGenerationContext}

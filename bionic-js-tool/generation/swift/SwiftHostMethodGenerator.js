@@ -1,6 +1,6 @@
 const {SwiftMethodGenerator} = require('./SwiftMethodGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
-const {GenerationContext} = require('../code/GenerationContext')
+const {SwiftGenerationContext} = require('./SwiftGenerationContext')
 const {IniRet} = require('../code/IniRet')
 const {SwiftKeywords} = require('./SwiftKeywords')
 
@@ -16,7 +16,7 @@ class SwiftHostMethodGenerator extends SwiftMethodGenerator {
     }
 
     getBodyCode() {
-        const methodContext = new GenerationContext(this.schema.isStatic ? null : this.classSchema.name)
+        const methodContext = new SwiftGenerationContext(this.schema.isStatic ? null : this.classSchema.name)
         const anyParameter = this.parameters.length
         const returnTypeGen = this.returnTypeGenerator
 
