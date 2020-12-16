@@ -21,6 +21,11 @@ describe('ClassExplorer', () => {
         expect(explorer.isToExport).toBe(true)
     })
 
+    test('isToExport, bionic class with inline export', () => {
+        const explorer = getExplorer(`/* @bionic */export class Class1 { method() {} }`)
+        expect(explorer.isToExport).toBe(true)
+    })
+
     test('isToExport, bionic method', () => {
         const explorer = getExplorer(`class Class1 { /* @bionic */ method() {} }`)
         expect(explorer.isToExport).toBe(true)
@@ -36,13 +41,18 @@ describe('ClassExplorer', () => {
         expect(explorer.isNative).toBe(false)
     })
 
-    test('isNative, bionic class', () => {
+    test('isNative, bionic class, not native', () => {
         const explorer = getExplorer(`/* @bionic */class Class1 { }`)
         expect(explorer.isNative).toBe(false)
     })
 
-    test('isNative, bionic get', () => {
+    test('isNative, native bionic class', () => {
         const explorer = getExplorer(`/* @bionic native */ \n\nclass Class1 { }`)
+        expect(explorer.isNative).toBe(true)
+    })
+
+    test('isNative, native bionic class with inline export', () => {
+        const explorer = getExplorer(`/* @bionic native */export class Class1 { }`)
         expect(explorer.isNative).toBe(true)
     })
 

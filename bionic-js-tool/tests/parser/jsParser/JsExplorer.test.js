@@ -42,6 +42,11 @@ describe('JsExplorer', () => {
         expect(explorer.bionicTag).toEqual({})
     })
 
+    test('bionicTag with inline export', () => {
+        const explorer = getExplorer('// @bionic\nexport class Class1 {}')
+        expect(explorer.bionicTag).toEqual({})
+    })
+
     test('bionicTag - not present', () => {
         const explorer = getExplorer('// @unknown tag \nclass Class1 {}')
         expect(explorer.bionicTag).toBe(undefined)

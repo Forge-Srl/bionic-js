@@ -17,6 +17,23 @@ describe('ModuleExplorer', () => {
         expect(classNodes[0].id.name).toBe('Class1')
     })
 
+    test('classNodes and annotation', () => {
+        const explorer = getExplorer(`//annotation\nclass Class1 {}`)
+
+        const classNodes = explorer.classNodes
+        expect(classNodes.length).toBe(1)
+        expect(classNodes[0].id.name).toBe('Class1')
+        expect(classNodes[0].leadingComments[0].value).toBe('annotation')
+    })
+
+    test('classNodes module.exports', () => {
+        const explorer = getExplorer(`module.exports = class Class1 {}`)
+
+        const classNodes = explorer.classNodes
+        expect(classNodes.length).toBe(1)
+        expect(classNodes[0].id.name).toBe('Class1')
+    })
+
     test('classNodes module.exports', () => {
         const explorer = getExplorer(`module.exports = class Class1 {}`)
 
@@ -41,6 +58,15 @@ describe('ModuleExplorer', () => {
         expect(classNodes[0].id.name).toBe('Class1')
     })
 
+    test('classNodes export and annotation', () => {
+        const explorer = getExplorer(`//annotation\nexport class Class1 {}`)
+
+        const classNodes = explorer.classNodes
+        expect(classNodes.length).toBe(1)
+        expect(classNodes[0].id.name).toBe('Class1')
+        expect(classNodes[0].leadingComments[0].value).toBe('annotation')
+    })
+
     test('classNodes export default', () => {
         const explorer = getExplorer(`export default class Class1 {}`)
 
@@ -57,11 +83,13 @@ describe('ModuleExplorer', () => {
         expect(classNodes[0].id.name).toBe('Class1')
     })
 
-    test('classNodes multiple export', () => {
+    test('classNodes multiple export and annotations', () => {
         const explorer = getExplorer(`
             class Class1 {};
+            /*annotation1*/
+            //annotation2
             export default class Class2 {}
-            export class Class3 {
+            /*annotation3*/export class Class3 {
                 constructor() {
                     const privateClass = class ClassP {};
                 }
@@ -74,6 +102,8 @@ describe('ModuleExplorer', () => {
 
         const classNodes = explorer.classNodes
         expect(classNodes.map(node => node.id.name)).toEqual(['Class1', 'Class2', 'Class3', 'Class4'])
+        expect(classNodes.map(node => node.leadingComments ? node.leadingComments.map(comment => comment.value) : []))
+            .toEqual([[], ['annotation1', 'annotation2'], ['annotation3'], []])
     })
 
     test('classExplorers', () => {

@@ -43,6 +43,7 @@ class ModuleExplorer extends JsExplorer {
             case 'ExportNamedDeclaration':
             case 'ExportDefaultDeclaration':
                 return this.depthSearchClassNodes(node.declaration)
+                    .map(classNode => Object.assign(classNode, {leadingComments: node.leadingComments}))
 
             default:
                 return []
