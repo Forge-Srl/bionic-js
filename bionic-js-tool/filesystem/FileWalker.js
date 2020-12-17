@@ -4,12 +4,12 @@ const path = require('path')
 
 class FileWalker {
 
-    constructor(dirPath, patterns) {
+    constructor(dirPath, patterns, onlyFiles = true) {
         Object.assign(this, {
             dirPath, patterns,
             globOptions: {
                 cwd: dirPath,
-                onlyFiles: true,
+                onlyFiles
             },
         })
     }

@@ -1,10 +1,11 @@
 const {HostEnvironmentFile} = require('./HostEnvironmentFile')
+const {SWIFT_FILE_EXT} = require('./fileExtensions')
 const {SwiftHostEnvironmentFileGenerator} = require('../generation/swift/SwiftHostEnvironmentFileGenerator')
 
 class SwiftHostEnvironmentFile extends HostEnvironmentFile {
 
     static build(nativeFiles, bundleName, hostProjectConfig, projectName) {
-        const filePath = hostProjectConfig.hostDir.getSubDir(`Bjs${bundleName}`).getSubFile(`Bjs${projectName}.swift`).path
+        const filePath = hostProjectConfig.hostDir.getSubDir(`Bjs${bundleName}`).getSubFile(`Bjs${projectName}${SWIFT_FILE_EXT}`).path
         return new SwiftHostEnvironmentFile(filePath, hostProjectConfig.hostDir.path, bundleName, nativeFiles, projectName)
     }
 

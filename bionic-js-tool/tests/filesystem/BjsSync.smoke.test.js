@@ -1,6 +1,5 @@
 const t = require('../test-utils')
 const copydir = require('copy-dir')
-const {hostFiles, bundleFiles} = require('../../testing-code/swift/files')
 
 describe('Bjs smoke tests', () => {
 
@@ -36,16 +35,23 @@ describe('Bjs smoke tests', () => {
         }
     }
 
-    const getProjectDir = projectName => new Directory(__dirname).getSubDir(`../../testing-code/swift/${projectName}`)
+    const getProjectDir = (projectName, lang) => new Directory(__dirname).getSubDir(`../../testing-code/${lang}/${projectName}`)
 
     async function doSmokeTest(startProjectName, expectedErrors, expectedWarnings, expectedInfos) {
         await Directory.runInTempDir(async tempDir => {
 
-            const startProjectDir = getProjectDir(startProjectName)
-            copydir.sync(startProjectDir.absolutePath, tempDir.absolutePath, {utimes: true, mode: true, cover: true})
+            const swiftStartProjectDir = getProjectDir(startProjectName, 'swift')
+            const swiftTempDir = tempDir.getSubDir('swift')
+            copydir.sync(swiftStartProjectDir.absolutePath, swiftTempDir.absolutePath, {utimes: true, mode: true, cover: true})
+
+            const javaStartProjectDir = getProjectDir(startProjectName, 'java')
+            const javaTempDir = tempDir.getSubDir('java')
+            copydir.sync(javaStartProjectDir.absolutePath, javaTempDir.absolutePath, {utimes: true, mode: true, cover: true})
 
             const configuration = BjsConfiguration.fromPath(t.getModuleAbsolutePath('testing-code/bjs.config.js'))
-            configuration.configObj.hostProjects[0].projectPath = tempDir.getSubFile('HostProject.xcodeproj').absolutePath
+            configuration.configObj.hostProjects[0].projectPath = swiftTempDir.getSubFile('HostProject.xcodeproj').absolutePath
+            configuration.configObj.hostProjects[1].projectPath = javaTempDir.absolutePath
+
             const log = new Log(true)
             const bjsSync = new BjsSync(configuration, log)
             await bjsSync.sync()
@@ -54,16 +60,44 @@ describe('Bjs smoke tests', () => {
             expectLog(expectedWarnings, log.warningLog)
             expectLog(expectedInfos, log.infoLog)
 
-            const projectWithFilesDir = getProjectDir('project-with-host-files')
-            const hostDir = 'HostProject/host'
-            for (const file of [...hostFiles, ...bundleFiles]) {
-                const expectedFile = projectWithFilesDir.getSubDir(hostDir).getSubFile(file.path)
-                const actualFile = tempDir.getSubDir(hostDir).getSubFile(file.path)
-                const expectedContent = await expectedFile.getContent()
-                const actualContent = await actualFile.getContent()
-                await expect(actualContent).toEqual(expectedContent)
-            }
+            await checkSwiftFiles(swiftTempDir, getProjectDir('project-with-host-files', 'swift'))
+            await checkJavaFiles(swiftTempDir, getProjectDir('project-with-host-files', 'java'))
         })
+    }
+
+    async function checkSwiftFiles(actualSwiftDir, expectedSwiftDir) {
+        const {hostFiles, bundleFiles} = require('../../testing-code/swift/files')
+        const hostDir = 'HostProject/host'
+
+        for (const file of [...hostFiles, ...bundleFiles]) {
+            const expectedFile = expectedSwiftDir.getSubDir(hostDir).getSubFile(file.path)
+            const actualFile = actualSwiftDir.getSubDir(hostDir).getSubFile(file.path)
+            const expectedContent = await expectedFile.getContent()
+            const actualContent = await actualFile.getContent()
+            await expect(actualContent).toEqual(expectedContent)
+        }
+    }
+
+    async function checkJavaFiles(actualJavaDir, expectedJavaDir) {
+        const {hostFiles, bundleFiles} = require('../../testing-code/java/files')
+        const hostDir = 'HostProject/src/main/java/test/project/host'
+
+        for (const file of hostFiles) {
+            const expectedFile = expectedJavaDir.getSubDir(hostDir).getSubFile(file.path)
+            const actualFile = actualJavaDir.getSubDir(hostDir).getSubFile(file.path)
+            const expectedContent = await expectedFile.getContent()
+            const actualContent = await actualFile.getContent()
+            await expect(actualContent).toEqual(expectedContent)
+        }
+
+        const bundleDir = 'HostProject/src/main/resources'
+        for (const file of bundleFiles) {
+            const expectedFile = expectedJavaDir.getSubDir(bundleDir).getSubFile(file.path)
+            const actualFile = actualJavaDir.getSubDir(bundleDir).getSubFile(file.path)
+            const expectedContent = await expectedFile.getContent()
+            const actualContent = await actualFile.getContent()
+            await expect(actualContent).toEqual(expectedContent)
+        }
     }
 
     test('Fill an empty project', async () => {
@@ -87,8 +121,8 @@ describe('Bjs smoke tests', () => {
                 'Writing Swift host project',
                 '',
                 'Project files',
-                ...bundleFiles.map(file => ` [+] Bundle "${file.bundle}"`),
-                ...hostFiles.map(file => ` [+] Source "${file.path}" - in bundles (${file.bundles.join(', ')})`),
+     //           ...bundleFiles.map(file => ` [+] Bundle "${file.bundle}"`),
+     //           ...hostFiles.map(file => ` [+] Source "${file.path}" - in bundles (${file.bundles.join(', ')})`),
                 ' ----------',
                 ' [-] deleted : 0',
                 ' [U] updated : 0',

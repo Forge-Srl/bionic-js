@@ -72,6 +72,16 @@ describe('BjsConfiguration', () => {
         expect(bjsConfig.hostProjects).toBe(hostProjects)
     })
 
+    test('hostProjects, java', () => {
+        const projectObj = {language: 'java', projectPath: 'path', targetBundles: {}}
+        const bjsConfig = new BjsConfiguration({hostProjects: [projectObj]}, 'locator')
+        const hostProjects = bjsConfig.hostProjects
+        expect(hostProjects[0].configObj).toBe(projectObj)
+        expect(hostProjects[0].locator).toBe('locator -> "hostProjects[0]"')
+
+        expect(bjsConfig.hostProjects).toBe(hostProjects)
+    })
+
     test('hostProjects, empty', () => {
         const bjsConfig = new BjsConfiguration({hostProjects: []})
         expect(bjsConfig.hostProjects).toStrictEqual([])

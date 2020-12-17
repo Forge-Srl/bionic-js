@@ -1,4 +1,5 @@
 const {XcodeHostProject} = require('./XcodeHostProject')
+const {JavaHostProject} = require('./JavaHostProject')
 const {HostProjectFile} = require('./HostProjectFile')
 const {BundleProjectFile} = require('./BundleProjectFile')
 
@@ -8,6 +9,8 @@ class HostProject {
         let targetProject
         if (configuration.language === 'Swift') {
             targetProject = new XcodeHostProject(configuration, log)
+        } else if (configuration.language === 'Java') {
+            targetProject = new JavaHostProject(configuration, log)
         } else {
             throw new Error(`host project type "${configuration.type}" required in the configuration is not supported`)
         }

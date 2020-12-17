@@ -26,5 +26,11 @@ module.exports = {
                 compileTargets: ['VehiclesTarget', 'BicycleTarget'],
             },
         },
+    }, {
+        language: 'java',
+        projectPath: null, // property set by tests
+        srcDirName: 'HostProject/src',
+        //hostDirName: 'HostProject/src/main/java/test/project/host',
+        basePackage: 'test.project',
     }],
 }

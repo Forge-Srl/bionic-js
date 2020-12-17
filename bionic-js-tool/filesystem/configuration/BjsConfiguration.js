@@ -1,6 +1,7 @@
 const {Configuration} = require('./Configuration')
 const {GuestBundlesConfiguration} = require('./GuestBundlesConfiguration')
 const {XcodeHostProjectConfiguration} = require('./XcodeHostProjectConfiguration')
+const {JavaHostProjectConfiguration} = require('./JavaHostProjectConfiguration')
 
 class BjsConfiguration extends Configuration {
 
@@ -55,8 +56,11 @@ class BjsConfiguration extends Configuration {
                 if (!targetObj.language) {
                     throw new Error(`${projectLocator} -> "language" is missing`)
                 }
-                if (targetObj.language.toLowerCase() === 'swift') {
+                const language = targetObj.language.toLowerCase()
+                if (language === 'swift') {
                     return XcodeHostProjectConfiguration.fromObj(targetObj, projectLocator)
+                } else if (language === 'java') {
+                    return JavaHostProjectConfiguration.fromObj(targetObj, projectLocator)
                 } else {
                     throw new Error(`${projectLocator} -> "language" -> "${targetObj.language}" is not supported`)
                 }
