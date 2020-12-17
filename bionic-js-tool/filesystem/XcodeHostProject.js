@@ -1,5 +1,4 @@
 const xcode = require('xcode')
-const pbxFile = require('xcode/lib/pbxFile')
 const path = require('path')
 const touch = require('touch')
 const {HostProjectFile} = require('./HostProjectFile')
