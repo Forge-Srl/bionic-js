@@ -27,6 +27,12 @@ describe('Parameter', () => {
         expect(parameter).toEqual(expectedParameter)
     })
 
+    test('dependingTypes', () => {
+        const type = {dependingTypes: ['type1', 'type2']}
+        const parameter = new Parameter(type, 'name', 'desc')
+        expect(parameter.dependingTypes).toStrictEqual([type, ...type.dependingTypes])
+    })
+
     test('resolveClassType', () => {
         const type = {
             resolveClassType: nativeClassesMap => {

@@ -9,7 +9,7 @@ class JavaHostProjectConfiguration extends Configuration {
     }
 
     constructor(configObj, locator) {
-        super(configObj, locator, [], ['type', 'projectPath', 'srcDirName', 'targetBundles', 'basePackage'])
+        super(configObj, locator, [], ['type', 'projectPath', 'srcDirName', 'targetBundles', 'basePackage', 'hostPackage'])
     }
 
     get language() {
@@ -28,8 +28,8 @@ class JavaHostProjectConfiguration extends Configuration {
         return this.configObj.basePackage
     }
 
-    get basePackageAsPath() {
-        return this.basePackage.replace(/\./g, '/')
+    get hostPackage() {
+        return this.basePackage ? `${this.basePackage}.${this.configObj.hostPackage}` : this.configObj.hostPackage
     }
 
     get srcDir() {
@@ -40,8 +40,7 @@ class JavaHostProjectConfiguration extends Configuration {
     get hostDir() {
         return this.srcDir
             .getSubDir('main/java')
-            .getSubDir(this.basePackageAsPath)
-            .getSubDir('host')
+            .getSubDir(this.hostPackage.replace(/\./g, '/'))
     }
 
     get resourcesDir() {

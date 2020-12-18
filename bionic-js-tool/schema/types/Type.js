@@ -19,6 +19,10 @@ class Type {
         return new TypeGeneratorFactory(this)
     }
 
+    get dependingTypes() {
+        return []
+    }
+
     toString() {
         return this.constructor.typeName
     }

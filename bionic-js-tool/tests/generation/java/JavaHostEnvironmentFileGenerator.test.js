@@ -9,7 +9,7 @@ describe('JavaHostEnvironmentFileGenerator', () => {
             t.requireModule('generation/java/JavaHostEnvironmentFileGenerator').JavaHostEnvironmentFileGenerator
 
         expectedHeader = [
-            'package test.java;',
+            'package test.java.BjspkgName;',
             '',
             'import bionic.js.Bjs;',
             'import bionic.js.BjsProject;',
@@ -30,7 +30,12 @@ describe('JavaHostEnvironmentFileGenerator', () => {
     })
 
     function getSourceCode(nativeFilesNames) {
-        const nativeFiles = nativeFilesNames.map(name => ({schema: {name}}))
+        const nativeFiles = nativeFilesNames.map(name => ({
+            schema: {
+                name,
+                modulePath: `some/path/${name}.java`
+            }
+        }))
         return new JavaHostEnvironmentFileGenerator('pkgName', nativeFiles, 'Project1', 'test.java').getSource()
     }
 
@@ -47,8 +52,8 @@ describe('JavaHostEnvironmentFileGenerator', () => {
 
         t.expectCode(code,
             ...expectedHeader,
-            '        bjs.addNativeWrapper(NativeClass1BjsExport.Wrapper.class);',
-            '        bjs.addNativeWrapper(NativeClass2BjsExport.Wrapper.class);',
+            '        bjs.addNativeWrapper(test.java.some.path.NativeClass1BjsExport.Wrapper.class);',
+            '        bjs.addNativeWrapper(test.java.some.path.NativeClass2BjsExport.Wrapper.class);',
             ...expectedFooter)
     })
 })

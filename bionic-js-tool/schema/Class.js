@@ -23,6 +23,14 @@ class Class extends Generable {
         Object.assign(this, {name, description, constructors, properties, methods, superclass, isNative, modulePath})
     }
 
+    get dependingTypes() {
+        return [
+            ...this.constructors.flatMap(param => param.dependingTypes),
+            ...this.properties.flatMap(param => param.dependingTypes),
+            ...this.methods.flatMap(param => param.dependingTypes),
+        ]
+    }
+
     get isValid() {
         return Validation.validateIdentifier('class name', this.name)
     }

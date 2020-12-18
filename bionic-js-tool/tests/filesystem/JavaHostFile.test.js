@@ -19,7 +19,10 @@ describe('JavaHostFile', () => {
                 isNative: isNative,
             },
         }
-        const hostProjectConfig = {hostDir: {path: '/host/dir'}}
+        const hostProjectConfig = {
+            hostDir: {path: '/host/dir'},
+            hostPackage: 'test.java'
+        }
         const projectName = 'projectName'
         const javaHostFile = JavaHostFile.build(annotatedFile, hostProjectConfig, projectName)
 
@@ -28,6 +31,7 @@ describe('JavaHostFile', () => {
         expect(javaHostFile.rootDirPath).toBe('/host/dir')
         expect(javaHostFile.annotatedFile).toBe(annotatedFile)
         expect(javaHostFile.projectName).toBe(projectName)
+        expect(javaHostFile.basePackage).toBe('test.java')
     }
 
     test('build native file', () => {

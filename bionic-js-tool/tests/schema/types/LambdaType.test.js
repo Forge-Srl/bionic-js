@@ -95,6 +95,21 @@ describe('LambdaType', () => {
         })
     })
 
+    test('dependingTypes', () => {
+        const returnType = {dependingTypes: ['type1', 'type2']}
+        const param1Type = {dependingTypes: ['type3']}
+        const param2Type = {dependingTypes: []}
+        const arrayType = new LambdaType(returnType, [
+            new Parameter(param1Type, '', ''),
+            new Parameter(param2Type, '', ''),
+        ])
+        expect(arrayType.dependingTypes).toStrictEqual([
+            returnType, ...returnType.dependingTypes,
+            param1Type, ...param1Type.dependingTypes,
+            param2Type, ...param2Type.dependingTypes,
+        ])
+    })
+
     test('toString', () => {
         const lambdaType = new LambdaType(
             {toString: () => 'RetType'},

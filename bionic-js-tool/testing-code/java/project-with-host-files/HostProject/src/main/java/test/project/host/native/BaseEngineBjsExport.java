@@ -1,4 +1,4 @@
-package test.project.native;
+package test.project.host.native;
 
 import bionic.js.Bjs;
 import bionic.js.BjsExport;

@@ -16,6 +16,10 @@ class Property extends Generable {
         Object.assign(this, {name, description, isStatic, type, kinds})
     }
 
+    get dependingTypes() {
+        return [this.type, ...this.type.dependingTypes]
+    }
+
     resolveClassType(nativeClassesMap) {
         return new Property(this.name, this.description, this.isStatic, this.type.resolveClassType(nativeClassesMap), this.kinds)
     }

@@ -16,7 +16,7 @@ describe('JavaHostEnvironmentFile', () => {
         const nativeFiles = 'nativeFiles'
         const hostProjectConfig = {
             hostDir: new Directory('/host/dir/path', '/'),
-            basePackage: 'test.java',
+            hostPackage: 'test.java',
         }
         const javaHostEnvironmentFile = JavaHostEnvironmentFile.build(nativeFiles, 'Bundle1', hostProjectConfig, 'Project1')
 

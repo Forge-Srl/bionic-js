@@ -12,4 +12,8 @@ describe('Generable', () => {
     test('generator', () => {
         expect(new Generable().generator).toBeInstanceOf(GeneratorFactory)
     })
+
+    test('dependingTypes', () => {
+        expect(new Generable().dependingTypes).toStrictEqual([])
+    })
 })

@@ -1,4 +1,4 @@
-package test.project;
+package test.project.host.BjsMotorVehicles;
 
 import bionic.js.Bjs;
 import bionic.js.BjsProject;
@@ -10,7 +10,7 @@ public class BjsBeautifulVehicles extends BjsProject {
     public static void initialize(Bjs bjs) {
         initProject();
         bjs.loadBundle(BjsBeautifulVehicles.class, "MotorVehicles");
-        bjs.addNativeWrapper(BaseEngineBjsExport.Wrapper.class);
-        bjs.addNativeWrapper(EngineBjsExport.Wrapper.class);
+        bjs.addNativeWrapper(test.project.host.native.BaseEngineBjsExport.Wrapper.class);
+        bjs.addNativeWrapper(test.project.host.native.EngineBjsExport.Wrapper.class);
     }
 }

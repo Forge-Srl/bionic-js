@@ -7,7 +7,7 @@ class JavaHostFile extends HostFile {
         const guestFile = annotatedFile.guestFile
         const newFileName = `${guestFile.name}${annotatedFile.schema.isNative ? 'BjsExport' : ''}`
         return new JavaHostFile(guestFile.composeNewPath(hostProjectConfig.hostDir.path, newFileName, JAVA_FILE_EXT),
-            hostProjectConfig.hostDir.path, annotatedFile, projectName, hostProjectConfig.basePackage)
+            hostProjectConfig.hostDir.path, annotatedFile, projectName, hostProjectConfig.hostPackage)
     }
 
     constructor(path, hostDir, annotatedFile, projectName, basePackage) {

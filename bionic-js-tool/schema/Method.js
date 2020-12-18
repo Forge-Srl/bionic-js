@@ -18,6 +18,13 @@ class Method extends Generable {
         Object.assign(this, {name, description, isStatic, returnType, parameters})
     }
 
+    get dependingTypes() {
+        return [
+            this.returnType,
+            ...this.returnType.dependingTypes,
+            ...this.parameters.flatMap(param => param.dependingTypes)]
+    }
+
     resolveClassType(nativeClassesMap) {
         return new Method(this.name, this.description, this.isStatic,
             this.returnType.resolveClassType(nativeClassesMap),

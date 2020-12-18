@@ -16,6 +16,10 @@ class Constructor extends Generable {
         Object.assign(this, {description, parameters})
     }
 
+    get dependingTypes() {
+        return this.parameters.flatMap(param => param.dependingTypes)
+    }
+
     resolveClassType(nativeClassesMap) {
         return new Constructor(this.description,
             this.parameters.map(parameter => parameter.resolveClassType(nativeClassesMap)))

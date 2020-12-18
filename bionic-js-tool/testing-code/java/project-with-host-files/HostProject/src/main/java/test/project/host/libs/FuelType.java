@@ -1,4 +1,4 @@
-package test.project.libs;
+package test.project.host.libs;
 
 import jjbridge.api.runtime.JSReference;
 import bionic.js.Bjs;

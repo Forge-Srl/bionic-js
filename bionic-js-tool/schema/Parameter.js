@@ -16,6 +16,10 @@ class Parameter extends Generable {
         Object.assign(this, {type, name, description})
     }
 
+    get dependingTypes() {
+        return [this.type, ...this.type.dependingTypes]
+    }
+
     resolveClassType(nativeClassesMap) {
         return new Parameter(this.type.resolveClassType(nativeClassesMap), this.name, this.description)
     }

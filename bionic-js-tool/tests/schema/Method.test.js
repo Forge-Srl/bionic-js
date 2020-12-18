@@ -39,6 +39,21 @@ describe('Method', () => {
         expect(method).toEqual(expectedMethod)
     })
 
+    test('dependingTypes', () => {
+        const returnType = {dependingTypes: ['type1', 'type2']}
+        const param1Type = {dependingTypes: ['type3']}
+        const param2Type = {dependingTypes: []}
+        const method = new Method('', '', false, returnType, [
+            new Parameter(param1Type),
+            new Parameter(param2Type),
+        ])
+        expect(method.dependingTypes).toStrictEqual([
+            returnType, ...returnType.dependingTypes,
+            param1Type, ...param1Type.dependingTypes,
+            param2Type, ...param2Type.dependingTypes,
+        ])
+    })
+
     test('resolveClassType', () => {
         const returnType = {
             resolveClassType: nativeClassesMap => {

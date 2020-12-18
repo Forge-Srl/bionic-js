@@ -36,6 +36,14 @@ class LambdaType extends Type {
         return super.isValid
     }
 
+    get dependingTypes() {
+        return [
+            this.returnType,
+            ...this.returnType.dependingTypes,
+            ...this.parameters.flatMap(param => param.dependingTypes)
+        ]
+    }
+
     toString() {
         return `(${this.parameters.map(par => par.type.toString()).join(', ')}) => ${this.returnType.toString()}`
     }

@@ -65,6 +65,21 @@ describe('Class', () => {
         expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe('../moduleR/filePath')
     })
 
+    test('dependingTypes', () => {
+        const clazz = new Class('', '', [
+            {dependingTypes: ['type1c']},
+            {dependingTypes: ['type2c', 'type3c']},
+        ], [
+            {dependingTypes: ['type1p']},
+        ], [
+            {dependingTypes: ['type1m', 'type2m']},
+            {dependingTypes: []},
+        ], null, false, '')
+        expect(clazz.dependingTypes).toStrictEqual([
+            'type1c', 'type2c', 'type3c', 'type1p', 'type1m', 'type2m'
+        ])
+    })
+
     test('resolveClassType', () => {
         const constructor = {
             resolveClassType: nativeClassesMap => {

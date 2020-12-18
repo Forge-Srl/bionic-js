@@ -64,6 +64,12 @@ describe('ArrayType', () => {
         expect(isValid.error).toBe('VoidType is not valid as element type')
     })
 
+    test('dependingTypes', () => {
+        let elementType = {dependingTypes: ['type1', 'type2']}
+        let arrayType = new ArrayType(elementType)
+        expect(arrayType.dependingTypes).toStrictEqual([elementType, ...elementType.dependingTypes])
+    })
+
     test('toString', () => {
         let arrayType = new ArrayType({toString: () => 'elementType...'})
         expect(arrayType.toString()).toBe('Array<elementType...>')

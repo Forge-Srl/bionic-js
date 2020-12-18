@@ -1,4 +1,4 @@
-package test.project.native;
+package test.project.host.native;
 
 import bionic.js.Bjs;
 import bionic.js.BjsExport;
@@ -7,6 +7,8 @@ import bionic.js.BjsNativeWrapper;
 import bionic.js.BjsNativeWrapperTypeInfo;
 import bionic.js.BjsTypeInfo;
 import jjbridge.api.value.strategy.FunctionCallback;
+import test.project.host.native.BaseEngineBjsExport;
+import test.project.host.libs.FuelType;
 
 public interface EngineBjsExport extends BaseEngineBjsExport {
     

@@ -37,6 +37,10 @@ describe('Type', () => {
         expect(new Type().generator).toBeInstanceOf(TypeGeneratorFactory)
     })
 
+    test('dependingTypes', () => {
+        expect(type.dependingTypes).toStrictEqual([])
+    })
+
     test('toString', () => {
         expect(type.toString()).toBeUndefined()
     })

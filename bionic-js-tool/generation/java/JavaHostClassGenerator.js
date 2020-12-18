@@ -1,5 +1,6 @@
 const {ClassGenerator} = require('../ClassGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
+const {ClassType} = require('../../schema/types/ClassType')
 
 class JavaHostClassGenerator extends ClassGenerator {
 
@@ -14,21 +15,64 @@ class JavaHostClassGenerator extends ClassGenerator {
         Object.assign(this, {projectName, basePackage})
     }
 
+    getFullPackage() {
+        const subPackage = this.constructor.pathToPackage(this.schema.modulePath)
+        return subPackage ? `${this.basePackage}.${subPackage}` : this.basePackage
+    }
+
+    getFullSuperPackage() {
+        const subPackage = this.constructor.pathToPackage(this.schema.superclass.modulePath)
+        return subPackage ? `${this.basePackage}.${subPackage}` : this.basePackage
+    }
+
+    getFullDependencyPackage(classType) {
+        // TODO: resolve full package correctly from class type
+        if (classType.typeName === 'NativeClass')
+            return `${this.basePackage}.NATIVE.TODO.${classType.className}`
+
+        if (classType.typeName === 'JsClass')
+            return `${this.basePackage}.TODO.${classType.className}`
+
+        if (classType.typeName === 'NativeRef')
+            return `${this.basePackage}.TODO.${classType.className}BjsExport`
+
+        return null
+    }
+
+    getTypesImport() {
+        const classImports = this.schema.dependingTypes
+            .filter(type => type instanceof ClassType)
+            .map(type => {
+                if (type.className === this.schema.name)
+                    return null
+
+                const fullPackage = this.getFullDependencyPackage(type)
+                return fullPackage ? `import ${fullPackage};` : null
+            })
+
+        const uniqueImports = [...new Set(classImports)].filter(notNull => notNull)
+        uniqueImports.sort((a, b) => a.localeCompare(b, 'en', {ignorePunctuation: true}))
+
+        const block = CodeBlock.create()
+        uniqueImports.forEach(type => block.append(type).newLine())
+        return block
+    }
+
     getHeaderCode() {
-        const packageName = `${this.basePackage}.${this.constructor.pathToPackage(this.schema.modulePath)}`
-        const superclassName = this.schema.superclass
-            ? `${this.constructor.pathToPackage(this.schema.superclass.modulePath)}.${this.schema.superclass.name}`
-            : 'BjsObject'
-        const baseImport = superclassName === 'BjsObject' ? 'import bionic.js.BjsObject;' : null
+        const baseImport = this.schema.superclass
+            ? `import ${this.getFullSuperPackage()}.${this.schema.superclass.name};`
+            : 'import bionic.js.BjsObject;'
+        const superclassName = this.schema.superclass ? this.schema.superclass.name : 'BjsObject'
 
         return CodeBlock.create()
-            .append(`package ${packageName};`).newLine()
+            .append(`package ${this.getFullPackage()};`).newLine()
             .newLine()
             .append('import jjbridge.api.runtime.JSReference;').newLine()
             .append('import bionic.js.Bjs;').newLine()
             .append('import bionic.js.BjsTypeInfo;').newLine()
             .append('import bionic.js.BjsObjectTypeInfo;').newLine()
-            .append(baseImport).newLineConditional(baseImport)
+            .append(this.getTypesImport())
+            .append(baseImport).newLine()
             .newLine()
             .append(`@BjsTypeInfo.BjsLocation(project = "${this.projectName}", module = "${this.schema.name}")`).newLine()
             .append(`public class ${this.schema.name} extends ${superclassName} {`).newLineIndenting()
@@ -38,7 +82,7 @@ class JavaHostClassGenerator extends ClassGenerator {
     getBodyCode() {
         return CodeBlock.create()
             .append(this.getClassParts().map(classPart =>
-                classPart.generator.forHosting(this.schema).java.getCode().newLine()
+                classPart.generator.forHosting(this.schema, this.basePackage).java.getCode().newLine()
                     .newLine()))
     }
 
@@ -52,11 +96,10 @@ class JavaHostClassGenerator extends ClassGenerator {
     }
 
     getScaffold() {
-        const packageName = `${this.basePackage}.${this.constructor.pathToPackage(this.schema.modulePath)}`
         const superClassExtension = this.schema.superclass ? `extends ${this.schema.superclass.name} ` : ''
 
         const scaffoldCode = CodeBlock.create()
-            .append(`import ${packageName}.${this.schema.name}BjsExport;`).newLine()
+            .append(`import ${this.getFullPackage()}.${this.schema.name}BjsExport;`).newLine()
             .newLine()
             .append(`public class ${this.schema.name} ${superClassExtension}implements ${this.schema.name}BjsExport {`).newLineIndenting()
 
@@ -65,7 +108,7 @@ class JavaHostClassGenerator extends ClassGenerator {
             scaffoldCode.newLine()
 
         return scaffoldCode.append(classParts.map((classPart, index) => {
-            const classPartCode = classPart.generator.forHosting(this.schema).java.getScaffold()
+            const classPartCode = classPart.generator.forHosting(this.schema, this.basePackage).java.getScaffold()
             if (index < classParts.length - 1) {
                 classPartCode.newLine().newLine()
             }

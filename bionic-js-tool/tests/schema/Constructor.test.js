@@ -34,6 +34,19 @@ describe('Constructor', () => {
         expect(constructor).toEqual(expectedConstructor)
     })
 
+    test('dependingTypes', () => {
+        const param1Type = {dependingTypes: ['type3']}
+        const param2Type = {dependingTypes: []}
+        const constructor = new Constructor('', [
+            new Parameter(param1Type),
+            new Parameter(param2Type),
+        ])
+        expect(constructor.dependingTypes).toStrictEqual([
+            param1Type, ...param1Type.dependingTypes,
+            param2Type, ...param2Type.dependingTypes,
+        ])
+    })
+
     test('resolveClassType', () => {
         const parameter = {
             resolveClassType: nativeClassesMap => {

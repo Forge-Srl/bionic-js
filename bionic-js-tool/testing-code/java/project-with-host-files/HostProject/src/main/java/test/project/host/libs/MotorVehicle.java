@@ -1,12 +1,17 @@
-package test.project.libs;
+package test.project.host.libs;
 
 import jjbridge.api.runtime.JSReference;
 import bionic.js.Bjs;
 import bionic.js.BjsTypeInfo;
 import bionic.js.BjsObjectTypeInfo;
+import test.project.host.libs.Vehicle;
+import test.project.host.libs.FuelType;
+import test.project.host.native.EngineBjsExport;
+import test.project.Engine;
+import test.project.AppDelegate;
 
 @BjsTypeInfo.BjsLocation(project = "BeautifulVehicles", module = "MotorVehicle")
-public class MotorVehicle extends libs.Vehicle {
+public class MotorVehicle extends Vehicle {
     
     protected <T extends Vehicle> MotorVehicle(Class<T> type, JSReference jsObject) {
         super(type, jsObject);

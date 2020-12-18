@@ -6,7 +6,7 @@ class JavaHostEnvironmentFile extends HostEnvironmentFile {
 
     static build(nativeFiles, bundleName, hostProjectConfig, projectName) {
         const filePath = hostProjectConfig.hostDir.getSubDir(`Bjs${bundleName}`).getSubFile(`Bjs${projectName}${JAVA_FILE_EXT}`).path
-        return new JavaHostEnvironmentFile(filePath, hostProjectConfig.hostDir.path, bundleName, nativeFiles, projectName, hostProjectConfig.basePackage)
+        return new JavaHostEnvironmentFile(filePath, hostProjectConfig.hostDir.path, bundleName, nativeFiles, projectName, hostProjectConfig.hostPackage)
     }
 
     constructor(path, hostDirPath, bundleName, nativeFiles, projectName, basePackage) {

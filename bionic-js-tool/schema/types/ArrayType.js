@@ -34,6 +34,10 @@ class ArrayType extends Type {
         return {validity: true, error: null}
     }
 
+    get dependingTypes() {
+        return [this.elementType, ...this.elementType.dependingTypes]
+    }
+
     toString() {
         return `${ArrayType.typeName}<${this.elementType.toString()}>`
     }

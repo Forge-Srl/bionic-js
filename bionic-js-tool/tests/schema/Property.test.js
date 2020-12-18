@@ -28,6 +28,12 @@ describe('Property', () => {
         expect(property).toEqual(expectedProperty)
     })
 
+    test('dependingTypes', () => {
+        const type = {dependingTypes: ['type1', 'type2']}
+        const property = new Property('', '', false, type, [])
+        expect(property.dependingTypes).toStrictEqual([type, ...type.dependingTypes])
+    })
+
     test('resolveClassType', () => {
         const type = {
             resolveClassType: nativeClassesMap => {
