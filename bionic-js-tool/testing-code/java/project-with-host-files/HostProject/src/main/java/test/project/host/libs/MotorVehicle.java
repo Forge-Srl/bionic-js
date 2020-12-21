@@ -1,9 +1,12 @@
 package test.project.host.libs;
 
 import jjbridge.api.runtime.JSReference;
+import jjbridge.api.value.strategy.FunctionCallback;
 import bionic.js.Bjs;
 import bionic.js.BjsTypeInfo;
 import bionic.js.BjsObjectTypeInfo;
+import bionic.js.Lambda;
+import java.util.Date;
 import test.project.host.$native$.EngineBjsExport;
 import test.project.host.libs.FuelType;
 import test.project.host.libs.Vehicle;

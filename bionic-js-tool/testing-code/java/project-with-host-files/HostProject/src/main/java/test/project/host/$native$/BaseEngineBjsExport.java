@@ -5,7 +5,9 @@ import bionic.js.BjsNativeExports;
 import bionic.js.BjsNativeWrapper;
 import bionic.js.BjsNativeWrapperTypeInfo;
 import bionic.js.BjsTypeInfo;
+import bionic.js.Lambda;
 import jjbridge.api.value.strategy.FunctionCallback;
+import java.util.Date;
 import bionic.js.BjsExport;
 
 public interface BaseEngineBjsExport extends BjsExport {
