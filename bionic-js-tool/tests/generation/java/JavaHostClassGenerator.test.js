@@ -66,9 +66,10 @@ describe('JavaHostClassGenerator', () => {
             'import bionic.js.Bjs;',
             'import bionic.js.BjsTypeInfo;',
             'import bionic.js.BjsObjectTypeInfo;',
+            'import test.java.subpackage.Superclass;',
             '',
             ...expectedModulePathVar,
-            'public class Class1 extends subpackage.Superclass {',
+            'public class Class1 extends Superclass {',
             '    ',
             ...expectedFactoryMethod,
             '}')

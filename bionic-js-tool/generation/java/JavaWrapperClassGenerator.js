@@ -1,6 +1,7 @@
 const {ClassGenerator} = require('../ClassGenerator')
 const {Constructor} = require('../../schema/Constructor')
 const {CodeBlock} = require('../code/CodeBlock')
+const {ClassType} = require('../../schema/types/ClassType')
 
 class JavaWrapperClassGenerator extends ClassGenerator {
 
@@ -10,9 +11,9 @@ class JavaWrapperClassGenerator extends ClassGenerator {
         return pathParts.join('.')
     }
 
-    constructor(schema, hostClassGenerator, projectName, basePackage) {
+    constructor(schema, hostClassGenerator, projectName, basePackage, allFiles) {
         super(schema)
-        Object.assign(this, {hostClassGenerator, projectName, basePackage})
+        Object.assign(this, {hostClassGenerator, projectName, basePackage, allFiles})
     }
 
     get constructors() {
@@ -33,19 +34,70 @@ class JavaWrapperClassGenerator extends ClassGenerator {
         return this._hasClassParts
     }
 
+    get filesPaths() {
+        if (!this._filesPaths) {
+            this._filesPaths = new Map(this.allFiles.map(file => [file.name, file.relativePath]))
+        }
+        return this._filesPaths
+    }
+
+    getFullPackage(path) {
+        const subPackage = this.constructor.pathToPackage(path)
+        return subPackage ? `${this.basePackage}.${subPackage}` : this.basePackage
+    }
+
+    getFullDependencyPackage(classType) {
+        if (classType.typeName === 'NativeRef') {
+            throw new Error('NativeRef are evil!')
+        }
+
+        const relativePath = this.filesPaths.get(classType.className)
+        if (relativePath) {
+            const className = classType.typeName === 'NativeClass'
+                ? `${classType.className}BjsExport`
+                : classType.className
+
+            return `${this.getFullPackage(relativePath)}.${className}`
+        }
+
+        throw new Error(`Unresolved import ${classType.toString()} (${classType.typeName})`)
+    }
+
+    getTypesImport() {
+        const classImports = this.schema.dependingTypes
+            .filter(type => type instanceof ClassType)
+            .map(type => {
+                if (type.className === this.schema.name)
+                    return null
+
+                const fullPackage = this.getFullDependencyPackage(type)
+                return fullPackage ? `import ${fullPackage};` : null
+            })
+
+        const uniqueImports = [...new Set(classImports)].filter(notNull => notNull)
+        uniqueImports.sort((a, b) => a.localeCompare(b, 'en', {ignorePunctuation: true}))
+
+        const block = CodeBlock.create()
+        uniqueImports.forEach(type => block.append(type).newLine())
+        return block
+    }
+
     getHeaderCode() {
-        const packageName = `${this.basePackage}.${this.constructor.pathToPackage(this.schema.modulePath)}`
+        const baseImport = this.schema.superclass
+            ? `import ${this.getFullPackage(this.schema.superclass.modulePath)}.${this.schema.superclass.name}BjsExport;`
+            : 'import bionic.js.BjsExport;'
         const superclassName = this.schema.superclass ? `${this.schema.superclass.name}BjsExport` : 'BjsExport'
         return CodeBlock.create()
-            .append(`package ${packageName};`).newLine()
+            .append(`package ${this.getFullPackage(this.schema.modulePath)};`).newLine()
             .newLine()
             .append('import bionic.js.Bjs;').newLine()
-            .append('import bionic.js.BjsExport;').newLine()
             .append('import bionic.js.BjsNativeExports;').newLine()
             .append('import bionic.js.BjsNativeWrapper;').newLine()
             .append('import bionic.js.BjsNativeWrapperTypeInfo;').newLine()
             .append('import bionic.js.BjsTypeInfo;').newLine()
             .append('import jjbridge.api.value.strategy.FunctionCallback;').newLine()
+            .append(this.getTypesImport())
+            .append(baseImport).newLine()
             .newLine()
             .append(`public interface ${this.schema.name}BjsExport extends ${superclassName} {`).newLineIndenting()
             .newLine()

@@ -19,18 +19,6 @@ class MotorVehicle: Vehicle {
         }
     }
     
-    var rawEngine:Engine? {
-        get {
-            return MotorVehicle.bjs.getNative(bjsGetProperty("rawEngine"), Engine.self)
-        }
-    }
-    
-    var delegate:AppDelegate? {
-        get {
-            return MotorVehicle.bjs.getNative(bjsGetProperty("delegate"), AppDelegate.self)
-        }
-    }
-    
     func refuel() -> Double? {
         return MotorVehicle.bjs.getFloat(bjsCall("refuel"))
     }

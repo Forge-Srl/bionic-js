@@ -22,13 +22,14 @@ describe('JavaHostPropertyGenerator', () => {
         NativeClassType = t.requireModule('schema/types/NativeClassType').NativeClassType
         NativeRefType = t.requireModule('schema/types/NativeRefType').NativeRefType
 
-        expectedHeader = [
+        expectedHeader = (additionalImports = []) => [
             'package test.java.host;',
             '',
             'import jjbridge.api.runtime.JSReference;',
             'import bionic.js.Bjs;',
             'import bionic.js.BjsTypeInfo;',
             'import bionic.js.BjsObjectTypeInfo;',
+            ...additionalImports,
             'import bionic.js.BjsObject;',
             '',
             '@BjsTypeInfo.BjsLocation(project = "Project1", module = "Class1")',
@@ -47,14 +48,16 @@ describe('JavaHostPropertyGenerator', () => {
                      propertyName = 'property1') {
         const class1 = new Class('Class1', '', [], [new Property(propertyName, 'property description', isPropertyStatic,
             propertyType, propertyKinds)], [], null, false, 'host/Class1')
-        return class1.generator.forHosting('Project1', 'test.java').java.getSource()
+        return class1.generator.forHosting('Project1', 'test.java', [
+            {name: 'ClassName', relativePath: 'other/ClassName.js'}
+        ]).java.getSource()
     }
 
     test('IntType, only getter, static', () => {
         const code = getCode(new IntType(), true, ['get'])
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    public static Integer property1() {',
             '        return bjs.getInteger(bjs.getProperty(bjsClass, "property1"));',
             '    }',
@@ -65,7 +68,7 @@ describe('JavaHostPropertyGenerator', () => {
         const code = getCode(new IntType(), false, ['get'], 'default')
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    public Integer $default$() {',
             '        return bjs.getInteger(bjsGetProperty("default"));',
             '    }',
@@ -76,7 +79,7 @@ describe('JavaHostPropertyGenerator', () => {
         const code = getCode(new IntType(), true, ['set'])
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    public static void property1(Integer value) {',
             '        bjs.setProperty(bjsClass, "property1", bjs.putPrimitive(value));',
             '    }',
@@ -87,7 +90,7 @@ describe('JavaHostPropertyGenerator', () => {
         const code = getCode(new IntType(), true)
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    public static Integer property1() {',
             '        return bjs.getInteger(bjs.getProperty(bjsClass, "property1"));',
             '    }',
@@ -101,7 +104,7 @@ describe('JavaHostPropertyGenerator', () => {
         const code = getCode(new JsRefType())
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    public BjsAnyObject property1() {',
             '        return bjs.getAny(bjsGetProperty("property1"));',
             '    }',
@@ -115,7 +118,7 @@ describe('JavaHostPropertyGenerator', () => {
         const code = getCode(new ArrayType(new ArrayType(new IntType())))
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    public Integer[][] property1() {',
             '        return bjs.getArray(bjsGetProperty("property1"), r_bjs0 -> {',
             '            return bjs.getArray(r_bjs0, r_bjs1 -> {',
@@ -137,7 +140,7 @@ describe('JavaHostPropertyGenerator', () => {
         const code = getCode(new BoolType())
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    public Boolean property1() {',
             '        return bjs.getBoolean(bjsGetProperty("property1"));',
             '    }',
@@ -151,7 +154,7 @@ describe('JavaHostPropertyGenerator', () => {
         const code = getCode(new DateType())
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    public Date property1() {',
             '        return bjs.getDate(bjsGetProperty("property1"));',
             '    }',
@@ -165,7 +168,7 @@ describe('JavaHostPropertyGenerator', () => {
         const code = getCode(new FloatType())
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    public Double property1() {',
             '        return bjs.getDouble(bjsGetProperty("property1"));',
             '    }',
@@ -181,7 +184,7 @@ describe('JavaHostPropertyGenerator', () => {
         const code = getCode(new LambdaType(voidLambda, [voidLambdaParam]))
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    public Lambda.F1<Lambda.F0<Void>, Lambda.F0<Void>> property1() {',
             '        JSReference jsFunc_bjs0 = bjsGetProperty("property1");',
             '        return bjs.getFunc(jsFunc_bjs0, (jsFunc_bjs0_v0) -> {',
@@ -219,25 +222,11 @@ describe('JavaHostPropertyGenerator', () => {
             ...expectedFooter)
     })
 
-    test('NativeRefType', () => {
-        const code = getCode(new NativeRefType('ClassName'))
-
-        t.expectCode(code,
-            ...expectedHeader,
-            '    public ClassName property1() {',
-            '        return bjs.getNative(bjsGetProperty("property1"));',
-            '    }',
-            '    public void property1(ClassName value) {',
-            '        bjsSetProperty("property1", bjs.putNative(value));',
-            '    }',
-            ...expectedFooter)
-    })
-
     test('JsClassType', () => {
         const code = getCode(new JsClassType('ClassName'))
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(['import test.java.other.ClassName;']),
             '    public ClassName property1() {',
             '        return bjs.getObj(bjsGetProperty("property1"), ClassName.bjsFactory, ClassName.class);',
             '    }',
@@ -251,7 +240,7 @@ describe('JavaHostPropertyGenerator', () => {
         const code = getCode(new StringType())
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    public String property1() {',
             '        return bjs.getString(bjsGetProperty("property1"));',
             '    }',
@@ -265,7 +254,7 @@ describe('JavaHostPropertyGenerator', () => {
         const code = getCode(new NativeClassType('ClassName'))
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(['import test.java.other.ClassNameBjsExport;']),
             '    public ClassNameBjsExport property1() {',
             '        return bjs.getWrapped(bjsGetProperty("property1"));',
             '    }',
@@ -279,7 +268,7 @@ describe('JavaHostPropertyGenerator', () => {
                          propertyName = 'property1') {
         const class1 = new Class('Class1', '', [], [new Property(propertyName, 'property description', isPropertyStatic,
             propertyType, propertyKinds)], [], null, false, 'host/Class1')
-        return class1.generator.forHosting(undefined, 'test.java').java.getScaffold()
+        return class1.generator.forHosting(undefined, 'test.java', []).java.getScaffold()
     }
 
     const expectedScaffoldHeader = [

@@ -56,8 +56,8 @@ describe('JavaHostProject', () => {
                 ['main'], ['main'], ['main'],
                 ['main'],
             ])
-            expect(files.map(file => file.content.length)).toStrictEqual([612, 478, 347, 616, 13642, 992, 3774, 1542,
-                2574, 1084, 3282, 2591])
+            expect(files.map(file => file.content.length)).toStrictEqual([650, 550, 364, 659, 13553, 1035, 3774, 1547,
+                2495, 1089, 3292, 2666])
         })
     })
 

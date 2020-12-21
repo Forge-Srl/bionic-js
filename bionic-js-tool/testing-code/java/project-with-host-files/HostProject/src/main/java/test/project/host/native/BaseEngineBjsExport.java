@@ -1,12 +1,12 @@
 package test.project.host.native;
 
 import bionic.js.Bjs;
-import bionic.js.BjsExport;
 import bionic.js.BjsNativeExports;
 import bionic.js.BjsNativeWrapper;
 import bionic.js.BjsNativeWrapperTypeInfo;
 import bionic.js.BjsTypeInfo;
 import jjbridge.api.value.strategy.FunctionCallback;
+import bionic.js.BjsExport;
 
 public interface BaseEngineBjsExport extends BjsExport {
     
@@ -81,7 +81,7 @@ public interface BaseEngineBjsExport extends BjsExport {
 
 /* BaseEngine class scaffold:
 
-import test.project.native.BaseEngineBjsExport;
+import test.project.host.native.BaseEngineBjsExport;
 
 public class BaseEngine implements BaseEngineBjsExport {
     

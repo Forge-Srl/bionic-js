@@ -26,7 +26,9 @@ describe('JavaWrapperPropertyGenerator', () => {
     function getCode(propertyType, isPropertyStatic = false, propertyKinds = ['get', 'set']) {
         const class1 = new Class('Class1', '', [], [new Property('property1', 'property description', isPropertyStatic,
             propertyType, propertyKinds)], [], null, true, 'wrapper/Class1')
-        return class1.generator.forWrapping(undefined, 'Project1', 'test.java').java.getSource()
+        return class1.generator.forWrapping(undefined, 'Project1', 'test.java', [
+            {name: 'ClassName', relativePath: 'other/ClassName.js'}
+            ]).java.getSource()
     }
 
     function getFunctionsExportCode(functionsExports = []) {
@@ -68,16 +70,17 @@ describe('JavaWrapperPropertyGenerator', () => {
         ]
     }
 
-    const expectedHeader = [
+    const expectedHeader = (additionalImports = []) => [
         'package test.java.wrapper;',
         '',
         'import bionic.js.Bjs;',
-        'import bionic.js.BjsExport;',
         'import bionic.js.BjsNativeExports;',
         'import bionic.js.BjsNativeWrapper;',
         'import bionic.js.BjsNativeWrapperTypeInfo;',
         'import bionic.js.BjsTypeInfo;',
         'import jjbridge.api.value.strategy.FunctionCallback;',
+        ...additionalImports,
+        'import bionic.js.BjsExport;',
         '',
         'public interface Class1BjsExport extends BjsExport {',
         '    ',
@@ -93,7 +96,7 @@ describe('JavaWrapperPropertyGenerator', () => {
         const code = getCode(new IntType(), true, ['get'])
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             ...getFunctionsExportCode(['.exportFunction("bjsStaticGet_property1", singleton.bjsStaticGet_property1())']),
             '        ',
             '        protected FunctionCallback<?> bjsStaticGet_property1() {',
@@ -109,7 +112,7 @@ describe('JavaWrapperPropertyGenerator', () => {
         const code = getCode(new IntType(), true, ['set'])
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             ...getFunctionsExportCode(['.exportFunction("bjsStaticSet_property1", singleton.bjsStaticSet_property1())']),
             '        ',
             '        protected FunctionCallback<?> bjsStaticSet_property1() {',
@@ -125,7 +128,7 @@ describe('JavaWrapperPropertyGenerator', () => {
         const code = getCode(new IntType(), true)
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             ...getFunctionsExportCode([
                 '.exportFunction("bjsStaticGet_property1", singleton.bjsStaticGet_property1())',
                 '.exportFunction("bjsStaticSet_property1", singleton.bjsStaticSet_property1())',
@@ -156,7 +159,7 @@ describe('JavaWrapperPropertyGenerator', () => {
         const code = getCode(new JsRefType())
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    BjsAnyObject property1();',
             '    void property1(BjsAnyObject value);',
             '    ',
@@ -181,7 +184,7 @@ describe('JavaWrapperPropertyGenerator', () => {
         const code = getCode(new ArrayType(new ArrayType(new IntType())))
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    Integer[][] property1();',
             '    void property1(Integer[][] value);',
             '    ',
@@ -214,7 +217,7 @@ describe('JavaWrapperPropertyGenerator', () => {
         const code = getCode(new BoolType())
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    Boolean property1();',
             '    void property1(Boolean value);',
             '    ',
@@ -239,7 +242,7 @@ describe('JavaWrapperPropertyGenerator', () => {
         const code = getCode(new DateType())
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    Date property1();',
             '    void property1(Date value);',
             '    ',
@@ -264,7 +267,7 @@ describe('JavaWrapperPropertyGenerator', () => {
         const code = getCode(new FloatType())
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    Double property1();',
             '    void property1(Double value);',
             '    ',
@@ -291,7 +294,7 @@ describe('JavaWrapperPropertyGenerator', () => {
         const code = getCode(new LambdaType(voidLambda, [voidLambdaParam]))
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    Lambda.F1<Lambda.F0<Void>, Lambda.F0<Void>> property1();',
             '    void property1(Lambda.F1<Lambda.F0<Void>, Lambda.F0<Void>> value);',
             '    ',
@@ -340,36 +343,11 @@ describe('JavaWrapperPropertyGenerator', () => {
             ...expectedFooter)
     })
 
-    test('NativeRefType', () => {
-        const code = getCode(new NativeRefType('ClassName'))
-
-        t.expectCode(code,
-            ...expectedHeader,
-            '    ClassName property1();',
-            '    void property1(ClassName value);',
-            '    ',
-            ...getterAndSetterFunctionsExportCode,
-            '        ',
-            '        protected FunctionCallback<?> bjsGet_property1() {',
-            '            return jsReferences -> {',
-            '                return bjs.putNative(((Class1BjsExport) bjs.getWrapped(jsReferences[0])).property1());',
-            '            };',
-            '        }',
-            '        ',
-            '        protected FunctionCallback<?> bjsSet_property1() {',
-            '            return jsReferences -> {',
-            '                ((Class1BjsExport) bjs.getWrapped(jsReferences[0])).property1(bjs.getNative(jsReferences[1]));',
-            '                return bjs.jsUndefined();',
-            '            };',
-            '        }',
-            ...expectedFooter)
-    })
-
     test('JsClassType', () => {
         const code = getCode(new JsClassType('ClassName'))
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(['import test.java.other.ClassName;']),
             '    ClassName property1();',
             '    void property1(ClassName value);',
             '    ',
@@ -394,7 +372,7 @@ describe('JavaWrapperPropertyGenerator', () => {
         const code = getCode(new StringType())
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(),
             '    String property1();',
             '    void property1(String value);',
             '    ',
@@ -419,7 +397,7 @@ describe('JavaWrapperPropertyGenerator', () => {
         const code = getCode(new NativeClassType('ClassName'))
 
         t.expectCode(code,
-            ...expectedHeader,
+            ...expectedHeader(['import test.java.other.ClassNameBjsExport;']),
             '    ClassNameBjsExport property1();',
             '    void property1(ClassNameBjsExport value);',
             '    ',

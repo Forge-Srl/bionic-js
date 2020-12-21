@@ -11,8 +11,8 @@ const hostFiles = [
     {path: 'native/EngineBjsExport.java', bundles: ['main']}]
 
 const bundleFiles = [
-    {path: 'BjsMotorVehicles/MotorVehicles.bjs.bundle/MotorVehicles.js', bundle: 'main'},
-    {path: 'BjsVehicles/Vehicles.bjs.bundle/Vehicles.js', bundle: 'main'},
+    {path: 'MotorVehicles.bjs.bundle/MotorVehicles.js', bundle: 'main'},
+    {path: 'Vehicles.bjs.bundle/Vehicles.js', bundle: 'main'},
 ]
 
 module.exports = {hostFiles, bundleFiles}

@@ -4,11 +4,9 @@ import jjbridge.api.runtime.JSReference;
 import bionic.js.Bjs;
 import bionic.js.BjsTypeInfo;
 import bionic.js.BjsObjectTypeInfo;
-import test.project.host.libs.Vehicle;
 import test.project.host.libs.FuelType;
 import test.project.host.native.EngineBjsExport;
-import test.project.Engine;
-import test.project.AppDelegate;
+import test.project.host.libs.Vehicle;
 
 @BjsTypeInfo.BjsLocation(project = "BeautifulVehicles", module = "MotorVehicle")
 public class MotorVehicle extends Vehicle {
@@ -43,14 +41,6 @@ public class MotorVehicle extends Vehicle {
     
     public EngineBjsExport engine() {
         return bjs.getWrapped(bjsGetProperty("engine"));
-    }
-    
-    public Engine rawEngine() {
-        return bjs.getNative(bjsGetProperty("rawEngine"));
-    }
-    
-    public AppDelegate delegate() {
-        return bjs.getNative(bjsGetProperty("delegate"));
     }
     
     public Double refuel() {

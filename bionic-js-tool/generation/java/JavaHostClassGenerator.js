@@ -10,33 +10,38 @@ class JavaHostClassGenerator extends ClassGenerator {
         return pathParts.join('.')
     }
 
-    constructor(schema, projectName, basePackage) {
+    constructor(schema, projectName, basePackage, allFiles) {
         super(schema)
-        Object.assign(this, {projectName, basePackage})
+        Object.assign(this, {projectName, basePackage, allFiles})
     }
 
-    getFullPackage() {
-        const subPackage = this.constructor.pathToPackage(this.schema.modulePath)
-        return subPackage ? `${this.basePackage}.${subPackage}` : this.basePackage
+    get filesPaths() {
+        if (!this._filesPaths) {
+            this._filesPaths = new Map(this.allFiles.map(file => [file.name, file.relativePath]))
+        }
+        return this._filesPaths
     }
 
-    getFullSuperPackage() {
-        const subPackage = this.constructor.pathToPackage(this.schema.superclass.modulePath)
+    getFullPackage(path) {
+        const subPackage = this.constructor.pathToPackage(path)
         return subPackage ? `${this.basePackage}.${subPackage}` : this.basePackage
     }
 
     getFullDependencyPackage(classType) {
-        // TODO: resolve full package correctly from class type
-        if (classType.typeName === 'NativeClass')
-            return `${this.basePackage}.NATIVE.TODO.${classType.className}`
+        if (classType.typeName === 'NativeRef') {
+            throw new Error('NativeRef are evil!')
+        }
 
-        if (classType.typeName === 'JsClass')
-            return `${this.basePackage}.TODO.${classType.className}`
+        const relativePath = this.filesPaths.get(classType.className)
+        if (relativePath) {
+            const className = classType.typeName === 'NativeClass'
+                ? `${classType.className}BjsExport`
+                : classType.className
 
-        if (classType.typeName === 'NativeRef')
-            return `${this.basePackage}.TODO.${classType.className}BjsExport`
+            return `${this.getFullPackage(relativePath)}.${className}`
+        }
 
-        return null
+        throw new Error(`Unresolved import ${classType.toString()} (${classType.typeName})`)
     }
 
     getTypesImport() {
@@ -60,12 +65,12 @@ class JavaHostClassGenerator extends ClassGenerator {
 
     getHeaderCode() {
         const baseImport = this.schema.superclass
-            ? `import ${this.getFullSuperPackage()}.${this.schema.superclass.name};`
+            ? `import ${this.getFullPackage(this.schema.superclass.modulePath)}.${this.schema.superclass.name};`
             : 'import bionic.js.BjsObject;'
         const superclassName = this.schema.superclass ? this.schema.superclass.name : 'BjsObject'
 
         return CodeBlock.create()
-            .append(`package ${this.getFullPackage()};`).newLine()
+            .append(`package ${this.getFullPackage(this.schema.modulePath)};`).newLine()
             .newLine()
             .append('import jjbridge.api.runtime.JSReference;').newLine()
             .append('import bionic.js.Bjs;').newLine()
@@ -99,7 +104,7 @@ class JavaHostClassGenerator extends ClassGenerator {
         const superClassExtension = this.schema.superclass ? `extends ${this.schema.superclass.name} ` : ''
 
         const scaffoldCode = CodeBlock.create()
-            .append(`import ${this.getFullPackage()}.${this.schema.name}BjsExport;`).newLine()
+            .append(`import ${this.getFullPackage(this.schema.modulePath)}.${this.schema.name}BjsExport;`).newLine()
             .newLine()
             .append(`public class ${this.schema.name} ${superClassExtension}implements ${this.schema.name}BjsExport {`).newLineIndenting()
 

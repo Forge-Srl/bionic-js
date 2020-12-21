@@ -15,15 +15,15 @@ class JavaHostFile extends HostFile {
         Object.assign(this, {basePackage})
     }
 
-    async generate(hostProject) {
+    async generate(hostProject, allFiles) {
         const guestFile = this.annotatedFile.guestFile
         const schema = this.annotatedFile.schema
 
         const schemaGenerator = schema.generator
-        const hostClassGenerator = schemaGenerator.forHosting(this.projectName, this.basePackage).java
+        const hostClassGenerator = schemaGenerator.forHosting(this.projectName, this.basePackage, allFiles).java
 
         const hostFileGenerator = schema.isNative
-            ? schemaGenerator.forWrapping(hostClassGenerator, this.projectName, this.basePackage).java
+            ? schemaGenerator.forWrapping(hostClassGenerator, this.projectName, this.basePackage, allFiles).java
             : hostClassGenerator
 
         let hostFileContent

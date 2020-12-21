@@ -24,12 +24,12 @@ describe('JavaWrapperClassGenerator', () => {
         'package test.java.wrapper;',
         '',
         'import bionic.js.Bjs;',
-        'import bionic.js.BjsExport;',
         'import bionic.js.BjsNativeExports;',
         'import bionic.js.BjsNativeWrapper;',
         'import bionic.js.BjsNativeWrapperTypeInfo;',
         'import bionic.js.BjsTypeInfo;',
         'import jjbridge.api.value.strategy.FunctionCallback;',
+        `import ${superclassName ? `test.java.module.${superclassName}BjsExport` : 'bionic.js.BjsExport'};`,
         '',
         `public interface Class1BjsExport extends ${superclassName}BjsExport {`,
         '    ',
@@ -87,7 +87,7 @@ describe('JavaWrapperClassGenerator', () => {
         ...emptyClassBindFunction,
         ...expectedFooter))
 
-    test('empty class with inheritance', () => t.expectCode(getCode([], [], new Class('Superclass')),
+    test('empty class with inheritance', () => t.expectCode(getCode([], [], new Class('Superclass', `SuperClass description`, [], [], [], null, true, 'module/superclassPath')),
         ...getExpectedHeader('Superclass'),
         ...getExpectedWrapperHeader('SuperclassBjsExport.Wrapper'),
         '        @BjsNativeWrapperTypeInfo.Exporter',

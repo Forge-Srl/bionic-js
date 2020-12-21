@@ -61,7 +61,7 @@ describe('Bjs smoke tests', () => {
            // expectLog(expectedWarnings, log.warningLog)
            // expectLog(expectedInfos, log.infoLog)
 
-           // await checkSwiftFiles(swiftTempDir, getProjectDir('project-with-host-files', 'swift'))
+            await checkSwiftFiles(swiftTempDir, getProjectDir('project-with-host-files', 'swift'))
             await checkJavaFiles(javaTempDir, getProjectDir('project-with-host-files', 'java'))
         })
     }

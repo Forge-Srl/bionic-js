@@ -13,8 +13,6 @@ class MotorVehicle extends Vehicle {
     }
 
     // @bionic get engine Engine
-    // @bionic get rawEngine NativeRef<Engine>
-    // @bionic get delegate AppDelegate
 
     get description() {
         return `${super.description}, it has an engine powered by ${this.engine.fuelType.name} with ${this.maxRange} km of range`
