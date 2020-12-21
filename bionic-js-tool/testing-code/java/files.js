@@ -7,8 +7,8 @@ const hostFiles = [
     {path: 'libs/FuelType.java', bundles: ['main']},
     {path: 'libs/MotorVehicle.java', bundles: ['main']},
     {path: 'libs/Vehicle.java', bundles: ['main']},
-    {path: 'native/BaseEngineBjsExport.java', bundles: ['main']},
-    {path: 'native/EngineBjsExport.java', bundles: ['main']}]
+    {path: '$native$/BaseEngineBjsExport.java', bundles: ['main']},
+    {path: '$native$/EngineBjsExport.java', bundles: ['main']}]
 
 const bundleFiles = [
     {path: 'MotorVehicles.bjs.bundle/MotorVehicles.js', bundle: 'main'},

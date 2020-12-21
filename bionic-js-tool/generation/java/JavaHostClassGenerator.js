@@ -1,14 +1,9 @@
 const {ClassGenerator} = require('../ClassGenerator')
 const {CodeBlock} = require('../code/CodeBlock')
 const {ClassType} = require('../../schema/types/ClassType')
+const {JavaUtils} = require('./JavaUtils')
 
 class JavaHostClassGenerator extends ClassGenerator {
-
-    static pathToPackage(fullClassPath) {
-        const pathParts = fullClassPath.split('/')
-        pathParts.pop()
-        return pathParts.join('.')
-    }
 
     constructor(schema, projectName, basePackage, allFiles) {
         super(schema)
@@ -22,11 +17,6 @@ class JavaHostClassGenerator extends ClassGenerator {
         return this._filesPaths
     }
 
-    getFullPackage(path) {
-        const subPackage = this.constructor.pathToPackage(path)
-        return subPackage ? `${this.basePackage}.${subPackage}` : this.basePackage
-    }
-
     getFullDependencyPackage(classType) {
         if (classType.typeName === 'NativeRef') {
             throw new Error('NativeRef are evil!')
@@ -38,7 +28,7 @@ class JavaHostClassGenerator extends ClassGenerator {
                 ? `${classType.className}BjsExport`
                 : classType.className
 
-            return `${this.getFullPackage(relativePath)}.${className}`
+            return `${JavaUtils.fullPackage(this.basePackage, relativePath)}.${className}`
         }
 
         throw new Error(`Unresolved import ${classType.toString()} (${classType.typeName})`)
@@ -65,12 +55,12 @@ class JavaHostClassGenerator extends ClassGenerator {
 
     getHeaderCode() {
         const baseImport = this.schema.superclass
-            ? `import ${this.getFullPackage(this.schema.superclass.modulePath)}.${this.schema.superclass.name};`
+            ? `import ${JavaUtils.fullPackage(this.basePackage, this.schema.superclass.modulePath)}.${this.schema.superclass.name};`
             : 'import bionic.js.BjsObject;'
         const superclassName = this.schema.superclass ? this.schema.superclass.name : 'BjsObject'
 
         return CodeBlock.create()
-            .append(`package ${this.getFullPackage(this.schema.modulePath)};`).newLine()
+            .append(`package ${JavaUtils.fullPackage(this.basePackage, this.schema.modulePath)};`).newLine()
             .newLine()
             .append('import jjbridge.api.runtime.JSReference;').newLine()
             .append('import bionic.js.Bjs;').newLine()
@@ -104,7 +94,7 @@ class JavaHostClassGenerator extends ClassGenerator {
         const superClassExtension = this.schema.superclass ? `extends ${this.schema.superclass.name} ` : ''
 
         const scaffoldCode = CodeBlock.create()
-            .append(`import ${this.getFullPackage(this.schema.modulePath)}.${this.schema.name}BjsExport;`).newLine()
+            .append(`import ${JavaUtils.fullPackage(this.basePackage,this.schema.modulePath)}.${this.schema.name}BjsExport;`).newLine()
             .newLine()
             .append(`public class ${this.schema.name} ${superClassExtension}implements ${this.schema.name}BjsExport {`).newLineIndenting()
 

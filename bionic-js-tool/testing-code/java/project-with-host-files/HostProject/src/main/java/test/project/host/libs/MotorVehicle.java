@@ -4,8 +4,8 @@ import jjbridge.api.runtime.JSReference;
 import bionic.js.Bjs;
 import bionic.js.BjsTypeInfo;
 import bionic.js.BjsObjectTypeInfo;
+import test.project.host.$native$.EngineBjsExport;
 import test.project.host.libs.FuelType;
-import test.project.host.native.EngineBjsExport;
 import test.project.host.libs.Vehicle;
 
 @BjsTypeInfo.BjsLocation(project = "BeautifulVehicles", module = "MotorVehicle")

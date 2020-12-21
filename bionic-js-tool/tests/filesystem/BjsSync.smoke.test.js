@@ -1,5 +1,7 @@
 const t = require('../test-utils')
 const copydir = require('copy-dir')
+const {hostFiles: swiftHostFiles, bundleFiles: swiftBundleFiles} = require('../../testing-code/swift/files')
+const {hostFiles: javaHostFiles, bundleFiles: javaBundleFiles} = require('../../testing-code/java/files')
 
 describe('Bjs smoke tests', () => {
 
@@ -56,10 +58,10 @@ describe('Bjs smoke tests', () => {
             const bjsSync = new BjsSync(configuration, log)
             await bjsSync.sync()
 
-           // TODO: uncomment:
-           // expectLog(expectedErrors, log.errorLog)
-           // expectLog(expectedWarnings, log.warningLog)
-           // expectLog(expectedInfos, log.infoLog)
+            // TODO: uncomment:
+            //expectLog(expectedErrors, log.errorLog)
+            //expectLog(expectedWarnings, log.warningLog)
+            //expectLog(expectedInfos, log.infoLog)
 
             await checkSwiftFiles(swiftTempDir, getProjectDir('project-with-host-files', 'swift'))
             await checkJavaFiles(javaTempDir, getProjectDir('project-with-host-files', 'java'))
@@ -67,10 +69,9 @@ describe('Bjs smoke tests', () => {
     }
 
     async function checkSwiftFiles(actualSwiftDir, expectedSwiftDir) {
-        const {hostFiles, bundleFiles} = require('../../testing-code/swift/files')
         const hostDir = 'HostProject/host'
 
-        for (const file of [...hostFiles, ...bundleFiles]) {
+        for (const file of [...swiftHostFiles, ...swiftBundleFiles]) {
             const expectedFile = expectedSwiftDir.getSubDir(hostDir).getSubFile(file.path)
             const actualFile = actualSwiftDir.getSubDir(hostDir).getSubFile(file.path)
             const expectedContent = await expectedFile.getContent()
@@ -80,10 +81,9 @@ describe('Bjs smoke tests', () => {
     }
 
     async function checkJavaFiles(actualJavaDir, expectedJavaDir) {
-        const {hostFiles, bundleFiles} = require('../../testing-code/java/files')
         const hostDir = 'HostProject/src/main/java/test/project/host'
 
-        for (const file of hostFiles) {
+        for (const file of javaHostFiles) {
             const expectedFile = expectedJavaDir.getSubDir(hostDir).getSubFile(file.path)
             const actualFile = actualJavaDir.getSubDir(hostDir).getSubFile(file.path)
             const expectedContent = await expectedFile.getContent()
@@ -92,7 +92,7 @@ describe('Bjs smoke tests', () => {
         }
 
         const bundleDir = 'HostProject/src/main/resources'
-        for (const file of bundleFiles) {
+        for (const file of javaBundleFiles) {
             const expectedFile = expectedJavaDir.getSubDir(bundleDir).getSubFile(file.path)
             const actualFile = actualJavaDir.getSubDir(bundleDir).getSubFile(file.path)
             const expectedContent = await expectedFile.getContent()
@@ -122,8 +122,22 @@ describe('Bjs smoke tests', () => {
                 'Writing Swift host project',
                 '',
                 'Project files',
-     //           ...bundleFiles.map(file => ` [+] Bundle "${file.bundle}"`),
-     //           ...hostFiles.map(file => ` [+] Source "${file.path}" - in bundles (${file.bundles.join(', ')})`),
+                ...swiftBundleFiles.map(file => ` [+] Bundle "${file.bundle}"`),
+                ...swiftHostFiles.map(file => ` [+] Source "${file.path}" - in bundles (${file.bundles.join(', ')})`),
+                ' ----------',
+                ' [-] deleted : 0',
+                ' [U] updated : 0',
+                ' [+] added : 12',
+                '',
+                /Processing time: \d\.\d\ds/,
+                'Opening Java host project',
+                'Writing bundles',
+                'Writing host files',
+                'Writing Java host project',
+                '',
+                'Project files',
+                ...javaBundleFiles.map(file => ` [+] Bundle "${file.bundle}"`),
+                ...javaHostFiles.map(file => ` [+] Source "${file.path}" - in bundles (${file.bundles.join(', ')})`),
                 ' ----------',
                 ' [-] deleted : 0',
                 ' [U] updated : 0',

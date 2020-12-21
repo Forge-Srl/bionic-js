@@ -2,14 +2,9 @@ const {ClassGenerator} = require('../ClassGenerator')
 const {Constructor} = require('../../schema/Constructor')
 const {CodeBlock} = require('../code/CodeBlock')
 const {ClassType} = require('../../schema/types/ClassType')
+const {JavaUtils} = require('./JavaUtils')
 
 class JavaWrapperClassGenerator extends ClassGenerator {
-
-    static pathToPackage(fullClassPath) {
-        const pathParts = fullClassPath.split('/')
-        pathParts.pop()
-        return pathParts.join('.')
-    }
 
     constructor(schema, hostClassGenerator, projectName, basePackage, allFiles) {
         super(schema)
@@ -41,11 +36,6 @@ class JavaWrapperClassGenerator extends ClassGenerator {
         return this._filesPaths
     }
 
-    getFullPackage(path) {
-        const subPackage = this.constructor.pathToPackage(path)
-        return subPackage ? `${this.basePackage}.${subPackage}` : this.basePackage
-    }
-
     getFullDependencyPackage(classType) {
         if (classType.typeName === 'NativeRef') {
             throw new Error('NativeRef are evil!')
@@ -57,7 +47,7 @@ class JavaWrapperClassGenerator extends ClassGenerator {
                 ? `${classType.className}BjsExport`
                 : classType.className
 
-            return `${this.getFullPackage(relativePath)}.${className}`
+            return `${JavaUtils.fullPackage(this.basePackage, relativePath)}.${className}`
         }
 
         throw new Error(`Unresolved import ${classType.toString()} (${classType.typeName})`)
@@ -84,11 +74,11 @@ class JavaWrapperClassGenerator extends ClassGenerator {
 
     getHeaderCode() {
         const baseImport = this.schema.superclass
-            ? `import ${this.getFullPackage(this.schema.superclass.modulePath)}.${this.schema.superclass.name}BjsExport;`
+            ? `import ${JavaUtils.fullPackage(this.basePackage, this.schema.superclass.modulePath)}.${this.schema.superclass.name}BjsExport;`
             : 'import bionic.js.BjsExport;'
         const superclassName = this.schema.superclass ? `${this.schema.superclass.name}BjsExport` : 'BjsExport'
         return CodeBlock.create()
-            .append(`package ${this.getFullPackage(this.schema.modulePath)};`).newLine()
+            .append(`package ${JavaUtils.fullPackage(this.basePackage, this.schema.modulePath)};`).newLine()
             .newLine()
             .append('import bionic.js.Bjs;').newLine()
             .append('import bionic.js.BjsNativeExports;').newLine()

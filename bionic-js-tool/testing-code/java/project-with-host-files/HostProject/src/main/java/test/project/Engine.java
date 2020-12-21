@@ -1,6 +1,6 @@
 package test.project;
 
-import test.project.native.EngineBjsExport;
+import test.project.host.$native$.EngineBjsExport;
 
 public class Engine extends BaseEngine implements EngineBjsExport {
 

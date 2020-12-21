@@ -40,15 +40,15 @@ describe('JavaHostProject', () => {
         await getProjectWithHostFiles(async project => {
             const files = (await project.getProjectFiles()).sort((file1, file2) => file1.id < file2.id ? -1 : file1.id > file2.id ? 1 : 0)
             expect(files.map(file => file.id)).toStrictEqual([
+                '$native$/BaseEngineBjsExport.java', '$native$/EngineBjsExport.java',
                 'Bicycle.java', 'BjsMotorVehicles/BjsBeautifulVehicles.java', 'BjsVehicles/BjsBeautifulVehicles.java',
                 'FerrariCalifornia.java', 'MotorVehicles', 'TeslaRoadster.java', 'Vehicles', 'libs/FuelType.java',
-                'libs/MotorVehicle.java', 'libs/Vehicle.java', 'native/BaseEngineBjsExport.java',
-                'native/EngineBjsExport.java',
+                'libs/MotorVehicle.java', 'libs/Vehicle.java',
             ])
             expect(files.map(file => file.constructor.name)).toStrictEqual([
                 'HostProjectFile', 'HostProjectFile', 'HostProjectFile', 'HostProjectFile',
-                'BundleProjectFile', 'HostProjectFile', 'BundleProjectFile', 'HostProjectFile', 'HostProjectFile',
-                'HostProjectFile', 'HostProjectFile', 'HostProjectFile',
+                'HostProjectFile', 'HostProjectFile', 'BundleProjectFile', 'HostProjectFile',
+                'BundleProjectFile', 'HostProjectFile', 'HostProjectFile', 'HostProjectFile',
             ])
             expect(files.map(file => file.bundles)).toStrictEqual([
                 ['main'], ['main'], ['main'],
@@ -56,8 +56,8 @@ describe('JavaHostProject', () => {
                 ['main'], ['main'], ['main'],
                 ['main'],
             ])
-            expect(files.map(file => file.content.length)).toStrictEqual([650, 550, 364, 659, 13553, 1035, 3774, 1547,
-                2495, 1089, 3292, 2666])
+            expect(files.map(file => file.content.length)).toStrictEqual([3296, 2672, 650, 554, 364, 659, 13553, 1035, 3774, 1547,
+                2497, 1089])
         })
     })
 

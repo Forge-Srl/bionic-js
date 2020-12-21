@@ -28,8 +28,8 @@ class BjsSync {
                 await this.syncBundles(hostProject, annotatedFiles, bundles)
                 await this.syncHostFiles(hostProject, annotatedFiles)
                 await this.saveHostProject(hostProject)
+                bjsSyncStats.logStats(this.log)
             }
-            bjsSyncStats.logStats(this.log)
         } catch (error) {
             this.log.error(error)
         }

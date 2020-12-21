@@ -10,7 +10,7 @@ public class BjsBeautifulVehicles extends BjsProject {
     public static void initialize(Bjs bjs) {
         initProject();
         bjs.loadBundle(BjsBeautifulVehicles.class, "MotorVehicles");
-        bjs.addNativeWrapper(test.project.host.native.BaseEngineBjsExport.Wrapper.class);
-        bjs.addNativeWrapper(test.project.host.native.EngineBjsExport.Wrapper.class);
+        bjs.addNativeWrapper(test.project.host.$native$.BaseEngineBjsExport.Wrapper.class);
+        bjs.addNativeWrapper(test.project.host.$native$.EngineBjsExport.Wrapper.class);
     }
 }
