@@ -8,6 +8,9 @@
   "maintainers": [
     {
       "name": "Marco Vanetti"
+    },
+    {
+      "name": "Tommaso Bossi"
     }
   ],
   "bin": {
