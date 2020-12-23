@@ -63,17 +63,19 @@ class BjsSync {
         this.log.info('Writing host files\n')
         const allFiles = annotatedFiles.map(file => file.guestFile)
         await Promise.all(annotatedFiles.filter(annotatedFile => annotatedFile.exportsClass)
-            .map(annotatedFile => HostFile.build(annotatedFile, hostProject.configuration,
-                this.configuration.projectName).generate(hostProject, allFiles)))
+            .flatMap(annotatedFile => HostFile.build(annotatedFile, hostProject.configuration, this.configuration.projectName))
+            .map(hostFile => hostFile.generate(hostProject, allFiles)))
     }
 
     async syncBundles(hostProject, annotatedFiles, bundles) {
         this.log.info('Writing bundles\n')
         for (const {name: bundleName, content: bundleContent} of bundles) {
-            const hostEnvironmentFile = HostEnvironmentFile.build(annotatedFiles
+            const hostEnvironmentFiles = HostEnvironmentFile.build(annotatedFiles
                     .filter(file => file.exportsNativeClass && file.guestFile.bundles.includes(bundleName)),
                 bundleName, hostProject.configuration, this.configuration.projectName)
-            await hostEnvironmentFile.generate(hostProject)
+            for (const file of hostEnvironmentFiles) {
+                await file.generate(hostProject)
+            }
             await hostProject.setBundleFileContent(bundleName, bundleContent)
         }
     }

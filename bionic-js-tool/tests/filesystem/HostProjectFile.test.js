@@ -62,7 +62,7 @@ describe('HostProjectFile', () => {
         const targetProject = {removeHostFileFromProject: t.mockFn(), addHostFileToProject: t.mockFn()}
 
         await file.updateInTargetProject(targetProject)
-        expect(targetProject.removeHostFileFromProject).toHaveBeenCalledWith('relative/path')
+        expect(targetProject.removeHostFileFromProject).toHaveBeenCalledWith('relative/path', ['bundle'])
         expect(targetProject.addHostFileToProject).toHaveBeenCalledWith('relative/path', ['bundle'], 'content')
     })
 
@@ -71,6 +71,6 @@ describe('HostProjectFile', () => {
         const targetProject = {removeHostFileFromProject: t.mockFn()}
 
         await file.removeFromTargetProject(targetProject)
-        expect(targetProject.removeHostFileFromProject).toHaveBeenCalledWith('relative/path')
+        expect(targetProject.removeHostFileFromProject).toHaveBeenCalledWith('relative/path', ['bundle'])
     })
 })

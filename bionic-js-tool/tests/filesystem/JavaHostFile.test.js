@@ -8,8 +8,9 @@ describe('JavaHostFile', () => {
         const annotatedFile = {
             guestFile: {
                 name: 'Code',
+                bundles: ['bundle1', 'bundle2'],
                 composeNewPath: (newRootDirPath, newName, newExtension) => {
-                    expect(newRootDirPath).toBe('/host/dir')
+                    expect(newRootDirPath.startsWith('/host/dir/source')).toBeTruthy()
                     expect(newName).toBe(expectedFileName)
                     expect(newExtension).toBe('.java')
                     return 'code/file.java'
@@ -20,18 +21,28 @@ describe('JavaHostFile', () => {
             },
         }
         const hostProjectConfig = {
-            hostDir: {path: '/host/dir'},
+            hostDir: (sourceSet) => ({path: `/host/dir/${sourceSet}`}),
+            getSourceSetsForBundles: (bundles) => {
+                expect(bundles).toStrictEqual(['bundle1', 'bundle2'])
+                return ['source1', 'source2']
+            },
             hostPackage: 'test.java'
         }
         const projectName = 'projectName'
-        const javaHostFile = JavaHostFile.build(annotatedFile, hostProjectConfig, projectName)
-
-        expect(javaHostFile).toBeInstanceOf(JavaHostFile)
-        expect(javaHostFile.path).toBe('code/file.java')
-        expect(javaHostFile.rootDirPath).toBe('/host/dir')
-        expect(javaHostFile.annotatedFile).toBe(annotatedFile)
-        expect(javaHostFile.projectName).toBe(projectName)
-        expect(javaHostFile.basePackage).toBe('test.java')
+        const javaHostFiles = JavaHostFile.build(annotatedFile, hostProjectConfig, projectName)
+        expect(javaHostFiles.length).toBe(2)
+        expect(javaHostFiles[0]).toBeInstanceOf(JavaHostFile)
+        expect(javaHostFiles[0].path).toBe('code/file.java')
+        expect(javaHostFiles[0].rootDirPath).toBe('/host/dir/source1')
+        expect(javaHostFiles[0].annotatedFile).toBe(annotatedFile)
+        expect(javaHostFiles[0].projectName).toBe(projectName)
+        expect(javaHostFiles[0].basePackage).toBe('test.java')
+        expect(javaHostFiles[1]).toBeInstanceOf(JavaHostFile)
+        expect(javaHostFiles[1].path).toBe('code/file.java')
+        expect(javaHostFiles[1].rootDirPath).toBe('/host/dir/source2')
+        expect(javaHostFiles[1].annotatedFile).toBe(annotatedFile)
+        expect(javaHostFiles[1].projectName).toBe(projectName)
+        expect(javaHostFiles[1].basePackage).toBe('test.java')
     }
 
     test('build native file', () => {

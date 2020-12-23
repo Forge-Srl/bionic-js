@@ -7,9 +7,12 @@ class JavaHostFile extends HostFile {
     static build(annotatedFile, hostProjectConfig, projectName) {
         const guestFile = annotatedFile.guestFile
         const newFileName = `${guestFile.name}${annotatedFile.schema.isNative ? 'BjsExport' : ''}`
-        const newPath = JavaUtils.pathToSafePath(guestFile.composeNewPath(hostProjectConfig.hostDir.path, newFileName, JAVA_FILE_EXT))
-        return new JavaHostFile(newPath,
-            hostProjectConfig.hostDir.path, annotatedFile, projectName, hostProjectConfig.hostPackage)
+
+        return hostProjectConfig.getSourceSetsForBundles(guestFile.bundles).map(sourceSet => {
+            const hostDir = hostProjectConfig.hostDir(sourceSet).path
+            const newPath = JavaUtils.pathToSafePath(guestFile.composeNewPath(hostDir, newFileName, JAVA_FILE_EXT))
+            return new JavaHostFile(newPath, hostDir, annotatedFile, projectName, hostProjectConfig.hostPackage)
+        })
     }
 
     constructor(path, hostDir, annotatedFile, projectName, basePackage) {

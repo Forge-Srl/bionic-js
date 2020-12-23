@@ -1,4 +1,5 @@
 const {Configuration} = require('./Configuration')
+const {JavaTargetBundlesConfiguration} = require('./JavaTargetBundlesConfiguration')
 const {Directory} = require('../Directory')
 const path = require('path')
 
@@ -14,6 +15,10 @@ class JavaHostProjectConfiguration extends Configuration {
 
     get language() {
         return 'Java'
+    }
+
+    get commonSourceSet() {
+        return 'main'
     }
 
     get projectPath() {
@@ -37,15 +42,41 @@ class JavaHostProjectConfiguration extends Configuration {
         return new Directory(srcDirPath, srcDirPath)
     }
 
-    get hostDir() {
+    hostDir(sourceSet) {
         return this.srcDir
-            .getSubDir('main/java')
+            .getSubDir(`${sourceSet}/java`)
             .getSubDir(this.hostPackage.replace(/\./g, '/'))
     }
 
-    get resourcesDir() {
+    resourcesDir(sourceSet) {
         return this.srcDir
-            .getSubDir('main/resources')
+            .getSubDir(`${sourceSet}/resources`)
+    }
+
+    get targetBundles() {
+        if (!this._targetBundles) {
+            this._targetBundles = JavaTargetBundlesConfiguration.fromObj(
+                this.configObj.targetBundles, `${this.locator} -> "targetBundles"`)
+        }
+        return this._targetBundles
+    }
+
+    get allTargetBundleNames() {
+        if (!this._allTargetBundleNames) {
+            this._allTargetBundleNames = [...new Set(this.targetBundles.map(bundle => bundle.bundleName))]
+        }
+        return this._allTargetBundleNames
+    }
+
+    getSourceSetsForBundles(bundleNames) {
+        const includedCount = this.allTargetBundleNames.filter(bundleName => bundleNames.includes(bundleName)).length
+        if (includedCount === this.allTargetBundleNames.length) {
+            return [this.commonSourceSet]
+        }
+
+        return [...new Set(this.targetBundles
+            .filter(bundle => bundleNames.includes(bundle.bundleName))
+            .flatMap(bundle => bundle.sourceSets))]
     }
 }
 

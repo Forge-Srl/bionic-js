@@ -6,8 +6,10 @@ class SwiftHostFile extends HostFile {
     static build(annotatedFile, hostProjectConfig, projectName) {
         const guestFile = annotatedFile.guestFile
         const newFileName = `${guestFile.name}${annotatedFile.schema.isNative ? 'BjsWrapper' : ''}`
-        return new SwiftHostFile(guestFile.composeNewPath(hostProjectConfig.hostDir.path, newFileName, SWIFT_FILE_EXT),
-            hostProjectConfig.hostDir.path, annotatedFile, projectName)
+        return [
+            new SwiftHostFile(guestFile.composeNewPath(hostProjectConfig.hostDir.path, newFileName, SWIFT_FILE_EXT),
+                hostProjectConfig.hostDir.path, annotatedFile, projectName)
+        ]
     }
 
     async generate(hostProject, allFiles) {

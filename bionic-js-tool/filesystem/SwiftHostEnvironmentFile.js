@@ -6,7 +6,9 @@ class SwiftHostEnvironmentFile extends HostEnvironmentFile {
 
     static build(nativeFiles, bundleName, hostProjectConfig, projectName) {
         const filePath = hostProjectConfig.hostDir.getSubDir(`Bjs${bundleName}`).getSubFile(`Bjs${projectName}${SWIFT_FILE_EXT}`).path
-        return new SwiftHostEnvironmentFile(filePath, hostProjectConfig.hostDir.path, bundleName, nativeFiles, projectName)
+        return [
+            new SwiftHostEnvironmentFile(filePath, hostProjectConfig.hostDir.path, bundleName, nativeFiles, projectName)
+        ]
     }
 
     async generate(hostProject) {

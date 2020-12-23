@@ -269,7 +269,7 @@ class XcodeHostProject {
 
     /** REMOVE THINGS */
 
-    async removeHostFileFromProject(pathRelativeToHostDir) {
+    async removeHostFileFromProject(pathRelativeToHostDir, bundles) {
         const hostDirGroup = this.getGroupByDirPath(this.config.hostDirName)
         const hostFileRef = this.getFile(hostDirGroup, path.join(this.config.hostDirName, pathRelativeToHostDir))
         if (hostFileRef) {

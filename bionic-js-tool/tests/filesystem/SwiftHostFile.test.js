@@ -21,13 +21,14 @@ describe('SwiftHostFile', () => {
         }
         const hostProjectConfig = {hostDir: {path: '/host/dir'}}
         const projectName = 'projectName'
-        const swiftHostFile = SwiftHostFile.build(annotatedFile, hostProjectConfig, projectName)
+        const swiftHostFiles = SwiftHostFile.build(annotatedFile, hostProjectConfig, projectName)
 
-        expect(swiftHostFile).toBeInstanceOf(SwiftHostFile)
-        expect(swiftHostFile.path).toBe('code/file.swift')
-        expect(swiftHostFile.rootDirPath).toBe('/host/dir')
-        expect(swiftHostFile.annotatedFile).toBe(annotatedFile)
-        expect(swiftHostFile.projectName).toBe(projectName)
+        expect(swiftHostFiles.length).toBe(1)
+        expect(swiftHostFiles[0]).toBeInstanceOf(SwiftHostFile)
+        expect(swiftHostFiles[0].path).toBe('code/file.swift')
+        expect(swiftHostFiles[0].rootDirPath).toBe('/host/dir')
+        expect(swiftHostFiles[0].annotatedFile).toBe(annotatedFile)
+        expect(swiftHostFiles[0].projectName).toBe(projectName)
     }
 
     test('build native file', () => {

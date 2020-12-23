@@ -17,13 +17,13 @@ describe('SwiftHostEnvironmentFile', () => {
         const hostProjectConfig = {
             hostDir: new Directory('/host/dir/path', '/'),
         }
-        const swiftHostEnvironmentFile = SwiftHostEnvironmentFile.build(nativeFiles, 'Bundle1', hostProjectConfig, 'Project1')
-
-        expect(swiftHostEnvironmentFile.path).toBe('/host/dir/path/BjsBundle1/BjsProject1.swift')
-        expect(swiftHostEnvironmentFile.rootDirPath).toBe('/host/dir/path')
-        expect(swiftHostEnvironmentFile.bundleName).toBe('Bundle1')
-        expect(swiftHostEnvironmentFile.nativeFiles).toBe(nativeFiles)
-        expect(swiftHostEnvironmentFile.projectName).toBe('Project1')
+        const swiftHostEnvironmentFiles = SwiftHostEnvironmentFile.build(nativeFiles, 'Bundle1', hostProjectConfig, 'Project1')
+        expect(swiftHostEnvironmentFiles.length).toBe(1)
+        expect(swiftHostEnvironmentFiles[0].path).toBe('/host/dir/path/BjsBundle1/BjsProject1.swift')
+        expect(swiftHostEnvironmentFiles[0].rootDirPath).toBe('/host/dir/path')
+        expect(swiftHostEnvironmentFiles[0].bundleName).toBe('Bundle1')
+        expect(swiftHostEnvironmentFiles[0].nativeFiles).toBe(nativeFiles)
+        expect(swiftHostEnvironmentFiles[0].projectName).toBe('Project1')
 
     })
 

@@ -23,12 +23,12 @@ class HostProjectFile {
     }
 
     async updateInTargetProject(targetProject) {
-        await targetProject.removeHostFileFromProject(this.relativePath)
+        await targetProject.removeHostFileFromProject(this.relativePath, this.bundles)
         await targetProject.addHostFileToProject(this.relativePath, this.bundles, this.content)
     }
 
     async removeFromTargetProject(targetProject) {
-        await targetProject.removeHostFileFromProject(this.relativePath)
+        await targetProject.removeHostFileFromProject(this.relativePath, this.bundles)
     }
 }
 

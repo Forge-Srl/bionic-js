@@ -5,8 +5,11 @@ const {JavaHostEnvironmentFileGenerator} = require('../generation/java/JavaHostE
 class JavaHostEnvironmentFile extends HostEnvironmentFile {
 
     static build(nativeFiles, bundleName, hostProjectConfig, projectName) {
-        const filePath = hostProjectConfig.hostDir.getSubDir(`Bjs${bundleName}`).getSubFile(`Bjs${projectName}${JAVA_FILE_EXT}`).path
-        return new JavaHostEnvironmentFile(filePath, hostProjectConfig.hostDir.path, bundleName, nativeFiles, projectName, hostProjectConfig.hostPackage)
+        return hostProjectConfig.getSourceSetsForBundles([bundleName]).map(sourceSet => {
+            const hostDir = hostProjectConfig.hostDir(sourceSet)
+            const filePath = hostDir.getSubDir(`Bjs${bundleName}`).getSubFile(`Bjs${projectName}${JAVA_FILE_EXT}`).path
+            return new JavaHostEnvironmentFile(filePath, hostDir.path, bundleName, nativeFiles, projectName, hostProjectConfig.hostPackage)
+        })
     }
 
     constructor(path, hostDirPath, bundleName, nativeFiles, projectName, basePackage) {

@@ -2,10 +2,11 @@ const t = require('../../test-utils')
 
 describe('JavaHostProjectConfiguration', () => {
 
-    let JavaHostProjectConfiguration, File, Directory
+    let JavaTargetBundlesConfiguration, JavaHostProjectConfiguration, File, Directory
 
     beforeEach(() => {
         t.resetModulesCache()
+        JavaTargetBundlesConfiguration = t.mockAndRequireModule('filesystem/configuration/JavaTargetBundlesConfiguration').JavaTargetBundlesConfiguration
         JavaHostProjectConfiguration = t.requireModule('filesystem/configuration/JavaHostProjectConfiguration').JavaHostProjectConfiguration
         File = t.requireModule('filesystem/File').File
         Directory = t.requireModule('filesystem/Directory').Directory
@@ -22,6 +23,12 @@ describe('JavaHostProjectConfiguration', () => {
         const config = new JavaHostProjectConfiguration({language: 'language1'})
 
         expect(config.language).toBe('Java')
+    })
+
+    test('commonSourceSet', () => {
+        const config = new JavaHostProjectConfiguration()
+
+        expect(config.commonSourceSet).toBe('main')
     })
 
     test('projectPath', () => {
@@ -63,20 +70,63 @@ describe('JavaHostProjectConfiguration', () => {
 
     test('hostDir', () => {
         const config = new JavaHostProjectConfiguration({
-            projectPath: '/something', srcDirName: 'dirName', basePackage: 'base.package', hostPackage: 'host'
+            projectPath: '/something', srcDirName: 'dirName', basePackage: 'base.package', hostPackage: 'host',
         })
 
-        expect(config.hostDir.absolutePath).toBe('/something/dirName/main/java/base/package/host')
-        expect(config.hostDir.relativePath).toBe('main/java/base/package/host')
+        expect(config.hostDir('main').absolutePath).toBe('/something/dirName/main/java/base/package/host')
+        expect(config.hostDir('main').relativePath).toBe('main/java/base/package/host')
+        expect(config.hostDir('other').absolutePath).toBe('/something/dirName/other/java/base/package/host')
+        expect(config.hostDir('other').relativePath).toBe('other/java/base/package/host')
     })
 
     test('resourcesDir', () => {
         const config = new JavaHostProjectConfiguration({
-            projectPath: '/something', srcDirName: 'dirName', basePackage: 'base.package'
+            projectPath: '/something', srcDirName: 'dirName', basePackage: 'base.package',
         })
 
-        expect(config.resourcesDir.absolutePath).toBe('/something/dirName/main/resources')
-        expect(config.resourcesDir.relativePath).toBe('main/resources')
+        expect(config.resourcesDir('main').absolutePath).toBe('/something/dirName/main/resources')
+        expect(config.resourcesDir('main').relativePath).toBe('main/resources')
+        expect(config.resourcesDir('other').absolutePath).toBe('/something/dirName/other/resources')
+        expect(config.resourcesDir('other').relativePath).toBe('other/resources')
     })
 
+    test('targetBundles', () => {
+        const targetBundlesObj = {}
+        const config = new JavaHostProjectConfiguration({targetBundles: targetBundlesObj}, 'locator')
+        JavaTargetBundlesConfiguration.fromObj = t.mockFn(() => ['bundle1'])
+
+        const targetBundles = config.targetBundles
+        expect(targetBundles).toStrictEqual(['bundle1'])
+        expect(config.targetBundles).toBe(targetBundles)
+        expect(JavaTargetBundlesConfiguration.fromObj).toBeCalledWith(targetBundlesObj, 'locator -> "targetBundles"')
+    })
+
+    test('allTargetBundleNames', () => {
+        const targetBundlesObj = {}
+        const config = new JavaHostProjectConfiguration({targetBundles: targetBundlesObj}, 'locator')
+        JavaTargetBundlesConfiguration.fromObj = t.mockFn(() => [
+            {bundleName: 'bundle1'}, {bundleName: 'bundle2'}, {bundleName: 'bundle3'}, {bundleName: 'bundle2'},
+        ])
+
+        expect(config.allTargetBundleNames).toStrictEqual(['bundle1', 'bundle2', 'bundle3'])
+    })
+
+    test.each([
+        [['bundle1'], ['source1']],
+        [['bundle2'], ['source2', 'source4']],
+        [['bundle3'], ['source3']],
+        [['bundle3', 'bundle1'], ['source1', 'source3']],
+        [['bundle1', 'bundle2'], ['source1', 'source2', 'source4']],
+        [['bundle1', 'bundle3', 'bundle2'], ['main']],
+    ])('getSourceSetsForBundles %p', (bundles, expectedSources) => {
+        const targetBundlesObj = {}
+        const config = new JavaHostProjectConfiguration({targetBundles: targetBundlesObj}, 'locator')
+        JavaTargetBundlesConfiguration.fromObj = t.mockFn(() => [
+            {bundleName: 'bundle1', sourceSets: ['source1']},
+            {bundleName: 'bundle2', sourceSets: ['source2', 'source4']},
+            {bundleName: 'bundle3', sourceSets: ['source3']},
+        ])
+
+        expect(config.getSourceSetsForBundles(bundles)).toStrictEqual(expectedSources)
+    })
 })

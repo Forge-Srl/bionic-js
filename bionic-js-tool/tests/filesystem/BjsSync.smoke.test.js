@@ -81,23 +81,27 @@ describe('Bjs smoke tests', () => {
     }
 
     async function checkJavaFiles(actualJavaDir, expectedJavaDir) {
-        const hostDir = 'HostProject/src/main/java/test/project/host'
+        const hostDir = sourceSet => `HostProject/src/${sourceSet}/java/test/project/host`
 
         for (const file of javaHostFiles) {
-            const expectedFile = expectedJavaDir.getSubDir(hostDir).getSubFile(file.path)
-            const actualFile = actualJavaDir.getSubDir(hostDir).getSubFile(file.path)
-            const expectedContent = await expectedFile.getContent()
-            const actualContent = await actualFile.getContent()
-            await expect(actualContent).toEqual(expectedContent)
+            for (const sourceSet of file.sourceSets) {
+                const expectedFile = expectedJavaDir.getSubDir(hostDir(sourceSet)).getSubFile(file.path)
+                const actualFile = actualJavaDir.getSubDir(hostDir(sourceSet)).getSubFile(file.path)
+                const expectedContent = await expectedFile.getContent()
+                const actualContent = await actualFile.getContent()
+                await expect(actualContent).toEqual(expectedContent)
+            }
         }
 
-        const bundleDir = 'HostProject/src/main/resources'
+        const bundleDir = sourceSet => `HostProject/src/${sourceSet}/resources`
         for (const file of javaBundleFiles) {
-            const expectedFile = expectedJavaDir.getSubDir(bundleDir).getSubFile(file.path)
-            const actualFile = actualJavaDir.getSubDir(bundleDir).getSubFile(file.path)
-            const expectedContent = await expectedFile.getContent()
-            const actualContent = await actualFile.getContent()
-            await expect(actualContent).toEqual(expectedContent)
+            for (const sourceSet of file.sourceSets) {
+                const expectedFile = expectedJavaDir.getSubDir(bundleDir(sourceSet)).getSubFile(file.path)
+                const actualFile = actualJavaDir.getSubDir(bundleDir(sourceSet)).getSubFile(file.path)
+                const expectedContent = await expectedFile.getContent()
+                const actualContent = await actualFile.getContent()
+                await expect(actualContent).toEqual(expectedContent)
+            }
         }
     }
 

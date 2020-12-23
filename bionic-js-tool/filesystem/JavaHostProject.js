@@ -9,6 +9,16 @@ class JavaHostProject {
         Object.assign(this, {config, log})
     }
 
+    get targetKeysBundleMap() {
+        const targetKeysBundleMap = new Map()
+        for (const targetBundle of this.config.targetBundles) {
+            for (const sourceSet of targetBundle.sourceSets) {
+                targetKeysBundleMap.set(sourceSet, targetBundle.bundleName)
+            }
+        }
+        return targetKeysBundleMap
+    }
+
     getBundleDirName(bundleName) {
         return `${bundleName}${BJS_BUNDLE_SUFFIX}`
     }
@@ -18,79 +28,120 @@ class JavaHostProject {
     }
 
     async getProjectFiles() {
-        const javaFilesWalker = new FileWalker(this.config.hostDir.path, [JAVA_FILE_EXT].map(ext => `**/*${ext}`))
-        const javaFilesToProcess = (await javaFilesWalker.getFiles()).map(async fileToProcess => {
-            return new HostProjectFile(fileToProcess.relativePath, ['main'], await fileToProcess.asFile.getContent())
-        })
+        const targetKeysBundleMap = this.targetKeysBundleMap
 
-        const bundleFilesWalker = new FileWalker(this.config.resourcesDir.path, [BJS_BUNDLE_SUFFIX].map(ext => `**/*${ext}`), false)
-        const bundleFilesToProcess = (await bundleFilesWalker.getFiles()).map(async fileToProcess => {
+        const processJavaFile = async (fileToProcess, bundles) =>
+            new HostProjectFile(fileToProcess.relativePath, bundles, await fileToProcess.asFile.getContent())
+
+        const processBundleFile = async (fileToProcess, bundles) => {
             const bundleName = fileToProcess.base.slice(0, -BJS_BUNDLE_SUFFIX.length)
             const bundleFile = fileToProcess.asDir.getSubFile(this.getBundleFileName(bundleName))
-            return new BundleProjectFile(bundleName, await bundleFile.getContent(), ['main'])
-        })
+            return new BundleProjectFile(bundleName, await bundleFile.getContent(), bundles)
+        }
 
-        return (await Promise.all([...javaFilesToProcess, ...bundleFilesToProcess])).filter(nonNull => nonNull)
+        const filesToProcess = []
+        for (let [sourceSet, bundleName] of targetKeysBundleMap.entries()) {
+            const javaFilesWalker = new FileWalker(this.config.hostDir(sourceSet).path, [JAVA_FILE_EXT].map(ext => `**/*${ext}`))
+            filesToProcess.push(...(await javaFilesWalker.getFiles())
+                .map(async fileToProcess => await processJavaFile(fileToProcess, [bundleName])))
+
+            const bundleFilesWalker = new FileWalker(this.config.resourcesDir(sourceSet).path, [BJS_BUNDLE_SUFFIX].map(ext => `**/*${ext}`), false)
+            filesToProcess.push(...(await bundleFilesWalker.getFiles())
+                .map(async fileToProcess => await processBundleFile(fileToProcess, [bundleName])))
+        }
+
+        const allTargets = [...targetKeysBundleMap.values()]
+        const commonJavaFilesWalker = new FileWalker(this.config.hostDir(this.config.commonSourceSet).path, [JAVA_FILE_EXT].map(ext => `**/*${ext}`))
+        filesToProcess.push(...(await commonJavaFilesWalker.getFiles())
+            .map(async fileToProcess => await processJavaFile(fileToProcess, allTargets)))
+
+        const commonBundleFilesWalker = new FileWalker(this.config.resourcesDir(this.config.commonSourceSet).path, [BJS_BUNDLE_SUFFIX].map(ext => `**/*${ext}`), false)
+        filesToProcess.push(...(await commonBundleFilesWalker.getFiles())
+            .map(async fileToProcess => await processBundleFile(fileToProcess, allTargets)))
+
+        return (await Promise.all(filesToProcess)).filter(nonNull => nonNull)
     }
 
     async save() {
-        await this.config.hostDir.cleanEmptyDirs(true)
-        await this.config.resourcesDir.cleanEmptyDirs(true)
+        const targetKeysBundleMap = this.targetKeysBundleMap
+        for (let [sourceSet, bundleName] of targetKeysBundleMap.entries()) {
+            await this.config.hostDir(sourceSet).cleanEmptyDirs(true)
+            await this.config.resourcesDir(sourceSet).cleanEmptyDirs(true)
+        }
+        await this.config.hostDir(this.config.commonSourceSet).cleanEmptyDirs(true)
+        await this.config.resourcesDir(this.config.commonSourceSet).cleanEmptyDirs(true)
     }
 
     /** REMOVE THINGS */
 
-    async removeHostFileFromProject(pathRelativeToHostDir) {
-        const hostFile = this.config.hostDir
-            .getSubFile(pathRelativeToHostDir)
+    async removeHostFileFromProject(pathRelativeToHostDir, bundleNames) {
+        const sourceSets = this.config.getSourceSetsForBundles(bundleNames)
 
-        try {
-            await hostFile.delete()
-        } catch (error) {
-            error.message = `removing host file "${hostFile.relativePath}"\n${error.message}`
-            throw error
+        for (const sourceSet of sourceSets) {
+            const hostFile = this.config.hostDir(sourceSet)
+                .getSubFile(pathRelativeToHostDir)
+
+            try {
+                await hostFile.delete()
+            } catch (error) {
+                error.message = `removing host file "${hostFile.relativePath}"\n${error.message}`
+                throw error
+            }
         }
     }
 
     /** ADD THINGS */
 
-    async addHostFileToProject(pathRelativeToHostDir, bundles, hostFileContent) {
-        const hostFile = this.config.hostDir
-            .getSubFile(pathRelativeToHostDir)
+    async addHostFileToProject(pathRelativeToHostDir, bundleNames, hostFileContent) {
+        const sourceSets = this.config.getSourceSetsForBundles(bundleNames)
 
-        try {
-            await hostFile.dir.ensureExists()
-            await hostFile.setContent(hostFileContent)
-        } catch (error) {
-            error.message = `writing host file "${hostFile.relativePath}"\n${error.message}`
-            throw error
+        for (const sourceSet of sourceSets) {
+            const hostFile = this.config.hostDir(sourceSet)
+                .getSubFile(pathRelativeToHostDir)
+
+            try {
+                await hostFile.dir.ensureExists()
+                await hostFile.setContent(hostFileContent)
+            } catch (error) {
+                error.message = `writing host file "${hostFile.relativePath}"\n${error.message}`
+                throw error
+            }
         }
     }
 
     async addBundleToProject(bundleName, bundleFileContent) {
         const bundleDirName = this.getBundleDirName(bundleName)
+        const sourceSets = this.config.getSourceSetsForBundles([bundleName])
 
-        const bundleFile = this.config.resourcesDir
-            .getSubDir(bundleDirName)
-            .getSubFile(this.getBundleFileName(bundleName))
+        for (const sourceSet of sourceSets) {
+            const bundleFile = this.config.resourcesDir(sourceSet)
+                .getSubDir(bundleDirName)
+                .getSubFile(this.getBundleFileName(bundleName))
 
-        try {
-            await bundleFile.dir.ensureExists()
-            await bundleFile.setContent(bundleFileContent)
-        } catch (error) {
-            error.message = `writing bundle file "${bundleFile.relativePath}"\n${error.message}`
-            throw error
+            try {
+                await bundleFile.dir.ensureExists()
+                await bundleFile.setContent(bundleFileContent)
+            } catch (error) {
+                error.message = `writing bundle file "${bundleFile.relativePath}"\n${error.message}`
+                throw error
+            }
         }
     }
 
     async removeBundleFromProject(bundleName) {
         const bundleDirName = this.getBundleDirName(bundleName)
-        const bundleDir = this.config.resourcesDir.getSubDir(bundleDirName)
-        try {
-            await bundleDir.delete()
-        } catch (error) {
-            error.message = `removing bundle directory "${bundleDir.relativePath}"\n${error.message}`
-            throw error
+        const sourceSets = this.config.getSourceSetsForBundles([bundleName])
+
+        for (const sourceSet of sourceSets) {
+            const bundleDir = this.config.resourcesDir(sourceSet)
+                .getSubDir(bundleDirName)
+
+            try {
+                await bundleDir.delete()
+            } catch (error) {
+                error.message = `removing bundle directory "${bundleDir.relativePath}"\n${error.message}`
+                throw error
+            }
         }
     }
 }
