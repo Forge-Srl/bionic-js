@@ -29,9 +29,12 @@ class JavaHostProject {
 
     async getProjectFiles() {
         const targetKeysBundleMap = this.targetKeysBundleMap
+        const bjsProjectFileName = `Bjs${this.config.projectName}.java`
 
-        const processJavaFile = async (fileToProcess, bundles) =>
-            new HostProjectFile(fileToProcess.relativePath, bundles, await fileToProcess.asFile.getContent())
+        const processJavaFile = async (fileToProcess, bundles, sourceSet) => {
+            const subId = fileToProcess.relativePath === bjsProjectFileName ? sourceSet : undefined
+            return new HostProjectFile(fileToProcess.relativePath, bundles, await fileToProcess.asFile.getContent(), subId)
+        }
 
         const processBundleFile = async (fileToProcess, bundles) => {
             const bundleName = fileToProcess.base.slice(0, -BJS_BUNDLE_SUFFIX.length)
@@ -43,7 +46,7 @@ class JavaHostProject {
         for (let [sourceSet, bundleName] of targetKeysBundleMap.entries()) {
             const javaFilesWalker = new FileWalker(this.config.hostDir(sourceSet).path, [JAVA_FILE_EXT].map(ext => `**/*${ext}`))
             filesToProcess.push(...(await javaFilesWalker.getFiles())
-                .map(async fileToProcess => await processJavaFile(fileToProcess, [bundleName])))
+                .map(async fileToProcess => await processJavaFile(fileToProcess, [bundleName], sourceSet)))
 
             const bundleFilesWalker = new FileWalker(this.config.resourcesDir(sourceSet).path, [BJS_BUNDLE_SUFFIX].map(ext => `**/*${ext}`), false)
             filesToProcess.push(...(await bundleFilesWalker.getFiles())

@@ -12,6 +12,18 @@ import bionic.js.BjsObject;
 @BjsTypeInfo.BjsLocation(project = "BeautifulVehicles", module = "Vehicle")
 public class Vehicle extends BjsObject {
     
+    protected <T extends BjsObject> Vehicle(Class<T> type, JSReference jsObject) {
+        super(type, jsObject);
+    }
+    
+    protected <T extends BjsObject> Vehicle(Class<T> type, JSReference[] arguments) {
+        super(type, arguments);
+    }
+    
+    public Vehicle(JSReference jsObject) {
+        this(Vehicle.class, jsObject);
+    }
+    
     public String description() {
         return bjs.getString(bjsGetProperty("description"));
     }

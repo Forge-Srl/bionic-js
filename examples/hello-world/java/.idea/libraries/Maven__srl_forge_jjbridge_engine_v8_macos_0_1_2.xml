@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: srl.forge:jjbridge-engine-v8:macos:0.1.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/srl/forge/jjbridge-engine-v8/0.1.2/jjbridge-engine-v8-0.1.2-macos.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/srl/forge/jjbridge-engine-v8/0.1.2/jjbridge-engine-v8-0.1.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/srl/forge/jjbridge-engine-v8/0.1.2/jjbridge-engine-v8-0.1.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

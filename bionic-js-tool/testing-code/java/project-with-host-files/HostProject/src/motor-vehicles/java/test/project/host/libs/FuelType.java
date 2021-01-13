@@ -12,6 +12,18 @@ import bionic.js.BjsObject;
 @BjsTypeInfo.BjsLocation(project = "BeautifulVehicles", module = "FuelType")
 public class FuelType extends BjsObject {
     
+    protected <T extends BjsObject> FuelType(Class<T> type, JSReference jsObject) {
+        super(type, jsObject);
+    }
+    
+    protected <T extends BjsObject> FuelType(Class<T> type, JSReference[] arguments) {
+        super(type, arguments);
+    }
+    
+    public FuelType(JSReference jsObject) {
+        this(FuelType.class, jsObject);
+    }
+    
     public static FuelType Electricity() {
         return bjs.getObj(bjs.getProperty(bjsClass, "Electricity"), FuelType.bjsFactory, FuelType.class);
     }

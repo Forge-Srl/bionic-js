@@ -9,7 +9,7 @@ class JavaHostEnvironmentFileGenerator {
 
     getSource() {
         return CodeBlock.create()
-            .append(`package ${this.javaPackage}.Bjs${this.bundleName};`).newLine()
+            .append(`package ${this.javaPackage};`).newLine()
             .newLine()
             .append('import bionic.js.Bjs;').newLine()
             .append('import bionic.js.BjsProject;').newLine()

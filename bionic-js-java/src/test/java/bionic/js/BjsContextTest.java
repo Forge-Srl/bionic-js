@@ -62,18 +62,18 @@ public class BjsContextTest {
 
     @Test
     public void addNativeWrappers_invalid() {
-        assertThrows(RuntimeException.class, () -> context.addNativeWrappers(InvalidDummyWrapper.class));
+        assertThrows(RuntimeException.class, () -> context.addNativeWrapper(InvalidDummyWrapper.class));
     }
 
     @Test
     public void addNativeWrappers_alreadyAdded() {
-        context.addNativeWrappers(ValidDummyWrapper.class);
-        assertThrows(RuntimeException.class, () -> context.addNativeWrappers(ValidDummyWrapper.class));
+        context.addNativeWrapper(ValidDummyWrapper.class);
+        assertThrows(RuntimeException.class, () -> context.addNativeWrapper(ValidDummyWrapper.class));
     }
 
     @Test
     public void getNativeModule() {
-        context.addNativeWrappers(ValidDummyWrapper.class);
+        context.addNativeWrapper(ValidDummyWrapper.class);
 
         assertNull(ValidDummyWrapper.capturedNativeExport);
         runtime.referenceBuilder = jsType -> mock(JSReference.class);

@@ -18,5 +18,16 @@ module.exports = {
                 compileTargets: ["HelloJsWorld (iOS)", "HelloJsWorld (macOS)"],
             },
         },
+    }, {
+        language: "Java",
+        projectPath: path.resolve(__dirname, "./java"),
+        srcDirName: "src",
+        basePackage: "example.helloWorld",
+        hostPackage: "js",
+        targetBundles: {
+            MainBundle: {
+                sourceSets: ["example"],
+            }
+        }
     }],
 }

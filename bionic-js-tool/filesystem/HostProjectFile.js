@@ -1,11 +1,11 @@
 class HostProjectFile {
 
-    constructor(relativePath, bundles, content) {
-        Object.assign(this, {relativePath, bundles, content})
+    constructor(relativePath, bundles, content, subId = '') {
+        Object.assign(this, {relativePath, bundles, content, subId})
     }
 
     get id() {
-        return this.relativePath
+        return this.subId ? `${this.relativePath}/$/${this.subId}` : this.relativePath
     }
 
     get logText() {

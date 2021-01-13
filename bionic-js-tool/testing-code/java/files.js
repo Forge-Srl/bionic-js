@@ -1,7 +1,7 @@
 const hostFiles = [
     {path: 'Bicycle.java', bundles: ['Vehicles'], sourceSets: ['bicycle', 'vehicles']},
-    {path: 'BjsMotorVehicles/BjsBeautifulVehicles.java', bundles: ['MotorVehicles'], sourceSets: ['motor-vehicles']},
-    {path: 'BjsVehicles/BjsBeautifulVehicles.java', bundles: ['Vehicles'], sourceSets: ['bicycle', 'vehicles']},
+    {path: 'BjsBeautifulVehicles.java', bundles: ['MotorVehicles'], sourceSets: ['motor-vehicles']},
+    {path: 'BjsBeautifulVehicles.java', bundles: ['Vehicles'], sourceSets: ['bicycle', 'vehicles']},
     {path: 'FerrariCalifornia.java', bundles: ['MotorVehicles'], sourceSets: ['motor-vehicles']},
     {path: 'TeslaRoadster.java', bundles: ['MotorVehicles'], sourceSets: ['motor-vehicles']},
     {path: 'libs/FuelType.java', bundles: ['MotorVehicles'], sourceSets: ['motor-vehicles']},

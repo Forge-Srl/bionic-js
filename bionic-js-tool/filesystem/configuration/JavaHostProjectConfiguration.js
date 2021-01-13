@@ -5,12 +5,13 @@ const path = require('path')
 
 class JavaHostProjectConfiguration extends Configuration {
 
-    static fromObj(configObj, path) {
-        return new JavaHostProjectConfiguration(configObj, path)
+    static fromObj(configObj, path, projectName) {
+        return new JavaHostProjectConfiguration(configObj, path, projectName)
     }
 
-    constructor(configObj, locator) {
+    constructor(configObj, locator, projectName) {
         super(configObj, locator, [], ['type', 'projectPath', 'srcDirName', 'targetBundles', 'basePackage', 'hostPackage'])
+        Object.assign(this, {projectName})
     }
 
     get language() {

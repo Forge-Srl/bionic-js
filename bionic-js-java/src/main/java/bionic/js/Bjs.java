@@ -99,10 +99,10 @@ public class Bjs
         context.executeJs(file, bundleName + ".bjs/" + bundleName + ".js");
     }
 
-    public <B extends BjsNativeWrapper<T>, T extends BjsExport> void addNativeWrappers(
+    public <B extends BjsNativeWrapper<T>, T extends BjsExport> void addNativeWrapper(
             @NonNull Class<B> nativeWrapperClass)
     {
-        context.addNativeWrappers(nativeWrapperClass);
+        context.addNativeWrapper(nativeWrapperClass);
     }
 
     public JSReference jsNull()

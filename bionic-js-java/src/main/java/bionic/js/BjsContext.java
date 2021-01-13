@@ -81,7 +81,7 @@ public class BjsContext
         runtime.globalObject().set("process", processRef);
     }
 
-    <B extends BjsNativeWrapper<T>, T extends BjsExport> void addNativeWrappers(Class<B> nativeWrapperClass)
+    <B extends BjsNativeWrapper<T>, T extends BjsExport> void addNativeWrapper(Class<B> nativeWrapperClass)
     {
         BjsNativeWrapperTypeInfo<B> typeInfo = BjsNativeWrapperTypeInfo.get(nativeWrapperClass);
         BjsLocator bjsLocator = typeInfo.bjsLocator;

@@ -12,6 +12,11 @@ describe('HostProjectFile', () => {
         expect(file.id).toBe('relative/path')
     })
 
+    test('id with subId', () => {
+        const file = new HostProjectFile('relative/path', ['bundle1'], 'content', 'subId')
+        expect(file.id).toBe('relative/path/$/subId')
+    })
+
     test('logText', () => {
         const file = new HostProjectFile('relative/path', ['bundle1'], 'content')
         expect(file.logText).toBe('Source "relative/path" - in bundles (bundle1)')

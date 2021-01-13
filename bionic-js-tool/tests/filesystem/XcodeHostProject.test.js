@@ -472,6 +472,7 @@ describe('XcodeHostProject', () => {
                     bundles: ['MotorVehicles'],
                     content: 'motor vehicles content',
                     relativePath: 'MotorVehicles/File.swift',
+                    subId: '',
                 }])
         })
     })

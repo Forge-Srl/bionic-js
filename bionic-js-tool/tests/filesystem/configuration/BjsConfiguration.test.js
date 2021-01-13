@@ -78,6 +78,7 @@ describe('BjsConfiguration', () => {
         const hostProjects = bjsConfig.hostProjects
         expect(hostProjects[0].configObj).toBe(projectObj)
         expect(hostProjects[0].locator).toBe('locator -> "hostProjects[0]"')
+        expect(hostProjects[0].projectName).toBe(bjsConfig.projectName)
 
         expect(bjsConfig.hostProjects).toBe(hostProjects)
     })

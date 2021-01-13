@@ -60,7 +60,7 @@ class BjsConfiguration extends Configuration {
                 if (language === 'swift') {
                     return XcodeHostProjectConfiguration.fromObj(targetObj, projectLocator)
                 } else if (language === 'java') {
-                    return JavaHostProjectConfiguration.fromObj(targetObj, projectLocator)
+                    return JavaHostProjectConfiguration.fromObj(targetObj, projectLocator, this.projectName)
                 } else {
                     throw new Error(`${projectLocator} -> "language" -> "${targetObj.language}" is not supported`)
                 }

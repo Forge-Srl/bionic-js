@@ -9,7 +9,7 @@ describe('JavaHostEnvironmentFileGenerator', () => {
             t.requireModule('generation/java/JavaHostEnvironmentFileGenerator').JavaHostEnvironmentFileGenerator
 
         expectedHeader = [
-            'package test.java.BjspkgName;',
+            'package test.java;',
             '',
             'import bionic.js.Bjs;',
             'import bionic.js.BjsProject;',

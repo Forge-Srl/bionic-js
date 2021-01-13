@@ -75,6 +75,18 @@ class JavaHostClassGenerator extends ClassGenerator {
             .append(`@BjsTypeInfo.BjsLocation(project = "${this.projectName}", module = "${this.schema.name}")`).newLine()
             .append(`public class ${this.schema.name} extends ${superclassName} {`).newLineIndenting()
             .newLine()
+            .append(`protected <T extends ${superclassName}> ${this.schema.name}(Class<T> type, JSReference jsObject) {`).newLineIndenting()
+            .append('super(type, jsObject);').newLineDeindenting()
+            .append('}').newLine()
+            .newLine()
+            .append(`protected <T extends ${superclassName}> ${this.schema.name}(Class<T> type, JSReference[] arguments) {`).newLineIndenting()
+            .append('super(type, arguments);').newLineDeindenting()
+            .append('}').newLine()
+            .newLine()
+            .append(`public ${this.schema.name}(JSReference jsObject) {`).newLineIndenting()
+            .append(`this(${this.schema.name}.class, jsObject);`).newLineDeindenting()
+            .append('}').newLine()
+            .newLine()
     }
 
     getBodyCode() {

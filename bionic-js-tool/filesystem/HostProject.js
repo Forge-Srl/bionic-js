@@ -45,8 +45,8 @@ class HostProject {
         return {filesToAdd, filesToUpdate, filesToDelete}
     }
 
-    setHostFileContent(pathRelativeToHostDir, bundles, hostFileContent) {
-        const hostProjectFile = new HostProjectFile(pathRelativeToHostDir, bundles, hostFileContent)
+    setHostFileContent(pathRelativeToHostDir, bundles, hostFileContent, subId) {
+        const hostProjectFile = new HostProjectFile(pathRelativeToHostDir, bundles, hostFileContent, subId)
         this.newFiles.set(hostProjectFile.id, hostProjectFile)
     }
 

@@ -1,4 +1,4 @@
-package test.project.host.BjsMotorVehicles;
+package test.project.host;
 
 import bionic.js.Bjs;
 import bionic.js.BjsProject;

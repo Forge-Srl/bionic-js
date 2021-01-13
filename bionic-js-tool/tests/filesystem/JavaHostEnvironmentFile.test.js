@@ -24,18 +24,20 @@ describe('JavaHostEnvironmentFile', () => {
         }
         const javaHostEnvironmentFiles = JavaHostEnvironmentFile.build(nativeFiles, 'Bundle1', hostProjectConfig, 'Project1')
         expect(javaHostEnvironmentFiles.length).toBe(2)
-        expect(javaHostEnvironmentFiles[0].path).toBe('/host/dir/path/source1/BjsBundle1/BjsProject1.java')
+        expect(javaHostEnvironmentFiles[0].path).toBe('/host/dir/path/source1/BjsProject1.java')
         expect(javaHostEnvironmentFiles[0].rootDirPath).toBe('/host/dir/path/source1')
         expect(javaHostEnvironmentFiles[0].bundleName).toBe('Bundle1')
         expect(javaHostEnvironmentFiles[0].nativeFiles).toBe(nativeFiles)
         expect(javaHostEnvironmentFiles[0].projectName).toBe('Project1')
         expect(javaHostEnvironmentFiles[0].basePackage).toBe('test.java')
-        expect(javaHostEnvironmentFiles[1].path).toBe('/host/dir/path/source2/BjsBundle1/BjsProject1.java')
+        expect(javaHostEnvironmentFiles[0].sourceSet).toBe('source1')
+        expect(javaHostEnvironmentFiles[1].path).toBe('/host/dir/path/source2/BjsProject1.java')
         expect(javaHostEnvironmentFiles[1].rootDirPath).toBe('/host/dir/path/source2')
         expect(javaHostEnvironmentFiles[1].bundleName).toBe('Bundle1')
         expect(javaHostEnvironmentFiles[1].nativeFiles).toBe(nativeFiles)
         expect(javaHostEnvironmentFiles[1].projectName).toBe('Project1')
         expect(javaHostEnvironmentFiles[1].basePackage).toBe('test.java')
+        expect(javaHostEnvironmentFiles[1].sourceSet).toBe('source2')
     })
 
     test('generate', async () => {
@@ -52,9 +54,9 @@ describe('JavaHostEnvironmentFile', () => {
 
         const hostProject = {setHostFileContent: t.mockFn()} // path, hostDirPath, bundleName, nativeFiles, projectName
         const hostEnvironmentFile = new JavaHostEnvironmentFile('/host/dir/rel/path', '/host/dir', 'Bundle1',
-            'nativeFiles', 'Project1', 'test.java')
+            'nativeFiles', 'Project1', 'test.java', 'sourceSet')
         await hostEnvironmentFile.generate(hostProject)
 
-        expect(hostProject.setHostFileContent).toBeCalledWith('rel/path', ['Bundle1'], 'source code')
+        expect(hostProject.setHostFileContent).toBeCalledWith('rel/path', ['Bundle1'], 'source code', 'sourceSet')
     })
 })

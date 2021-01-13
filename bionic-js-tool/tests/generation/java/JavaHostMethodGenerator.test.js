@@ -27,7 +27,20 @@ describe('JavaHostMethodGenerator', () => {
             '',
             '@BjsTypeInfo.BjsLocation(project = "Project1", module = "Class1")',
             'public class Class1 extends BjsObject {',
-            '    ']
+            '    ',
+            '    protected <T extends BjsObject> Class1(Class<T> type, JSReference jsObject) {',
+            '        super(type, jsObject);',
+            '    }',
+            '    ',
+            '    protected <T extends BjsObject> Class1(Class<T> type, JSReference[] arguments) {',
+            '        super(type, arguments);',
+            '    }',
+            '    ',
+            '    public Class1(JSReference jsObject) {',
+            '        this(Class1.class, jsObject);',
+            '    }',
+            '    ',
+        ]
 
         expectedFooter = [
             '    ',

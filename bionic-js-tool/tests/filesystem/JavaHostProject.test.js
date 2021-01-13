@@ -41,8 +41,8 @@ describe('JavaHostProject', () => {
             const files = (await project.getProjectFiles()).sort((file1, file2) => file1.id < file2.id ? -1 : file1.id > file2.id ? 1 : 0)
             expect(files.map(file => file.id)).toStrictEqual([
                 '$native$/BaseEngineBjsExport.java', '$native$/EngineBjsExport.java',
-                'Bicycle.java', 'Bicycle.java', 'BjsMotorVehicles/BjsBeautifulVehicles.java',
-                'BjsVehicles/BjsBeautifulVehicles.java', 'BjsVehicles/BjsBeautifulVehicles.java',
+                'Bicycle.java', 'Bicycle.java', 'BjsBeautifulVehicles.java/$/bicycle',
+                'BjsBeautifulVehicles.java/$/motor-vehicles', 'BjsBeautifulVehicles.java/$/vehicles',
                 'FerrariCalifornia.java', 'MotorVehicles', 'TeslaRoadster.java', 'Vehicles', 'Vehicles',
                 'libs/FuelType.java', 'libs/MotorVehicle.java', 'libs/Vehicle.java',
             ])
@@ -53,19 +53,19 @@ describe('JavaHostProject', () => {
             ])
             expect(files.map(file => file.bundles)).toStrictEqual([
                 ['MotorVehicles'], ['MotorVehicles'], ['Vehicles'], ['Vehicles'],
-                ['MotorVehicles'], ['Vehicles'], ['Vehicles'], ['MotorVehicles'], ['MotorVehicles'],
+                ['Vehicles'], ['MotorVehicles'], ['Vehicles'], ['MotorVehicles'], ['MotorVehicles'],
                 ['MotorVehicles'], ['Vehicles'], ['Vehicles'], ['MotorVehicles'], ['MotorVehicles'],
                 ['MotorVehicles', 'Vehicles', 'Vehicles'],
             ])
-            expect(files.map(file => file.content.length)).toStrictEqual([3344, 2720, 751, 751, 554, 364, 364,
-                760, 13553, 1136, 3774, 3774, 1648, 2598, 1190])
+            expect(files.map(file => file.content.length)).toStrictEqual([3344, 2720, 1094, 1094, 352, 537, 352,
+                1153, 13553, 1513, 3774, 3774, 1999, 2598, 1537])
         })
     })
 
     test('removeHostFileFromProject', async () => {
         await getProjectWithHostFiles(async project => {
 
-            const fileName = 'BjsMotorVehicles/BjsBeautifulVehicles.java'
+            const fileName = 'BjsBeautifulVehicles.java'
             const hostFile = project.config.hostDir('motor-vehicles').getSubFile(fileName)
             expect(await hostFile.exists()).toBe(true)
             await project.removeHostFileFromProject(fileName, ['MotorVehicles'])
@@ -85,6 +85,7 @@ describe('JavaHostProject', () => {
                     bundles: ['MotorVehicles'],
                     content: 'motor vehicles content',
                     relativePath: 'MotorVehicles/File.java',
+                    subId: '',
                 }])
         })
     })

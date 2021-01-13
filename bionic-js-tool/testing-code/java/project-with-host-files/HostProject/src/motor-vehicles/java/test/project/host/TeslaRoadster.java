@@ -12,6 +12,18 @@ import test.project.host.libs.MotorVehicle;
 @BjsTypeInfo.BjsLocation(project = "BeautifulVehicles", module = "TeslaRoadster")
 public class TeslaRoadster extends MotorVehicle {
     
+    protected <T extends MotorVehicle> TeslaRoadster(Class<T> type, JSReference jsObject) {
+        super(type, jsObject);
+    }
+    
+    protected <T extends MotorVehicle> TeslaRoadster(Class<T> type, JSReference[] arguments) {
+        super(type, arguments);
+    }
+    
+    public TeslaRoadster(JSReference jsObject) {
+        this(TeslaRoadster.class, jsObject);
+    }
+    
     public static TeslaRoadster $default$() {
         return bjs.getObj(bjs.getProperty(bjsClass, "default"), TeslaRoadster.bjsFactory, TeslaRoadster.class);
     }

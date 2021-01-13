@@ -19,6 +19,12 @@ describe('JavaHostProjectConfiguration', () => {
         expect(config.validation).not.toBeNull()
     })
 
+    test('projectName', () => {
+        const config = new JavaHostProjectConfiguration(undefined, undefined, 'projectName')
+
+        expect(config.projectName).toBe('projectName')
+    })
+
     test('language', () => {
         const config = new JavaHostProjectConfiguration({language: 'language1'})
 

@@ -94,10 +94,10 @@ describe('HostProject', () => {
 
             expect([...hostProject.oldFiles.entries()]).toEqual([
                 ['relative/path/file1.swift', {
-                    relativePath: 'relative/path/file1.swift', bundles: ['Vehicles'], content: 'file1 content',
+                    relativePath: 'relative/path/file1.swift', bundles: ['Vehicles'], content: 'file1 content', subId: ''
                 }],
                 ['file2.swift', {
-                    relativePath: 'file2.swift', bundles: ['Vehicles', 'MotorVehicles'], content: 'file2 content',
+                    relativePath: 'file2.swift', bundles: ['Vehicles', 'MotorVehicles'], content: 'file2 content', subId: ''
                 }],
                 ['Vehicles', {
                     bundleName: 'Vehicles', bundles: ['Vehicles'], content: 'Vehicles bundle content',
@@ -150,11 +150,11 @@ describe('HostProject', () => {
             expect([...hostProject.oldFiles.entries()]).toEqual([
                 ['TeslaRoadster.swift', {
                     bundles: ['MotorVehicles'], content: teslaRoadsterOldContent,
-                    relativePath: 'TeslaRoadster.swift',
+                    relativePath: 'TeslaRoadster.swift', subId: ''
                 }],
                 ['native/BaseEngineBjsWrapper.swift', {
                     bundles: ['MotorVehicles'], content: 'host content',
-                    relativePath: 'native/BaseEngineBjsWrapper.swift',
+                    relativePath: 'native/BaseEngineBjsWrapper.swift', subId: ''
                 }],
                 ['MotorVehicles', {
                     bundleName: 'MotorVehicles', bundles: ['MotorVehicles'], content: 'bundle content',
@@ -164,7 +164,7 @@ describe('HostProject', () => {
                 }],
                 ['FerrariCalifornia.swift', {
                     bundles: ['Vehicles'], content: ferrariCaliforniaOldContent,
-                    relativePath: 'FerrariCalifornia.swift',
+                    relativePath: 'FerrariCalifornia.swift', subId: ''
                 }],
             ])
         })
