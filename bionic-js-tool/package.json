@@ -1,7 +1,7 @@
 {
   "name": "bionicjs",
   "version": "1.0.1",
-  "description": "Bionic.js",
+  "description": "Bionic.js let you share the business logic between different native languages without using any framework and without writing a single line of bridging code.",
   "homepage": "https://github.com/Forge-Srl/bionic-js",
   "license": "MIT",
   "author": "Forge S.r.l.",
@@ -14,7 +14,7 @@
     }
   ],
   "bin": {
-    "bionicjs": "./cli/bjsSyncCli.js"
+    "bionicjs": "cli/cli.js"
   },
   "scripts": {
     "test": "jest",
@@ -30,14 +30,16 @@
     "/filesystem",
     "/generation",
     "/parser",
-    "/schema"
+    "/schema",
+    "/Bjs.js"
   ],
   "dependencies": {
     "@babel/parser": "^7.12.7",
+    "commander": "^6.2.1",
     "fast-glob": "^3.2.4",
+    "graceful-fs": "^4.2.4",
     "ignore": "^5.1.8",
     "memfs": "^3.2.0",
-    "graceful-fs": "^4.2.4",
     "mkdirp": "^1.0.4",
     "rimraf": "^3.0.2",
     "touch": "^3.1.0",
