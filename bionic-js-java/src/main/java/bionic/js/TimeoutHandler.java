@@ -9,7 +9,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class TimeoutHandler
+final class TimeoutHandler
 {
     private final ScheduledExecutorService scheduler;
     private final HashSet<Integer> timeoutIds;

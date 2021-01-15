@@ -8,10 +8,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.Map;
 
-public class BjsProjectTypeInfo<B extends BjsProject> extends TypeInfo<B>
+/**
+ * A provider of information about a {@link BjsProject} subclass.
+ *
+ * @param <B> The subtype of BjsProject to get information about.
+ * */
+public final class BjsProjectTypeInfo<B extends BjsProject> extends TypeInfo<B>
 {
-    private static final HashMap<Class<?>, BjsProjectTypeInfo<?>> cachedInfo = new HashMap<>();
+    private static final Map<Class<?>, BjsProjectTypeInfo<?>> cachedInfo = new HashMap<>();
     private final BjsProjectInitializer initializer;
 
     private BjsProjectTypeInfo(Class<B> clazz, BjsProjectInitializer initializer)
@@ -20,12 +26,12 @@ public class BjsProjectTypeInfo<B extends BjsProject> extends TypeInfo<B>
         this.initializer = initializer;
     }
 
-    public void initialize(Bjs bjs)
+    void initialize(Bjs bjs)
     {
         initializer.initialize(bjs);
     }
 
-    public static <T extends BjsProject> BjsProjectTypeInfo<T> get(Class<T> clazz)
+    static <T extends BjsProject> BjsProjectTypeInfo<T> get(Class<T> clazz)
     {
         if (!cachedInfo.containsKey(clazz))
         {
@@ -37,7 +43,7 @@ public class BjsProjectTypeInfo<B extends BjsProject> extends TypeInfo<B>
         return typeInfo;
     }
 
-    public static BjsProjectTypeInfo.BjsProjectInitializer getProjectInitializer(Class<?> clazz)
+    protected static BjsProjectTypeInfo.BjsProjectInitializer getProjectInitializer(Class<?> clazz)
     {
         for (Method m : clazz.getDeclaredMethods())
         {
@@ -56,7 +62,7 @@ public class BjsProjectTypeInfo<B extends BjsProject> extends TypeInfo<B>
                 };
             }
         }
-        throw new RuntimeException("Class has no method with Exporter annotation");
+        throw new RuntimeException("Class has no static method with Exporter annotation");
     }
 
     interface BjsProjectInitializer
@@ -64,6 +70,13 @@ public class BjsProjectTypeInfo<B extends BjsProject> extends TypeInfo<B>
         void initialize(Bjs bjs);
     }
 
+    /**
+     * This annotation identifies the initialization method of a {@link BjsProject} subclass.
+     * <p><b>The annotated method is supposed to be static and to conform to the
+     * {@link BjsProjectInitializer#initialize(Bjs)} signature.</b></p>
+     * <p>The annotated method will be automatically called the first time a {@link BjsObject} class or a
+     * {@link BjsExport} class is accessed in order to correctly initialize the Bjs environment.</p>
+     * */
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Initializer

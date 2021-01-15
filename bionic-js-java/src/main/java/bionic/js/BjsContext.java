@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BjsContext
+class BjsContext
 {
     private final JSRuntime runtime;
     private final String projectName;
@@ -118,7 +118,7 @@ public class BjsContext
         return runtime.newReference(JSType.Undefined);
     }
 
-    public BjsNativeExports createNativeExports()
+    BjsNativeExports createNativeExports()
     {
         return new BjsNativeExports(runtime);
     }

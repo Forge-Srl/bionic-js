@@ -2,7 +2,10 @@ package bionic.js;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
-public class BjsLocator
+/**
+ * The logical location for a JavaScript class inside a Bjs project.
+ * */
+public final class BjsLocator
 {
     private Bjs bjs;
 
@@ -10,23 +13,28 @@ public class BjsLocator
     final String moduleName;
     final String packageName;
 
-    public BjsLocator()
+    BjsLocator()
     {
         this("", "", "");
     }
 
-    public BjsLocator(String packageName, @NonNull String projectName, @NonNull String moduleName)
+    BjsLocator(String packageName, @NonNull String projectName, @NonNull String moduleName)
     {
         this.packageName = packageName;
         this.projectName = projectName;
         this.moduleName = moduleName;
     }
 
-    public boolean isInvalid()
+    boolean isInvalid()
     {
         return projectName.isEmpty() || moduleName.isEmpty();
     }
 
+    /**
+     * Provides the Bjs environment associated to this location.
+     *
+     * @return the {@link Bjs} instance
+     * */
     public Bjs get()
     {
         if (bjs == null)

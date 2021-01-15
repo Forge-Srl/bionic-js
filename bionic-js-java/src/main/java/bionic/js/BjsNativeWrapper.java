@@ -7,6 +7,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * The super type of every Java class which binds a {@link BjsExport} class to the associated JavaScript native
+ * interface.
+ *
+ * @param <T> the type of the Java class bound to the JavaScript one
+ * */
 public abstract class BjsNativeWrapper<T extends BjsExport>
 {
     private static Reflections _reflections;
@@ -39,7 +45,9 @@ public abstract class BjsNativeWrapper<T extends BjsExport>
         try
         {
             Method method = realImplementation.getMethod(name, types);
-            return (R) method.invoke(realImplementation, args);
+            @SuppressWarnings("unchecked")
+            R invoke = (R) method.invoke(realImplementation, args);
+            return invoke;
         }
         catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
         {

@@ -11,10 +11,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.Map;
 
-public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends BjsTypeInfo<B>
+/**
+ * A provider of information about a {@link BjsNativeWrapper} subclass.
+ *
+ * @param <B> The subtype of BjsNativeWrapper to get information about.
+ * */
+public final class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends BjsTypeInfo<B>
 {
-    private static final HashMap<Class<?>, BjsNativeWrapperTypeInfo<?>> cachedInfo = new HashMap<>();
+    private static final Map<Class<?>, BjsNativeWrapperTypeInfo<?>> cachedInfo = new HashMap<>();
     private final BjsFunctionExporter exporter;
     private final BjsBinder binder;
 
@@ -33,6 +39,12 @@ public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends Bjs
         return exporter.bjsExportFunctions(nativeExport).getExportsObject();
     }
 
+    /**
+     * Provides the native wrapper type info for the given class.
+     *
+     * @param clazz the class to get information about
+     * @return the information object
+     * */
     public static <N extends BjsExport, T extends BjsNativeWrapper<N>> BjsNativeWrapperTypeInfo<T> get(
             @NonNull Class<T> clazz)
     {
@@ -47,7 +59,7 @@ public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends Bjs
         return typeInfo;
     }
 
-    public static BjsFunctionExporter getFunctionExporter(@NonNull Class<?> clazz)
+    protected static BjsFunctionExporter getFunctionExporter(@NonNull Class<?> clazz)
     {
         for (Method m : clazz.getDeclaredMethods())
         {
@@ -66,10 +78,10 @@ public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends Bjs
                 };
             }
         }
-        throw new RuntimeException("Class has no method with Exporter annotation");
+        throw new RuntimeException("Class has no static method with Exporter annotation");
     }
 
-    public static BjsBinder getBinder(@NonNull Class<?> clazz)
+    protected static BjsBinder getBinder(@NonNull Class<?> clazz)
     {
         for (Method m : clazz.getDeclaredMethods())
         {
@@ -88,7 +100,7 @@ public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends Bjs
                 };
             }
         }
-        throw new RuntimeException("Class has no method with Binder annotation");
+        throw new RuntimeException("Class has no static method with Binder annotation");
     }
 
     interface BjsFunctionExporter
@@ -101,12 +113,26 @@ public class BjsNativeWrapperTypeInfo<B extends BjsNativeWrapper<?>> extends Bjs
         void bjsBind(BjsNativeExports nativeExport);
     }
 
+    /**
+     * This annotation identifies the exporter method of a {@link BjsNativeWrapper} subclass.
+     * <p><b>The annotated method is supposed to be static and to conform to the
+     * {@link BjsFunctionExporter#bjsExportFunctions(BjsNativeExports)} signature.</b></p>
+     * <p>The annotated method should be used to correctly associate the JavaScript methods and fields with the
+     * corresponding Java ones.</p>
+     * */
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Exporter
     {
     }
 
+    /**
+     * This annotation identifies the binder method of a {@link BjsNativeWrapper} subclass.
+     * <p><b>The annotated method is supposed to be static and to conform to the
+     * {@link BjsBinder#bjsBind(BjsNativeExports)} signature.</b></p>
+     * <p>The annotated method should be used to correctly associate the JavaScript constructor with the
+     * corresponding Java one.</p>
+     * */
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Binder
