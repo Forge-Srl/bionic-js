@@ -37,13 +37,13 @@ class Class extends Generable {
 
     get moduleLoadingPath() {
         const pathComponents = path.parse(this.modulePath)
-        return path.join(path.sep, pathComponents.dir, pathComponents.name)
+        return path.join('/', pathComponents.dir, pathComponents.name)
     }
 
     getRelativeModuleLoadingPath(relativeClass) {
         const pathComponents = path.parse(this.moduleLoadingPath)
         const loadingPath = path.relative(pathComponents.dir, relativeClass.moduleLoadingPath)
-        return loadingPath.match(/^\./) === null ? `.${path.sep}${loadingPath}` : loadingPath
+        return loadingPath.match(/^\./) === null ? `./${loadingPath}` : loadingPath
     }
 
     resolveClassType(nativeClassesMap) {
