@@ -29,7 +29,7 @@ public interface ToyComponent1BjsExport extends BjsExport
         {
             if (wrapper == null)
             {
-                wrapper = new Wrapper<>(getClass(ToyComponent1BjsExport.class, "ToyComponent1"));
+                wrapper = new Wrapper<>(getClass(ToyComponent1BjsExport.class, "acceptance.toy1.components.ToyComponent1"));
             }
             return wrapper;
         }

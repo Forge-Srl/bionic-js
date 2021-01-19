@@ -1,8 +1,5 @@
 package bionic.js;
 
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -12,27 +9,22 @@ import java.lang.reflect.Method;
  * interface.
  *
  * @param <T> the type of the Java class bound to the JavaScript one
- * */
+ */
 public abstract class BjsNativeWrapper<T extends BjsExport>
 {
-    private static Reflections _reflections;
     protected final Class<T> realImplementation;
 
-    private static synchronized Reflections reflections()
+    protected static <S extends BjsExport> Class<? extends S> getClass(Class<S> extending, String fullClassName)
     {
-        if (_reflections == null)
+        try
         {
-            _reflections = new Reflections("", new SubTypesScanner());
+            Class<?> clazz = Class.forName(fullClassName);
+            return clazz.asSubclass(extending);
         }
-        return _reflections;
-    }
-
-    protected static <S extends BjsExport> Class<? extends S> getClass(Class<S> extending, String withName)
-    {
-        return reflections().getSubTypesOf(extending).stream()
-                .filter(someClass -> someClass.getSimpleName().equals(withName))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException(new ClassNotFoundException(withName)));
+        catch (ClassNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     protected BjsNativeWrapper(Class<T> realImplementation)

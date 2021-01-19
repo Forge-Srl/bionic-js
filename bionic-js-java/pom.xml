@@ -182,11 +182,6 @@
             <artifactId>jjbridge-api</artifactId>
             <version>0.1.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.12</version>
-        </dependency>
 
         <dependency>
             <groupId>com.github.spotbugs</groupId>

@@ -20,7 +20,7 @@ public interface ToyComponent2BjsExport extends ToyComponent1BjsExport
         {
             if (wrapper == null)
             {
-                wrapper = new Wrapper<>(getClass(ToyComponent2BjsExport.class, "ToyComponent2"));
+                wrapper = new Wrapper<>(getClass(ToyComponent2BjsExport.class, "acceptance.toy1.components.ToyComponent2"));
             }
             return wrapper;
         }
