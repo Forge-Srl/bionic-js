@@ -24,7 +24,7 @@ public interface BaseEngineBjsExport extends BjsExport {
         private static Wrapper<?> wrapper;
         private static Wrapper<?> getInstance() {
             if (wrapper == null) {
-                wrapper = new Wrapper<>(getClass(BaseEngineBjsExport.class, "BaseEngine"));
+                wrapper = new Wrapper<>(getClass(BaseEngineBjsExport.class, "test.project.$native$.BaseEngine"));
             }
             return wrapper;
         }

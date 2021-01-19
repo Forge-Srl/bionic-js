@@ -32,6 +32,7 @@ module.exports = {
         srcDirName: 'HostProject/src',
         basePackage: 'test.project',
         hostPackage: 'host',
+        nativePackage: '$native$',
         targetBundles: {
             MotorVehicles: {
                 sourceSets: ['motor-vehicles'],

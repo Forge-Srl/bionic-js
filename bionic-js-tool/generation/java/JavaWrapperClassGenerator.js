@@ -6,9 +6,9 @@ const {JavaUtils} = require('./JavaUtils')
 
 class JavaWrapperClassGenerator extends ClassGenerator {
 
-    constructor(schema, hostClassGenerator, projectName, basePackage, allFiles) {
+    constructor(schema, hostClassGenerator, projectName, basePackage, nativePackage, allFiles) {
         super(schema)
-        Object.assign(this, {hostClassGenerator, projectName, basePackage, allFiles})
+        Object.assign(this, {hostClassGenerator, projectName, basePackage, nativePackage, allFiles})
     }
 
     get constructors() {
@@ -112,6 +112,7 @@ class JavaWrapperClassGenerator extends ClassGenerator {
 
     getWrapperHeaderCode() {
         const superclass = this.schema.superclass ? `${this.schema.superclass.name}BjsExport.Wrapper` : 'BjsNativeWrapper'
+        const fullClassName = `${this.nativePackage}.${this.schema.name}`
         return CodeBlock.create()
             .append(`@BjsTypeInfo.BjsLocation(project = "${this.projectName}", module = "${this.schema.name}")`).newLine()
             .append(`class Wrapper<T extends ${this.schema.name}BjsExport> extends ${superclass}<T> {`).newLineIndenting()
@@ -119,7 +120,7 @@ class JavaWrapperClassGenerator extends ClassGenerator {
             .append('private static Wrapper<?> wrapper;').newLine()
             .append('private static Wrapper<?> getInstance() {').newLineIndenting()
             .append('if (wrapper == null) {').newLineIndenting()
-            .append(`wrapper = new Wrapper<>(getClass(${this.schema.name}BjsExport.class, "${this.schema.name}"));`).newLineDeindenting()
+            .append(`wrapper = new Wrapper<>(getClass(${this.schema.name}BjsExport.class, "${fullClassName}"));`).newLineDeindenting()
             .append('}').newLine()
             .append('return wrapper;').newLineDeindenting()
             .append('}').newLine()

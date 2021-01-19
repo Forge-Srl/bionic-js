@@ -26,7 +26,7 @@ describe('JavaWrapperPropertyGenerator', () => {
     function getCode(propertyType, isPropertyStatic = false, propertyKinds = ['get', 'set']) {
         const class1 = new Class('Class1', '', [], [new Property('property1', 'property description', isPropertyStatic,
             propertyType, propertyKinds)], [], null, true, 'wrapper/Class1')
-        return class1.generator.forWrapping(undefined, 'Project1', 'test.java', [
+        return class1.generator.forWrapping(undefined, 'Project1', 'test.java', 'nativePack', [
             {name: 'ClassName', relativePath: 'other/ClassName.js'}
             ]).java.getSource()
     }
@@ -39,7 +39,7 @@ describe('JavaWrapperPropertyGenerator', () => {
             '        private static Wrapper<?> wrapper;',
             '        private static Wrapper<?> getInstance() {',
             '            if (wrapper == null) {',
-            '                wrapper = new Wrapper<>(getClass(Class1BjsExport.class, "Class1"));',
+            '                wrapper = new Wrapper<>(getClass(Class1BjsExport.class, "nativePack.Class1"));',
             '            }',
             '            return wrapper;',
             '        }',

@@ -23,7 +23,7 @@ public interface EngineBjsExport extends BaseEngineBjsExport {
         private static Wrapper<?> wrapper;
         private static Wrapper<?> getInstance() {
             if (wrapper == null) {
-                wrapper = new Wrapper<>(getClass(EngineBjsExport.class, "Engine"));
+                wrapper = new Wrapper<>(getClass(EngineBjsExport.class, "test.project.$native$.Engine"));
             }
             return wrapper;
         }

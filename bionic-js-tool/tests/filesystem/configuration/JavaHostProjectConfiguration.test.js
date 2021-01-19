@@ -15,7 +15,7 @@ describe('JavaHostProjectConfiguration', () => {
     test('validation', () => {
         const config = new JavaHostProjectConfiguration()
         expect(config.optionalKeys).toStrictEqual([])
-        expect(config.mandatoryKeys).toStrictEqual(['type', 'projectPath', 'srcDirName', 'targetBundles', 'basePackage', 'hostPackage'])
+        expect(config.mandatoryKeys).toStrictEqual(['type', 'projectPath', 'srcDirName', 'targetBundles', 'basePackage', 'hostPackage', 'nativePackage'])
         expect(config.validation).not.toBeNull()
     })
 
@@ -65,6 +65,18 @@ describe('JavaHostProjectConfiguration', () => {
         const config = new JavaHostProjectConfiguration({basePackage: base, hostPackage: host})
 
         expect(config.hostPackage).toBe(expected)
+    })
+
+    test.each([
+        ['base.package', 'host', 'base.package.host'],
+        ['base.package', 'host.sub.package', 'base.package.host.sub.package'],
+        ['', 'host', 'host'],
+        [undefined, 'host', 'host'],
+        [null, 'host', 'host'],
+    ])('nativePackage %s, %s', (base, native, expected) => {
+        const config = new JavaHostProjectConfiguration({basePackage: base, nativePackage: native})
+
+        expect(config.nativePackage).toBe(expected)
     })
 
     test('srcDir', () => {

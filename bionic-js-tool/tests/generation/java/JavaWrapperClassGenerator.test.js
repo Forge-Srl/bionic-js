@@ -8,7 +8,7 @@ describe('JavaWrapperClassGenerator', () => {
         const class1 = new Class('Class1', 'class description', [new Constructor('desc', [])], properties, methods,
             superclass, true, 'wrapper/Class1')
         const hostClassGeneratorForScaffolding = withScaffold ? class1.generator.forHosting('Project1', 'test.java').java : undefined
-        return class1.generator.forWrapping(hostClassGeneratorForScaffolding, 'Project1', 'test.java').java.getSource()
+        return class1.generator.forWrapping(hostClassGeneratorForScaffolding, 'Project1', 'test.java', 'nativePack').java.getSource()
     }
 
     beforeEach(() => {
@@ -46,7 +46,7 @@ describe('JavaWrapperClassGenerator', () => {
         '        private static Wrapper<?> wrapper;',
         '        private static Wrapper<?> getInstance() {',
         '            if (wrapper == null) {',
-        '                wrapper = new Wrapper<>(getClass(Class1BjsExport.class, "Class1"));',
+        '                wrapper = new Wrapper<>(getClass(Class1BjsExport.class, "nativePack.Class1"));',
         '            }',
         '            return wrapper;',
         '        }',

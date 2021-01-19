@@ -17,7 +17,7 @@ describe('JavaWrapperConstructorGenerator', () => {
 
     function getCode(constructorParameters, superclass = null) {
         const class1 = new Class('Class1', '', [new Constructor('constructor description', constructorParameters)], [], [], superclass, true, 'wrapper/Class1')
-        return class1.generator.forWrapping(undefined, 'Project1', 'test.java').java.getSource()
+        return class1.generator.forWrapping(undefined, 'Project1', 'test.java', 'nativePack').java.getSource()
     }
 
     function newParam(type, name) {
@@ -66,7 +66,7 @@ describe('JavaWrapperConstructorGenerator', () => {
         '        private static Wrapper<?> wrapper;',
         '        private static Wrapper<?> getInstance() {',
         '            if (wrapper == null) {',
-        '                wrapper = new Wrapper<>(getClass(Class1BjsExport.class, "Class1"));',
+        '                wrapper = new Wrapper<>(getClass(Class1BjsExport.class, "nativePack.Class1"));',
         '            }',
         '            return wrapper;',
         '        }',
@@ -108,7 +108,7 @@ describe('JavaWrapperConstructorGenerator', () => {
 
     test('no public constructor', () => {
         const code = new Class('Class1', '', [], [], [], null, true, 'wrapper/Class1')
-            .generator.forWrapping(undefined, 'Project1', 'test.java').java.getSource()
+            .generator.forWrapping(undefined, 'Project1', 'test.java', 'nativePack').java.getSource()
 
         t.expectCode(code,
             ...getExpectedHeader(),
@@ -151,7 +151,7 @@ describe('JavaWrapperConstructorGenerator', () => {
         const intPar = newParam(new IntType(), 'intParam')
         const superclass = new Class('Superclass', '', [new Constructor('', [intPar])], [], [], null, true, 'wrapper/Superclass')
         const code = new Class('Class1', '', [], [], [], superclass, true, 'wrapper/Class1')
-            .generator.forWrapping(undefined, 'Project1', 'test.java').java.getSource()
+            .generator.forWrapping(undefined, 'Project1', 'test.java', 'nativePack').java.getSource()
 
         t.expectCode(code,
             ...getExpectedHeader('Superclass'),
@@ -166,7 +166,7 @@ describe('JavaWrapperConstructorGenerator', () => {
         const superSuperclass = new Class('SuperSuperclass', '', [new Constructor('', [intPar])], [], [], null, true, 'wrapper/SuperSuperclass')
         const superclass = new Class('Superclass', '', [], [], [], superSuperclass, true, 'wrapper/Superclass')
         const code = new Class('Class1', '', [], [], [], superclass, true, 'wrapper/Class1')
-            .generator.forWrapping(undefined, 'Project1', 'test.java').java.getSource()
+            .generator.forWrapping(undefined, 'Project1', 'test.java', 'nativePack').java.getSource()
 
         t.expectCode(code,
             ...getExpectedHeader('Superclass'),

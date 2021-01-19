@@ -17,7 +17,7 @@ describe('JavaWrapperMethodGenerator', () => {
     function getCode(isMethodStatic, methodReturnType, methodParameters) {
         const class1 = new Class('Class1', '', [], [], [new Method('method1', 'method description', isMethodStatic,
             methodReturnType, methodParameters)], null, true, 'wrapper/Class1')
-        return class1.generator.forWrapping(undefined, 'Project1', 'test.java').java.getSource()
+        return class1.generator.forWrapping(undefined, 'Project1', 'test.java', 'nativePack').java.getSource()
     }
 
     function newParam(type, name) {
@@ -55,7 +55,7 @@ describe('JavaWrapperMethodGenerator', () => {
             '        private static Wrapper<?> wrapper;',
             '        private static Wrapper<?> getInstance() {',
             '            if (wrapper == null) {',
-            '                wrapper = new Wrapper<>(getClass(Class1BjsExport.class, "Class1"));',
+            '                wrapper = new Wrapper<>(getClass(Class1BjsExport.class, "nativePack.Class1"));',
             '            }',
             '            return wrapper;',
             '        }',

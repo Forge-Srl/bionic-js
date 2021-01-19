@@ -101,17 +101,18 @@ describe('JavaHostFile', () => {
                             expect(allFiles).toStrictEqual(['all files'])
                             return {java: 'javaHostClassGenerator'}
                         },
-                        forWrapping: (hostGenerator, projectName, basePackage, allFiles) => {
+                        forWrapping: (hostGenerator, projectName, basePackage, nativePackage, allFiles) => {
                             expect(hostGenerator).toBe('javaHostClassGenerator')
                             expect(projectName).toBe('Project1')
                             expect(basePackage).toBe('test.java')
+                            expect(nativePackage).toBe('nativePack')
                             expect(allFiles).toStrictEqual(['all files'])
                             return {java: {getSource: () => 'wrapping code'}}
                         },
                     },
                 },
             }
-            const javaHostFile = new JavaHostFile(null, null, annotatedFile, 'Project1', 'test.java')
+            const javaHostFile = new JavaHostFile(null, null, annotatedFile, 'Project1', 'test.java', 'nativePack')
             t.mockGetter(javaHostFile, 'relativePath', () => 'relative/path')
 
             const hostProject = {

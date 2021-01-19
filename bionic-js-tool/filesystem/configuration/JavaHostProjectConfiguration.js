@@ -10,7 +10,7 @@ class JavaHostProjectConfiguration extends Configuration {
     }
 
     constructor(configObj, locator, projectName) {
-        super(configObj, locator, [], ['type', 'projectPath', 'srcDirName', 'targetBundles', 'basePackage', 'hostPackage'])
+        super(configObj, locator, [], ['type', 'projectPath', 'srcDirName', 'targetBundles', 'basePackage', 'hostPackage', 'nativePackage'])
         Object.assign(this, {projectName})
     }
 
@@ -36,6 +36,10 @@ class JavaHostProjectConfiguration extends Configuration {
 
     get hostPackage() {
         return this.basePackage ? `${this.basePackage}.${this.configObj.hostPackage}` : this.configObj.hostPackage
+    }
+
+    get nativePackage() {
+        return this.basePackage ? `${this.basePackage}.${this.configObj.nativePackage}` : this.configObj.nativePackage
     }
 
     get srcDir() {
