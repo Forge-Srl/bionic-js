@@ -333,7 +333,7 @@ public class BjsContextTest {
         System.setErr(new PrintStream(out));
 
         context.logError("Some error");
-        assertEquals("Bjs \"SomeProject\" error: Some error\n", out.toString());
+        assertEquals(String.format("Bjs \"SomeProject\" error: Some error%n"), out.toString());
 
         System.setErr(original);
     }
@@ -345,7 +345,7 @@ public class BjsContextTest {
         System.setOut(new PrintStream(out));
 
         context.logInfo("Some info");
-        assertEquals("Bjs \"SomeProject\" info: Some info\n", out.toString());
+        assertEquals(String.format("Bjs \"SomeProject\" info: Some info%n"), out.toString());
 
         System.setOut(original);
     }
