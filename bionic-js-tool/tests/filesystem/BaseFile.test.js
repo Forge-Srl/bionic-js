@@ -1,4 +1,5 @@
 const t = require('../test-utils')
+const path = require('path')
 
 describe('BaseFile', () => {
 
@@ -10,31 +11,37 @@ describe('BaseFile', () => {
         fs = t.mockAndRequireModule('filesystem/async/fs')
         BaseFile = t.requireModule('filesystem/BaseFile').BaseFile
 
-        filePath = '/dir1/dir2/filePath.js'
-        baseFile = new BaseFile(filePath, '/dir1')
+        filePath = `${t.fsRoot}dir1/dir2/filePath.js`
+        baseFile = new BaseFile(filePath, `${t.fsRoot}dir1`)
         Directory = t.requireModule('filesystem/Directory').Directory
         File = t.requireModule('filesystem/File').File
+    })
+
+    test('platform dependent paths', () => {
+        const baseFile = new BaseFile(`${t.fsRoot}dir1${path.sep}dir2${path.sep}dir3`, `${t.fsRoot}dir1${path.sep}dir2`)
+        expect(baseFile.path).toBe(`${t.fsRoot}dir1/dir2/dir3`)
+        expect(baseFile.rootDirPath).toBe(`${t.fsRoot}dir1/dir2`)
     })
 
     test('asFile', () => {
         const file = baseFile.asFile
         expect(file).toBeInstanceOf(File)
         expect(file.path).toBe(filePath)
-        expect(file.rootDirPath).toBe('/dir1')
+        expect(file.rootDirPath).toBe(`${t.fsRoot}dir1`)
     })
 
     test('asDir', () => {
         const dir = baseFile.asDir
         expect(dir).toBeInstanceOf(Directory)
         expect(dir.path).toBe(filePath)
-        expect(dir.rootDirPath).toBe('/dir1')
+        expect(dir.rootDirPath).toBe(`${t.fsRoot}dir1`)
     })
 
     test('dir', () => {
         const dir = baseFile.dir
         expect(dir).toBeInstanceOf(Directory)
-        expect(dir.path).toBe('/dir1/dir2')
-        expect(dir.rootDirPath).toBe('/dir1')
+        expect(dir.path).toBe(`${t.fsRoot}dir1/dir2`)
+        expect(dir.rootDirPath).toBe(`${t.fsRoot}dir1`)
     })
 
     test('base', () => {
@@ -58,23 +65,23 @@ describe('BaseFile', () => {
     })
 
     test('relativePath, default rootDirPath', () => {
-        const baseFile = new BaseFile('/dir1/filePath.js')
+        const baseFile = new BaseFile(`${t.fsRoot}dir1/filePath.js`)
         expect(baseFile.relativePath).toBe('dir1/filePath.js')
     })
 
     test('composeNewPath with new root dir, name and extension', async () => {
-        const result = await baseFile.composeNewPath('/new/root/dir', 'newName', '.new')
-        expect(result).toBe('/new/root/dir/dir2/newName.new')
+        const result = await baseFile.composeNewPath(`${t.fsRoot}/new/root/dir`, 'newName', '.new')
+        expect(result).toBe(`${t.fsRoot}new/root/dir/dir2/newName.new`)
     })
 
     test('composeNewPath with new root dir and name', async () => {
-        const result = await baseFile.composeNewPath('/new/root/dir', 'newName')
-        expect(result).toBe('/new/root/dir/dir2/newName.js')
+        const result = await baseFile.composeNewPath(`${t.fsRoot}new/root/dir`, 'newName')
+        expect(result).toBe(`${t.fsRoot}new/root/dir/dir2/newName.js`)
     })
 
     test('composeNewPath with new root dir', async () => {
-        const result = await baseFile.composeNewPath('/new/root/dir')
-        expect(result).toBe('/new/root/dir/dir2/filePath.js')
+        const result = await baseFile.composeNewPath(`${t.fsRoot}new/root/dir`)
+        expect(result).toBe(`${t.fsRoot}new/root/dir/dir2/filePath.js`)
     })
 
     const isInsideDirCases = [
@@ -96,8 +103,12 @@ describe('BaseFile', () => {
     }
 
     test('setRootDirPath', async () => {
-        expect(baseFile.rootDirPath).toBe('/dir1')
-        expect(baseFile.setRootDirPath('/newDir').rootDirPath).toBe('/newDir')
+        expect(baseFile.rootDirPath).toBe(`${t.fsRoot}dir1`)
+        expect(baseFile.setRootDirPath(`${t.fsRoot}newDir`).rootDirPath).toBe(`${t.fsRoot}newDir`)
+    })
+
+    test('setRootDirPath, platform dependent path', async () => {
+        expect(baseFile.setRootDirPath(`${t.fsRoot}new${path.sep}dir`).rootDirPath).toBe(`${t.fsRoot}new/dir`)
     })
 
     test('exists', async () => {

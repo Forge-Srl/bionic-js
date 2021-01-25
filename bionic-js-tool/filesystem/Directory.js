@@ -6,6 +6,7 @@ const mkdirp = require('mkdirp')
 const fs = require('./async/fs')
 const rimraf = require('./async/rimraf')
 const uuidv4 = require('uuid').v4
+const {posixPath} = require('./posixPath')
 
 class Directory extends BaseFile {
 
@@ -35,7 +36,7 @@ class Directory extends BaseFile {
     }
 
     getSubPath(relativePath) {
-        return path.join(this.path, relativePath)
+        return posixPath(path.join(this.path, relativePath))
     }
 
     async ensureExists() {

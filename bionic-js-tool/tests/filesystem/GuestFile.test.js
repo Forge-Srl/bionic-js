@@ -1,4 +1,5 @@
 const t = require('../test-utils')
+const {posixPath} = require('../../filesystem/posixPath')
 
 describe('GuestFile', () => {
 
@@ -30,7 +31,7 @@ describe('GuestFile', () => {
             const file = new File(testCase.path, '/dir1')
             const guestFile = GuestFile.fromFile(file, ['bundle1'])
             expect(guestFile.isJavascript).toBe(testCase.isJavascript)
-            expect(guestFile.path).toBe(testCase.path)
+            expect(guestFile.path).toBe(posixPath(testCase.path))
             expect(guestFile.bundles).toEqual(['bundle1'])
         })
     }

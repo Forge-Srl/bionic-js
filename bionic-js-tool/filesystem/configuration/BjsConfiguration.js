@@ -2,6 +2,7 @@ const {Configuration} = require('./Configuration')
 const {GuestBundlesConfiguration} = require('./GuestBundlesConfiguration')
 const {XcodeHostProjectConfiguration} = require('./XcodeHostProjectConfiguration')
 const {JavaHostProjectConfiguration} = require('./JavaHostProjectConfiguration')
+const {posixPath} = require('../../filesystem/posixPath')
 
 class BjsConfiguration extends Configuration {
 
@@ -25,7 +26,7 @@ class BjsConfiguration extends Configuration {
     }
 
     get guestDirPath() {
-        return this.configObj.guestDirPath
+        return posixPath(this.configObj.guestDirPath)
     }
 
     get guestBundles() {

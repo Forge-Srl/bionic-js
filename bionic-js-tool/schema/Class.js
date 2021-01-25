@@ -4,6 +4,7 @@ const {Method} = require('./Method')
 const {Property} = require('./Property')
 const {Validation} = require('./Validation')
 const path = require('path')
+const {posixPath} = require('../filesystem/posixPath')
 const nativeObjectBaseClassName = 'BjsNativeObject'
 
 class Class extends Generable {
@@ -37,12 +38,12 @@ class Class extends Generable {
 
     get moduleLoadingPath() {
         const pathComponents = path.parse(this.modulePath)
-        return path.join('/', pathComponents.dir, pathComponents.name)
+        return posixPath(path.join('/', pathComponents.dir, pathComponents.name))
     }
 
     getRelativeModuleLoadingPath(relativeClass) {
         const pathComponents = path.parse(this.moduleLoadingPath)
-        const loadingPath = path.relative(pathComponents.dir, relativeClass.moduleLoadingPath)
+        const loadingPath = posixPath(path.relative(pathComponents.dir, relativeClass.moduleLoadingPath))
         return loadingPath.match(/^\./) === null ? `./${loadingPath}` : loadingPath
     }
 

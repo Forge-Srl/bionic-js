@@ -1,5 +1,5 @@
 const xcode = require('xcode')
-const path = require('path')
+const path = require('path').posix
 const touch = require('touch')
 const {HostProjectFile} = require('./HostProjectFile')
 const {BundleProjectFile} = require('./BundleProjectFile')
@@ -228,11 +228,11 @@ class XcodeHostProject {
                 }
             })
             if (fileToProcess.file.ext === SWIFT_FILE_EXT) {
-                return new HostProjectFile(fileToProcess.file.relativePath, [...bundlesSet], await fileToProcess.file.asFile.getContent())
+                return new HostProjectFile(fileToProcess.file.relativePath, [...bundlesSet], await fileToProcess.file.asFile.getCodeContent())
             } else if (fileToProcess.file.base.endsWith(BJS_BUNDLE_SUFFIX)) {
                 const bundleName = fileToProcess.file.base.slice(0, -BJS_BUNDLE_SUFFIX.length)
                 const bundleFile = fileToProcess.file.asDir.getSubFile(this.getBundleFileName(bundleName))
-                return new BundleProjectFile(bundleName, await bundleFile.getContent(), [...bundlesSet])
+                return new BundleProjectFile(bundleName, await bundleFile.getCodeContent(), [...bundlesSet])
             }
         }
         return (await Promise.all(filesToProcess.map(filesToProcess => processFile(filesToProcess)))).filter(nonNull => nonNull)

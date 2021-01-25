@@ -5,7 +5,7 @@ const {ClassSchemaCreator} = require('./ClassSchemaCreator')
 class ModuleSchemaCreator {
 
     static async build(guestFile) {
-        const moduleSrc = await guestFile.getContent()
+        const moduleSrc = await guestFile.getCodeContent()
         try {
             const parsedNode = parser.parse(moduleSrc, {sourceType: 'module'})
             const classExplorers = new ModuleExplorer(parsedNode, guestFile.relativePath).classExplorers

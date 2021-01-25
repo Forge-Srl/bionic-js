@@ -646,11 +646,11 @@ describe('XcodeHostProject', () => {
                 const hostDir = projWithHostFiles.config.hostDir
                 for (const hostFileInfo of hostFiles) {
                     const hostFile = hostDir.getSubFile(hostFileInfo.path)
-                    await project.addHostFileToProject(hostFileInfo.path, hostFileInfo.bundles, await hostFile.getContent())
+                    await project.addHostFileToProject(hostFileInfo.path, hostFileInfo.bundles, await hostFile.getCodeContent())
                 }
                 for (const bundleFileInfo of bundleFiles) {
                     const bundleFile = hostDir.getSubFile(bundleFileInfo.path)
-                    await project.addBundleToProject(bundleFileInfo.bundle, await bundleFile.getContent())
+                    await project.addBundleToProject(bundleFileInfo.bundle, await bundleFile.getCodeContent())
                 }
 
                 // Save and check the correct modification date of the project files

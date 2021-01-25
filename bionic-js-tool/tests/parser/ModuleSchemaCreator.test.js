@@ -15,7 +15,7 @@ describe('ModuleSchemaCreator', () => {
     })
 
     test('build', async () => {
-        const guestFile = {getContent: async () => 'jsContent', relativePath: 'relativePath'}
+        const guestFile = {getCodeContent: async () => 'jsContent', relativePath: 'relativePath'}
 
         parser.parse = (input, options) => {
             expect(input).toBe('jsContent')

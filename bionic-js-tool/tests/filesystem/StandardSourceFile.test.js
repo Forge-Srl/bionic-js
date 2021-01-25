@@ -11,7 +11,7 @@ describe('SourceFile', () => {
     test('getSourceFileContent', async () => {
         const annotatedFile = {
             guestFile: {
-                getContent: async () => 'sourceFileContent',
+                getCodeContent: async () => 'sourceFileContent',
             },
         }
         const sourceFile = new StandardSourceFile(annotatedFile)
@@ -23,7 +23,7 @@ describe('SourceFile', () => {
     test('getSourceFileContent, error', async () => {
         const annotatedFile = {
             guestFile: {
-                getContent: async () => {
+                getCodeContent: async () => {
                     throw new Error('test error')
                 },
                 relativePath: 'relative/path',

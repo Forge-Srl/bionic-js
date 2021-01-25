@@ -33,13 +33,13 @@ class JavaHostProject {
 
         const processJavaFile = async (fileToProcess, bundles, sourceSet) => {
             const subId = fileToProcess.relativePath === bjsProjectFileName ? sourceSet : undefined
-            return new HostProjectFile(fileToProcess.relativePath, bundles, await fileToProcess.asFile.getContent(), subId)
+            return new HostProjectFile(fileToProcess.relativePath, bundles, await fileToProcess.asFile.getCodeContent(), subId)
         }
 
         const processBundleFile = async (fileToProcess, bundles) => {
             const bundleName = fileToProcess.base.slice(0, -BJS_BUNDLE_SUFFIX.length)
             const bundleFile = fileToProcess.asDir.getSubFile(this.getBundleFileName(bundleName))
-            return new BundleProjectFile(bundleName, await bundleFile.getContent(), bundles)
+            return new BundleProjectFile(bundleName, await bundleFile.getCodeContent(), bundles)
         }
 
         const filesToProcess = []

@@ -1,10 +1,11 @@
 const path = require('path')
 const fs = require('./async/fs')
+const {posixPath} = require('./posixPath')
 
 class BaseFile {
 
     constructor(filePath, rootDirPath = path.parse(process.cwd()).root) {
-        Object.assign(this, {path: filePath, rootDirPath})
+        Object.assign(this, {path: posixPath(filePath), rootDirPath: posixPath(rootDirPath)})
     }
 
     get asFile() {
@@ -19,7 +20,7 @@ class BaseFile {
 
     get dir() {
         const {Directory} = require('./Directory')
-        return new Directory(path.parse(this.path).dir, this.rootDirPath)
+        return new Directory(posixPath(path.parse(this.path).dir), this.rootDirPath)
     }
 
     get base() {
@@ -35,19 +36,19 @@ class BaseFile {
     }
 
     get absolutePath() {
-        return path.resolve(this.path)
+        return posixPath(path.resolve(this.path))
     }
 
     get relativePath() {
-        return path.relative(this.rootDirPath, this.path)
+        return posixPath(path.relative(this.rootDirPath, this.path))
     }
 
     composeNewPath(newRootDirPath, newName, newExtension) {
-        return path.format({
+        return posixPath(path.format({
             dir: path.resolve(newRootDirPath, path.dirname(this.relativePath)),
             name: newName !== undefined ? newName : this.name,
             ext: newExtension !== undefined ? newExtension : this.ext,
-        })
+        }))
     }
 
     isInsideDir(...dirPathSegments) {
@@ -57,7 +58,7 @@ class BaseFile {
     }
 
     setRootDirPath(rootDirPath) {
-        this.rootDirPath = rootDirPath
+        this.rootDirPath = posixPath(rootDirPath)
         return this
     }
 

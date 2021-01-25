@@ -1,11 +1,13 @@
 const bjsIndexSourceFileName = 'BjsIndex'
 const path = require('path')
 const {CodeBlock} = require('../generation/code/CodeBlock')
+const {posixPath} = require('./posixPath')
 
 class BjsIndexSourceFile {
 
     static build(annotatedFiles, bundleName, guestDirPath) {
-        return new BjsIndexSourceFile(path.resolve(guestDirPath, `${bundleName}${bjsIndexSourceFileName}.js`), annotatedFiles)
+        return new BjsIndexSourceFile(
+            posixPath(path.resolve(guestDirPath, `${bundleName}${bjsIndexSourceFileName}.js`)), annotatedFiles)
     }
 
     constructor(path, annotatedFiles) {

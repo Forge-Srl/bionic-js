@@ -1,11 +1,12 @@
 const {nativeObjectBaseClassName} = require('../schema/Class')
 const path = require('path')
 const {CodeBlock} = require('../generation/code/CodeBlock')
+const {posixPath} = require('./posixPath')
 
 class BjsNativeObjectSourceFile {
 
     static build(guestDirPath) {
-        return new BjsNativeObjectSourceFile(path.resolve(guestDirPath, `${nativeObjectBaseClassName}.js`))
+        return new BjsNativeObjectSourceFile(posixPath(path.resolve(guestDirPath, `${nativeObjectBaseClassName}.js`)))
     }
 
     constructor(path) {

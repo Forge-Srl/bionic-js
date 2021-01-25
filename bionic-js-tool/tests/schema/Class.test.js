@@ -32,13 +32,13 @@ describe('Class', () => {
     })
 
     test('moduleLoadingPath', () => {
-        const expectedModuleLoadingPath = `${path.sep}relative${path.sep}filePath`
+        const expectedModuleLoadingPath = '/relative/filePath'
 
         const clazz = new Class()
         clazz.modulePath = 'relative/filePath'
         expect(clazz.moduleLoadingPath).toBe(expectedModuleLoadingPath)
 
-        clazz.modulePath = '/relative//../relative/filePath.js'
+        clazz.modulePath = `${path.sep}relative//../relative${path.sep}filePath.js`
         expect(clazz.moduleLoadingPath).toBe(expectedModuleLoadingPath)
     })
 
@@ -51,10 +51,10 @@ describe('Class', () => {
         expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe('./filePath')
 
         clazz.modulePath = 'relative/module1/otherFile'
-        expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe(`..${path.sep}moduleR${path.sep}filePath`)
+        expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe(`../moduleR/filePath`)
 
         clazz.modulePath = 'relative//../relative/src/module1/otherFile.js'
-        expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe(`..${path.sep}..${path.sep}moduleR${path.sep}filePath`)
+        expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe(`../../moduleR/filePath`)
 
 
         relativeModuleClass.modulePath = '/relative/moduleR/filePath'
@@ -63,7 +63,7 @@ describe('Class', () => {
         expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe('./filePath')
 
         clazz.modulePath = '/relative/module1/otherFile'
-        expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe(`..${path.sep}moduleR${path.sep}filePath`)
+        expect(clazz.getRelativeModuleLoadingPath(relativeModuleClass)).toBe(`../moduleR/filePath`)
     })
 
     test('dependingTypes', () => {

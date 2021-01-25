@@ -2,6 +2,10 @@ const path = require('path')
 
 class TestUtils {
 
+    static get fsRoot() {
+        return path.parse(process.cwd()).root.split(path.sep).join(path.posix.sep)
+    }
+
     static getModuleAbsolutePath(relativePath) {
         const codeDir = '../../'
         return path.resolve(__dirname, codeDir, relativePath)

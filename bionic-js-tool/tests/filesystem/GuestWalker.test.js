@@ -1,5 +1,6 @@
 const t = require('../test-utils')
 const path = require('path')
+const {posixPath} = require('../../filesystem/posixPath')
 
 describe('GuestWalker', () => {
 
@@ -7,7 +8,7 @@ describe('GuestWalker', () => {
 
     beforeEach(() => {
         GuestWalker = t.requireModule('filesystem/GuestWalker').GuestWalker
-        guestDirPath = path.resolve(__dirname, '../../testing-code/guest')
+        guestDirPath = posixPath(path.resolve(__dirname, '../../testing-code/guest'))
         GuestFile = t.requireModule('filesystem/GuestFile').GuestFile
         BjsConfiguration = t.requireModule('filesystem/configuration/BjsConfiguration').BjsConfiguration
     })

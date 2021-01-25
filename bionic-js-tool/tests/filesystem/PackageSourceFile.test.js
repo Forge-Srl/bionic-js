@@ -8,7 +8,7 @@ describe('PackageSourceFile', () => {
         const PackageSourceFile = t.requireModule('filesystem/PackageSourceFile').PackageSourceFile
         sourceFile = PackageSourceFile.build({
             path: '/path/to/package.json',
-            getContent: async () => 'package source file content',
+            getCodeContent: async () => 'package source file content',
         })
     })
 

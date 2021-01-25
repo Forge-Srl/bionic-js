@@ -1,4 +1,5 @@
 const t = require('../../test-utils')
+const path = require('path')
 
 describe('XcodeHostProjectConfiguration', () => {
 
@@ -26,15 +27,15 @@ describe('XcodeHostProjectConfiguration', () => {
     })
 
     test('projectPath', () => {
-        const config = new XcodeHostProjectConfiguration({projectPath: 'path'})
+        const config = new XcodeHostProjectConfiguration({projectPath: `project${path.sep}path`})
 
-        expect(config.projectPath).toBe('path')
+        expect(config.projectPath).toBe('project/path')
     })
 
     test('hostDirName', () => {
-        const config = new XcodeHostProjectConfiguration({hostDirName: 'dirName'})
+        const config = new XcodeHostProjectConfiguration({hostDirName: `dir${path.sep}name`})
 
-        expect(config.hostDirName).toBe('dirName')
+        expect(config.hostDirName).toBe('dir/name')
     })
 
     test('xcodeProjectBundle', () => {

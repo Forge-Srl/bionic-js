@@ -2,6 +2,7 @@ const {Configuration} = require('./Configuration')
 const {JavaTargetBundlesConfiguration} = require('./JavaTargetBundlesConfiguration')
 const {Directory} = require('../Directory')
 const path = require('path')
+const {posixPath} = require('../../filesystem/posixPath')
 
 class JavaHostProjectConfiguration extends Configuration {
 
@@ -23,11 +24,11 @@ class JavaHostProjectConfiguration extends Configuration {
     }
 
     get projectPath() {
-        return this.configObj.projectPath
+        return posixPath(this.configObj.projectPath)
     }
 
     get srcDirName() {
-        return this.configObj.srcDirName
+        return posixPath(this.configObj.srcDirName)
     }
 
     get basePackage() {

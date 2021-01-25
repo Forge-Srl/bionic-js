@@ -6,12 +6,12 @@ describe('BjsNativeObjectSourceFile', () => {
 
     beforeEach(() => {
         const BjsNativeObjectSourceFile = t.requireModule('filesystem/BjsNativeObjectSourceFile').BjsNativeObjectSourceFile
-        sourceFile = BjsNativeObjectSourceFile.build('/guest/path')
+        sourceFile = BjsNativeObjectSourceFile.build(`${t.fsRoot}guest/path`)
 
     })
 
     test('path', async () => {
-        expect(sourceFile.path).toBe('/guest/path/BjsNativeObject.js')
+        expect(sourceFile.path).toBe(`${t.fsRoot}guest/path/BjsNativeObject.js`)
     })
 
     test('getSourceFileContent', async () => {

@@ -74,8 +74,8 @@ describe('Bjs smoke tests', () => {
         for (const file of [...swiftHostFiles, ...swiftBundleFiles]) {
             const expectedFile = expectedSwiftDir.getSubDir(hostDir).getSubFile(file.path)
             const actualFile = actualSwiftDir.getSubDir(hostDir).getSubFile(file.path)
-            const expectedContent = await expectedFile.getContent()
-            const actualContent = await actualFile.getContent()
+            const expectedContent = await expectedFile.getCodeContent()
+            const actualContent = await actualFile.getCodeContent()
             await expect(actualContent).toEqual(expectedContent)
         }
     }
@@ -87,8 +87,8 @@ describe('Bjs smoke tests', () => {
             for (const sourceSet of file.sourceSets) {
                 const expectedFile = expectedJavaDir.getSubDir(hostDir(sourceSet)).getSubFile(file.path)
                 const actualFile = actualJavaDir.getSubDir(hostDir(sourceSet)).getSubFile(file.path)
-                const expectedContent = await expectedFile.getContent()
-                const actualContent = await actualFile.getContent()
+                const expectedContent = await expectedFile.getCodeContent()
+                const actualContent = await actualFile.getCodeContent()
                 await expect(actualContent).toEqual(expectedContent)
             }
         }
@@ -98,8 +98,8 @@ describe('Bjs smoke tests', () => {
             for (const sourceSet of file.sourceSets) {
                 const expectedFile = expectedJavaDir.getSubDir(bundleDir(sourceSet)).getSubFile(file.path)
                 const actualFile = actualJavaDir.getSubDir(bundleDir(sourceSet)).getSubFile(file.path)
-                const expectedContent = await expectedFile.getContent()
-                const actualContent = await actualFile.getContent()
+                const expectedContent = await expectedFile.getCodeContent()
+                const actualContent = await actualFile.getCodeContent()
                 await expect(actualContent).toEqual(expectedContent)
             }
         }

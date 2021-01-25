@@ -11,26 +11,36 @@ describe('File', () => {
         crypto = t.mockAndRequire('crypto')
         File = t.requireModule('filesystem/File').File
 
-        filePath = '/dir1/dir2/filePath.js'
-        file = new File(filePath, '/dir1')
+        filePath = `${t.fsRoot}dir1/dir2/filePath.js`
+        file = new File(filePath, `${t.fsRoot}dir1`)
     })
 
-    test('getContent', async () => {
+    test('getCodeContent', async () => {
         fs.readFile.mockImplementationOnce(async () => {
             return 'ok'
         })
 
-        const result = await file.getContent()
+        const result = await file.getCodeContent()
         expect(result).toBe('ok')
         expect(fs.readFile).toBeCalledWith(filePath, 'utf8')
     })
 
-    test('getContent, error', async () => {
+    test('getCodeContent, windows new line', async () => {
+        fs.readFile.mockImplementationOnce(async () => {
+            return 'line1\r\nline2\n\rline3'
+        })
+
+        const result = await file.getCodeContent()
+        expect(result).toBe('line1\nline2\nline3')
+        expect(fs.readFile).toBeCalledWith(filePath, 'utf8')
+    })
+
+    test('getCodeContent, error', async () => {
         fs.readFile.mockImplementationOnce(async () => {
             throw new Error('inner error')
         })
 
-        await expect(file.getContent()).rejects.toThrow('reading the file "/dir1/dir2/filePath.js"\ninner error')
+        await expect(file.getCodeContent()).rejects.toThrow(`reading the file "${t.fsRoot}dir1/dir2/filePath.js"\ninner error`)
     })
 
     test('setContent', async () => {
@@ -42,14 +52,14 @@ describe('File', () => {
     })
 
     test('getHash', async () => {
-        file.getContent = t.mockFn(async () => 'content')
+        file.getCodeContent = t.mockFn(async () => 'content')
         const digest = t.mockFn(() => 'digest')
         const update = t.mockFn(() => ({digest}))
         crypto.createHash.mockImplementationOnce(() => ({update}))
 
         const result = await file.getHash()
 
-        expect(file.getContent).toBeCalledWith()
+        expect(file.getCodeContent).toBeCalledWith()
         expect(crypto.createHash).toBeCalledWith('sha256')
         expect(update).toBeCalledWith('content')
         expect(digest).toBeCalledWith('hex')
@@ -64,7 +74,7 @@ describe('File', () => {
         const File = t.requireModule('filesystem/file').File
         const file = new File()
 
-        file.getContent = t.mockFn()
+        file.getCodeContent = t.mockFn()
             .mockImplementationOnce(async () => 'content1')
             .mockImplementationOnce(async () => 'content2')
             .mockImplementationOnce(async () => 'content1')
@@ -76,7 +86,7 @@ describe('File', () => {
         expect(result1).not.toBe(result2)
         expect(result1).toBe(result3)
 
-        expect(file.getContent).toBeCalledTimes(3)
+        expect(file.getCodeContent).toBeCalledTimes(3)
     })
 
     test('exists, delete', async () => {

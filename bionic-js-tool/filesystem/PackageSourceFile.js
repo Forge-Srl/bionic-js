@@ -13,7 +13,7 @@ class PackageSourceFile {
     }
 
     async getSourceFileContent() {
-        return this.packageFile.getContent()
+        return this.packageFile.getCodeContent()
     }
 }
 

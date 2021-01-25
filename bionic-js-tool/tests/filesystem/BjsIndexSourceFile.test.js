@@ -10,11 +10,11 @@ describe('BjsIndexSourceFile', () => {
             {exportsClass: true, guestFile: {relativePath: 'File1.js', name: 'File1'}},
             {exportsClass: false},
             {exportsClass: true, guestFile: {relativePath: 'path/to/File2.js', name: 'File2'}},
-        ], 'Bundle1', '/guest/dir/path')
+        ], 'Bundle1', `${t.fsRoot}guest/dir/path`)
     })
 
     test('getSourceFileContent', async () => {
-        expect(sourceFile.path).toBe('/guest/dir/path/Bundle1BjsIndex.js')
+        expect(sourceFile.path).toBe(`${t.fsRoot}guest/dir/path/Bundle1BjsIndex.js`)
     })
 
     test('getSourceFileContent', async () => {

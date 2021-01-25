@@ -2,6 +2,7 @@ const {Configuration} = require('./Configuration')
 const {XcodeTargetBundlesConfiguration} = require('./XcodeTargetBundlesConfiguration')
 const {Directory} = require('../Directory')
 const path = require('path')
+const {posixPath} = require('../../filesystem/posixPath')
 
 class XcodeHostProjectConfiguration extends Configuration {
 
@@ -18,11 +19,11 @@ class XcodeHostProjectConfiguration extends Configuration {
     }
 
     get projectPath() {
-        return this.configObj.projectPath
+        return posixPath(this.configObj.projectPath)
     }
 
     get hostDirName() {
-        return this.configObj.hostDirName
+        return posixPath(this.configObj.hostDirName)
     }
 
     get xcodeProjectBundle() {

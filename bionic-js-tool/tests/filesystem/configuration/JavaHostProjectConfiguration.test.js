@@ -1,4 +1,5 @@
 const t = require('../../test-utils')
+const path = require('path')
 
 describe('JavaHostProjectConfiguration', () => {
 
@@ -38,15 +39,15 @@ describe('JavaHostProjectConfiguration', () => {
     })
 
     test('projectPath', () => {
-        const config = new JavaHostProjectConfiguration({projectPath: 'path'})
+        const config = new JavaHostProjectConfiguration({projectPath: `project${path.sep}path`})
 
-        expect(config.projectPath).toBe('path')
+        expect(config.projectPath).toBe('project/path')
     })
 
     test('srcDirName', () => {
-        const config = new JavaHostProjectConfiguration({srcDirName: 'dirName'})
+        const config = new JavaHostProjectConfiguration({srcDirName: `dir${path.sep}name`})
 
-        expect(config.srcDirName).toBe('dirName')
+        expect(config.srcDirName).toBe('dir/name')
     })
 
     test('basePackage', () => {
@@ -82,7 +83,7 @@ describe('JavaHostProjectConfiguration', () => {
     test('srcDir', () => {
         const config = new JavaHostProjectConfiguration({projectPath: '/something', srcDirName: 'dirName'})
 
-        expect(config.srcDir.absolutePath).toBe('/something/dirName')
+        expect(config.srcDir.absolutePath).toBe(`${t.fsRoot}something/dirName`)
         expect(config.srcDir.relativePath).toBe('')
     })
 
@@ -91,9 +92,9 @@ describe('JavaHostProjectConfiguration', () => {
             projectPath: '/something', srcDirName: 'dirName', basePackage: 'base.package', hostPackage: 'host',
         })
 
-        expect(config.hostDir('main').absolutePath).toBe('/something/dirName/main/java/base/package/host')
+        expect(config.hostDir('main').absolutePath).toBe(`${t.fsRoot}something/dirName/main/java/base/package/host`)
         expect(config.hostDir('main').relativePath).toBe('main/java/base/package/host')
-        expect(config.hostDir('other').absolutePath).toBe('/something/dirName/other/java/base/package/host')
+        expect(config.hostDir('other').absolutePath).toBe(`${t.fsRoot}something/dirName/other/java/base/package/host`)
         expect(config.hostDir('other').relativePath).toBe('other/java/base/package/host')
     })
 
@@ -102,9 +103,9 @@ describe('JavaHostProjectConfiguration', () => {
             projectPath: '/something', srcDirName: 'dirName', basePackage: 'base.package',
         })
 
-        expect(config.resourcesDir('main').absolutePath).toBe('/something/dirName/main/resources')
+        expect(config.resourcesDir('main').absolutePath).toBe(`${t.fsRoot}something/dirName/main/resources`)
         expect(config.resourcesDir('main').relativePath).toBe('main/resources')
-        expect(config.resourcesDir('other').absolutePath).toBe('/something/dirName/other/resources')
+        expect(config.resourcesDir('other').absolutePath).toBe(`${t.fsRoot}something/dirName/other/resources`)
         expect(config.resourcesDir('other').relativePath).toBe('other/resources')
     })
 
