@@ -44,7 +44,7 @@
                 <dependency>
                     <groupId>srl.forge</groupId>
                     <artifactId>jjbridge-engine-v8</artifactId>
-                    <version>0.1.2</version>
+                    <version>0.1.4</version>
                     <classifier>windows</classifier>
                     <scope>test</scope>
                 </dependency>
@@ -61,7 +61,7 @@
                 <dependency>
                     <groupId>srl.forge</groupId>
                     <artifactId>jjbridge-engine-v8</artifactId>
-                    <version>0.1.2</version>
+                    <version>0.1.4</version>
                     <classifier>macos</classifier>
                     <scope>test</scope>
                 </dependency>
@@ -79,7 +79,7 @@
                 <dependency>
                     <groupId>srl.forge</groupId>
                     <artifactId>jjbridge-engine-v8</artifactId>
-                    <version>0.1.2</version>
+                    <version>0.1.4</version>
                     <classifier>linux</classifier>
                     <scope>test</scope>
                 </dependency>
