@@ -3,7 +3,7 @@ const t = require('../../test-utils')
 describe('SwiftHostPropertyGenerator', () => {
 
     let Class, Property, Parameter, JsClassType, JsRefType, ArrayType, BoolType, DateType, FloatType,
-        IntType, LambdaType, NativeRefType, StringType, VoidType, NativeClassType, expectedHeader, expectedFooter
+        IntType, LambdaType, StringType, VoidType, NativeClassType, expectedHeader, expectedFooter
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
@@ -20,7 +20,6 @@ describe('SwiftHostPropertyGenerator', () => {
         StringType = t.requireModule('schema/types/StringType').StringType
         VoidType = t.requireModule('schema/types/VoidType').VoidType
         NativeClassType = t.requireModule('schema/types/NativeClassType').NativeClassType
-        NativeRefType = t.requireModule('schema/types/NativeRefType').NativeRefType
 
         expectedHeader = [
             'import JavaScriptCore',
@@ -221,22 +220,6 @@ describe('SwiftHostPropertyGenerator', () => {
             '                return Class1.bjs.putFunc(nativeFunc_bjs3, jsFunc_bjs4)',
             '            }',
             '            bjsSetProperty("property1", Class1.bjs.putFunc(nativeFunc_bjs0, jsFunc_bjs1))',
-            '        }',
-            '    }',
-            ...expectedFooter)
-    })
-
-    test('NativeRefType', () => {
-        const code = getCode(new NativeRefType('ClassName'))
-
-        t.expectCode(code,
-            ...expectedHeader,
-            '    var property1:ClassName? {',
-            '        get {',
-            '            return Class1.bjs.getNative(bjsGetProperty("property1"), ClassName.self)',
-            '        }',
-            '        set {',
-            '            bjsSetProperty("property1", Class1.bjs.putNative(newValue))',
             '        }',
             '    }',
             ...expectedFooter)

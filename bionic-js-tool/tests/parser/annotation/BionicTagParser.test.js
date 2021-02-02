@@ -59,14 +59,6 @@ describe('@bionic tag parser', () => {
             },
         }))
 
-    test('parse typeInfo > native ref',
-        () => testParsing('NativeRef<String>', {
-            typeInfo: {
-                type: 'NativeRef',
-                className: 'String',
-            },
-        }))
-
     test('parse typeInfo > class',
         () => testParsing('MyClass', {
             typeInfo: {

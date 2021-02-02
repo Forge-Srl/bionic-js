@@ -85,9 +85,6 @@ TypeDefinition 'type definition'
   = arrayType: ArrayDefinition {
     return arrayType
   }
-  / nativeRefType: NativeRefDefinition {
-    return nativeRefType
-  }
   / type: Identifier {
     if (primitiveTypes.includes(type)) {
       return {
@@ -118,14 +115,6 @@ LambdaDefinition 'lambda definition'
       type: 'Lambda',
       parameters: left || [],
       returnType:right ? right[3] : voidType
-    }
-  }
-
-NativeRefDefinition 'native ref definition'
-  = 'NativeRef' _ '<' _ className:Identifier _ '>' {
-    return {
-      type: 'NativeRef',
-      className
     }
   }
 

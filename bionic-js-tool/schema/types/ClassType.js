@@ -27,7 +27,7 @@ class ClassType extends Type {
     resolveClassType(nativeClassesMap) {
         const isNativeClass = nativeClassesMap.get(this.className)
         if (isNativeClass === undefined) {
-            return new (require('./NativeRefType').NativeRefType)(this.className)
+            throw Error(`Class ${this.className} is not defined`)
         } else if (isNativeClass) {
             return new (require('./NativeClassType').NativeClassType)(this.className)
         } else {

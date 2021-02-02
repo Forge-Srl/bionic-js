@@ -3,7 +3,7 @@ const {JavaGenerationContext} = require('./JavaGenerationContext')
 const {CodeBlock} = require('../code/CodeBlock')
 const {VoidType} = require('../../schema/types/VoidType')
 const {NativeClassType} = require('../../schema/types/NativeClassType')
-const {NativeRefType} = require('../../schema/types/NativeRefType')
+const {JsRefType} = require('../../schema/types/JsRefType')
 const {Parameter} = require('../../schema/Parameter')
 
 class JavaWrapperConstructorGenerator extends JavaMethodGenerator {
@@ -25,7 +25,7 @@ class JavaWrapperConstructorGenerator extends JavaMethodGenerator {
         const parameters = super.parameters.map((parameter, index) =>
             new Parameter(parameter.type, `jsReferences[${index + 1}]`, parameter.description))
         const firstParameter = new Parameter(new NativeClassType(), 'wrappedObj')
-        const otherParameters = super.parameters.length ? parameters : [new Parameter(new NativeRefType(), 'nativeObj')]
+        const otherParameters = super.parameters.length ? parameters : [new Parameter(new JsRefType(), 'nativeObjPlaceholder')]
         return [firstParameter, ...otherParameters]
     }
 

@@ -37,10 +37,6 @@ class JavaWrapperClassGenerator extends ClassGenerator {
     }
 
     getFullDependencyPackage(classType) {
-        if (classType.typeName === 'NativeRef') {
-            throw new Error('NativeRef are evil!')
-        }
-
         const relativePath = this.filesPaths.get(classType.className)
         if (relativePath) {
             const className = classType.typeName === 'NativeClass'

@@ -9,7 +9,6 @@ module.exports = () => ({
     JsRef: require('./JsRefType').JsRefType,
     Lambda: require('./LambdaType').LambdaType,
     NativeClass: require('./NativeClassType').NativeClassType,
-    NativeRef: require('./NativeRefType').NativeRefType,
     String: require('./StringType').StringType,
     Void: require('./VoidType').VoidType,
 })

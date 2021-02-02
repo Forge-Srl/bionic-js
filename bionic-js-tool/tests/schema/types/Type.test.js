@@ -22,13 +22,6 @@ describe('Type', () => {
         expect(instance.className).toBe('MyName')
     })
 
-    test('fromObj NativeRef', () => {
-        const instance = Type.fromObj({type: 'NativeRef', className: 'MyName'})
-        const NativeRefType = t.requireModule('schema/types/NativeRefType').NativeRefType
-        expect(instance).toBeInstanceOf(NativeRefType)
-        expect(instance.className).toBe('MyName')
-    })
-
     test('isValid', () => {
         expect(type.isValid).toEqual({validity: true, error: null})
     })

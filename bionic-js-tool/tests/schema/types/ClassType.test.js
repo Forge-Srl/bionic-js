@@ -2,13 +2,12 @@ const t = require('../../test-utils')
 
 describe('ClassType', () => {
 
-    let Validation, ClassType, JsClassType, NativeRefType, NativeClassType
+    let Validation, ClassType, JsClassType, NativeClassType
 
     beforeEach(() => {
         Validation = t.mockAndRequireModule('schema/Validation').Validation
         ClassType = t.requireModule('schema/types/ClassType').ClassType
         JsClassType = t.requireModule('schema/types/JsClassType').JsClassType
-        NativeRefType = t.requireModule('schema/types/NativeRefType').NativeRefType
         NativeClassType = t.requireModule('schema/types/NativeClassType').NativeClassType
     })
 
@@ -51,9 +50,8 @@ describe('ClassType', () => {
         expect(classType.resolveClassType(nativeClassesMap)).toStrictEqual(expectedType)
     })
 
-    test('resolveClassType, unknownClass type', () => {
-        const classType = new ClassType('NativeRecClass1')
-        const expectedType = new NativeRefType('NativeRecClass1')
-        expect(classType.resolveClassType(nativeClassesMap)).toStrictEqual(expectedType)
+    test('resolveClassType, UnknownClass', () => {
+        const classType = new ClassType('UnknownClass')
+        expect(() => classType.resolveClassType(nativeClassesMap)).toThrowError('Class UnknownClass is not defined')
     })
 })

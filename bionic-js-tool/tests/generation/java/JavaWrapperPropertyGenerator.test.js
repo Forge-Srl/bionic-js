@@ -3,7 +3,7 @@ const t = require('../../test-utils')
 describe('JavaWrapperPropertyGenerator', () => {
 
     let Class, Property, Parameter, JsClassType, JsRefType, ArrayType, BoolType, DateType, FloatType,
-        IntType, LambdaType, NativeRefType, StringType, VoidType, NativeClassType
+        IntType, LambdaType, StringType, VoidType, NativeClassType
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
@@ -20,7 +20,6 @@ describe('JavaWrapperPropertyGenerator', () => {
         StringType = t.requireModule('schema/types/StringType').StringType
         VoidType = t.requireModule('schema/types/VoidType').VoidType
         NativeClassType = t.requireModule('schema/types/NativeClassType').NativeClassType
-        NativeRefType = t.requireModule('schema/types/NativeRefType').NativeRefType
     })
 
     function getCode(propertyType, isPropertyStatic = false, propertyKinds = ['get', 'set']) {

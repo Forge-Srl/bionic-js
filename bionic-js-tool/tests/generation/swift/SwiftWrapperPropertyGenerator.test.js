@@ -3,7 +3,7 @@ const t = require('../../test-utils')
 describe('SwiftWrapperPropertyGenerator', () => {
 
     let Class, Property, Parameter, JsClassType, JsRefType, ArrayType, BoolType, DateType, FloatType,
-        IntType, LambdaType, NativeRefType, StringType, VoidType, NativeClassType
+        IntType, LambdaType, StringType, VoidType, NativeClassType
 
     beforeEach(() => {
         Class = t.requireModule('schema/Class').Class
@@ -20,7 +20,6 @@ describe('SwiftWrapperPropertyGenerator', () => {
         StringType = t.requireModule('schema/types/StringType').StringType
         VoidType = t.requireModule('schema/types/VoidType').VoidType
         NativeClassType = t.requireModule('schema/types/NativeClassType').NativeClassType
-        NativeRefType = t.requireModule('schema/types/NativeRefType').NativeRefType
     })
 
     function getCode(propertyType, isPropertyStatic = false, propertyKinds = ['get', 'set']) {
@@ -268,27 +267,6 @@ describe('SwiftWrapperPropertyGenerator', () => {
             '                    _ = bjs.funcCall(jsFunc_bjs3)',
             '                }',
             '            }',
-            '        }',
-            '    }',
-            ...expectedFooter)
-    })
-
-    test('NativeRefType', () => {
-        const code = getCode(new NativeRefType('ClassName'))
-
-        t.expectCode(code,
-            ...expectedHeader,
-            ...getterAndSetterFunctionsExportCode,
-            '    ',
-            '    private class func bjsGet_property1() -> @convention(block) (JSValue) -> JSValue {',
-            '        return {',
-            '            return bjs.putNative(bjs.getWrapped($0, Class1.self)!.property1)',
-            '        }',
-            '    }',
-            '    ',
-            '    private class func bjsSet_property1() -> @convention(block) (JSValue, JSValue) -> Void {',
-            '        return {',
-            '            bjs.getWrapped($0, Class1.self)!.property1 = bjs.getNative($1, ClassName.self)',
             '        }',
             '    }',
             ...expectedFooter)
