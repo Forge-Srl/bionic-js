@@ -76,7 +76,7 @@ class Configuration {
 }
 ```
 
-The mandatory use of ES6 classes applies only to the JS code that needs to be exported and actually interact with native code, code that is not meant to be exported does not have to meet this requirement.
+The mandatory use of ES6 classes applies only to the JS code that needs to be exported and actually interact with native code; code that is not meant to be exported does not have to meet this requirement.
 
 ### Named exports
 A JS class should be exported as an object property (named export).
@@ -115,7 +115,7 @@ As for ES6 classes, also this requirement applies only to the JS code that must 
 
 
 ### Annotations
-JS is a dynamically typed language, type checking happens at run time and the source code doesn't provide any information about the type of variables or parameters. However, languages such as Java and Swift are statically typed and require type information to be provided at source code level.
+JS is a dynamically typed language, which means type checking happens at run time and the source code doesn't provide any information about the type of variables or parameters. However, languages such as Java and Swift are statically typed and require type information to be provided at source code level.
 Annotations are just JS comments with a very simple syntax, can be [placed](#annotation-placement) above the class, the method or the property to allow the developer to provide type information.
 
 ```javascript
@@ -222,7 +222,7 @@ class Wheel {
 JS code running in Bionic.js by default cannot access any API other than the standard language functionalities included in the ES6 standard. However the developer can easily declare any set of APIs and then implements them in native code, without writing a single line of bridging code.
 
 The main principle of Bionic.js is to keep the set of APIs accessible from JS as small and as independent as possible from the underlying platform.
-As a rule of thumb, if a particular function needs to be aware of the underlying platform, it should be implemented in native code and only the independent part should exposed as an API for JS code. In this way it is possible to maintain an excellent separation between the reusable JS logic and the native one.
+As a rule of thumb, if a particular function needs to be aware of the underlying platform, it should be implemented in native code and only the independent part should be exposed as an API for JS code. In this way it is possible to maintain an excellent separation between the reusable JS logic and the native one.
 
 Suppose the JS business logic has to make HTTPS GET requests, the developer can simply declare the JS class `HttpGetRequest`, mark it with the annotation `@bionic native` and then implement it in native code using her favorite native library available for each platform.  
 
@@ -267,8 +267,15 @@ To speed up the implementation of native classes as much as possible, Bionic.js 
 ```java
 /* HttpGetRequest.java scaffold */
 
-class HttpGetRequest extends BjsExport {
-    // TODO
+class HttpGetRequest implements HttpGetRequestBjsExport {
+    
+    public HttpGetRequest(String url) {
+        
+    }
+    
+    public void send(Lambda.F2<String, String, Void> callback) {
+        
+    }
 }
 ```
 
@@ -303,7 +310,7 @@ type = primitive-type | array-type | lambda-type | jsref-type | class-type ;
 
 where each of these type categories is defined in the following sections.
 
-Bjs requires that classes, methods, properties and parameters, to be interoperable with netive code, have names consisting of characters in the ranges `[a ... z]`, `[A ... Z]`, `[0 ... 9]`, and the first character must not be a digit. A name defined in this way is called `identifier` and is formally defined as follows:
+Bjs requires that classes, methods, properties and parameters, to be interoperable with native code, have names consisting of characters in the ranges `[a ... z]`, `[A ... Z]`, `[0 ... 9]`, and the first character must not be a digit. A name defined in this way is called `identifier` and is formally defined as follows:
 
 ```ebnf
 digit = "0" | ... | "9" ;
@@ -312,41 +319,41 @@ identifier = letter , { letter | digit } ;
 ```
 
 ### Primitive types
-The primitive types supported by Bionic.js are 
+The primitive types supported by Bionic.js are:
 - **Bool**, in JS as in native code is the boolean type.
     ```javascript 
     // @bionic Bool
-    get boolValue() { ... }
+    get boolValue() { return true }
     ```
 - **Date**, in JS is the `Date` class, in native code is the standard class used to represent the date.
     ```javascript 
     // @bionic Date
-    get dateValue() { ... }
+    get dateValue() { return new Date(2012, 11, 21) }
     ```
 - **Float**, in JS is the `Number` type, in native code is a floating point with double precision. 
     ```javascript 
     // @bionic Float
-    get floatValue() { ... }
+    get floatValue() { return 2.718 }
     ```
 - **Int**, in JS is the `Number` type, in native code is a 64bit signed integer (non-integer JS values are rounded to the nearest integer in the native runtime). 
     ```javascript 
     // @bionic Int
-    get intValue() { ... }
+    get intValue() { return 420 }
     ```
 - **String**, in JS is the `String` type, in native code is the standard type used to represent a string.
     ```javascript 
     // @bionic String
-    get stringValue() { ... }
+    get stringValue() { return 'Colorless green ideas sleep furiously' }
     ```
 - **Void**, can be used only in method and lambda annotations to mark the absence of a return type. In these cases it can always be omitted, also omitting the arrow.
     ```javascript 
     // @bionic (() => Void) => Void
-    doAsyncTask(completedCallback) { ... }
+    doAsyncTask(completedCallback) { setTimeout(completedCallback, 5000) }
     ```
     the above annotation can be shortened with
     ```javascript 
     // @bionic (())
-    doAsyncTask(completedCallback) { ... }
+    doAsyncTask(completedCallback) { setTimeout(completedCallback, 5000) }
     ```
 
 Formally:
@@ -355,13 +362,13 @@ primitive-type = "Bool" | "Date" | "Float" | "Int" | "String" | "Void" ;
 ```
 
 ### Array
-Array type is supported by Bionic.js using the notation like `Array<String>` where `String` can be any type supported by Bionic.js.
+Array type is supported by Bionic.js using the notation `Array<SomeType>` where `SomeType` can be any type supported by Bionic.js.
 ```javascript 
     // @bionic Array<Int>
-    get ages() { ... }
+    get ages() { return [18, 33, 69, 100] }
 
     // @bionic Array<Array<Float>>
-    get weightTable() { ... }
+    get weightTable() { return [[15.9, -0.003], [-4.2, 0, 714.0062]] }
 ```
 
 Formally:
@@ -374,31 +381,31 @@ The lambda type is used to represent an unnamed function.
 It is specified by a pair of round brackets `()` followed by an optional arrow `=>`. The function parameters are inside the two brackets, separated by commas.  
 ```javascript 
     // @bionic () => Void
-    get callbackFunc() { ... }
+    get callbackFunc() { return () => {} }
 
     // @bionic (Float) => Float
-    get incrementFunc() { ... }
+    get incrementFunc() { return n => n + 1 }
     
     // @bionic (Float, Float) => Float
-    get sumFunc() { ... }
+    get sumFunc() { return (a, b) => a + b }
 ```
 
 Each parameter must contain its type specifier which can optionally be preceded by the name of the parameter followed by a colon, eg. `text: String`.  
 
 ```javascript 
     // @bionic (number1: Float, number2: Float) => Float
-    get sumFunc() { ... }
+    get sumFunc() { return (a, b) => a + b }
 ```
 The return value is specified after the arrow, if the arrow is omitted the function is considered to have `Void` return value type.
 ```javascript 
     // @bionic ()
-    get callbackFunc() { ... }
+    get callbackFunc() { return () => {} }
 ```
 
 A lambda type can be used as parameter or return type within another lambda type.
 ```javascript 
     // @bionic () => (Float) => Float
-    get funcReturningIncrementFunc() { ... }
+    get funcReturningIncrementFunc() { return () => n => n + 1 }
 ```
 
 Formally:
@@ -431,7 +438,7 @@ export class Server
 ```java
 /* example.java */
 
-JsRef serverHandle = Server.start()
+BjsAnyObject serverHandle = Server.start()
 Server.stop(serverHandle)
 ```
 
@@ -486,7 +493,7 @@ getRequest(url) {
 The previous code exports a NativeClass object because the JS `HttpGetRequest` "stub class" is marked with the `@bionic native` annotation.
 
 ## Annotation placement
-Bionic.js annotations can be placed in three different locations, above the `class` keyword, above the constructor/property/method and in any place within the `class` block.
+Bionic.js annotations can be placed in three different locations: above the `class` keyword, above the constructor/property/method and in any place within the `class` block.
 
 ### Above the class
 The annotation can be of 2 kinds:
@@ -519,7 +526,7 @@ export class Camera {
 ```
 The `@bionic native` annotation requires that a `Camera` native class is available in each native environment. `Camera` is now a NativeClass type, its functions have Bionic.js annotations but no JS implementation, their implementations are in native code and are therefore platform dependent.
 
-Be careful, if the `@bionic native` annotation above the class is missing and other functions are annotated, the class type is defaulted to JsClass instead of NativeClass.
+*Be careful, if the `@bionic native` annotation above the class is missing and other functions are annotated, the class type is defaulted to JsClass instead of NativeClass.*
 
 Formally:
 ```ebnf
@@ -639,6 +646,18 @@ module.exports = {
                 compileTargets: ["HelloJsWorld"],
             },
         },
+    }, {
+        language: "java",
+        projectPath: "/absolute/path/to/HelloJsWorld/project/folder",
+        srcDirName: 'HelloJsWorld/src',
+        basePackage: 'com.hello.world',
+        hostPackage: 'bjs.generatedCode',
+        nativePackage: 'bjs.nativeImpl',
+        targetBundles: {
+            BusinessLogic: {
+                sourceSets: ['hello-js-world'],
+            },
+        }
     }],
 }
 ```

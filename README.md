@@ -32,7 +32,7 @@ struct ContentView: View {
 ```
 
 ```java
-/* main.java - Android code */
+/* main.java - Java code */
 
 public static void main (String[] args) {
   System.out.println(HelloJsWorld.hello()) // Yes, I'm using the JS class from Java!
@@ -61,7 +61,7 @@ Writing native applications requires every aspect, including business logic, to 
 The same business logic is often written again a third time for a web application.
 The reuse of code between different languages is very limited and leads to several well-known problems.
 
-On the other hand cross-platform app development frameworks enable great code reuse across platforms, but they are not loved by all developers as they forces almost all the application code to be written in a common language such as JavaScript, C# or Dart, using a set of third party APIs not officially supported and maintained by each platform vendor.
+On the other hand cross-platform app development frameworks enable great code reuse across platforms, but they are not loved by all developers as they force almost all the application code to be written in a common language such as JavaScript, C# or Dart, using a set of third party APIs not officially supported and maintained by each platform vendor.
  
 Bionic.js loves both native application development and code reuse, leaving the native app developer the freedom to decide which code to reuse, when to do it, and how to do it.
 
