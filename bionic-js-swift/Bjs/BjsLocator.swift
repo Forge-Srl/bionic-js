@@ -3,7 +3,6 @@ public class BjsLocator {
     let projectName, moduleName: String
     
     private var _bjs: Bjs!
-    private static var _projects = [String : Bjs]()
     
     public init(_ projectName: String, _ moduleName: String) {
         self.projectName = projectName

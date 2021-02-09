@@ -4,6 +4,9 @@ import Bjs
 class ToyComponent1: BjsExport {
     
     static var deallocCounter: Int = 0
+    static var testId: Int?
+    var testId: Int?
+    
     var number1String, number2String: String?
     
     class var pi: Double? {
@@ -14,9 +17,10 @@ class ToyComponent1: BjsExport {
         return number1! + number2!
     }
     
-    init(_ number1: String?, _ number2: String?) {
+    init(_ number1: String?, _ number2: String?, _ testId: Int?) {
         self.number1String = number1
         self.number2String = number2
+        self.testId = testId
     }
     
     var number1: Int? {
@@ -38,7 +42,9 @@ class ToyComponent1: BjsExport {
     }
     
     deinit {
-        ToyComponent1.deallocCounter += 1
-        print("**** dealloc \(ToyComponent1.deallocCounter)")
+        if testId == ToyComponent1.testId {
+            ToyComponent1.deallocCounter += 1
+            print("**** dealloc \(ToyComponent1.deallocCounter)")
+        }
     }
 }

@@ -248,21 +248,16 @@ moduleLoaders.set('UserOfToyComponent1', () => {
         static set lastToy(lastToy) {
             this._lastToy = lastToy
         }
-        
-        // @bionic (ToyComponent1) => Bool
-        static isLastToy(toy) {
-            return toy === this._lastToy
-        }
-        
+                
         // @bionic (Int, Int, Int) => Void
         static add(offset, int1, int2) {
-            const toy = new ToyComponent1(int1, int2)
+            const toy = new ToyComponent1(int1, int2, 1)
             return toy.getSum(offset)
         }
         
         // @bionic (Int, Int) => ToyComponent1
         static getToy(int1, int2) {
-            this.lastToy = new ToyComponent1(`${int1}`, `${int2}`)
+            this.lastToy = new ToyComponent1(`${int1}`, `${int2}`, 2)
             return this.lastToy
         }
         

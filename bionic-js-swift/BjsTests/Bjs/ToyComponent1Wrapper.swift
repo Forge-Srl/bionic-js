@@ -64,8 +64,8 @@ class ToyComponent1BjsWrapper: BjsNativeWrapper {
     
     override class func bjsBind(_ nativeExports: BjsNativeExports) {
         _ = nativeExports.exportBindFunction({
-            bjs.bindNative(bjs.getBound($1, ToyComponent1.self) ?? ToyComponent1(bjs.getString($1), bjs.getString($2)), $0)
-        } as @convention(block) (JSValue, JSValue, JSValue) -> Void)
+            bjs.bindNative(bjs.getBound($1, ToyComponent1.self) ?? ToyComponent1(bjs.getString($1), bjs.getString($2), bjs.getInt($3)), $0)
+        } as @convention(block) (JSValue, JSValue, JSValue, JSValue) -> Void)
     }
     
     static var _bjsLocator = BjsLocator("TestProject", "ToyComponent1")

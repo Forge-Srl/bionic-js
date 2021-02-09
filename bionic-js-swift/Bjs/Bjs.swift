@@ -33,6 +33,10 @@ public class Bjs {
         }
     }
     
+    static func clear(_ projectName: String) {
+        Bjs.projects[projectName] = nil
+    }
+    
     init(_ projectName: String) {
         self.projectName = projectName
     }
@@ -86,7 +90,6 @@ public class Bjs {
             return jsNull
         }
         return context.createJsObject(native)
-        // TODO: should unprotect be called on returned object, also without a wrapper?
     }
     
     public func putWrapped(_ native: Any?, _ nativeWrapperClass: BjsNativeWrapper.Type) -> JSValue {
@@ -94,12 +97,10 @@ public class Bjs {
             return jsNull
         }
         if let jsObj = context.createJsObject(native) {
-            //unprotect(jsObj) TODO
             let jsWrapperObj = jsObj.objectForKeyedSubscript(Bjs.bjsWrapperObjFieldName)
             if jsWrapperObj == nil || jsWrapperObj!.isUndefined {
                 jsObj.setObject(Bjs.bjsWrapperObjFieldUnboundValue, forKeyedSubscript: Bjs.bjsWrapperObjFieldName as NSString)
                 let newJsWrapperObj = self.loadModule(nativeWrapperClass.bjsLocator.moduleName).construct(withArguments: [jsObj])!
-                //unprotect(newJsWrapperObj) TODO
                 
                 return newJsWrapperObj
             } else {
@@ -166,7 +167,6 @@ public class Bjs {
         if Bjs.isNullOrUndefined(jsNativeObj) {
             return nil
         }
-        // TODO: should unprotect be called on jsObj also without a wrapper?
         return jsNativeObj.toObjectOf(T.self as? AnyClass) as? T
     }
     
@@ -175,9 +175,9 @@ public class Bjs {
             return nil
         }
         
-        unprotect(jsWrapperObj)
+        unprotect(jsWrapperObj) // Without this, the wrapped object is not dealocated
         if let jsObj = jsWrapperObj.objectForKeyedSubscript(Bjs.bjsNativeObjFieldName) {
-            unprotect(jsObj)
+            unprotect(jsObj) // Without this, the wrapped object is not dealocated
             return jsObj.toObjectOf(T.self as? AnyClass) as? T
         } else {
             return nil

@@ -27,12 +27,7 @@ class UserOfToyComponent1: BjsObject {
                                            UserOfToyComponent1.bjs.putWrapped(toy1, ToyComponent1BjsWrapper.self),
                                            UserOfToyComponent1.bjs.putWrapped(toy2, ToyComponent1BjsWrapper.self)))
     }
-    
-    class func isLastToy(_ toy: ToyComponent1?) -> Bool? {
-        return UserOfToyComponent1.bjs.getBool(bjs.call(UserOfToyComponent1.bjsClass, "isLastToy",
-                                           UserOfToyComponent1.bjs.putWrapped(toy, ToyComponent1BjsWrapper.self)))
-    }
-    
+        
     class func bjsFactory(_ jsObject: JSValue) -> UserOfToyComponent1 {
         return UserOfToyComponent1(jsObject)
     }
