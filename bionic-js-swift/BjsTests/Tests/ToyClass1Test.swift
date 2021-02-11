@@ -169,7 +169,7 @@ class ToyClass1Test: XCTestCase {
             testExpectation.fulfill()
             return "lambda return value"
         }
-        XCTAssertEqual(ToyClass1.log, "called paramsFunc with params: true, Wed Dec 26 1984 01:00:00 GMT+0100 (CET), 1.984, 1984, 1984, any object, any object, [1,2,3], lambda return value")
+        XCTAssertEqual(ToyClass1.log, "called paramsFunc with params: true, 1984-12-26T00:00:00.000Z, 1.984, 1984, 1984, any object, any object, [1,2,3], lambda return value")
         wait(for: [testExpectation], timeout: 10)
     }
     
