@@ -15,19 +15,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Configure GPG Key
-        run: |
-          export GPG_TTY=$(tty)
-          mkdir -p ~/.gnupg/
-          echo "$GPG_SIGNING_KEY" > ~/.gnupg/private.asc
-          gpg --batch --import ~/.gnupg/private.asc
-        env:
-          GPG_SIGNING_KEY: ${{ secrets.GPG_KEY_FORGE_SRL_OPENSOURCE }}
+      #- name: Configure GPG Key
+      #  run: |
+      #    export GPG_TTY=$(tty)
+      #    mkdir -p ~/.gnupg/
+      #    echo "$GPG_SIGNING_KEY" > ~/.gnupg/private.asc
+      #    gpg --batch --import ~/.gnupg/private.asc
+      #  env:
+      #    GPG_SIGNING_KEY: ${{ secrets.GPG_KEY_FORGE_SRL_OPENSOURCE }}
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      #    gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
@@ -38,5 +38,5 @@ jobs:
         run: |
           cd bionic-js-java
           mvn -B verify --file pom.xml
-        env:
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE_FORGE_SRL_OPENSOURCE }}
+      #  env:
+      #    MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE_FORGE_SRL_OPENSOURCE }}
