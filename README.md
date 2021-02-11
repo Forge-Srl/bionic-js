@@ -87,6 +87,8 @@ Bionic.js loves both native application development and code reuse, leaving the 
 
 ## Installation
 
+Coming soon!
+<!-- TODO: uncomment when everything have been deployed
 Bionic.js consists of a CLI bundler and a small library for each supported native language.
 
 
@@ -121,7 +123,7 @@ Add this to your pom.xml
   <version>0.1.1</version>
 </dependency>
 ```
-
+-->
 
 ## Usage
 
