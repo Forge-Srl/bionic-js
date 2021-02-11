@@ -71,7 +71,7 @@ describe('File', () => {
         t.resetModulesCache()
 
         jest.unmock('crypto')
-        const File = t.requireModule('filesystem/file').File
+        const File = t.requireModule('filesystem/File').File
         const file = new File()
 
         file.getCodeContent = t.mockFn()
