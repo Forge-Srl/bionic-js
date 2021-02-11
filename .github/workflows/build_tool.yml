@@ -1,0 +1,28 @@
+name: Build Bionic.js Tool
+
+on:
+  push:
+    paths:
+      - 'bionic-js-tool/**'
+    branches:
+      - 'main'
+
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache NPM packages
+        uses: actions/cache@v2
+        with:
+          path: bionic-js-tool/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('bionic-js-tool/package.json') }}
+          restore-keys: ${{ runner.os }}-npm
+      - name: Build and test
+        run: |
+          cd bionic-js-tool
+          npm install
+          npm test
