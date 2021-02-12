@@ -28,8 +28,9 @@ class BjsSync {
                 await this.syncBundles(hostProject, annotatedFiles, bundles)
                 await this.syncHostFiles(hostProject, annotatedFiles)
                 await this.saveHostProject(hostProject)
-                bjsSyncStats.logStats(this.log)
+                bjsSyncStats.logFileStats(this.log)
             }
+            bjsSyncStats.logTimeStats(this.log)
         } catch (error) {
             this.log.error(error)
         }
@@ -54,7 +55,7 @@ class BjsSync {
 
     async openHostProject(hostProjectConfig, bjsSyncStats) {
         const hostProject = HostProject.build(hostProjectConfig, this.log, bjsSyncStats)
-        this.log.info(`Opening ${hostProjectConfig.language} host project\n`)
+        this.log.info(`\nOpening ${hostProjectConfig.language} host project\n`)
         await hostProject.open()
         return hostProject
     }

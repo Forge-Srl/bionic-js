@@ -58,10 +58,9 @@ describe('Bjs smoke tests', () => {
             const bjsSync = new BjsSync(configuration, log)
             await bjsSync.sync()
 
-            // TODO: uncomment:
-            //expectLog(expectedErrors, log.errorLog)
-            //expectLog(expectedWarnings, log.warningLog)
-            //expectLog(expectedInfos, log.infoLog)
+            expectLog(expectedErrors, log.errorLog)
+            expectLog(expectedWarnings, log.warningLog)
+            expectLog(expectedInfos, log.infoLog)
 
             await checkSwiftFiles(swiftTempDir, getProjectDir('project-with-host-files', 'swift'))
             await checkJavaFiles(javaTempDir, getProjectDir('project-with-host-files', 'java'))
@@ -106,6 +105,8 @@ describe('Bjs smoke tests', () => {
     }
 
     test('Fill an empty project', async () => {
+        const projectFilesOrder = (text1, text2) => text1 < text2 ? -1 : text1 > text2 ? 1 : 0
+
         await doSmokeTest('project-without-host',
             [
                 '',
@@ -120,6 +121,7 @@ describe('Bjs smoke tests', () => {
                 'Analyzing guest files dependencies',
                 'Extracting schemas from guest files',
                 'Generating bundles',
+                '',
                 'Opening Swift host project',
                 'Writing bundles',
                 'Writing host files',
@@ -127,13 +129,12 @@ describe('Bjs smoke tests', () => {
                 '',
                 'Project files',
                 ...swiftBundleFiles.map(file => ` [+] Bundle "${file.bundle}"`),
-                ...swiftHostFiles.map(file => ` [+] Source "${file.path}" - in bundles (${file.bundles.join(', ')})`),
+                ...(swiftHostFiles.map(file => ` [+] Source "${file.path}" - in bundles (${file.bundles.join(', ')})`)).sort(projectFilesOrder),
                 ' ----------',
                 ' [-] deleted : 0',
                 ' [U] updated : 0',
                 ' [+] added : 12',
                 '',
-                /Processing time: \d\.\d\ds/,
                 'Opening Java host project',
                 'Writing bundles',
                 'Writing host files',
@@ -141,11 +142,12 @@ describe('Bjs smoke tests', () => {
                 '',
                 'Project files',
                 ...javaBundleFiles.map(file => ` [+] Bundle "${file.bundle}"`),
-                ...javaHostFiles.map(file => ` [+] Source "${file.path}" - in bundles (${file.bundles.join(', ')})`),
+                ...(javaHostFiles.flatMap(file => file.path === 'BjsBeautifulVehicles.java' ? file.sourceSets.map(s => file) : [file])
+                    .map(file => ` [+] Source "${file.path}" - in bundles (${file.bundles.join(', ')})`)).sort(projectFilesOrder),
                 ' ----------',
                 ' [-] deleted : 0',
                 ' [U] updated : 0',
-                ' [+] added : 12',
+                ' [+] added : 13',
                 '',
                 /Processing time: \d\.\d\ds/,
                 '',
@@ -166,10 +168,22 @@ describe('Bjs smoke tests', () => {
                 'Analyzing guest files dependencies',
                 'Extracting schemas from guest files',
                 'Generating bundles',
+                '',
                 'Opening Swift host project',
                 'Writing bundles',
                 'Writing host files',
                 'Writing Swift host project',
+                '',
+                'Project files',
+                ' ----------',
+                ' [-] deleted : 0',
+                ' [U] updated : 0',
+                ' [+] added : 0',
+                '',
+                'Opening Java host project',
+                'Writing bundles',
+                'Writing host files',
+                'Writing Java host project',
                 '',
                 'Project files',
                 ' ----------',

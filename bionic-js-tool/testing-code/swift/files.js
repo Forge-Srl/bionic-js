@@ -8,7 +8,8 @@ const hostFiles = [
     {path: 'libs/MotorVehicle.swift', bundles: ['MotorVehicles']},
     {path: 'libs/Vehicle.swift', bundles: ['MotorVehicles', 'Vehicles']},
     {path: 'native/BaseEngineBjsWrapper.swift', bundles: ['MotorVehicles']},
-    {path: 'native/EngineBjsWrapper.swift', bundles: ['MotorVehicles']}]
+    {path: 'native/EngineBjsWrapper.swift', bundles: ['MotorVehicles']},
+]
 
 const bundleFiles = [
     {path: 'BjsMotorVehicles/MotorVehicles.bjs.bundle/MotorVehicles.js', bundle: 'MotorVehicles'},
