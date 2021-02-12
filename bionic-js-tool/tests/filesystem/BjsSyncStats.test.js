@@ -11,11 +11,9 @@ describe('BjsSyncStats', () => {
         stats = new BjsSyncStats()
     })
 
-    test('logStats, no files', async () => {
-        t.mockGetter(stats, 'processingTime', () => 1.23)
-
+    test('logFileStats, no files', async () => {
         stats.setProjectFilesDiff({filesToDelete: [], filesToAdd: [], filesToUpdate: []})
-        stats.logStats(log)
+        stats.logFileStats(log)
 
         expect(log.infoLog).toBe(
             '\n' +
@@ -23,24 +21,20 @@ describe('BjsSyncStats', () => {
             ' ----------\n' +
             ' [-] deleted : 0\n' +
             ' [U] updated : 0\n' +
-            ' [+] added : 0\n' +
-            '\n' +
-            'Processing time: 1.23s\n')
+            ' [+] added : 0\n')
         expect(log.errorLog).toBe('')
         expect(log.warningLog).toBe('')
 
     })
 
-    test('logStats, with files', async () => {
-        t.mockGetter(stats, 'processingTime', () => 1.23)
-
+    test('logFileStats, with files', async () => {
         stats.setProjectFilesDiff({
             filesToDelete: [{logText:'host.del'},{logText:'bundle.del'}],
             filesToAdd: [{logText:'host.add'},{logText:'bundle.add'}],
             filesToUpdate: [{logText:'host.upd'},{logText:'bundle.upd'}],
         })
 
-        stats.logStats(log)
+        stats.logFileStats(log)
         expect(log.infoLog).toBe(
             '\n' +
             'Project files\n' +
@@ -53,7 +47,16 @@ describe('BjsSyncStats', () => {
             ' ----------\n' +
             ' [-] deleted : 2\n' +
             ' [U] updated : 2\n' +
-            ' [+] added : 2\n' +
+            ' [+] added : 2\n')
+        expect(log.errorLog).toBe('')
+        expect(log.warningLog).toBe('')
+    })
+
+    test('logTimeStats', () => {
+        t.mockGetter(stats, 'processingTime', () => 1.23)
+
+        stats.logTimeStats(log)
+        expect(log.infoLog).toBe(
             '\n' +
             'Processing time: 1.23s\n')
         expect(log.errorLog).toBe('')

@@ -42,11 +42,12 @@ moduleLoaders.set('ToyClass1', () => {
         
         // @bionic (Bool, Date, Float, Int, String, Any, ToyClass1, () => String)
         static paramsFunc(bool, date, float, int, string, any, bjsObj, array, lambda) {
+            const isoDate = date == null ? null : date.toISOString()
             const anyLog = any == null ? null : any.log
             const bjsObjLog = bjsObj == null ? null : bjsObj.log
             const arrayRet = array == null ? null : `[${array.join()}]`
             const lambdaRet = lambda == null ? null : lambda()
-            ToyClass1.log = `called paramsFunc with params: ${bool}, ${date}, ${float}, ${int}, ${string}, ${anyLog}, ${bjsObjLog}, ${arrayRet}, ${lambdaRet}`
+            ToyClass1.log = `called paramsFunc with params: ${bool}, ${isoDate}, ${float}, ${int}, ${string}, ${anyLog}, ${bjsObjLog}, ${arrayRet}, ${lambdaRet}`
         }
         
         static retValueFunc() {
@@ -135,11 +136,12 @@ moduleLoaders.set('ToyClass2', () => {
         
         // @bionic (Bool, Date, Float, Int, String, Any, ToyClass1, () => String)
         paramsFunc(bool, date, float, int, string, any, bjsObj, array, lambda) {
+            const isoDate = date == null ? null : date.toISOString()
             const anyLog = any == null ? null : any.log
             const bjsObjLog = bjsObj == null ? null : bjsObj.log
             const arrayRet = array == null ? null : `[${array.join()}]`
             const lambdaRet = lambda == null ? null : lambda()
-            this.log = `called paramsFunc with params: ${bool}, ${date}, ${float}, ${int}, ${string}, ${anyLog}, ${bjsObjLog}, ${arrayRet}, ${lambdaRet}`
+            this.log = `called paramsFunc with params: ${bool}, ${isoDate}, ${float}, ${int}, ${string}, ${anyLog}, ${bjsObjLog}, ${arrayRet}, ${lambdaRet}`
         }
         
         retValueFunc() {

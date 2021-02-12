@@ -53,7 +53,7 @@ class JavaHostProject {
                 .map(async fileToProcess => await processBundleFile(fileToProcess, [bundleName])))
         }
 
-        const allTargets = [...targetKeysBundleMap.values()]
+        const allTargets = [...new Set(targetKeysBundleMap.values())]
         const commonJavaFilesWalker = new FileWalker(this.config.hostDir(this.config.commonSourceSet).path, [JAVA_FILE_EXT].map(ext => `**/*${ext}`))
         filesToProcess.push(...(await commonJavaFilesWalker.getFiles())
             .map(async fileToProcess => await processJavaFile(fileToProcess, allTargets)))
@@ -93,6 +93,23 @@ class JavaHostProject {
         }
     }
 
+    async removeBundleFromProject(bundleName) {
+        const bundleDirName = this.getBundleDirName(bundleName)
+        const sourceSets = this.config.getSourceSetsForBundles([bundleName])
+
+        for (const sourceSet of sourceSets) {
+            const bundleDir = this.config.resourcesDir(sourceSet)
+                .getSubDir(bundleDirName)
+
+            try {
+                await bundleDir.delete()
+            } catch (error) {
+                error.message = `removing bundle directory "${bundleDir.relativePath}"\n${error.message}`
+                throw error
+            }
+        }
+    }
+
     /** ADD THINGS */
 
     async addHostFileToProject(pathRelativeToHostDir, bundleNames, hostFileContent) {
@@ -126,23 +143,6 @@ class JavaHostProject {
                 await bundleFile.setContent(bundleFileContent)
             } catch (error) {
                 error.message = `writing bundle file "${bundleFile.relativePath}"\n${error.message}`
-                throw error
-            }
-        }
-    }
-
-    async removeBundleFromProject(bundleName) {
-        const bundleDirName = this.getBundleDirName(bundleName)
-        const sourceSets = this.config.getSourceSetsForBundles([bundleName])
-
-        for (const sourceSet of sourceSets) {
-            const bundleDir = this.config.resourcesDir(sourceSet)
-                .getSubDir(bundleDirName)
-
-            try {
-                await bundleDir.delete()
-            } catch (error) {
-                error.message = `removing bundle directory "${bundleDir.relativePath}"\n${error.message}`
                 throw error
             }
         }

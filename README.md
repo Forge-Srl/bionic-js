@@ -1,5 +1,11 @@
 # Bionic.js
 
+![Build Bionic.js Tool](https://github.com/Forge-Srl/bionic-js/workflows/Build%20Bionic.js%20Tool/badge.svg?branch=main)
+
+![Build Bionic.js Java](https://github.com/Forge-Srl/bionic-js/workflows/Build%20Bionic.js%20Java/badge.svg?branch=main)
+
+![Build Bionic.js Swift](https://github.com/Forge-Srl/bionic-js/workflows/Build%20Bionic.js%20Swift/badge.svg?branch=main)
+
 Bionic.js let you reuse JavaScript code between other programming languages without using any framework and without writing a single line of bridging code.
 
 1. write reusable code in JavaScript
@@ -81,6 +87,8 @@ Bionic.js loves both native application development and code reuse, leaving the 
 
 ## Installation
 
+Coming soon!
+<!-- TODO: uncomment when everything have been deployed
 Bionic.js consists of a CLI bundler and a small library for each supported native language.
 
 
@@ -115,7 +123,7 @@ Add this to your pom.xml
   <version>0.1.1</version>
 </dependency>
 ```
-
+-->
 
 ## Usage
 

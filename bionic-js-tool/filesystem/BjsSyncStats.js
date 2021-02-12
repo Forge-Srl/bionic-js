@@ -12,7 +12,7 @@ class BjsSyncStats {
         this.projectFilesDiff = projectFilesDiff
     }
 
-    logStats(log) {
+    logFileStats(log) {
         const compareProjectFiles = (projectFile1, projectFile2) => {
             const text1 = projectFile1.logText
             const text2 = projectFile2.logText
@@ -34,6 +34,9 @@ class BjsSyncStats {
         log.info(` [-] deleted : ${this.projectFilesDiff.filesToDelete.length}\n`)
         log.info(` [U] updated : ${this.projectFilesDiff.filesToUpdate.length}\n`)
         log.info(` [+] added : ${this.projectFilesDiff.filesToAdd.length}\n`)
+    }
+
+    logTimeStats(log) {
         log.info('\n')
         log.info(`Processing time: ${this.processingTime.toFixed(2)}s\n`)
     }
