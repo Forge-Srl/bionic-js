@@ -16,7 +16,7 @@ public class Bjs {
     let projectName: String
     
     var context: BjsContext!,
-        jsValueToNative = [BjsNativeObjectIdentifier : BjsObject](), // TODO: remove BjsNativeObjectIdentifier and leave simpler JSValue keys
+        jsValueToNative = [BjsNativeObjectIdentifier : BjsObject](),
         modulesCache = [String : JSValue]()
 
     

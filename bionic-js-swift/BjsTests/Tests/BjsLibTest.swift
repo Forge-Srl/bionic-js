@@ -56,13 +56,24 @@ class BjsLibTest: XCTestCase {
             return Context1Obj1(jsValue)
         }
         XCTAssertEqual(obj1, obj1Clone)
+        XCTAssertTrue(obj1 == obj1Clone)
     }
     
     func test_bjsObject_equality_sameContext_sameInstances_differentTypes() {
         let obj1 = Context1Obj1.bjs.getObj(instance1, Context1Obj1.bjsFactory)
         let obj1DifferentType = Context1Obj1.bjs.getObj(instance1, Context1Obj2.bjsFactory)
+        let obj1DifferentTypeClone = Context1Obj1.bjs.getObj(instance1, Context1Obj2.bjsFactory)
+        let obj1Clone = Context1Obj1.bjs.getObj(instance1, Context1Obj1.bjsFactory)
+        
+        XCTAssertEqual(obj1, obj1Clone)
         XCTAssertEqual(obj1, obj1DifferentType)
-        XCTAssertEqual(obj1!.bjsObj, obj1DifferentType!.bjsObj)
+        XCTAssertEqual(obj1, obj1DifferentTypeClone)
+        
+        XCTAssertTrue(obj1!.bjsObj === obj1DifferentType!.bjsObj)
+        
+        XCTAssertTrue(obj1 === obj1Clone)
+        XCTAssertTrue(obj1 !== obj1DifferentType)
+        XCTAssertTrue(obj1 !== obj1DifferentTypeClone)
     }
 }
 

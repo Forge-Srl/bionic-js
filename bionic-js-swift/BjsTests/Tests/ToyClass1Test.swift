@@ -33,7 +33,13 @@ class ToyClass1Test: XCTestCase {
         XCTAssertTrue(ToyClass1.anyAutoProp.jsObj.isUndefined)
         
         ToyClass1.anyAutoProp = BjsAnyObject(bjsObj)
-        XCTAssertEqual(ToyClass1.anyAutoProp.getObject(ToyClass2.bjsFactory)!.log, "any object")
+        let subclassInstance = ToyClass1.anyAutoProp.getObject(ToyClass2.bjsFactory)!
+        let superclassInstance = ToyClass1.anyAutoProp.getObject(ToyClass1.bjsFactory)!
+        
+        XCTAssertTrue(subclassInstance == superclassInstance)
+        XCTAssertTrue(subclassInstance !== superclassInstance)
+        
+        XCTAssertEqual(subclassInstance.log, "any object")
     }
     
     func testBjsObjAutoProp() {
