@@ -1,6 +1,7 @@
 # Documentation
 
 - [Terminology](#terminology)
+- [Architecture](#architecture)
 - [Principles and standards](#principles-and-standards)
   - [ECMAScript 6 classes](#ecmascript-6-classes)
   - [Named exports](#named-exports)
@@ -25,8 +26,53 @@
 ## Terminology
 For simplicity this documentation calls *native code* the code written with the programming language used in the development of native applications (e.g. Java for Android, Swift for iOS and macOS).
 
+## Architecture
+The architecture of bionic.js is straight forward, the JS code is compiled with [webpack](https://webpack.js.org) and provided as a bundle along with the aplication.
+When the native code uses a JS class it is actually using a native class defined in the auto-generated bridging code. Auto-generated classes exploit the bionic.js library to communicate with the JavaScript runtime, in order to execute the JS bundle, instantiate the proper JS class, call functions, methods and so forth.
+
+```
+Application architecture
+
++-------------------------------------+-------------------------------------+
+|                                     |                                     |
+| Native App                          | App Business Logic                  |
+| (Java, Swift, ...)                  | (webpack JS Bundle)                 |
+|                                     |                                     |
+|                                     |                                     |
+|         +---------------------------+                                     |
+|         |                           |                                     |
+|         | bionic.js Bridging Code   |                                     |
+|         |                           |                                     |
+|         | (Auto-generated Java,     |                                     |
+|         |  Swift, ...)              |                                     |
+|         |                           |                                     |
+|         +---------------------------+---------------------------+         |
+|         |                                                       |         |
+|         | bionic.js Library                                     |         |
+|         | (C++, Java, Swift, ...)                               |         |
+|         |                                                       |         |
++---------+---------------------------+---------------------------+---------+
+|                                     |                                     |
+| Native Runtime                      | JavaScript Runtime                  |
+| (JVM, ART, Swift/ObjC, ...)         | (V8, JavaScriptCore, ...)           |
+|                                     |                                     |
++-------------------------------------+-------------------------------------+
+|                                                                           |
+| Operating System (Android, iOS, iPadOS, macOS, Windows, Linux, ...)       |
+|                                                                           |
++---------------------------------------------------------------------------+
+
+```
+<!---
+http://asciiflow.com for the diagram
+-->
+
+The execution efficiency of the JS code is very good since the runtime is provided by state of the art JS engines, usually V8 on Android/Windows/Linux and JavaScriptCore on iOS/MacOS. 
+
+Calling JS methods from native code and vice versa implies an exchange of data between the native code and the JS runtime, for this reason the bionic.js library was specifically designed to be efficient, e.g. auto-generated bridging code is always preferred over code introspection/reflection.
+
 ## Principles and standards
-To effectively share JavaScript (JS) business logic with native code, projects using Bionic.js follow some principles and embrace some standards.
+To effectively share JavaScript (JS) business logic with native code, projects using bionic.js follow some principles and embrace some standards.
 
 ### ECMAScript 6 classes
 Interoperable JS code should be written using ECMAScript 6 (ES6) classes.
@@ -100,7 +146,7 @@ const {Message} = require("./Message")
 // ES6
 import {Message} from "./Message"
 ```
-Other ways of exporting classes, perfectly valid in JS, are not yet supported by Bionic.js.
+Other ways of exporting classes, perfectly valid in JS, are not yet supported by bionic.js.
 ```javascript
 module.exports = class Message {} // UNSUPPORTED
 export default class Message {} // UNSUPPORTED
@@ -169,7 +215,7 @@ export class Configuration {
     // @bionic get timeout Int
 }
 ```
-Bionic.js allows JS classes to be used in native code as if they were native classes.
+bionic.js allows JS classes to be used in native code as if they were native classes.
 
 ```java
 /* example.java */
@@ -215,13 +261,13 @@ class Wheel {
     // UNSUPPORTED, Wheel must be put in another file
 }
 
-// This file is considered invalid for Bionic.js even without the export directives
+// This file is considered invalid for bionic.js even without the export directives
 ```
 
 ### No default API
-JS code running in Bionic.js by default cannot access any API other than the standard language functionalities included in the ES6 standard. However the developer can easily declare any set of APIs and then implements them in native code, without writing a single line of bridging code.
+JS code running in bionic.js by default cannot access any API other than the standard language functionalities included in the ES6 standard. However the developer can easily declare any set of APIs and then implements them in native code, without writing a single line of bridging code.
 
-The main principle of Bionic.js is to keep the set of APIs accessible from JS as small and as independent as possible from the underlying platform.
+The main principle of bionic.js is to keep the set of APIs accessible from JS as small and as independent as possible from the underlying platform.
 As a rule of thumb, if a particular function needs to be aware of the underlying platform, it should be implemented in native code and only the independent part should be exposed as an API for JS code. In this way it is possible to maintain an excellent separation between the reusable JS logic and the native one.
 
 Suppose the JS business logic has to make HTTPS GET requests, the developer can simply declare the JS class `HttpGetRequest`, mark it with the annotation `@bionic native` and then implement it in native code using her favorite native library available for each platform.  
@@ -262,7 +308,7 @@ request.send((error, message) => {
 ```
 `example.js` uses the native implementation of `HttpGetRequest` provided by the native platform hosting the JS code. Each implementation of `HttpGetRequest` is written using native code and offers a minimal but consistent functionality between the different platforms. The developer can therefore optimize the native part of the application keeping the JS code platform-independent and therefore highly reusable.
 
-To speed up the implementation of native classes as much as possible, Bionic.js automatically generates native class scaffolds for each `@bionic native` "stub class" specified by the developer.
+To speed up the implementation of native classes as much as possible, bionic.js automatically generates native class scaffolds for each `@bionic native` "stub class" specified by the developer.
 
 ```java
 /* HttpGetRequest.java scaffold */
@@ -298,7 +344,7 @@ class HttpGetRequest: BjsExport {
 
 ## Annotation types
 In order to be interoperable with native code, JS class constructor, methods and properties should have annotations reporting the proper type for each parameter. 
-Annotations are plain JS comments with a simple syntax that Bionic.js can recognize and parse.
+Annotations are plain JS comments with a simple syntax that bionic.js can recognize and parse.
 
 BJS offers a minimal set of types that allows the developer to effectively export most of the functionalities from JS to native languages and viceversa.
 
@@ -319,7 +365,7 @@ identifier = letter , { letter | digit } ;
 ```
 
 ### Primitive types
-The primitive types supported by Bionic.js are:
+The primitive types supported by bionic.js are:
 - **Bool**, in JS as in native code is the boolean type.
     ```javascript 
     // @bionic Bool
@@ -362,7 +408,7 @@ primitive-type = "Bool" | "Date" | "Float" | "Int" | "String" | "Void" ;
 ```
 
 ### Array
-Array type is supported by Bionic.js using the notation `Array<SomeType>` where `SomeType` can be any type supported by Bionic.js.
+Array type is supported by bionic.js using the notation `Array<SomeType>` where `SomeType` can be any type supported by bionic.js.
 ```javascript 
     // @bionic Array<Int>
     get ages() { return [18, 33, 69, 100] }
@@ -457,7 +503,7 @@ jsref-type = "JsRef" ;
 ### Class
 Class type allows the developer to pass JS or native objects to the native environment and viceversa, it can be specified just using the class name itself such as `Message` or `HttpGetRequest`.
 Class type is used to reference a JS or a native object, call its functionalities (constructor, methods and properties) from JS code as well as from native code, running on different native platforms.
-Although using the Class type with Bionic.js is very simple and everything works like magic, it's good to know that under the hood there are two different categories of class types.
+Although using the Class type with bionic.js is very simple and everything works like magic, it's good to know that under the hood there are two different categories of class types.
 
 Formally:
 ```ebnf
@@ -493,7 +539,7 @@ getRequest(url) {
 The previous code exports a NativeClass object because the JS `HttpGetRequest` "stub class" is marked with the `@bionic native` annotation.
 
 ## Annotation placement
-Bionic.js annotations can be placed in three different locations: above the `class` keyword, above the constructor/property/method and in any place within the `class` block.
+bionic.js annotations can be placed in three different locations: above the `class` keyword, above the constructor/property/method and in any place within the `class` block.
 
 ### Above the class
 The annotation can be of 2 kinds:
@@ -524,7 +570,7 @@ export class Camera {
     }
 }
 ```
-The `@bionic native` annotation requires that a `Camera` native class is available in each native environment. `Camera` is now a NativeClass type, its functions have Bionic.js annotations but no JS implementation, their implementations are in native code and are therefore platform dependent.
+The `@bionic native` annotation requires that a `Camera` native class is available in each native environment. `Camera` is now a NativeClass type, its functions have bionic.js annotations but no JS implementation, their implementations are in native code and are therefore platform dependent.
 
 *Be careful, if the `@bionic native` annotation above the class is missing and other functions are annotated, the class type is defaulted to JsClass instead of NativeClass.*
 
@@ -587,7 +633,7 @@ above-the-function-annotation = "@bionic " , type ;
 ```
 
 ### Free within the class
-It can happen that a method (or a property) is not explicitly declared in the class body, for this cases Bionic.js provides a specific syntax where `@bionic` is followed by the method specifier, the method name and the type, eg: `@bionic static method getText () => String`.
+It can happen that a method (or a property) is not explicitly declared in the class body, for this cases bionic.js provides a specific syntax where `@bionic` is followed by the method specifier, the method name and the type, eg: `@bionic static method getText () => String`.
 For method annotations it is mandatory to specify the name of the parameters in the lambda type.
 
 ```javascript

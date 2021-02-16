@@ -1,16 +1,17 @@
-# Bionic.js
+# bionic.js
 
-![Build Bionic.js Tool](https://github.com/Forge-Srl/bionic-js/workflows/Build%20Bionic.js%20Tool/badge.svg?branch=main)
+![Build bionic.js Tool](https://github.com/Forge-Srl/bionic-js/workflows/Build%20Bionic.js%20Tool/badge.svg?branch=main)
 
-![Build Bionic.js Java](https://github.com/Forge-Srl/bionic-js/workflows/Build%20Bionic.js%20Java/badge.svg?branch=main)
+![Build bionic.js Java](https://github.com/Forge-Srl/bionic-js/workflows/Build%20Bionic.js%20Java/badge.svg?branch=main)
 
-![Build Bionic.js Swift](https://github.com/Forge-Srl/bionic-js/workflows/Build%20Bionic.js%20Swift/badge.svg?branch=main)
+![Build bionic.js Swift](https://github.com/Forge-Srl/bionic-js/workflows/Build%20Bionic.js%20Swift/badge.svg?branch=main)
 
-Bionic.js let you reuse JavaScript code between other programming languages without using any framework and without writing a single line of bridging code.
+bionic.js let you use JavaScript classes from other programming languages without using any framework and without writing a single line of bridging code.
 
-1. write reusable code in JavaScript
-2. annotate JS classes and methods types
-3. use JS classes from Java and Swift code
+1. write standard JavaScript code
+2. add type annotations for some JS classes and methods
+3. use these JS classes and methods from other languages like Java and Swift
+
 
 ```javascript
 /* HelloJsWorld.js - JS reusable code */
@@ -21,6 +22,14 @@ export class HelloJsWorld {
     static get hello() {
         return "Hello from JavaScript"
     }
+}
+```
+
+```java
+/* main.java - Java code */
+
+public static void main (String[] args) {
+  System.out.println(HelloJsWorld.hello()) // Yes, I'm using the JS class from Java!
 }
 ```
 
@@ -37,19 +46,11 @@ struct ContentView: View {
 }
 ```
 
-```java
-/* main.java - Java code */
-
-public static void main (String[] args) {
-  System.out.println(HelloJsWorld.hello()) // Yes, I'm using the JS class from Java!
-}
-```
-
 ## Table of Contents
 
 - [Full Documentation](DOCUMENTATION.md)
 - [Philosophy](#philosophy)
-- [Why should I use Bionic.js?](#why-should-i-use-bionicjs)
+- [Why should I use bionic.js?](#why-should-i-use-bionicjs)
 - [Installation](#Installation)
   - [CLI bundler](#cli-bundler)
   - [Swift (iOS/macOS)](#swift-iOSmacOS)
@@ -61,7 +62,7 @@ public static void main (String[] args) {
 
 ## Philosophy
 
-Instead of providing *yet another cross-platform app development framework*, Bionic.js focuses on the **interoperability between JavaScript and other programming languages**, starting from languages used for the development of native apps.
+Instead of providing *yet another cross-platform app development framework*, bionic.js focuses on the **interoperability between JavaScript and other programming languages**, starting from languages used for the development of native apps.
 
 Writing native applications requires every aspect, including business logic, to be implemented twice in different languages such as Java or Swift. 
 The same business logic is often written again a third time for a web application.
@@ -69,10 +70,10 @@ The reuse of code between different languages is very limited and leads to sever
 
 On the other hand cross-platform app development frameworks enable great code reuse across platforms, but they are not loved by all developers as they force almost all the application code to be written in a common language such as JavaScript, C# or Dart, using a set of third party APIs not officially supported and maintained by each platform vendor.
  
-Bionic.js loves both native application development and code reuse, leaving the native app developer the freedom to decide which code to reuse, when to do it, and how to do it.
+bionic.js loves both native application development and code reuse, leaving the native app developer the freedom to decide which code to reuse, when to do it, and how to do it.
 
 
-## Why should I use Bionic.js?
+## Why should I use bionic.js?
 
 - [X] to keep an application truly native, maintainable by any native app developer
 - [X] to choose precisely which business logic I want to reuse between Android, iOS, backend and web apps
@@ -89,12 +90,12 @@ Bionic.js loves both native application development and code reuse, leaving the 
 
 Coming soon!
 <!-- TODO: uncomment when everything have been deployed
-Bionic.js consists of a CLI bundler and a small library for each supported native language.
+bionic.js consists of a CLI bundler and a small library for each supported native language.
 
 
 ### CLI bundler
 
-Bionic.js bundler requires [node](https://nodejs.org/en/download/), once node is installed run
+bionic.js bundler requires [node](https://nodejs.org/en/download/), once node is installed run
 
 ```bash
 npm install -g bionicjs
@@ -136,7 +137,7 @@ example
 ```console
 foo@bar:~$ bionicjs hello-world.bjsconfig.js
 
-Bionic.js - v1.0.1
+bionic.js - v1.0.1
 
 Analyzing guest files dependencies
 Extracting schemas from guest files
@@ -162,13 +163,13 @@ Processing time: 0.88s
 
 ## Supported languages
 
-Here is a list of the native languages currently supported by Bionic.js:
+Here is a list of the native languages currently supported by bionic.js:
 - **Java** (Android + JVM, on Windows, macOS and Linux)
 - **Swift** (iOS and macOS)
 - Bonus: JVM-based languages (Kotlin, Groovy, Scala, ...)
 - Bonus: Objective-C, thanks to the Swift-Objective-C interoperability.
 
-Bionic.js is open to the integration of new native languages and environments.
+bionic.js is open to the integration of new native languages and environments.
 
 
 ## License
