@@ -31,8 +31,6 @@ The architecture of bionic.js is straight forward, the JS code is compiled with 
 When the native code uses a JS class it is actually using a native class defined in the auto-generated bridging code. Auto-generated classes exploit the bionic.js library to communicate with the JavaScript runtime, in order to execute the JS bundle, instantiate the proper JS class, call functions, methods and so forth.
 
 ```
-Application architecture
-
 +-------------------------------------+-------------------------------------+
 |                                     |                                     |
 | Native App                          | App Business Logic                  |
@@ -67,9 +65,9 @@ Application architecture
 http://asciiflow.com for the diagram
 -->
 
-The execution efficiency of the JS code is very good since the runtime is provided by state of the art JS engines, usually V8 on Android/Windows/Linux and JavaScriptCore on iOS/MacOS. 
+The execution efficiency of the JS code is very good since the JS runtime is provided by state of the art JS engines, usually V8 on Android/Windows/Linux and JavaScriptCore on iOS/MacOS. 
 
-Calling JS methods from native code and vice versa implies an exchange of data between the native code and the JS runtime, for this reason the bionic.js library was specifically designed to be efficient, e.g. auto-generated bridging code is always preferred over code introspection/reflection.
+Calling JS methods from native code and vice versa implies an exchange of data between the native code and the JS runtime, for this reason the bionic.js library was specifically designed to be efficient, e.g. automatic bridging code generation is always preferred over the use of code introspection/reflection.
 
 ## Principles and standards
 To effectively share JavaScript (JS) business logic with native code, projects using bionic.js follow some principles and embrace some standards.
