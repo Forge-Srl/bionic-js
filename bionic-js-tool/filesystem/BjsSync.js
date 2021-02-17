@@ -15,7 +15,7 @@ class BjsSync {
 
     async sync() {
         try {
-            this.log.info(`Bionic.js - v${bjsVersion}\n\n`)
+            this.log.info(`bionic.js - v${bjsVersion}\n\n`)
             const bjsSyncStats = new BjsSyncStats()
             this.configuration.validate()
 

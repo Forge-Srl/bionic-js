@@ -116,7 +116,7 @@ describe('Bjs smoke tests', () => {
                 '',
             ],
             [
-                'Bionic.js - v1.0.1',
+                'bionic.js - v1.0.1',
                 '',
                 'Analyzing guest files dependencies',
                 'Extracting schemas from guest files',
@@ -163,7 +163,7 @@ describe('Bjs smoke tests', () => {
                 '',
             ],
             [
-                'Bionic.js - v1.0.1',
+                'bionic.js - v1.0.1',
                 '',
                 'Analyzing guest files dependencies',
                 'Extracting schemas from guest files',
