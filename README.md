@@ -129,19 +129,19 @@ Add this to your pom.xml
 ## Usage
 
 ```shell
-bionicjs config-file.js
+bionicjs sync config-file.js
 ```
 
 example
 
 ```console
-foo@bar:~$ bionicjs hello-world.bjsconfig.js
-
+foo@bar:~$ bionicjs sync hello-world.bjsconfig.js
 bionic.js - v1.0.1
 
 Analyzing guest files dependencies
 Extracting schemas from guest files
 Generating bundles
+
 Opening Swift host project
 Writing bundles
 Writing host files
@@ -158,18 +158,34 @@ Project files
  [U] updated : 0
  [+] added : 5
 
-Processing time: 0.88s
+Opening Java host project
+Writing bundles
+Writing host files
+Writing Java host project
+
+Project files
+ [+] Bundle "MainBundle"
+ [+] Source "BjsHelloJsWorld.java" - in bundles (MainBundle)
+ [+] Source "HelloJsWorld.java" - in bundles (MainBundle)
+ [+] Source "HelloNativeWorldBjsExport.java" - in bundles (MainBundle)
+ [+] Source "HelloWorld.java" - in bundles (MainBundle)
+ ----------
+ [-] deleted : 0
+ [U] updated : 0
+ [+] added : 5
+
+Processing time: 0.84s
 ```
 
 ## Supported languages
 
 Here is a list of the native languages currently supported by bionic.js:
-- **Java** (Android + JVM, on Windows, macOS and Linux)
+- **Java** (ART on Android, JVM on Windows, macOS and Linux)
 - **Swift** (iOS and macOS)
-- Bonus: JVM-based languages (Kotlin, Groovy, Scala, ...)
-- Bonus: Objective-C, thanks to the Swift-Objective-C interoperability.
+- Coming soon: other JVM-based languages (Kotlin, Groovy, Scala, ...)
+- Coming soon: Objective-C, thanks to the Swift-Objective-C interoperability.
 
-bionic.js is open to the integration of new native languages and environments.
+bionic.js is open to the integration of new native languages and runtimes.
 
 
 ## License
