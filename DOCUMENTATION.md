@@ -125,7 +125,7 @@ The mandatory use of ES6 classes applies only to the JS code that needs to be ex
 ### Named exports
 A JS class should be exported as an object property (named export).
 ```javascript
-class HelloWorld {}
+class Message {}
 
 // CommonJS
 module.exports = {Message}
