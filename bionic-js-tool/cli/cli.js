@@ -17,7 +17,7 @@ bjsCliProgram
 
 bjsCliProgram
     .command('sync <configuration_path>')
-    .description('Regenerate code based on the given configuration')
+    .description('Regenerate JS bundles and native bridging code, based on the given configuration')
     .action(async configurationPath => await bjs.synchronize(path.resolve(workingDir, configurationPath)))
 
 bjsCliProgram.parseAsync(process.argv)
