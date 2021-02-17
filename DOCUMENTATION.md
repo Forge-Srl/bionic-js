@@ -20,8 +20,7 @@
     - [Above the class](#above-the-class)
     - [Above the function](#above-the-function)
     - [Free within the class](#free-within-the-class)
-- [Files structure](#files-structure)
-- [Configuration](#configuration)
+- [Project configuration](#project-configuration)
 
 ## Terminology
 For simplicity this documentation calls *native code* the code written with the programming language used in the development of native applications (e.g. Java for Android, Swift for iOS and macOS).
@@ -667,40 +666,83 @@ method-name = identifier ;
 free-within-class-annotation = "@bionic " , [ method-modifier ] , method-kind , method-name , type ;
 ```
 
-## Files structure
+## Project configuration
+A project using bionic.js requires these three components:
+- entry point to `.js` class files
+- native application projects
+- bionic.js configuration file
 
-## Configuration
+The entry point can be one or more `.js` files, it serves bionic.js to build the JS dependency graph and create, leveraging webpack, the JS bundle containing all the business logic. Among the `.js` files reached by the dependency graph there must be files exporting classes with `@bionic` annotations, these classes can then be used by the native code.
+
+Native application projects are parsed by bionic.js, which will add or update where required JS bundles and bridging code needed to use the JS classes directly from the native code. Currently JVM Java, Android, iOS and macOS projects are supported.
+
+The bionic.js configuration file is a regular `.js` file that exports an object containing all the information required to create JS bundles and generate native bridging code in native application projects. Below is an example of the file, with comments explaining the various information required.
+
 
 ```javascript
+/* hello-world.bjsconfig.js */
+
+const path = require('path')
+
 module.exports = {
-    projectName: "HelloBjs",
-    guestDirPath: "/absolute/path/to/js/src,
+
+    /* unique name of the bionic.js projet */
+    projectName: "HelloJsWorld", 
+
+    /* absolute path of the directory where the JS business logic files are located */
+    guestDirPath: path.resolve(__dirname, "./js"),
+
+    /* key is the name of JS bundle, value is the configuration */
     guestBundles: {
-        BusinessLogic: { 
-            entryPaths: ['./HelloJsWorld.js'],
+        MainBundle: { 
+            /* the paths of the entry files for the MainBundle, relative to the guestDirPath */
+            entryPaths: ['./HelloWorld'],
         },
     },
+
+    /* JS bundle type, can be "production" (minimized) or "development" (optimized for debugging) */
     outputMode: "development",
+
+    /* contains objects with the configurations of all native application projects  */
     hostProjects: [{
+        /* the application project is written in Swift (Xcode project) */
         language: "swift",
-        projectPath: "/absolute/path/to/HelloJsWorld.xcodeproj",
-        hostDirName: "BjsCode",
+
+        /* absolute path of the application project file */
+        projectPath: path.resolve(__dirname, "./swift/HelloJsWorld.xcodeproj"),
+
+        /* name of the directory where the Swift bridging code is auto-generated  */
+        hostDirName: "Bjs",
+
+        /* key is the name of JS bundle, value is the configuration */
         targetBundles: {
-            BusinessLogic: {
-                compileTargets: ["HelloJsWorld"],
+            MainBundle: {
+                /* the auto-generated Swift files for the MainBundle should have these compilation targets */
+                compileTargets: ["HelloJsWorld (iOS)", "HelloJsWorld (macOS)"],
             },
         },
     }, {
+        /* the application project is written in Java */
         language: "java",
-        projectPath: "/absolute/path/to/HelloJsWorld/project/folder",
-        srcDirName: 'HelloJsWorld/src',
-        basePackage: 'com.hello.world',
-        hostPackage: 'bjs.generatedCode',
-        nativePackage: 'bjs.nativeImpl',
+
+        /* absolute path of the application project root directory */
+        projectPath: path.resolve(__dirname, "./java"),
+
+        /* name of the project directory that contains the Java source files */
+        srcDirName: "src",
+
+        /* base package used by application Java source files */
+        basePackage: "example.helloWorld",
+
+        /* sub-package to use by auto-generated Java bridging code */
+        hostPackage: "js",
+
+        /* key is the name of JS bundle, value is the configuration */
         targetBundles: {
-            BusinessLogic: {
-                sourceSets: ['hello-js-world'],
-            },
+            MainBundle: {
+                /* the auto-generated Java source files for the MainBundle should be placed in these sourceSets */
+                sourceSets: ["example"],
+            }
         }
     }],
 }

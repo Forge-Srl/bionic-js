@@ -19,7 +19,7 @@ module.exports = {
             },
         },
     }, {
-        language: "Java",
+        language: "java",
         projectPath: path.resolve(__dirname, "./java"),
         srcDirName: "src",
         basePackage: "example.helloWorld",
