@@ -1,0 +1,6 @@
+[submodule "bionic-js-runtime-java"]
+	path = bionic-js-runtime-java
+	url = git@github.com:Forge-Srl/bionic-js-runtime-java.git
+[submodule "bionic-js-runtime-swift"]
+	path = bionic-js-runtime-swift
+	url = git@github.com:Forge-Srl/bionic-js-runtime-swift.git
