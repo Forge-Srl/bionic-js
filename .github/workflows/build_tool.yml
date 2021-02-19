@@ -1,4 +1,4 @@
-name: Build Bionic.js Tool
+name: Build bionic.js Tool
 
 on:
   push:
