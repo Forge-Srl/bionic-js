@@ -20,7 +20,7 @@ public interface HelloNativeWorldBjsExport extends BjsExport {
         private static Wrapper<?> wrapper;
         private static Wrapper<?> getInstance() {
             if (wrapper == null) {
-                wrapper = new Wrapper<>(getClass(HelloNativeWorldBjsExport.class, "HelloNativeWorld"));
+                wrapper = new Wrapper<>(getClass(HelloNativeWorldBjsExport.class, "example.helloWorld.undefined.HelloNativeWorld"));
             }
             return wrapper;
         }
