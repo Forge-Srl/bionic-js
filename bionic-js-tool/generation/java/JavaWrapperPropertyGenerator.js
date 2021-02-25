@@ -33,13 +33,15 @@ class JavaWrapperPropertyGenerator extends CodeGenerator {
     get wrapperExportLines() {
         const exportLines = CodeBlock.create()
 
-        if (this.hasGetter)
+        if (this.hasGetter) {
             exportLines
                 .append(`.exportFunction("${this.getterWrapperMethodName}", singleton.${this.getterWrapperMethodName}())`)
                 .__.newLineConditional(this.hasGetter && this.hasSetter)
+        }
 
-        if (this.hasSetter)
+        if (this.hasSetter) {
             exportLines.append(`.exportFunction("${this.setterWrapperMethodName}", singleton.${this.setterWrapperMethodName}())`)
+        }
 
         return exportLines
     }
@@ -54,9 +56,8 @@ class JavaWrapperPropertyGenerator extends CodeGenerator {
                     .append(`${typeStatement} ${tempVar} = invokeStatic("${this.schema.name}", new Class[]{}, new Object[]{});`).newLine())
                 .appendRet(tempVar)
         } else {
-            iniRet
-                .editRet(ret => ret
-                    .append(`((${this.classSchema.name}BjsExport) bjs.getWrapped(jsReferences[0])).${this.schema.name}()`))
+            iniRet.editRet(ret =>
+                ret.append(`((${this.classSchema.name}BjsExport) bjs.getWrapped(jsReferences[0])).${this.schema.name}()`))
         }
 
         return iniRet
@@ -106,8 +107,9 @@ class JavaWrapperPropertyGenerator extends CodeGenerator {
     }
 
     getGetterCode() {
-        if (!this.hasGetter)
+        if (!this.hasGetter) {
             return null
+        }
 
         const typeGen = this.typeGenerator
         const getterContext = new JavaGenerationContext()
@@ -115,19 +117,22 @@ class JavaWrapperPropertyGenerator extends CodeGenerator {
         return CodeBlock.create()
             .append(`protected FunctionCallback<?> ${this.getterWrapperMethodName}() {`).newLineIndenting()
             .append('return jsReferences -> {').newLineIndenting()
-            .append(typeGen.getNativeReturnCode(typeGen.getJsIniRet(this.getNativePropertyGetterIniRet(getterContext), getterContext), false))
+            .append(typeGen.getNativeReturnCode(typeGen.getJsIniRet(this.getNativePropertyGetterIniRet(getterContext),
+                getterContext), false))
             .__.newLineDeindenting()
             .append('};').newLineDeindenting()
             .append('}')
     }
 
     getSetterCode() {
-        if (!this.hasSetter)
+        if (!this.hasSetter) {
             return null
+        }
 
         const setterContext = new JavaGenerationContext()
         const jsReferenceVar = `jsReferences[${this.schema.isStatic ? 0 : 1}]`
-        const nativeValueIniRet = this.typeGenerator.getNativeIniRet(IniRet.create().appendRet(jsReferenceVar), setterContext)
+        const nativeValueIniRet = this.typeGenerator.getNativeIniRet(IniRet.create().appendRet(jsReferenceVar),
+            setterContext)
         const nativePropertyIniRet = this.getNativePropertySetterIniRet(nativeValueIniRet)
         return CodeBlock.create()
             .append(`protected FunctionCallback<?> ${this.setterWrapperMethodName}() {`).newLineIndenting()
@@ -142,8 +147,9 @@ class JavaWrapperPropertyGenerator extends CodeGenerator {
         const propertyCode = CodeBlock.create()
             .append(this.getGetterCode())
 
-        if (this.hasGetter && this.hasSetter)
+        if (this.hasGetter && this.hasSetter) {
             propertyCode.newLine().newLine()
+        }
 
         return propertyCode.append(this.getSetterCode())
     }

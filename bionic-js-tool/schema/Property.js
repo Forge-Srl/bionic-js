@@ -21,7 +21,8 @@ class Property extends Generable {
     }
 
     resolveClassType(nativeClassesMap) {
-        return new Property(this.name, this.description, this.isStatic, this.type.resolveClassType(nativeClassesMap), this.kinds)
+        return new Property(this.name, this.description, this.isStatic, this.type.resolveClassType(nativeClassesMap),
+            this.kinds)
     }
 }
 

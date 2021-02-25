@@ -46,8 +46,9 @@ class SwiftHostClassGenerator extends ClassGenerator {
             .append(`class ${this.schema.name}: ${superclassName} {`).newLineIndenting()
 
         const classParts = this.getClassParts()
-        if (classParts.length)
+        if (classParts.length) {
             scaffoldCode.newLine()
+        }
 
         return scaffoldCode.append(classParts.map((classPart, index) => {
             const classPartCode = classPart.generator.forHosting(this.schema).swift.getScaffold()

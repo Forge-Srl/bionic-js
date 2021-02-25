@@ -4,16 +4,16 @@ const packageInfo = require('./package.json')
 
 class Bjs {
 
-    constructor(log) {
-        this.log = log
-    }
-
-    get version() {
+    static get version() {
         return packageInfo.version
     }
 
-    get info() {
+    static get info() {
         return packageInfo.description
+    }
+
+    constructor(log) {
+        this.log = log
     }
 
     async synchronize(configurationAbsolutePath) {

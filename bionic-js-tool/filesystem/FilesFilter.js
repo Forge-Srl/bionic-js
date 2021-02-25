@@ -9,9 +9,9 @@ class FilesFilter {
     get ignoreFilter() {
         if (!this.ignore) {
             this.ignore = ignore({ignorecase: false})
-            if (this.ignoredPaths)
+            if (this.ignoredPaths) {
                 this.ignore.add(this.ignoredPaths)
-
+            }
         }
         return this.ignore
     }

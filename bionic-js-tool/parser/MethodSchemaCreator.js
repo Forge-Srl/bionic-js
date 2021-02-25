@@ -22,12 +22,12 @@ class MethodSchemaCreator {
         if (!this._kinds) {
             const kinds = new Set(this.methodExplorers.flatMap(explorer => explorer.kinds))
 
-            if (this.name === 'constructor' && (kinds.has('method') || kinds.has('get') || kinds.has('set')))
-                throw new Error(`"constructor" cannot be used as a name in a method/getter/setter annotation`)
-
-            if (kinds.has('method') && (kinds.has('get') || kinds.has('set')))
+            if (this.name === 'constructor' && (kinds.has('method') || kinds.has('get') || kinds.has('set'))) {
+                throw new Error('"constructor" cannot be used as a name in a method/getter/setter annotation')
+            }
+            if (kinds.has('method') && (kinds.has('get') || kinds.has('set'))) {
                 throw new Error(`"${this.name}" cannot be at the same time a method name and getter/setter name`)
-
+            }
             this._kinds = kinds
         }
         return this._kinds
@@ -37,9 +37,9 @@ class MethodSchemaCreator {
         if (!this._static) {
             const statics = new Set(this.methodExplorers.flatMap(explorer => explorer.isStatic))
 
-            if (statics.has(true) && statics.has(false))
+            if (statics.has(true) && statics.has(false)) {
                 throw new Error(`"${this.name}" cannot be static and non-static in the same class`)
-
+            }
             this._static = this.methodExplorers[0].isStatic
         }
         return this._static
@@ -48,8 +48,9 @@ class MethodSchemaCreator {
     get type() {
         if (!this._type) {
             const types = this.methodExplorers.map(explorer => explorer.type)
-            if (types.some(type => !type.isEqualTo(types[0])))
+            if (types.some(type => !type.isEqualTo(types[0]))) {
                 throw new Error(`"${this.name}" is annotated multiple times with different types`)
+            }
             this._type = types[0]
         }
         return this._type
@@ -89,13 +90,12 @@ class MethodSchemaCreator {
     get schema() {
         if (this.kinds.has('constructor')) {
             return this.constructorSchema
-
         } else if (this.kinds.has('method')) {
             return this.methodSchema
-
         } else if (this.kinds.has('get') || this.kinds.has('set')) {
             return this.propertySchema
         }
+        return undefined
     }
 }
 

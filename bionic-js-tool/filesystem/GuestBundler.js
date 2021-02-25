@@ -44,15 +44,17 @@ class GuestBundler {
             await this.inputFs.promises.writeFile(sourceFile.path, data)
         } catch (error) {
             const reason = new Error(`error writing file "${sourceFile.path}" to a virtual filesystem`)
-            reason.stack += `\nCaused by:\n` + error.stack
+            reason.stack += `\nCaused by:\n${error.stack}`
             throw reason
         }
     }
 
     async generateSourceFiles() {
         const annotatedFilesSet = new Set(this.annotatedFiles.map(annotatedFile => annotatedFile.guestFile.path))
-        const packageWalker = new FileWalker(this.guestDirPath, [JSON_FILE_EXT, JS_FILE_EXT, MJS_FILE_EXT].map(ext => `**/*${ext}`))
-        const packageFiles = (await packageWalker.getFiles()).filter(packageFile => !annotatedFilesSet.has(packageFile.path))
+        const packageWalker = new FileWalker(this.guestDirPath, [JSON_FILE_EXT, JS_FILE_EXT, MJS_FILE_EXT]
+            .map(ext => `**/*${ext}`))
+        const packageFiles = (await packageWalker.getFiles())
+            .filter(packageFile => !annotatedFilesSet.has(packageFile.path))
 
         const filesToSave = [
             ...this.annotatedFiles.map(annotatedFile => SourceFile.build(annotatedFile)),
@@ -64,9 +66,9 @@ class GuestBundler {
         const bundles = new Set(this.annotatedFiles.flatMap(annotatedFile => annotatedFile.guestFile.bundles))
         const entryPaths = {}
         for (const bundleName of bundles) {
-            const indexFile = BjsIndexSourceFile.build(this.annotatedFiles
-                    .filter(annotatedFile => annotatedFile.guestFile.bundles.includes(bundleName)),
-                bundleName, this.guestDirPath)
+            const annotatedFiles = this.annotatedFiles
+                .filter(annotatedFile => annotatedFile.guestFile.bundles.includes(bundleName))
+            const indexFile = BjsIndexSourceFile.build(annotatedFiles, bundleName, this.guestDirPath)
             await this.saveSourceFile(indexFile)
             entryPaths[bundleName] = `./${path.basename(indexFile.path)}`
         }

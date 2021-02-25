@@ -59,12 +59,14 @@ class MethodJsExplorer extends JsExplorer {
                 const lambdaParameters = type.parameters
 
                 if (lambdaParameters.length > parametersNamesFromJs.length ||
-                    lambdaParameters.some((parameter, index) => parameter.name && parametersNamesFromJs[index] !== parameter.name)) {
+                    lambdaParameters.some((parameter, index) =>
+                        parameter.name && parametersNamesFromJs[index] !== parameter.name)) {
 
                     throw new Error(`parameter of method "${this.name}" mismatch from those declared in the annotation`)
                 }
 
-                type.parameters = lambdaParameters.map((parameter, index) => Object.assign(parameter, {name: parametersNamesFromJs[index]}))
+                type.parameters = lambdaParameters.map((parameter, index) =>
+                    Object.assign(parameter, {name: parametersNamesFromJs[index]}))
             }
             this._type = type
         }

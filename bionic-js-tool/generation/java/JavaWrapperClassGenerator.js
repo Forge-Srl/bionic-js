@@ -17,7 +17,8 @@ class JavaWrapperClassGenerator extends ClassGenerator {
 
     get classPartsGenerators() {
         if (!this._classPartsGenerators) {
-            this._classPartsGenerators = this.getClassParts().map(classPart => classPart.generator.forWrapping(this.schema).java)
+            this._classPartsGenerators = this.getClassParts()
+                .map(classPart => classPart.generator.forWrapping(this.schema).java)
         }
         return this._classPartsGenerators
     }
@@ -53,8 +54,9 @@ class JavaWrapperClassGenerator extends ClassGenerator {
         const classImports = this.schema.dependingTypes
             .filter(type => type instanceof ClassType)
             .map(type => {
-                if (type.className === this.schema.name)
+                if (type.className === this.schema.name) {
                     return null
+                }
 
                 const fullPackage = this.getFullDependencyPackage(type)
                 return fullPackage ? `import ${fullPackage};` : null
@@ -107,7 +109,9 @@ class JavaWrapperClassGenerator extends ClassGenerator {
     }
 
     getWrapperHeaderCode() {
-        const superclass = this.schema.superclass ? `${this.schema.superclass.name}BjsExport.Wrapper` : 'BjsNativeWrapper'
+        const superclass = this.schema.superclass
+            ? `${this.schema.superclass.name}BjsExport.Wrapper`
+            : 'BjsNativeWrapper'
         const fullClassName = `${this.nativePackage}.${this.schema.name}`
         return CodeBlock.create()
             .append(`@BjsTypeInfo.BjsLocation(project = "${this.projectName}", module = "${this.schema.name}")`).newLine()
@@ -139,10 +143,6 @@ class JavaWrapperClassGenerator extends ClassGenerator {
             ))
     }
 
-    getWrapperFooterCode() {
-        return CodeBlock.create().newLineDeindenting().append('}')
-    }
-
     getExportFunctionsCode() {
         let baseExports = this.schema.superclass
             ? `${this.schema.superclass.name}BjsExport.Wrapper.bjsExportFunctions(nativeExports)`
@@ -150,8 +150,10 @@ class JavaWrapperClassGenerator extends ClassGenerator {
 
         return CodeBlock.create()
             .append('@BjsNativeWrapperTypeInfo.Exporter').newLine()
-            .append('public static BjsNativeExports bjsExportFunctions(BjsNativeExports nativeExports) {').newLineIndenting()
-            .append(this.hasClassParts ? 'Wrapper<?> singleton = getInstance();' : null).newLineConditional(this.hasClassParts)
+            .append('public static BjsNativeExports bjsExportFunctions(BjsNativeExports nativeExports) {')
+            .__.newLineIndenting()
+            .append(this.hasClassParts ? 'Wrapper<?> singleton = getInstance();' : null)
+            .__.newLineConditional(this.hasClassParts)
             .append(`return ${baseExports}`)
             .__.newLineConditional(this.hasClassParts, 1)
             .append(this.classPartsGenerators.map((generator, index, array) => {
@@ -171,11 +173,12 @@ class JavaWrapperClassGenerator extends ClassGenerator {
     }
 
     getBodyCode() {
+        const wrapperFooter = CodeBlock.create().newLineDeindenting().append('}')
         return CodeBlock.create()
             .append(this.getExportBodyCode())
             .append(this.getWrapperHeaderCode())
             .append(this.getWrapperBodyCode())
-            .append(this.getWrapperFooterCode())
+            .append(wrapperFooter)
     }
 
     getFooterCode() {

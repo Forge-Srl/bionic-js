@@ -17,21 +17,21 @@ class ArrayType extends Type {
     }
 
     get isValid() {
-        if (!(this.elementType instanceof Type))
+        if (!(this.elementType instanceof Type)) {
             return {
                 validity: false,
                 error: 'element type is not a subclass of Type',
             }
-        if (this.elementType instanceof VoidType)
+        }
+        if (this.elementType instanceof VoidType) {
             return {
                 validity: false,
                 error: 'VoidType is not valid as element type',
             }
+        }
         const elementTypeValidity = this.elementType.isValid
-        if (!elementTypeValidity.validity)
-            return elementTypeValidity
+        return elementTypeValidity.validity ? {validity: true, error: null} : elementTypeValidity
 
-        return {validity: true, error: null}
     }
 
     get dependingTypes() {

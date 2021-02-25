@@ -13,7 +13,9 @@ class AnnotatedGuestFile {
     }
 
     resolveClassType(nativeClassesMap) {
-        return new AnnotatedGuestFile(this.guestFile, this.schema ? this.schema.resolveClassType(nativeClassesMap) : null)
+        return new AnnotatedGuestFile(this.guestFile, this.schema
+            ? this.schema.resolveClassType(nativeClassesMap)
+            : null)
     }
 }
 

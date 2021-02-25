@@ -17,7 +17,8 @@ class SwiftHostEnvironmentFileGenerator {
             .append('override class func initialize(_ bjs: Bjs) {').newLineIndenting()
             .append(`bjs.loadBundle(Bjs${this.projectName}.self, "${this.bundleName}")`)
             .append(this.nativeFiles.map(nativeSourceFile =>
-                CodeBlock.create().newLine().append(`bjs.addNativeWrapper(${nativeSourceFile.schema.name}BjsWrapper.self)`)))
+                CodeBlock.create().newLine()
+                    .append(`bjs.addNativeWrapper(${nativeSourceFile.schema.name}BjsWrapper.self)`)))
             .newLineDeindenting()
             .append('}')
             .newLineDeindenting()

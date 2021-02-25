@@ -10,8 +10,9 @@ class Indentation {
 
     appendToBuilder(stringBuilder, currentIndentation) {
         let newIndentation = currentIndentation + this.indentation
-        if (newIndentation > 0)
+        if (newIndentation > 0) {
             stringBuilder.append(Indentation.indentationString.repeat(newIndentation))
+        }
         return newIndentation
     }
 }

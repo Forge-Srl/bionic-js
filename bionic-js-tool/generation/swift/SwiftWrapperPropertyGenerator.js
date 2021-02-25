@@ -33,15 +33,15 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
     get wrapperExportLines() {
         const exportLines = CodeBlock.create()
 
-        if (this.hasGetter)
+        if (this.hasGetter) {
             exportLines.append(`.exportFunction("${this.getterWrapperMethodName}", ${this.getterWrapperMethodName}())`)
-
-        if (this.hasGetter && this.hasSetter)
+        }
+        if (this.hasGetter && this.hasSetter) {
             exportLines.newLine()
-
-        if (this.hasSetter)
+        }
+        if (this.hasSetter) {
             exportLines.append(`.exportFunction("${this.setterWrapperMethodName}", ${this.setterWrapperMethodName}())`)
-
+        }
         return exportLines
     }
 
@@ -58,9 +58,9 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
     }
 
     getGetterCode() {
-        if (!this.hasGetter)
+        if (!this.hasGetter) {
             return null
-
+        }
         const typeGen = this.typeGenerator
         const getterContext = new SwiftGenerationContext()
 
@@ -75,18 +75,20 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
     }
 
     getSetterCode() {
-        if (!this.hasSetter)
+        if (!this.hasSetter) {
             return null
-
+        }
         const getterContext = new SwiftGenerationContext()
-        const nativeValueIniRet = this.typeGenerator.getNativeIniRet(IniRet.create().appendRet(this.schema.isStatic ? '$0' : '$1'), getterContext)
+        const nativeValueIniRet = this.typeGenerator.getNativeIniRet(IniRet.create()
+            .appendRet(this.schema.isStatic ? '$0' : '$1'), getterContext)
 
         return CodeBlock.create()
             .append(`private class func ${this.setterWrapperMethodName}() -> @convention(block) (`)
             .__.append(`${this.schema.isStatic ? '' : 'JSValue, '}JSValue) -> Void {`).newLineIndenting()
             .append('return {').newLineIndenting()
             .append(nativeValueIniRet.initializationCode)
-            .append(this.nativePropertyIniRet.returningCode).append(' = ').append(nativeValueIniRet.returningCode).newLineDeindenting()
+            .append(this.nativePropertyIniRet.returningCode).append(' = ')
+            .__.append(nativeValueIniRet.returningCode).newLineDeindenting()
             .append('}').newLineDeindenting()
             .append('}')
     }
@@ -95,9 +97,9 @@ class SwiftWrapperPropertyGenerator extends CodeGenerator {
         const propertyCode = CodeBlock.create()
             .append(this.getGetterCode())
 
-        if (this.hasGetter && this.hasSetter)
+        if (this.hasGetter && this.hasSetter) {
             propertyCode.newLine().newLine()
-
+        }
         return propertyCode.append(this.getSetterCode())
     }
 }

@@ -4,7 +4,7 @@ const {Validation} = require('../../schema/Validation')
 class JavaTargetBundleConfiguration extends Configuration {
 
     static fromObj(configObj, bundleName, locator) {
-        const validationResult = Validation.validateIdentifier("bundle name", bundleName)
+        const validationResult = Validation.validateIdentifier('bundle name', bundleName)
         if (!validationResult.validity) {
             throw new Error(`${locator} -> ${validationResult.error}`)
         }

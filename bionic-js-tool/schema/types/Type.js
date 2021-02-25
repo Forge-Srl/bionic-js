@@ -27,7 +27,7 @@ class Type {
         return this.constructor.typeName
     }
 
-    resolveClassType(nativeClassesMap) {
+    resolveClassType(_nativeClassesMap) {
         return this
     }
 

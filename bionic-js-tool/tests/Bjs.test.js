@@ -15,11 +15,11 @@ describe('Bjs', () => {
     })
 
     test('version', () => {
-        expect(bjs.version).toBe(t.requireModule('package.json').version)
+        expect(Bjs.version).toBe(t.requireModule('package.json').version)
     })
 
     test('info', () => {
-        expect(bjs.info).toBe(t.requireModule('package.json').description)
+        expect(Bjs.info).toBe(t.requireModule('package.json').description)
     })
 
     test('synchonize', async () => {

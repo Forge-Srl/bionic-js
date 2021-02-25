@@ -20,8 +20,6 @@ class Directory extends BaseFile {
         await tempDir.ensureExists()
         try {
             await codeUsingTempDir(tempDir)
-        } catch (error) {
-            throw error
         } finally {
             await tempDir.delete()
         }
@@ -47,8 +45,9 @@ class Directory extends BaseFile {
             throw error
         }
 
-        if (!await this.isReadableAndWritable())
+        if (!await this.isReadableAndWritable()) {
             throw new Error(`directory "${this.path}" has no RW permissions`)
+        }
     }
 
     async getFiles() {

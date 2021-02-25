@@ -26,8 +26,9 @@ class JavascriptWrapperPropertyGenerator extends CodeGenerator {
     }
 
     getGetterCode() {
-        if (!this.hasGetter)
+        if (!this.hasGetter) {
             return null
+        }
 
         const thisReference = !this.schema.isStatic ? 'this' : ''
 
@@ -38,8 +39,9 @@ class JavascriptWrapperPropertyGenerator extends CodeGenerator {
     }
 
     getSetterCode() {
-        if (!this.hasSetter)
+        if (!this.hasSetter) {
             return null
+        }
 
         const thisReference = !this.schema.isStatic ? 'this, ' : ''
 
@@ -53,8 +55,9 @@ class JavascriptWrapperPropertyGenerator extends CodeGenerator {
         const propertyCode = CodeBlock.create()
             .append(this.getGetterCode())
 
-        if (this.hasGetter && this.hasSetter)
+        if (this.hasGetter && this.hasSetter) {
             propertyCode.newLine().newLine()
+        }
 
         return propertyCode.append(this.getSetterCode())
     }

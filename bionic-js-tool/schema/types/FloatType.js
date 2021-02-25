@@ -6,7 +6,7 @@ class FloatType extends Type {
         return 'Float'
     }
 
-    static fromObj(obj) {
+    static fromObj(_obj) {
         return new FloatType()
     }
 }

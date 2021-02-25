@@ -6,7 +6,7 @@ class BoolType extends Type {
         return 'Bool'
     }
 
-    static fromObj(obj) {
+    static fromObj(_obj) {
         return new BoolType()
     }
 }

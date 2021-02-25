@@ -11,7 +11,7 @@ class SwiftJsRefTypeGenerator extends SwiftTypeGenerator {
         return 'getAny'
     }
 
-    getJsIniRet(nativeIniRet, context) {
+    getJsIniRet(nativeIniRet, _context) {
         return IniRet.create().append(nativeIniRet).appendRet('.jsObj')
     }
 }

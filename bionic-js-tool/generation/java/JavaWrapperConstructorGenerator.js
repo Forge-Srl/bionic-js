@@ -25,7 +25,9 @@ class JavaWrapperConstructorGenerator extends JavaMethodGenerator {
         const parameters = super.parameters.map((parameter, index) =>
             new Parameter(parameter.type, `jsReferences[${index + 1}]`, parameter.description))
         const firstParameter = new Parameter(new NativeClassType(), 'wrappedObj')
-        const otherParameters = super.parameters.length ? parameters : [new Parameter(new JsRefType(), 'nativeObjPlaceholder')]
+        const otherParameters = super.parameters.length
+            ? parameters
+            : [new Parameter(new JsRefType(), 'nativeObjPlaceholder')]
         return [firstParameter, ...otherParameters]
     }
 
@@ -58,8 +60,8 @@ class JavaWrapperConstructorGenerator extends JavaMethodGenerator {
             .append('return jsReferences -> {').newLineIndenting()
             .append(`${this.classSchema.name}BjsExport bound = bjs.getBound(jsReferences[1], realImplementation);`).newLine()
             .append(publicConstructorCall)
-            .append(`bjs.bindNative(bound, jsReferences[0]);`).newLine()
-            .append(`return bjs.jsUndefined();`).newLineDeindenting()
+            .append('bjs.bindNative(bound, jsReferences[0]);').newLine()
+            .append('return bjs.jsUndefined();').newLineDeindenting()
             .append('};').newLineDeindenting()
             .append('}')
     }

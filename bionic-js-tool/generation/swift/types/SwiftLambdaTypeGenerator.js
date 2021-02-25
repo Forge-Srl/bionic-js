@@ -27,7 +27,8 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
                     .append(`let ${jsFuncVar} = `).append(jsFuncIniRet.returningCode).newLine())
             .editRet(ret =>
                 ret.append(`${context.bjsEntrance}.getFunc(${jsFuncVar}) {`).newLineIndenting()
-                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithNativeIniRet(jsFuncVar, context), true))
+                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithNativeIniRet(jsFuncVar,
+                        context), true))
                     .__.newLineDeindenting()
                     .append('}'))
     }
@@ -51,15 +52,15 @@ class SwiftLambdaTypeGenerator extends SwiftTypeGenerator {
     getJsIniRet(nativeFuncIniRet, context) {
         const nativeFuncVar = context.getUniqueIdentifier('nativeFunc')
         const jsFuncVar = context.getUniqueIdentifier('jsFunc')
+        const parameters = this.parameters.map(param => param.type.generator.swift.getBlockTypeStatement()).join(', ')
         return IniRet.create()
             .editIni(ini =>
                 ini.append(nativeFuncIniRet.initializationCode)
                     .append(`let ${nativeFuncVar} = `).append(nativeFuncIniRet.returningCode).newLine()
-                    .append(`let ${jsFuncVar}: @convention(block) (`)
-                    .__.append(this.parameters.map(param => param.type.generator.swift.getBlockTypeStatement()).join(', '))
-                    .__.append(')').append(this.returnTypeGenerator.getBlockReturnTypeStatement())
-                    .__.append(' = {').newLineIndenting()
-                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithJsIniRet(nativeFuncVar, context), false)).newLineDeindenting()
+                    .append(`let ${jsFuncVar}: @convention(block) (`).append(parameters).append(')')
+                    .__.append(this.returnTypeGenerator.getBlockReturnTypeStatement()).append(' = {').newLineIndenting()
+                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithJsIniRet(nativeFuncVar,
+                        context), false)).newLineDeindenting()
                     .append('}').newLine())
 
             .editRet(ret =>

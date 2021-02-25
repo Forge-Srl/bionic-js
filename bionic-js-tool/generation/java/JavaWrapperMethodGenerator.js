@@ -39,7 +39,9 @@ class JavaWrapperMethodGenerator extends JavaMethodGenerator {
             return null
         }
 
-        const parameters = this.schema.parameters.map(par => par.generator.java).map(paramGen => paramGen.getParameterStatement()).join(', ')
+        const parameters = this.schema.parameters
+            .map(par => par.generator.java)
+            .map(paramGen => paramGen.getParameterStatement()).join(', ')
         return `${this.returnTypeGenerator.getNativeReturnTypeStatement()} ${this.schema.name}(${parameters});`
     }
 
@@ -74,7 +76,8 @@ class JavaWrapperMethodGenerator extends JavaMethodGenerator {
     getCode() {
         const methodContext = new JavaGenerationContext()
         const argumentsListNativeIniRet = this.getArgumentsListNativeIniRet(methodContext, this.parametersIndexShift)
-        const callIniRet = this.getNativeMethodCall(this.getParametersClassesList(this.parametersIndexShift), argumentsListNativeIniRet, methodContext)
+        const callIniRet = this.getNativeMethodCall(this.getParametersClassesList(this.parametersIndexShift),
+            argumentsListNativeIniRet, methodContext)
         const lambdaReturnTypeGen = this.returnTypeGenerator
         const lambdaCode = lambdaReturnTypeGen
             .getNativeReturnCode(lambdaReturnTypeGen.getJsIniRet(callIniRet, methodContext), false)

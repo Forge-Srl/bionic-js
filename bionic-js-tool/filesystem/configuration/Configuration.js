@@ -7,7 +7,7 @@ class Configuration {
     validate() {
         const missingKeys = []
         for (const keyName of this.mandatoryKeys) {
-            if (!this.configObj.hasOwnProperty(keyName)) {
+            if (!Object.prototype.hasOwnProperty.call(this.configObj, keyName)) {
                 missingKeys.push(keyName)
             }
         }

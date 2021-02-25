@@ -32,8 +32,9 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
     }
 
     getGetterCode() {
-        if (!this.hasGetter)
+        if (!this.hasGetter) {
             return null
+        }
 
         const jsValueIniRet = IniRet.create()
             .appendRet(this.schema.isStatic ? 'bjs.getProperty(self.bjsClass, ' : 'bjsGetProperty(')
@@ -50,8 +51,9 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
     }
 
     getSetterCode() {
-        if (!this.hasSetter)
+        if (!this.hasSetter) {
             return null
+        }
 
         const setterContext = new SwiftGenerationContext(this.schema.isStatic ? null : this.classSchema.name)
         const jsValueIniRet = this.typeGenerator.getJsIniRet(IniRet.create().appendRet('newValue'), setterContext)
@@ -72,8 +74,9 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
             .append(this.getHeaderCode()).newLineIndenting()
             .append(getterCode)
 
-        if (getterCode && setterCode)
+        if (getterCode && setterCode) {
             propertyCode.newLine()
+        }
 
         return propertyCode.append(setterCode)
             .newLineDeindenting()
@@ -91,8 +94,9 @@ class SwiftHostPropertyGenerator extends CodeGenerator {
                 .append('}')
         }
 
-        if (this.hasGetter && this.hasSetter)
+        if (this.hasGetter && this.hasSetter) {
             scaffoldCode.newLine()
+        }
 
         if (this.hasSetter) {
             scaffoldCode

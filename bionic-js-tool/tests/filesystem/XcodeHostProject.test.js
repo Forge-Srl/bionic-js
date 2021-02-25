@@ -43,6 +43,41 @@ describe('XcodeHostProject', () => {
         return getProject('project-with-host-dirs', codeUsingProject)
     }
 
+    test.each([
+        ['standard/path', 'standard/path'],
+        ['standard-path', 'standard-path'],
+        ['quoted/"/"/path', '"quoted/\\"/\\"/path"'],
+        ['', ''],
+        [null, null],
+        [undefined, undefined],
+    ])('encodePath %s', (path, expected) => {
+        expect(XcodeHostProject.encodePath(path)).toBe(expected)
+    })
+
+    test.each([
+        ['standard/path', 'standard/path'],
+        ['', ''],
+        ['""', ''],
+        [null, null],
+        [undefined, undefined],
+        ['"quoted/path"', 'quoted/path'],
+        ['"quoted/\n/path"', 'quoted/\n/path'],
+        ['"quoted/\\"/\\"/path"', 'quoted/"/"/path']
+    ])('decodePath %s', (path, expected) => {
+        expect(XcodeHostProject.decodePath(path)).toBe(expected)
+    })
+
+    test.each([
+        ['', ''],
+        ['/', ''],
+        ['/dir1/dir2/', 'dir1/dir2'],
+        ['//dir1///dir2/', 'dir1/dir2'],
+        ['dir1/dir2', 'dir1/dir2'],
+        ['dir1', 'dir1'],
+    ])('normalizeRelativePath %s', (path, expected) => {
+        expect(XcodeHostProject.normalizeRelativePath(path)).toBe(expected)
+    })
+
     test('project', async () => {
         await getProjectWithoutHostFiles(async xcodeProject => {
             const project = xcodeProject.project
@@ -119,62 +154,6 @@ describe('XcodeHostProject', () => {
                 ['BicycleTarget', 'Vehicles'],
             ]))
         })
-    })
-
-    test('encodePath', () => {
-        const project = new XcodeHostProject()
-        expect(project.encodePath('standard/path')).toBe('standard/path')
-        expect(project.encodePath('standard-path')).toBe('standard-path')
-    })
-
-    test('encodePath, null path', () => {
-        const project = new XcodeHostProject()
-        expect(project.encodePath('')).toBe('')
-        expect(project.encodePath(null)).toBe(null)
-        expect(project.encodePath(undefined)).toBe(undefined)
-    })
-
-    test('encodePath, with quotes', () => {
-        const project = new XcodeHostProject()
-        expect(project.encodePath('quoted/"/"/path')).toBe('"quoted/\\"/\\"/path"')
-    })
-
-    test('decodePath', () => {
-        const project = new XcodeHostProject()
-        expect(project.decodePath('standard/path')).toBe('standard/path')
-    })
-
-    test('decodePath, null path', () => {
-        const project = new XcodeHostProject()
-        expect(project.decodePath('')).toBe('')
-        expect(project.decodePath('""')).toBe('')
-        expect(project.decodePath(null)).toBe(null)
-        expect(project.decodePath(undefined)).toBe(undefined)
-    })
-
-    test('decodePath, quoted path', () => {
-        const project = new XcodeHostProject()
-        expect(project.decodePath('"quoted/path"')).toBe('quoted/path')
-    })
-
-    test('decodePath, quoted path, with new line', () => {
-        const project = new XcodeHostProject()
-        expect(project.decodePath('"quoted/\n/path"')).toBe('quoted/\n/path')
-    })
-
-    test('decodePath, quoted path, with escaped quotes', () => {
-        const project = new XcodeHostProject()
-        expect(project.decodePath('"quoted/\\"/\\"/path"')).toBe('quoted/"/"/path')
-    })
-
-    test('normalizeRelativePath', () => {
-        const project = new XcodeHostProject()
-        expect(project.normalizeRelativePath('')).toBe('')
-        expect(project.normalizeRelativePath('/')).toBe('')
-        expect(project.normalizeRelativePath('/dir1/dir2/')).toBe('dir1/dir2')
-        expect(project.normalizeRelativePath('//dir1///dir2/')).toBe('dir1/dir2')
-        expect(project.normalizeRelativePath('dir1/dir2')).toBe('dir1/dir2')
-        expect(project.normalizeRelativePath('dir1')).toBe('dir1')
     })
 
     test('getGroupByKey', async () => {
@@ -316,7 +295,7 @@ describe('XcodeHostProject', () => {
     test('getFiles', async () => {
         await getProjectWithHostFiles(async project => {
 
-            project.decodePath = t.mockFn(path => path)
+            XcodeHostProject.decodePath = t.mockFn(path => path)
             const files = project.getFiles(hostProjectGroup)
             expect(files.map(file => file.path)).toStrictEqual([
                 'Bjs.framework', 'Bicycle.swift', 'FerrariCalifornia.swift', 'TeslaRoadster.swift',
@@ -347,7 +326,7 @@ describe('XcodeHostProject', () => {
                 'Project/HostProject/Bjs/host/BjsVehicles/Vehicles.bjs.bundle',
             ])
 
-            expect(project.decodePath).toHaveBeenCalledTimes(19) // 13 files + 6 dirs
+            expect(XcodeHostProject.decodePath).toHaveBeenCalledTimes(19) // 13 files + 6 dirs
         })
     })
 
@@ -389,7 +368,7 @@ describe('XcodeHostProject', () => {
 
     test('getProjectFiles', async () => {
         await getProjectWithHostFiles(async project => {
-            const checkForIncompatibleHostFiles = jest.spyOn(project, 'checkForIncompatibleHostFiles')
+            const checkForIncompatibleHostFiles = jest.spyOn(XcodeHostProject, 'checkForIncompatibleHostFiles')
 
             const files = (await project.getProjectFiles()).sort((file1, file2) => file1.id < file2.id ? -1 : file1.id > file2.id ? 1 : 0)
             expect(files.map(file => file.id)).toStrictEqual([
@@ -428,12 +407,11 @@ describe('XcodeHostProject', () => {
     })
 
     test('checkForIncompatibleHostFiles', async () => {
-        const project = new XcodeHostProject()
-        project.checkForIncompatibleHostFiles([
+        XcodeHostProject.checkForIncompatibleHostFiles([
             {fileType: 'sourcecode.swift', relativePath: 'path/to/file.swift'},
             {fileType: '"wrapper.plug-in"', relativePath: 'path/to/file.bjs.bundle'},
         ])
-        expect(() => project.checkForIncompatibleHostFiles([
+        expect(() => XcodeHostProject.checkForIncompatibleHostFiles([
             {fileType: 'other.format', relativePath: 'path/to/file.format'},
             {fileType: '"wrapper.plug-in"', relativePath: 'path/to/file.bundle'},
         ])).toThrow('"path/to/file.format", "path/to/file.bundle" not supported: only .swift source files and bundles ' +
@@ -747,7 +725,7 @@ describe('XcodeHostProject', () => {
             await getProjectWithoutHostFiles(async projectWithoutHost => {
 
                 projectWithoutHost.cleanEmptyDirs = t.mockFn() // disable empty groups cleaning
-                projectWithoutHost.encodePath = t.mockFn(path => path)
+                XcodeHostProject.encodePath = t.mockFn(path => path)
 
                 expect(await projectWithoutHost.ensureGroupExists('/HostProject/host/libs'))
                     .toStrictEqual(projectWithoutHost.getGroupByDirPath('/HostProject/host/libs'))
@@ -771,11 +749,11 @@ describe('XcodeHostProject', () => {
                 freshLoadedProjectWithoutHost = xcode.project(projectWithoutHost.config.xcodeProjectFile.path).parseSync()
                 testProjectObjects(freshLoadedProjectWithoutHost.hash.project.objects, projectWithHostDirs.project.hash.project.objects)
 
-                expect(projectWithoutHost.encodePath).toHaveBeenCalledTimes(4)
-                expect(projectWithoutHost.encodePath).toHaveBeenCalledWith('libs')
-                expect(projectWithoutHost.encodePath).toHaveBeenCalledWith('native')
-                expect(projectWithoutHost.encodePath).toHaveBeenCalledWith('BjsVehicles')
-                expect(projectWithoutHost.encodePath).toHaveBeenCalledWith('BjsMotorVehicles')
+                expect(XcodeHostProject.encodePath).toHaveBeenCalledTimes(4)
+                expect(XcodeHostProject.encodePath).toHaveBeenCalledWith('libs')
+                expect(XcodeHostProject.encodePath).toHaveBeenCalledWith('native')
+                expect(XcodeHostProject.encodePath).toHaveBeenCalledWith('BjsVehicles')
+                expect(XcodeHostProject.encodePath).toHaveBeenCalledWith('BjsMotorVehicles')
             })
         })
     })

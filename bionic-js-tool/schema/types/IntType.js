@@ -6,7 +6,7 @@ class IntType extends Type {
         return 'Int'
     }
 
-    static fromObj(obj) {
+    static fromObj(_obj) {
         return new IntType()
     }
 }

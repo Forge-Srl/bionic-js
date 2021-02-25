@@ -5,6 +5,14 @@ const {JS_FILE_EXT, JAVA_FILE_EXT, BJS_BUNDLE_SUFFIX} = require('./fileExtension
 
 class JavaHostProject {
 
+    static getBundleDirName(bundleName) {
+        return `${bundleName}${BJS_BUNDLE_SUFFIX}`
+    }
+
+    static getBundleFileName(bundleName) {
+        return `${bundleName}${JS_FILE_EXT}`
+    }
+
     constructor(config, log) {
         Object.assign(this, {config, log})
     }
@@ -19,46 +27,43 @@ class JavaHostProject {
         return targetKeysBundleMap
     }
 
-    getBundleDirName(bundleName) {
-        return `${bundleName}${BJS_BUNDLE_SUFFIX}`
-    }
-
-    getBundleFileName(bundleName) {
-        return `${bundleName}${JS_FILE_EXT}`
-    }
-
     async getProjectFiles() {
         const targetKeysBundleMap = this.targetKeysBundleMap
         const bjsProjectFileName = `Bjs${this.config.projectName}.java`
 
         const processJavaFile = async (fileToProcess, bundles, sourceSet) => {
             const subId = fileToProcess.relativePath === bjsProjectFileName ? sourceSet : undefined
-            return new HostProjectFile(fileToProcess.relativePath, bundles, await fileToProcess.asFile.getCodeContent(), subId)
+            const content = await fileToProcess.asFile.getCodeContent()
+            return new HostProjectFile(fileToProcess.relativePath, bundles, content, subId)
         }
 
         const processBundleFile = async (fileToProcess, bundles) => {
             const bundleName = fileToProcess.base.slice(0, -BJS_BUNDLE_SUFFIX.length)
-            const bundleFile = fileToProcess.asDir.getSubFile(this.getBundleFileName(bundleName))
+            const bundleFile = fileToProcess.asDir.getSubFile(this.constructor.getBundleFileName(bundleName))
             return new BundleProjectFile(bundleName, await bundleFile.getCodeContent(), bundles)
         }
 
         const filesToProcess = []
         for (let [sourceSet, bundleName] of targetKeysBundleMap.entries()) {
-            const javaFilesWalker = new FileWalker(this.config.hostDir(sourceSet).path, [JAVA_FILE_EXT].map(ext => `**/*${ext}`))
+            const javaFilesWalker = new FileWalker(this.config.hostDir(sourceSet).path,
+                [JAVA_FILE_EXT].map(ext => `**/*${ext}`))
             filesToProcess.push(...(await javaFilesWalker.getFiles())
                 .map(async fileToProcess => await processJavaFile(fileToProcess, [bundleName], sourceSet)))
 
-            const bundleFilesWalker = new FileWalker(this.config.resourcesDir(sourceSet).path, [BJS_BUNDLE_SUFFIX].map(ext => `**/*${ext}`), false)
+            const bundleFilesWalker = new FileWalker(this.config.resourcesDir(sourceSet).path,
+                [BJS_BUNDLE_SUFFIX].map(ext => `**/*${ext}`), false)
             filesToProcess.push(...(await bundleFilesWalker.getFiles())
                 .map(async fileToProcess => await processBundleFile(fileToProcess, [bundleName])))
         }
 
         const allTargets = [...new Set(targetKeysBundleMap.values())]
-        const commonJavaFilesWalker = new FileWalker(this.config.hostDir(this.config.commonSourceSet).path, [JAVA_FILE_EXT].map(ext => `**/*${ext}`))
+        const commonJavaFilesWalker = new FileWalker(this.config.hostDir(this.config.commonSourceSet).path,
+            [JAVA_FILE_EXT].map(ext => `**/*${ext}`))
         filesToProcess.push(...(await commonJavaFilesWalker.getFiles())
             .map(async fileToProcess => await processJavaFile(fileToProcess, allTargets)))
 
-        const commonBundleFilesWalker = new FileWalker(this.config.resourcesDir(this.config.commonSourceSet).path, [BJS_BUNDLE_SUFFIX].map(ext => `**/*${ext}`), false)
+        const commonBundleFilesWalker = new FileWalker(this.config.resourcesDir(this.config.commonSourceSet).path,
+            [BJS_BUNDLE_SUFFIX].map(ext => `**/*${ext}`), false)
         filesToProcess.push(...(await commonBundleFilesWalker.getFiles())
             .map(async fileToProcess => await processBundleFile(fileToProcess, allTargets)))
 
@@ -67,7 +72,7 @@ class JavaHostProject {
 
     async save() {
         const targetKeysBundleMap = this.targetKeysBundleMap
-        for (let [sourceSet, bundleName] of targetKeysBundleMap.entries()) {
+        for (let [sourceSet] of targetKeysBundleMap.entries()) {
             await this.config.hostDir(sourceSet).cleanEmptyDirs(true)
             await this.config.resourcesDir(sourceSet).cleanEmptyDirs(true)
         }
@@ -94,7 +99,7 @@ class JavaHostProject {
     }
 
     async removeBundleFromProject(bundleName) {
-        const bundleDirName = this.getBundleDirName(bundleName)
+        const bundleDirName = this.constructor.getBundleDirName(bundleName)
         const sourceSets = this.config.getSourceSetsForBundles([bundleName])
 
         for (const sourceSet of sourceSets) {
@@ -130,13 +135,13 @@ class JavaHostProject {
     }
 
     async addBundleToProject(bundleName, bundleFileContent) {
-        const bundleDirName = this.getBundleDirName(bundleName)
+        const bundleDirName = this.constructor.getBundleDirName(bundleName)
         const sourceSets = this.config.getSourceSetsForBundles([bundleName])
 
         for (const sourceSet of sourceSets) {
             const bundleFile = this.config.resourcesDir(sourceSet)
                 .getSubDir(bundleDirName)
-                .getSubFile(this.getBundleFileName(bundleName))
+                .getSubFile(this.constructor.getBundleFileName(bundleName))
 
             try {
                 await bundleFile.dir.ensureExists()

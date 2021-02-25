@@ -14,7 +14,8 @@ class GlobalSchemaCreator {
 
     async getModuleCreators() {
         if (!this._moduleCreators) {
-            const moduleCreators = (await Promise.all(this.moduleCreatorPromises)).filter(moduleCreator => moduleCreator.exporting)
+            const moduleCreators = (await Promise.all(this.moduleCreatorPromises))
+                .filter(moduleCreator => moduleCreator.exporting)
             const processedModules = new Map()
 
             moduleCreators.forEach(moduleCreator => {

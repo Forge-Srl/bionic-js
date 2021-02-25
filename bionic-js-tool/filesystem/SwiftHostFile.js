@@ -12,7 +12,7 @@ class SwiftHostFile extends HostFile {
         ]
     }
 
-    async generate(hostProject, allFiles) {
+    async generate(hostProject, _allFiles) {
         const guestFile = this.annotatedFile.guestFile
         const schema = this.annotatedFile.schema
 

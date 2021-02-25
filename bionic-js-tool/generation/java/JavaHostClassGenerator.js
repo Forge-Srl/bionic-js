@@ -34,9 +34,9 @@ class JavaHostClassGenerator extends ClassGenerator {
         const classImports = this.schema.dependingTypes
             .filter(type => type instanceof ClassType)
             .map(type => {
-                if (type.className === this.schema.name)
+                if (type.className === this.schema.name) {
                     return null
-
+                }
                 const fullPackage = this.getFullDependencyPackage(type)
                 return fullPackage ? `import ${fullPackage};` : null
             })
@@ -105,13 +105,14 @@ class JavaHostClassGenerator extends ClassGenerator {
         const superClassExtension = this.schema.superclass ? `extends ${this.schema.superclass.name} ` : ''
 
         const scaffoldCode = CodeBlock.create()
-            .append(`import ${JavaUtils.fullPackage(this.basePackage,this.schema.modulePath)}.${this.schema.name}BjsExport;`).newLine()
+            .append(`import ${JavaUtils.fullPackage(this.basePackage, this.schema.modulePath)}.${this.schema.name}BjsExport;`).newLine()
             .newLine()
             .append(`public class ${this.schema.name} ${superClassExtension}implements ${this.schema.name}BjsExport {`).newLineIndenting()
 
         const classParts = this.getClassParts()
-        if (classParts.length)
+        if (classParts.length) {
             scaffoldCode.newLine()
+        }
 
         return scaffoldCode.append(classParts.map((classPart, index) => {
             const classPartCode = classPart.generator.forHosting(this.schema, this.basePackage).java.getScaffold()

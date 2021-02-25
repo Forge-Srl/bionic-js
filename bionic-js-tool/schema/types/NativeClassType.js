@@ -10,7 +10,7 @@ class NativeClassType extends ClassType {
         return new NativeClassType(obj.className)
     }
 
-    resolveClassType(nativeClassesMap) {
+    resolveClassType(_nativeClassesMap) {
         return this
     }
 }

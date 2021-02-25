@@ -6,7 +6,7 @@ class StringType extends Type {
         return 'String'
     }
 
-    static fromObj(obj) {
+    static fromObj(_obj) {
         return new StringType()
     }
 }

@@ -36,8 +36,10 @@ class JavaLambdaTypeGenerator extends JavaTypeGenerator {
                 ini.append(jsFuncIniRet.initializationCode)
                     .append(`JSReference ${jsFuncVar} = `).append(jsFuncIniRet.returningCode).append(';').newLine())
             .editRet(ret =>
-                ret.append(`${context.bjsEntrance}.getFunc(`).append(jsFuncVar).append(`, (${paramNames.join(', ')}) -> {`).newLineIndenting()
-                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithNativeIniRet(jsFuncVar, paramNames, context)))
+                ret.append(`${context.bjsEntrance}.getFunc(`).append(jsFuncVar)
+                    .__.append(`, (${paramNames.join(', ')}) -> {`).newLineIndenting()
+                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithNativeIniRet(jsFuncVar,
+                        paramNames, context)))
                     .__.newLineDeindenting()
                     .append('})'))
     }
@@ -65,10 +67,12 @@ class JavaLambdaTypeGenerator extends JavaTypeGenerator {
         return IniRet.create()
             .editIni(ini =>
                 ini.append(nativeFuncIniRet.initializationCode)
-                    .append(`${this.getTypeStatement()} ${nativeFuncVar} = `).append(nativeFuncIniRet.returningCode).append(';').newLine()
+                    .append(`${this.getTypeStatement()} ${nativeFuncVar} = `).append(nativeFuncIniRet.returningCode)
+                    .__.append(';').newLine()
                     .append(`FunctionCallback<?> ${jsFuncVar} = ${jsReferencesVar} -> {`).newLineIndenting()
                     .append(`${jsReferencesVar} = bjs.ensureArraySize(${jsReferencesVar}, ${this.parameters.length});`).newLine()
-                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithJsIniRet(nativeFuncVar, jsReferencesVar, context))).newLineDeindenting()
+                    .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithJsIniRet(nativeFuncVar,
+                        jsReferencesVar, context))).newLineDeindenting()
                     .append('};').newLine())
 
             .editRet(ret =>
@@ -92,7 +96,8 @@ class JavaLambdaTypeGenerator extends JavaTypeGenerator {
 
         const callIniRet = IniRet.create()
             .editIni(ini => ini.append())
-            .editRet(ret => ret.append(`${nativeFuncVar}.apply(`)).append(parametersIniRet).editRet(ret => ret.append(')'))
+            .editRet(ret => ret.append(`${nativeFuncVar}.apply(`)).append(parametersIniRet)
+            .editRet(ret => ret.append(')'))
 
         return this.returnTypeGenerator.getJsIniRet(callIniRet, context)
     }

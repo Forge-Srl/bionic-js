@@ -6,7 +6,7 @@ class VoidType extends Type {
         return 'Void'
     }
 
-    static fromObj(obj) {
+    static fromObj(_obj) {
         return new VoidType()
     }
 }

@@ -10,6 +10,42 @@ const XCODE_PATH_SEPARATOR = '/'
 
 class XcodeHostProject {
 
+    static getBundleDirName(bundleName) {
+        return `Bjs${bundleName}/${bundleName}${BJS_BUNDLE_SUFFIX}`
+    }
+
+    static getBundleFileName(bundleName) {
+        return `${bundleName}${JS_FILE_EXT}`
+    }
+
+    static encodePath(path) {
+        return path === null || path === undefined || !path.includes('"')
+            ? path
+            : `"${path.replace(/"/g, '\\"')}"`
+    }
+
+    static decodePath(encodedPath) {
+        if (encodedPath === null || encodedPath === undefined) {
+            return encodedPath
+        }
+        const result = /^"?(.*?)"?$/s.exec(encodedPath)
+        return result[1].replace(/\\"/g, '"')
+    }
+
+    static normalizeRelativePath(pathToNormalize) {
+        return pathToNormalize.split(XCODE_PATH_SEPARATOR).filter(part => part).join(XCODE_PATH_SEPARATOR)
+    }
+
+    static checkForIncompatibleHostFiles(files) {
+        const notSupportedFiles = files.filter(
+            file => (file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE) ||
+                (file.fileType === BUNDLE_FILE_TYPE && !file.relativePath.endsWith(BJS_BUNDLE_SUFFIX)))
+        if (notSupportedFiles.length) {
+            const fileNames = notSupportedFiles.map(file => `"${file.relativePath}"`).join(', ')
+            throw new Error(`${fileNames} not supported: only .swift source files and bundles with "${BJS_BUNDLE_SUFFIX}" suffix are allowed inside the host directory`)
+        }
+    }
+
     constructor(config, log) {
         Object.assign(this, {config, log})
     }
@@ -63,14 +99,6 @@ class XcodeHostProject {
         return targetKeysBundleMap
     }
 
-    getBundleDirName(bundleName) {
-        return `Bjs${bundleName}/${bundleName}${BJS_BUNDLE_SUFFIX}`
-    }
-
-    getBundleFileName(bundleName) {
-        return `${bundleName}${JS_FILE_EXT}`
-    }
-
     getCompileTargetKeys(compileTargets) {
         const targetObjects = this.project.pbxNativeTargetSection()
         const allTargets = this.allTargetKeys.map(targetKey => ({key: targetKey, obj: targetObjects[targetKey]}))
@@ -93,30 +121,13 @@ class XcodeHostProject {
         })
     }
 
-    encodePath(path) {
-        if (path === null || path === undefined)
-            return path
-        return path.includes('"') ? `"${path.replace(/"/g, '\\"')}"` : path
-    }
-
-    decodePath(encodedPath) {
-        if (encodedPath === null || encodedPath === undefined)
-            return encodedPath
-        const result = /^"?(.*?)"?$/s.exec(encodedPath)
-        return result[1].replace(/\\"/g, '"')
-    }
-
-    normalizeRelativePath(pathToNormalize) {
-        return pathToNormalize.split(XCODE_PATH_SEPARATOR).filter(part => part).join(XCODE_PATH_SEPARATOR)
-    }
-
     buildNode(node, key, comment, fatherGroup) {
         if (node) {
             node = Object.assign({}, node)
             node.key = key
 
             const fatherPathParts = fatherGroup ? fatherGroup.relativePath.split(XCODE_PATH_SEPARATOR) : []
-            const nodePath = this.decodePath(node.path)
+            const nodePath = this.constructor.decodePath(node.path)
             const nodePathParts = nodePath ? nodePath.split(XCODE_PATH_SEPARATOR) : []
             node.relativePath = [...fatherPathParts, ...nodePathParts].filter(part => part).join(XCODE_PATH_SEPARATOR)
             node.debugLocation = `${fatherGroup ? fatherGroup.debugLocation + XCODE_PATH_SEPARATOR : ''}${comment ? comment : 'Project'}`
@@ -147,18 +158,20 @@ class XcodeHostProject {
     }
 
     getGroupByDirPath(dirPath, fatherGroup = this.mainGroup) {
-        dirPath = this.normalizeRelativePath(dirPath)
-        if (dirPath === fatherGroup.relativePath)
+        dirPath = this.constructor.normalizeRelativePath(dirPath)
+        if (dirPath === fatherGroup.relativePath) {
             return fatherGroup
-
+        }
         for (const child of fatherGroup.children) {
             const childGroup = this.getGroupByKey(child.value, fatherGroup)
-            if (!childGroup)
+            if (!childGroup) {
                 continue
+            }
 
             const targetGroup = this.getGroupByDirPath(dirPath, childGroup)
-            if (targetGroup)
+            if (targetGroup) {
                 return targetGroup
+            }
         }
         return null
     }
@@ -179,7 +192,7 @@ class XcodeHostProject {
     }
 
     getFile(group, relativePath) {
-        relativePath = this.normalizeRelativePath(relativePath)
+        relativePath = this.constructor.normalizeRelativePath(relativePath)
 
         for (const child of group.children) {
             const childGroup = this.getGroupByKey(child.value, group)
@@ -201,15 +214,18 @@ class XcodeHostProject {
 
     async getProjectFiles() {
         const hostDirGroup = this.getGroupByDirPath(this.config.hostDirName)
-        if (!hostDirGroup)
+        if (!hostDirGroup) {
             return []
+        }
         const xcodeFiles = this.getFiles(hostDirGroup)
-        this.checkForIncompatibleHostFiles(xcodeFiles)
+        this.constructor.checkForIncompatibleHostFiles(xcodeFiles)
 
         const targetKeysFilesMap = this.targetKeysFilesMap
         const filesToProcess = xcodeFiles
             .map(xcodeFile => ({
-                file: this.config.xcodeProjectDir.getSubFile(xcodeFile.relativePath).setRootDirPath(this.config.hostDir.path),
+                file: this.config.xcodeProjectDir
+                    .getSubFile(xcodeFile.relativePath)
+                    .setRootDirPath(this.config.hostDir.path),
                 targets: targetKeysFilesMap.get(xcodeFile.key),
             }))
 
@@ -228,35 +244,31 @@ class XcodeHostProject {
                 }
             })
             if (fileToProcess.file.ext === SWIFT_FILE_EXT) {
-                return new HostProjectFile(fileToProcess.file.relativePath, [...bundlesSet], await fileToProcess.file.asFile.getCodeContent())
-            } else if (fileToProcess.file.base.endsWith(BJS_BUNDLE_SUFFIX)) {
+                return new HostProjectFile(fileToProcess.file.relativePath, [...bundlesSet],
+                    await fileToProcess.file.asFile.getCodeContent())
+            }
+            if (fileToProcess.file.base.endsWith(BJS_BUNDLE_SUFFIX)) {
                 const bundleName = fileToProcess.file.base.slice(0, -BJS_BUNDLE_SUFFIX.length)
-                const bundleFile = fileToProcess.file.asDir.getSubFile(this.getBundleFileName(bundleName))
+                const bundleFile = fileToProcess.file.asDir.getSubFile(this.constructor.getBundleFileName(bundleName))
                 return new BundleProjectFile(bundleName, await bundleFile.getCodeContent(), [...bundlesSet])
             }
+            return undefined
         }
-        return (await Promise.all(filesToProcess.map(filesToProcess => processFile(filesToProcess)))).filter(nonNull => nonNull)
-    }
-
-    checkForIncompatibleHostFiles(files) {
-        const notSupportedFiles = files.filter(
-            file => (file.fileType !== SOURCE_FILE_TYPE && file.fileType !== BUNDLE_FILE_TYPE) ||
-                (file.fileType === BUNDLE_FILE_TYPE && !file.relativePath.endsWith(BJS_BUNDLE_SUFFIX)))
-        if (notSupportedFiles.length) {
-            const fileNames = notSupportedFiles.map(file => `"${file.relativePath}"`).join(', ')
-            throw new Error(`${fileNames} not supported: only .swift source files and bundles with "${BJS_BUNDLE_SUFFIX}" suffix are allowed inside the host directory`)
-        }
+        return (await Promise.all(filesToProcess
+            .map(filesToProcess => processFile(filesToProcess))))
+            .filter(nonNull => nonNull)
     }
 
     async cleanEmptyDirs() {
         const hostDirGroup = this.getGroupByDirPath(this.config.hostDirName)
-        if (hostDirGroup)
+        if (hostDirGroup) {
             await this.cleanEmptyGroups(hostDirGroup)
+        }
 
         for (const bundleName of this.config.targetBundles.map(targetBundle => targetBundle.bundleName)) {
             const bundleDir = this.config.xcodeProjectDir
                 .getSubDir(this.config.hostDirName)
-                .getSubDir(this.getBundleDirName(bundleName))
+                .getSubDir(this.constructor.getBundleDirName(bundleName))
             await bundleDir.cleanEmptyDirs(false)
         }
     }
@@ -269,7 +281,7 @@ class XcodeHostProject {
 
     /** REMOVE THINGS */
 
-    async removeHostFileFromProject(pathRelativeToHostDir, bundles) {
+    async removeHostFileFromProject(pathRelativeToHostDir, _bundles) {
         const hostDirGroup = this.getGroupByDirPath(this.config.hostDirName)
         const hostFileRef = this.getFile(hostDirGroup, path.join(this.config.hostDirName, pathRelativeToHostDir))
         if (hostFileRef) {
@@ -289,7 +301,7 @@ class XcodeHostProject {
     }
 
     async removeBundleFromProject(bundleName) {
-        const bundleDirName = this.getBundleDirName(bundleName)
+        const bundleDirName = this.constructor.getBundleDirName(bundleName)
         const hostDirGroup = this.getGroupByDirPath(this.config.hostDirName)
         const hostFileRef = this.getFile(hostDirGroup, path.join(this.config.hostDirName, bundleDirName))
         if (hostFileRef) {
@@ -418,13 +430,13 @@ class XcodeHostProject {
     }
 
     async addBundleToProject(bundleName, bundleFileContent) {
-        const bundleDirName = this.getBundleDirName(bundleName)
+        const bundleDirName = this.constructor.getBundleDirName(bundleName)
         this.addFileToProject(bundleDirName, [bundleName], true)
 
         const bundleFile = this.config.xcodeProjectDir
             .getSubDir(this.config.hostDirName)
             .getSubDir(bundleDirName)
-            .getSubFile(this.getBundleFileName(bundleName))
+            .getSubFile(this.constructor.getBundleFileName(bundleName))
 
         try {
             await bundleFile.dir.ensureExists()
@@ -440,14 +452,15 @@ class XcodeHostProject {
         const fatherGroup = this.ensureGroupExists(parsedFilePath.dir)
 
         const fileBaseName = parsedFilePath.base
-        if (fatherGroup.children.some(child => child.comment === fileBaseName))
+        if (fatherGroup.children.some(child => child.comment === fileBaseName)) {
             return
+        }
 
         const fileKey = this.project.generateUuid()
 
         const pbxFile = {
             isa: 'PBXFileReference',
-            path: this.encodePath(fileBaseName),
+            path: this.constructor.encodePath(fileBaseName),
             sourceTree: '"<group>"',
             lastKnownFileType: isBundleDir ? '"wrapper.plug-in"' : 'sourcecode.swift',
         }
@@ -477,11 +490,12 @@ class XcodeHostProject {
     }
 
     ensureGroupExists(targetDirPath, fatherGroupPath = '') {
-        targetDirPath = this.normalizeRelativePath(targetDirPath)
+        targetDirPath = this.constructor.normalizeRelativePath(targetDirPath)
         const fatherGroup = this.getGroupByDirPath(fatherGroupPath)
 
-        if (targetDirPath === '')
+        if (targetDirPath === '') {
             return fatherGroup
+        }
 
         const targetDirPathParts = targetDirPath.split(XCODE_PATH_SEPARATOR)
         const targetChildGroupName = targetDirPathParts[0]
@@ -493,7 +507,7 @@ class XcodeHostProject {
             const pbxGroup = {
                 isa: 'PBXGroup',
                 children: [],
-                path: this.encodePath(targetChildGroupName),
+                path: this.constructor.encodePath(targetChildGroupName),
                 sourceTree: '"<group>"',
             }
 

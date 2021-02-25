@@ -1,29 +1,33 @@
 class Validation {
 
     static validateIdentifier(name, value) {
-        if (value === null)
+        if (value === null) {
             return {
                 validity: false,
-                error: `${name} cannot be null`
+                error: `${name} cannot be null`,
             }
+        }
 
-        if (value.length === 0)
+        if (value.length === 0) {
             return {
                 validity: false,
-                error: `${name} cannot be empty`
+                error: `${name} cannot be empty`,
             }
+        }
 
-        if (/^[0-9]+/.test(value))
+        if (/^[0-9]+/.test(value)) {
             return {
                 validity: false,
-                error: `${name} "${value}" cannot start with a digit`
+                error: `${name} "${value}" cannot start with a digit`,
             }
+        }
 
-        if (/[^a-zA-Z0-9]/.test(value))
+        if (/[^a-zA-Z0-9]/.test(value)) {
             return {
                 validity: false,
-                error: `${name} "${value}" cannot contain non-alphanumeric characters`
+                error: `${name} "${value}" cannot contain non-alphanumeric characters`,
             }
+        }
 
         return {validity: true, error: null}
     }

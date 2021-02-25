@@ -13,7 +13,7 @@ class JavaHostMethodGenerator extends JavaMethodGenerator {
         return CodeBlock.create()
             .append(`public ${clazz}${returnTypeStatement} ${JavaKeywords.getSafeIdentifier(this.schema.name)}(`)
             .__.append(this.getParametersStatements())
-            .__.append(`) {`)
+            .__.append(') {')
     }
 
     getBodyCode() {

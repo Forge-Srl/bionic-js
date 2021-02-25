@@ -54,7 +54,7 @@ class BaseFile {
     isInsideDir(...dirPathSegments) {
         const dirPath = path.resolve(...dirPathSegments)
         const dirRelativePath = path.relative(dirPath, this.absolutePath)
-        return dirRelativePath.match(/^\.\.[\/\\]/) === null
+        return dirRelativePath.match(/^\.\.[/\\]/) === null
     }
 
     setRootDirPath(rootDirPath) {

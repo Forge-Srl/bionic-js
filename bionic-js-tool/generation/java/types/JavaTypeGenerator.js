@@ -36,7 +36,7 @@ class JavaTypeGenerator extends CodeGenerator {
             .appendRet(`${context.bjsEntrance}.putPrimitive(`).append(nativeIniRet).appendRet(')')
     }
 
-    getNativeIniRet(jsIniRet, context, returningFromMethod) {
+    getNativeIniRet(jsIniRet, context, _returningFromMethod) {
         return IniRet.create()
             .appendRet(`${context.bjsEntrance}.${this.getJsToPrimitiveMethodName()}(`).append(jsIniRet).appendRet(')')
     }

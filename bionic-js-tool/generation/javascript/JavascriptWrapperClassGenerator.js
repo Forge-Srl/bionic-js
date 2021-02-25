@@ -4,26 +4,25 @@ const {Class, nativeObjectBaseClassName} = require('../../schema/Class')
 
 class JavascriptWrapperClassGenerator extends ClassGenerator {
 
-    constructor(schema) {
-        super(schema)
-    }
-
     get constructors() {
         return []
     }
 
     get classPartsGenerators() {
         if (!this._classPartsGenerators) {
-            this._classPartsGenerators = this.getClassParts().map(classPart => classPart.generator.forWrapping(this.schema).javascript)
+            this._classPartsGenerators = this.getClassParts()
+                .map(classPart => classPart.generator.forWrapping(this.schema).javascript)
         }
         return this._classPartsGenerators
     }
 
     getHeaderCode() {
-        const superclass = this.schema.superclass || new Class(nativeObjectBaseClassName, '', [], [], [], null, true, nativeObjectBaseClassName)
+        const superclass = this.schema.superclass || new Class(nativeObjectBaseClassName, '', [], [], [], null, true,
+            nativeObjectBaseClassName)
+        const moduleLoadingPath = this.schema.getRelativeModuleLoadingPath(superclass)
         return CodeBlock.create()
-            .append(`const {${superclass.name}} = require(\'${this.schema.getRelativeModuleLoadingPath(superclass)}\')`).newLine()
-            .append(`const {bjsNative} = bjsNativeRequire(\'${this.schema.name}\')`).newLine()
+            .append(`const {${superclass.name}} = require('${moduleLoadingPath}')`).newLine()
+            .append(`const {bjsNative} = bjsNativeRequire('${this.schema.name}')`).newLine()
             .newLine()
             .append(`class ${this.schema.name} extends ${superclass.name} {`).newLineIndenting()
             .newLine()

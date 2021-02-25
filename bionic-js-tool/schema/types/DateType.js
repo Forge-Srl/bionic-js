@@ -6,7 +6,7 @@ class DateType extends Type {
         return 'Date'
     }
 
-    static fromObj(obj) {
+    static fromObj(_obj) {
         return new DateType()
     }
 }

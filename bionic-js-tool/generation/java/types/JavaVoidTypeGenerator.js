@@ -11,7 +11,7 @@ class JavaVoidTypeGenerator extends JavaTypeGenerator {
         return 'void'
     }
 
-    getJsIniRet(nativeIniRet, context) {
+    getJsIniRet(nativeIniRet, _context) {
         return IniRet.create().editIni(ini => ini.append(nativeIniRet.initializationCode)
             .__.append(nativeIniRet.returningCode).append(';').newLine())
             .editRet(ret => ret.append('bjs.jsUndefined()'))

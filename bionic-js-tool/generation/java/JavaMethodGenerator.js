@@ -24,7 +24,9 @@ class JavaMethodGenerator extends CodeGenerator {
     }
 
     getParametersStatements(parametersShift = 0) {
-        return this.parametersGenerators.slice(parametersShift).map(paramGen => paramGen.getParameterStatement()).join(', ')
+        return this.parametersGenerators.slice(parametersShift)
+            .map(paramGen => paramGen.getParameterStatement())
+            .join(', ')
     }
 
     getParametersNamesList(parametersShift = 0) {
@@ -32,7 +34,9 @@ class JavaMethodGenerator extends CodeGenerator {
     }
 
     getParametersClassesList(parametersShift = 0) {
-        return this.parametersGenerators.slice(parametersShift).map(parameter => parameter.getParameterClass()).join(', ')
+        return this.parametersGenerators.slice(parametersShift)
+            .map(parameter => parameter.getParameterClass())
+            .join(', ')
     }
 
     getArgumentsListJsIniRet(context) {

@@ -8,7 +8,8 @@ class JavaTargetBundlesConfiguration {
             const targetBundleLocator = `${locator} -> "${bundleName}"`
             const targetBundleConfig = JavaTargetBundleConfiguration.fromObj(configObj[bundleName], bundleName,
                 targetBundleLocator)
-            const targetAlreadyUsed = targetBundleConfig.sourceSets.find(targetSourceSet => targetSourceSets.has(targetSourceSet))
+            const targetAlreadyUsed = targetBundleConfig.sourceSets
+                .find(targetSourceSet => targetSourceSets.has(targetSourceSet))
             if (targetAlreadyUsed) {
                 throw new Error(`${targetBundleLocator} -> "sourceSets" -> target "${targetAlreadyUsed}" already ` +
                 'used in another bundle')

@@ -20,7 +20,7 @@ class SwiftTypeGenerator extends CodeGenerator {
         return ` -> ${this.getTypeStatement()}`
     }
 
-    getNativeReturnStatement(alwaysReturningCode) {
+    getNativeReturnStatement(_alwaysReturningCode) {
         return 'return '
     }
 

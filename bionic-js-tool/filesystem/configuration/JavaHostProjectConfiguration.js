@@ -11,7 +11,8 @@ class JavaHostProjectConfiguration extends Configuration {
     }
 
     constructor(configObj, locator, projectName) {
-        super(configObj, locator, [], ['type', 'projectPath', 'srcDirName', 'targetBundles', 'basePackage', 'hostPackage', 'nativePackage'])
+        super(configObj, locator, [], ['type', 'projectPath', 'srcDirName', 'targetBundles',
+            'basePackage', 'hostPackage', 'nativePackage'])
         Object.assign(this, {projectName})
     }
 

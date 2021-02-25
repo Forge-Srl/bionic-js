@@ -10,7 +10,9 @@ class GuestWalker {
         const entryPaths = {}, guestFilesFilters = {}
         for (const guestBundle of config.guestBundles) {
             entryPaths[guestBundle.bundleName] = guestBundle.entryPaths
-            guestFilesFilters[guestBundle.bundleName] = guestBundle.ignoreExport ? new FilesFilter(guestBundle.ignoreExport) : null
+            guestFilesFilters[guestBundle.bundleName] = guestBundle.ignoreExport
+                ? new FilesFilter(guestBundle.ignoreExport)
+                : null
         }
         return new GuestWalker(config.guestDirPath, entryPaths, guestFilesFilters)
     }

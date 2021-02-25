@@ -39,7 +39,8 @@ class MethodAnnotationExplorer extends AnnotationParser {
         if (!this._type) {
             try {
                 const type = Type.fromObj(this.bionicTag.typeInfo)
-                if (this.kinds[0] === 'method' && type instanceof LambdaType && type.parameters.some(parameter => !parameter.name)) {
+                if (this.kinds[0] === 'method' && type instanceof LambdaType
+                    && type.parameters.some(parameter => !parameter.name)) {
                     throw new Error(`parameters of method "${this.name}" must have names`)
                 }
                 this._type = type

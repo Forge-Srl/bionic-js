@@ -8,7 +8,8 @@ class JavaHostEnvironmentFile extends HostEnvironmentFile {
         return hostProjectConfig.getSourceSetsForBundles([bundleName]).map(sourceSet => {
             const hostDir = hostProjectConfig.hostDir(sourceSet)
             const filePath = hostDir.getSubFile(`Bjs${projectName}${JAVA_FILE_EXT}`).path
-            return new JavaHostEnvironmentFile(filePath, hostDir.path, bundleName, nativeFiles, projectName, hostProjectConfig.hostPackage, sourceSet)
+            return new JavaHostEnvironmentFile(filePath, hostDir.path, bundleName, nativeFiles, projectName,
+                hostProjectConfig.hostPackage, sourceSet)
         })
     }
 
@@ -18,8 +19,10 @@ class JavaHostEnvironmentFile extends HostEnvironmentFile {
     }
 
     async generate(hostProject) {
-        const generator = new JavaHostEnvironmentFileGenerator(this.bundleName, this.nativeFiles, this.projectName, this.basePackage)
-        await hostProject.setHostFileContent(this.relativePath, [this.bundleName], generator.getSource(), this.sourceSet)
+        const generator = new JavaHostEnvironmentFileGenerator(this.bundleName, this.nativeFiles, this.projectName,
+            this.basePackage)
+        await hostProject.setHostFileContent(this.relativePath, [this.bundleName], generator.getSource(),
+            this.sourceSet)
     }
 }
 

@@ -10,7 +10,7 @@ class JsClassType extends ClassType {
         return new JsClassType(obj.className)
     }
 
-    resolveClassType(nativeClassesMap) {
+    resolveClassType(_nativeClassesMap) {
         return this
     }
 }

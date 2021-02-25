@@ -11,7 +11,8 @@ class JavaHostFile extends HostFile {
         return hostProjectConfig.getSourceSetsForBundles(guestFile.bundles).map(sourceSet => {
             const hostDir = hostProjectConfig.hostDir(sourceSet).path
             const newPath = JavaUtils.pathToSafePath(guestFile.composeNewPath(hostDir, newFileName, JAVA_FILE_EXT))
-            return new JavaHostFile(newPath, hostDir, annotatedFile, projectName, hostProjectConfig.hostPackage, hostProjectConfig.nativePackage)
+            return new JavaHostFile(newPath, hostDir, annotatedFile, projectName, hostProjectConfig.hostPackage,
+                hostProjectConfig.nativePackage)
         })
     }
 
@@ -28,7 +29,8 @@ class JavaHostFile extends HostFile {
         const hostClassGenerator = schemaGenerator.forHosting(this.projectName, this.basePackage, allFiles).java
 
         const hostFileGenerator = schema.isNative
-            ? schemaGenerator.forWrapping(hostClassGenerator, this.projectName, this.basePackage, this.nativePackage, allFiles).java
+            ? schemaGenerator.forWrapping(hostClassGenerator, this.projectName, this.basePackage, this.nativePackage,
+                allFiles).java
             : hostClassGenerator
 
         let hostFileContent

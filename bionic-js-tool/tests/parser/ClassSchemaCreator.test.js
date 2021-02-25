@@ -76,7 +76,7 @@ describe('ClassSchemaCreator', () => {
             return 'superclassSchemas'
         }
 
-        classSchemaCreator.buildSuperclassInfo = (superclassSchemas) => {
+        ClassSchemaCreator.buildSuperclassInfo = (superclassSchemas) => {
             expect(superclassSchemas).toBe('superclassSchemas')
             return 'methodCreatorContext'
         }
@@ -137,7 +137,7 @@ describe('ClassSchemaCreator', () => {
             return 'superclassSchemas'
         }
 
-        classSchemaCreator.buildSuperclassInfo = (superclassSchemas) => {
+        ClassSchemaCreator.buildSuperclassInfo = (superclassSchemas) => {
             expect(superclassSchemas).toBe('superclassSchemas')
             return 'methodCreatorContext'
         }
@@ -199,14 +199,12 @@ describe('ClassSchemaCreator', () => {
     })
 
     test('buildSuperclassInfo', () => {
-        const classSchemaCreator = new ClassSchemaCreator()
-
         const superclassSchemas = [
             {methods: [{name: 'method1'}, {name: 'method2'}], properties: [{name: 'property1'}, {name: 'property2'}]},
             {methods: [{name: 'method2'}, {name: 'method3'}], properties: [{name: 'property2'}, {name: 'property3'}]},
         ]
 
-        const superclassInfo = classSchemaCreator.buildSuperclassInfo(superclassSchemas)
+        const superclassInfo = ClassSchemaCreator.buildSuperclassInfo(superclassSchemas)
 
         expect(superclassInfo.methodNames).toStrictEqual(new Set(['method1', 'method2', 'method3']))
         expect(superclassInfo.propertyNames).toStrictEqual(new Set(['property1', 'property2', 'property3']))

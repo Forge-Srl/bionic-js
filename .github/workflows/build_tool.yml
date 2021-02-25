@@ -30,3 +30,4 @@ jobs:
           cd bionic-js-tool
           npm install
           npm test
+          npm run lint

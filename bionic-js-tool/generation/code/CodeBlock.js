@@ -10,10 +10,7 @@ class CodeBlock {
     }
 
     static create(startIndentation = 0) {
-        if (startIndentation)
-            return new CodeBlock(new Indentation(startIndentation))
-        else
-            return new CodeBlock()
+        return startIndentation ? new CodeBlock(new Indentation(startIndentation)) : new CodeBlock()
     }
 
     getString() {
@@ -31,9 +28,7 @@ class CodeBlock {
     }
 
     newLineConditional(newLine, indentation = 0) {
-        if (!newLine)
-            return this
-        return this.newLine(indentation)
+        return newLine ? this.newLine(indentation) : this
     }
 
     newLineIndenting() {
@@ -74,9 +69,8 @@ class CodeBlock {
             return this.appendCodeBlock(obj)
         } else if (obj.appendToBuilder) {
             return this.appendCodeElement(obj)
-        } else {
-            throw new Error('object cannot be appended')
         }
+        throw new Error('object cannot be appended')
     }
 
     get __() {

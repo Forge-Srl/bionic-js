@@ -11,8 +11,8 @@ class SwiftHostMethodGenerator extends SwiftMethodGenerator {
         const returnTypeStatement = this.returnTypeGenerator.getNativeReturnTypeStatement()
 
         return CodeBlock.create()
-            .append(`${clazz}func ${SwiftKeywords.getSafeIdentifier(this.schema.name)}(`).append(this.getParametersStatements())
-            .__.append(`)${returnTypeStatement} {`)
+            .append(`${clazz}func ${SwiftKeywords.getSafeIdentifier(this.schema.name)}(`)
+            .__.append(this.getParametersStatements()).append(`)${returnTypeStatement} {`)
     }
 
     getBodyCode() {

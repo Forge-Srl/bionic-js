@@ -6,11 +6,11 @@ class JsRefType extends Type {
         return 'JsRef'
     }
 
-    static fromObj(obj) {
+    static fromObj(_obj) {
         return new JsRefType()
     }
 
-    resolveClassType(nativeClassesMap) {
+    resolveClassType(_nativeClassesMap) {
         return this
     }
 }

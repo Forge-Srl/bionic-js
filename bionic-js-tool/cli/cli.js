@@ -12,8 +12,8 @@ const workingDir = process.cwd()
 
 bjsCliProgram
     .name('bionicjs')
-    .description(bjs.info)
-    .version(bjs.version)
+    .description(Bjs.info)
+    .version(Bjs.version)
 
 bjsCliProgram
     .command('sync <configuration_path>')

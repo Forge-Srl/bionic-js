@@ -24,11 +24,11 @@ class JavaHostPropertyGenerator extends CodeGenerator {
     }
 
     getGetterCode(isScaffold) {
-        if (!this.hasGetter)
+        if (!this.hasGetter) {
             return null
+        }
 
         const typeStatement = this.typeGenerator.getTypeStatement()
-
         const header = CodeBlock.create()
             .append(`public ${this.schema.isStatic ? 'static ' : ''}${typeStatement} ${JavaKeywords.getSafeIdentifier(this.schema.name)}() {`).newLineIndenting()
 
@@ -46,8 +46,9 @@ class JavaHostPropertyGenerator extends CodeGenerator {
     }
 
     getSetterCode(isScaffold) {
-        if (!this.hasSetter)
+        if (!this.hasSetter) {
             return null
+        }
 
         const typeStatement = this.typeGenerator.getTypeStatement()
         const header = CodeBlock.create()

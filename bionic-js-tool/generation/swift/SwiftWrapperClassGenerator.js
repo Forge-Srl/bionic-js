@@ -15,7 +15,8 @@ class SwiftWrapperClassGenerator extends ClassGenerator {
 
     get classPartsGenerators() {
         if (!this._classPartsGenerators) {
-            this._classPartsGenerators = this.getClassParts().map(classPart => classPart.generator.forWrapping(this.schema).swift)
+            this._classPartsGenerators = this.getClassParts()
+                .map(classPart => classPart.generator.forWrapping(this.schema).swift)
         }
         return this._classPartsGenerators
     }
@@ -39,7 +40,8 @@ class SwiftWrapperClassGenerator extends ClassGenerator {
 
     getExportFunctionsCode() {
         return CodeBlock.create()
-            .append('override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {').newLineIndenting()
+            .append('override class func bjsExportFunctions(_ nativeExports: BjsNativeExports) -> BjsNativeExports {')
+            .__.newLineIndenting()
             .append(`return ${this.schema.superclass ? 'super.bjsExportFunctions(nativeExports)' : 'nativeExports'}`)
             .__.newLineConditional(this.hasClassParts, 1)
             .append(this.classPartsGenerators.map((generator, index, array) => {
@@ -75,7 +77,7 @@ class SwiftWrapperClassGenerator extends ClassGenerator {
         const footerCode = CodeBlock.create().newLine()
             .append(`private static var _bjsLocator: BjsLocator = BjsLocator("${this.projectName}", "${this.schema.name}")`)
             .__.newLine()
-            .append(`override class var bjsLocator: BjsLocator { _bjsLocator }`).newLineDeindenting()
+            .append('override class var bjsLocator: BjsLocator { _bjsLocator }').newLineDeindenting()
             .append('}')
 
         if (this.hostClassGenerator) {
