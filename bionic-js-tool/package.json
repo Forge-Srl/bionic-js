@@ -1,6 +1,6 @@
 {
   "name": "@forge-srl/bionicjs",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "bionic.js let you use JavaScript classes from other programming languages without using any framework and without writing a single line of bridging code.",
   "keywords": [
     "code generation",
