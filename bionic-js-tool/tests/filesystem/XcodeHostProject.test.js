@@ -388,7 +388,7 @@ describe('XcodeHostProject', () => {
                 ['MotorVehicles'], ['Vehicles', 'MotorVehicles'], ['MotorVehicles'],
                 ['MotorVehicles'],
             ])
-            expect(files.map(file => file.content.length)).toStrictEqual([365, 336, 223, 353, 13553, 810, 3774, 1379,
+            expect(files.map(file => file.content.length)).toStrictEqual([365, 336, 223, 353, 11936, 810, 3739, 1379,
                 1483, 905, 1711, 1169])
             expect(checkForIncompatibleHostFiles).toHaveBeenCalledTimes(1)
         })
