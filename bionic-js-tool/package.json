@@ -2,29 +2,37 @@
   "name": "bionicjs",
   "version": "1.0.1",
   "description": "bionic.js let you use JavaScript classes from other programming languages without using any framework and without writing a single line of bridging code.",
+  "keywords": ["code generation", "java", "android", "swift", "ios", "multiplatform", "bundle"],
   "homepage": "https://github.com/Forge-Srl/bionic-js",
   "license": "MIT",
   "author": "Forge S.r.l.",
   "maintainers": [
     {
-      "name": "Marco Vanetti"
+      "name": "Marco Vanetti",
+      "email": "marco.vanetti@gmail.com"
     },
     {
-      "name": "Tommaso Bossi"
+      "name": "Tommaso Bossi",
+      "email": "tommaso.bossi@forge.srl"
     }
   ],
-  "bin": {
-    "bionicjs": "cli/cli.js"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Forge-Srl/bionic-js.git"
   },
   "scripts": {
+    "compile-parser": "node node_modules/pegjs/bin/pegjs --allowed-start-rules \"TagLine, Tags, BionicTag, DescriptionTag\" -o parser/annotation/Parser.js parser/annotation/pegjsSrc/Parser.pegjs",
     "lint": "./node_modules/.bin/eslint .",
     "test": "jest",
-    "compile-parser": "node node_modules/pegjs/bin/pegjs --allowed-start-rules \"TagLine, Tags, BionicTag, DescriptionTag\" -o parser/annotation/Parser.js parser/annotation/pegjsSrc/Parser.pegjs"
+    "release": "np --no-yarn --no-publish --no-release-draft"
   },
   "jest-comment": "the transform:{} config is to disable transpillation and avoid problems while debugging async code",
   "jest": {
     "transform": {},
     "testTimeout": 600000
+  },
+  "bin": {
+    "bionicjs": "cli/cli.js"
   },
   "files": [
     "/cli",
@@ -52,6 +60,7 @@
     "copy-dir": "^1.3.0",
     "eslint": "^7.20.0",
     "jest-cli": "^26.6.3",
-    "pegjs": "^0.10.0"
+    "pegjs": "^0.10.0",
+    "np": "^7.4.0"
   }
 }

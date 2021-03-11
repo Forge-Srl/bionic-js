@@ -1,21 +1,15 @@
-name: Build bionic.js Tool
+name: Release bionic.js Tool
 
 on:
   push:
     paths:
       - 'bionic-js-tool/**'
-    branches:
-      - 'main'
-
-  # Allows to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    tags:
+      - 'release/**'
 
 jobs:
   build_and_test:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -28,6 +22,10 @@ jobs:
       - name: Build and test
         working-directory: ./bionic-js-tool
         run: |
-          npm install
+          npm ci
           npm test
-          npm run lint
+      - name: Publish to NPM
+        working-directory: ./bionic-js-tool
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
