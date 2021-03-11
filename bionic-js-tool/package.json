@@ -33,7 +33,8 @@
     "lint": "./node_modules/.bin/eslint .",
     "test": "jest",
     "prerelease": "npm test && npm run lint && mkdir -p .git",
-    "release": "npm version"
+    "release": "npm version -m \"build: prepare release %s\"",
+    "postrelease": "git push --follow-tags"
   },
   "jest-comment": "the transform:{} config is to disable transpillation and avoid problems while debugging async code",
   "jest": {
