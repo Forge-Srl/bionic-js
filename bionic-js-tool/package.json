@@ -32,8 +32,8 @@
     "compile-parser": "node node_modules/pegjs/bin/pegjs --allowed-start-rules \"TagLine, Tags, BionicTag, DescriptionTag\" -o parser/annotation/Parser.js parser/annotation/pegjsSrc/Parser.pegjs",
     "lint": "./node_modules/.bin/eslint .",
     "test": "jest",
-    "prerelease": "npm test && npm run lint",
-    "release": "echo Please add a tag release/$npm_package_version to current commit and push it"
+    "prerelease": "npm test && npm run lint && mkdir -p .git",
+    "release": "npm version"
   },
   "jest-comment": "the transform:{} config is to disable transpillation and avoid problems while debugging async code",
   "jest": {
