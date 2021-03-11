@@ -28,6 +28,6 @@ jobs:
           npm test
       - name: Publish to NPM
         working-directory: ./bionic-js-tool
-        run: npm publish
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
