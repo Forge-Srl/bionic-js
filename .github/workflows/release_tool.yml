@@ -8,7 +8,7 @@ on:
       - 'release/**'
 
 jobs:
-  build_and_test:
+  build_and_release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -28,6 +28,6 @@ jobs:
           npm test
       - name: Publish to NPM
         working-directory: ./bionic-js-tool
-        run: npm publish --access public
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

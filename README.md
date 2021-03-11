@@ -88,43 +88,24 @@ bionic.js loves both native application development and code reuse, leaving the 
 
 ## Installation
 
-Coming soon!
-<!-- TODO: uncomment when everything have been deployed
 bionic.js consists of a CLI bundler and a small library for each supported native language.
-
 
 ### CLI bundler
 
 bionic.js bundler requires [node](https://nodejs.org/en/download/), once node is installed run
 
 ```bash
-npm install -g bionicjs
+npm install -g bionic-js-tool
 ```
 
+For more information see also the specific [tool documentation](bionic-js-tool/README.md).
 
-### Swift (iOS/macOS)
+### Language runtimes
 
-Add the following row to your `Podfile`
-```ruby
-pod "BionicJS"
-```
-and run
-```bash
-pod install 
-```
+Each language has its own way of adding a dependency. You should check each specific documentation:
+- [Java](https://github.com/Forge-Srl/bionic-js-runtime-java/README.md#installation)
+- [Swift](https://github.com/Forge-Srl/bionic-js-runtime-swift/README.md#installation)
 
-
-### Java (Android and JVM)
-
-Add this to your pom.xml
-```xml
-<dependency>
-  <groupId>srl.forge</groupId>
-  <artifactId>bionicjs</artifactId>
-  <version>0.1.1</version>
-</dependency>
-```
--->
 
 ## Usage
 
@@ -136,7 +117,7 @@ example
 
 ```console
 foo@bar:~$ bionicjs sync hello-world.bjsconfig.js
-bionic.js - v1.0.1
+bionic.js - v0.1.0
 
 Analyzing guest files dependencies
 Extracting schemas from guest files
