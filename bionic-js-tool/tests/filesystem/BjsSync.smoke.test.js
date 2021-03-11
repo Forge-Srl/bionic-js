@@ -2,6 +2,7 @@ const t = require('../test-utils')
 const copydir = require('copy-dir')
 const {hostFiles: swiftHostFiles, bundleFiles: swiftBundleFiles} = require('../../testing-code/swift/files')
 const {hostFiles: javaHostFiles, bundleFiles: javaBundleFiles} = require('../../testing-code/java/files')
+const bjsVersion = require('../../package.json').version
 
 describe('Bjs smoke tests', () => {
 
@@ -116,7 +117,7 @@ describe('Bjs smoke tests', () => {
                 '',
             ],
             [
-                'bionic.js - v1.0.1',
+                `bionic.js - v${bjsVersion}`,
                 '',
                 'Analyzing guest files dependencies',
                 'Extracting schemas from guest files',
@@ -163,7 +164,7 @@ describe('Bjs smoke tests', () => {
                 '',
             ],
             [
-                'bionic.js - v1.0.1',
+                `bionic.js - v${bjsVersion}`,
                 '',
                 'Analyzing guest files dependencies',
                 'Extracting schemas from guest files',
