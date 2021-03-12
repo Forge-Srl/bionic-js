@@ -51,10 +51,9 @@ struct ContentView: View {
 - [Full Documentation](DOCUMENTATION.md)
 - [Philosophy](#philosophy)
 - [Why should I use bionic.js?](#why-should-i-use-bionicjs)
-- [Installation](#Installation)
+- [Installation](#installation)
   - [CLI bundler](#cli-bundler)
-  - [Swift (iOS/macOS)](#swift-iOSmacOS)
-  - [Java (Android and JVM)](#java-android-and-jvm)
+  - [Language runtimes](#language-runtimes)
 - [Usage](#usage)
 - [Supported languages](#supported-languages)
 - [License](#license)
@@ -103,8 +102,8 @@ For more information see also the specific [tool documentation](bionic-js-tool/R
 ### Language runtimes
 
 Each language has its own way of adding a dependency. You should check each specific documentation:
-- [Java](https://github.com/Forge-Srl/bionic-js-runtime-java/README.md#installation)
-- [Swift](https://github.com/Forge-Srl/bionic-js-runtime-swift/README.md#installation)
+- [Java](https://github.com/Forge-Srl/bionic-js-runtime-java)
+- [Swift](https://github.com/Forge-Srl/bionic-js-runtime-swift)
 
 
 ## Usage
