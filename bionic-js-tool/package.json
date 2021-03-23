@@ -39,7 +39,10 @@
   "jest-comment": "the transform:{} config is to disable transpillation and avoid problems while debugging async code",
   "jest": {
     "transform": {},
-    "testTimeout": 600000
+    "testTimeout": 600000,
+    "setupFilesAfterEnv": [
+      "jest-extended"
+    ]
   },
   "bin": {
     "bionicjs": "cli/cli.js"
@@ -72,6 +75,7 @@
     "copy-dir": "^1.3.0",
     "eslint": "^7.20.0",
     "jest-cli": "^26.6.3",
+    "jest-extended": "^0.11.5",
     "pegjs": "^0.10.0"
   }
 }

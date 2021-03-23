@@ -22,8 +22,9 @@ describe('Bjs', () => {
         expect(Bjs.info).toBe(t.requireModule('package.json').description)
     })
 
-    test('synchonize', async () => {
-        const mockFn = t.mockFn()
+    test('bjsSyncFromPath', () => {
+        log.info = t.mockFn()
+        Bjs.version = '00000'
         BjsConfiguration.fromPath = t.mockFn().mockImplementationOnce(path => {
             expect(path).toBe('some path')
             return 'some config'
@@ -31,11 +32,46 @@ describe('Bjs', () => {
         BjsSync.mockImplementationOnce((config, aLog) => {
             expect(config).toBe('some config')
             expect(aLog).toBe(log)
-            return {
-                sync: async () => mockFn()
+            return {dummy: 'bjsSync'}
+        })
+
+        expect(bjs.bjsSyncFromPath('some path')).toStrictEqual({dummy: 'bjsSync'})
+        expect(log.info).toHaveBeenCalledWith(`bionic.js - v${t.requireModule('package.json').version}\n\n`)
+    })
+
+    describe('synchonize', () => {
+        let sync, clean
+
+        beforeEach(() => {
+            sync = t.mockFn()
+            clean = t.mockFn()
+            bjs.bjsSyncFromPath = (path) => {
+                expect(path).toBe('some path')
+                return {sync, clean}
             }
         })
-        await bjs.synchronize('some path')
-        expect(mockFn).toHaveBeenCalledTimes(1)
+
+        test('without clean', async () => {
+            await bjs.synchronize('some path', false)
+            expect(clean).not.toHaveBeenCalled()
+            expect(sync).toHaveBeenCalledTimes(1)
+        })
+
+        test('with clean', async () => {
+            await bjs.synchronize('some path', true)
+            expect(clean).toHaveBeenCalledTimes(1)
+            expect(sync).toHaveBeenCalledTimes(1)
+            expect(clean).toHaveBeenCalledBefore(sync)
+        })
+    })
+
+    test('clean', async () => {
+        const clean = t.mockFn()
+        bjs.bjsSyncFromPath = (path) => {
+            expect(path).toBe('some path')
+            return {clean}
+        }
+        await bjs.clean('some path')
+        expect(clean).toHaveBeenCalledTimes(1)
     })
 })

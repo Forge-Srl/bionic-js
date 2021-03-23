@@ -16,10 +16,23 @@ class Bjs {
         this.log = log
     }
 
-    async synchronize(configurationAbsolutePath) {
-        const configuration = BjsConfiguration.fromPath(configurationAbsolutePath)
-        const bjsSync = new BjsSync(configuration, this.log)
+    async synchronize(configurationAbsolutePath, cleanBefore = false) {
+        const bjsSync = this.bjsSyncFromPath(configurationAbsolutePath)
+        if (cleanBefore) {
+            await bjsSync.clean()
+        }
         await bjsSync.sync()
+    }
+
+    async clean(configurationAbsolutePath) {
+        const bjsSync = this.bjsSyncFromPath(configurationAbsolutePath)
+        await bjsSync.clean()
+    }
+
+    bjsSyncFromPath(configurationAbsolutePath) {
+        this.log.info(`bionic.js - v${Bjs.version}\n\n`)
+        const configuration = BjsConfiguration.fromPath(configurationAbsolutePath)
+        return new BjsSync(configuration, this.log)
     }
 }
 

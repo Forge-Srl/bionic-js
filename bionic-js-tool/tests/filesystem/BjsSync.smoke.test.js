@@ -2,7 +2,6 @@ const t = require('../test-utils')
 const copydir = require('copy-dir')
 const {hostFiles: swiftHostFiles, bundleFiles: swiftBundleFiles} = require('../../testing-code/swift/files')
 const {hostFiles: javaHostFiles, bundleFiles: javaBundleFiles} = require('../../testing-code/java/files')
-const bjsVersion = require('../../package.json').version
 
 describe('Bjs smoke tests', () => {
 
@@ -40,7 +39,7 @@ describe('Bjs smoke tests', () => {
 
     const getProjectDir = (projectName, lang) => new Directory(__dirname).getSubDir(`../../testing-code/${lang}/${projectName}`)
 
-    async function doSmokeTest(startProjectName, expectedErrors, expectedWarnings, expectedInfos) {
+    async function doSmokeTest(bjsSyncCallback, startProjectName, compareWithProject, expectedErrors, expectedWarnings, expectedInfos) {
         await Directory.runInTempDir(async tempDir => {
 
             const swiftStartProjectDir = getProjectDir(startProjectName, 'swift')
@@ -57,14 +56,14 @@ describe('Bjs smoke tests', () => {
 
             const log = new Log(true)
             const bjsSync = new BjsSync(configuration, log)
-            await bjsSync.sync()
+            await bjsSyncCallback(bjsSync)
 
             expectLog(expectedErrors, log.errorLog)
             expectLog(expectedWarnings, log.warningLog)
             expectLog(expectedInfos, log.infoLog)
 
-            await checkSwiftFiles(swiftTempDir, getProjectDir('project-with-host-files', 'swift'))
-            await checkJavaFiles(javaTempDir, getProjectDir('project-with-host-files', 'java'))
+            await checkSwiftFiles(swiftTempDir, getProjectDir(compareWithProject, 'swift'))
+            await checkJavaFiles(javaTempDir, getProjectDir(compareWithProject, 'java'))
         })
     }
 
@@ -74,9 +73,7 @@ describe('Bjs smoke tests', () => {
         for (const file of [...swiftHostFiles, ...swiftBundleFiles]) {
             const expectedFile = expectedSwiftDir.getSubDir(hostDir).getSubFile(file.path)
             const actualFile = actualSwiftDir.getSubDir(hostDir).getSubFile(file.path)
-            const expectedContent = await expectedFile.getCodeContent()
-            const actualContent = await actualFile.getCodeContent()
-            await expect(actualContent).toEqual(expectedContent)
+            await filesAreEqualOrNotExistent(expectedFile, actualFile)
         }
     }
 
@@ -87,9 +84,7 @@ describe('Bjs smoke tests', () => {
             for (const sourceSet of file.sourceSets) {
                 const expectedFile = expectedJavaDir.getSubDir(hostDir(sourceSet)).getSubFile(file.path)
                 const actualFile = actualJavaDir.getSubDir(hostDir(sourceSet)).getSubFile(file.path)
-                const expectedContent = await expectedFile.getCodeContent()
-                const actualContent = await actualFile.getCodeContent()
-                await expect(actualContent).toEqual(expectedContent)
+                await filesAreEqualOrNotExistent(expectedFile, actualFile)
             }
         }
 
@@ -98,17 +93,33 @@ describe('Bjs smoke tests', () => {
             for (const sourceSet of file.sourceSets) {
                 const expectedFile = expectedJavaDir.getSubDir(bundleDir(sourceSet)).getSubFile(file.path)
                 const actualFile = actualJavaDir.getSubDir(bundleDir(sourceSet)).getSubFile(file.path)
-                const expectedContent = await expectedFile.getCodeContent()
-                const actualContent = await actualFile.getCodeContent()
-                await expect(actualContent).toEqual(expectedContent)
+                await filesAreEqualOrNotExistent(expectedFile, actualFile)
             }
         }
+    }
+
+    async function filesAreEqualOrNotExistent(expectedFile, actualFile) {
+        const expectedExists = await expectedFile.exists()
+        const actualExists = await actualFile.exists()
+        if (expectedExists && !actualExists) {
+            throw new Error(`${actualFile.absolutePath} should exist but it does not.`)
+        } else if (!expectedExists && actualExists) {
+            throw new Error(`${actualFile.absolutePath} should not exist but it does.`)
+        }
+
+        if (!expectedExists || !actualExists) return
+
+        const expectedContent = await expectedFile.getCodeContent()
+        const actualContent = await actualFile.getCodeContent()
+        await expect(actualContent).toEqual(expectedContent)
     }
 
     test('Fill an empty project', async () => {
         const projectFilesOrder = (text1, text2) => text1 < text2 ? -1 : text1 > text2 ? 1 : 0
 
-        await doSmokeTest('project-without-host',
+        await doSmokeTest(async bjsSync => await bjsSync.sync(),
+            'project-without-host',
+            'project-with-host-files',
             [
                 '',
             ],
@@ -117,8 +128,6 @@ describe('Bjs smoke tests', () => {
                 '',
             ],
             [
-                `bionic.js - v${bjsVersion}`,
-                '',
                 'Analyzing guest files dependencies',
                 'Extracting schemas from guest files',
                 'Generating bundles',
@@ -156,7 +165,9 @@ describe('Bjs smoke tests', () => {
     })
 
     test('Update existing files', async () => {
-        await doSmokeTest('project-with-host-files',
+        await doSmokeTest(async bjsSync => await bjsSync.sync(),
+            'project-with-host-files',
+            'project-with-host-files',
             [
                 '',
             ],
@@ -164,8 +175,6 @@ describe('Bjs smoke tests', () => {
                 '',
             ],
             [
-                `bionic.js - v${bjsVersion}`,
-                '',
                 'Analyzing guest files dependencies',
                 'Extracting schemas from guest files',
                 'Generating bundles',
@@ -189,6 +198,52 @@ describe('Bjs smoke tests', () => {
                 'Project files',
                 ' ----------',
                 ' [-] deleted : 0',
+                ' [U] updated : 0',
+                ' [+] added : 0',
+                '',
+                /Processing time: \d\.\d\ds/,
+                '',
+            ])
+    })
+
+    test('Clean existing files', async () => {
+        const projectFilesOrder = (text1, text2) => text1 < text2 ? -1 : text1 > text2 ? 1 : 0
+
+        await doSmokeTest(async bjsSync => await bjsSync.clean(),
+            'project-with-host-files',
+            'project-without-host',
+            [
+                '',
+            ],
+            [
+                '',
+            ],
+            [
+                '',
+                'Opening Swift host project',
+                'Writing bundles',
+                'Writing host files',
+                'Writing Swift host project',
+                '',
+                'Project files',
+                ...swiftBundleFiles.map(file => ` [-] Bundle "${file.bundle}"`),
+                ...(swiftHostFiles.map(file => ` [-] Source "${file.path}" - in bundles (${file.bundles.join(', ')})`)).sort(projectFilesOrder),
+                ' ----------',
+                ' [-] deleted : 12',
+                ' [U] updated : 0',
+                ' [+] added : 0',
+                '',
+                'Opening Java host project',
+                'Writing bundles',
+                'Writing host files',
+                'Writing Java host project',
+                '',
+                'Project files',
+                ...javaBundleFiles.map(file => ` [-] Bundle "${file.bundle}"`),
+                ...(javaHostFiles.flatMap(file => file.path === 'BjsBeautifulVehicles.java' ? file.sourceSets.map(s => file) : [file])
+                    .map(file => ` [-] Source "${file.path}" - in bundles (${file.bundles.join(', ')})`)).sort(projectFilesOrder),
+                ' ----------',
+                ' [-] deleted : 13',
                 ' [U] updated : 0',
                 ' [+] added : 0',
                 '',

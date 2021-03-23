@@ -5,7 +5,6 @@ const {GuestBundler} = require('./GuestBundler')
 const {GlobalSchemaCreator} = require('../parser/GlobalSchemaCreator')
 const {HostFile} = require('./HostFile')
 const {HostEnvironmentFile} = require('./HostEnvironmentFile')
-const bjsVersion = require('../package.json').version
 
 class BjsSync {
 
@@ -14,15 +13,24 @@ class BjsSync {
     }
 
     async sync() {
-        try {
-            this.log.info(`bionic.js - v${bjsVersion}\n\n`)
-            const bjsSyncStats = new BjsSyncStats()
-            this.configuration.validate()
-
+        await this.syncFiles(async () => {
             const guestFiles = await this.getGuestFiles()
             const annotatedFiles = await this.getAnnotatedFiles(guestFiles)
             const bundles = await this.generateBundles(annotatedFiles)
+            return {annotatedFiles, bundles}
+        })
+    }
 
+    async clean() {
+        await this.syncFiles(async () => ({annotatedFiles: [], bundles: []}))
+    }
+
+    async syncFiles(filesGetter) {
+        try {
+            const bjsSyncStats = new BjsSyncStats()
+            this.configuration.validate()
+
+            const {annotatedFiles, bundles} = await filesGetter()
             for (const projectConfig of this.configuration.hostProjects) {
                 const hostProject = await this.openHostProject(projectConfig, bjsSyncStats)
                 await this.syncBundles(hostProject, annotatedFiles, bundles)
