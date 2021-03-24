@@ -11,9 +11,25 @@ Install with npm:
 npm install -g bionic-js-tool
 ```
 
-Then call it with:
+## Usage
+
+### Generation
+
+To generate JS bundles and native bridging code you can call:
 ```bash
 bionicjs sync <config_file>
+```
+Subsequent calls will only regenerate changed files. If you want to regenerate all the files, you can use the `-f`
+(or `--force`) option:
+```bash
+bionicjs sync -f <config_file>
+```
+
+### Clean up
+
+To remove all generated files you can call:
+```bash
+bionicjs clean <config_file>
 ```
 
 ## License
