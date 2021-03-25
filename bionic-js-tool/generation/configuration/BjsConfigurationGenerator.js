@@ -89,7 +89,8 @@ class BjsConfigurationGenerator {
             .append(`basePackage: '${project.basePackage}',`).newLine()
             .append(`hostPackage: '${project.hostPackage}',`).newLine()
             .append(`nativePackage: '${project.nativePackage}',`).newLine()
-            .append('targetBundles: ').append(this.javaTargetBundlesCode(project.targetBundles)).append(',').newLineDeindenting()
+            .append('targetBundles: ').append(this.javaTargetBundlesCode(project.targetBundles))
+            .__.append(',').newLineDeindenting()
             .append('}')
     }
 
@@ -99,7 +100,8 @@ class BjsConfigurationGenerator {
             .append('language: \'swift\',').newLine()
             .append(`projectPath: resolve('${project.projectPath}'),`).newLine()
             .append(`hostDirName: '${project.hostDirName}',`).newLine()
-            .append('targetBundles: ').append(this.swiftTargetBundlesCode(project.targetBundles)).append(',').newLineDeindenting()
+            .append('targetBundles: ').append(this.swiftTargetBundlesCode(project.targetBundles))
+            .__.append(',').newLineDeindenting()
             .append('}')
     }
 
