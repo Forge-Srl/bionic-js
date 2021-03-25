@@ -68,8 +68,11 @@ describe('bjsCliProgram', () => {
                 .mockImplementationOnce(command => {
                     expect(command).toBe('clean <configuration_path>')
                     const result = {
-                        description: description => {
+                        description: (description, args) => {
                             expect(description).toBe('remove generated JS bundles and native bridging code, based on the given configuration')
+                            expect(args).toStrictEqual({
+                                'configuration_path': 'the path to the configuration file'
+                            })
                             return result
                         },
                         action: action => {
@@ -84,8 +87,11 @@ describe('bjsCliProgram', () => {
                 .mockImplementationOnce(command => {
                     expect(command).toBe('sync <configuration_path>')
                     const result = {
-                        description: description => {
+                        description: (description, args) => {
                             expect(description).toBe('regenerate JS bundles and native bridging code, based on the given configuration')
+                            expect(args).toStrictEqual({
+                                'configuration_path': 'the path to the configuration file'
+                            })
                             return result
                         },
                         option: (flag, description) => {

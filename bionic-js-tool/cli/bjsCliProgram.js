@@ -29,13 +29,21 @@ const getProgram = (log, workingDir) => {
 
     bjsCliProgram
         .command('clean <configuration_path>')
-        .description('remove generated JS bundles and native bridging code, based on the given configuration')
+        .description(
+            'remove generated JS bundles and native bridging code, based on the given configuration',
+            {
+                'configuration_path': 'the path to the configuration file',
+            })
         .action(async configurationPath => await bjs.clean(resolvePath(configurationPath)))
 
     bjsCliProgram
         .command('sync <configuration_path>')
         .option('-f, --force', 'force regeneration of all files')
-        .description('regenerate JS bundles and native bridging code, based on the given configuration')
+        .description(
+            'regenerate JS bundles and native bridging code, based on the given configuration',
+            {
+                'configuration_path': 'the path to the configuration file',
+            })
         .action(async (configurationPath, options) =>
             await bjs.synchronize(resolvePath(configurationPath), options.force))
 
