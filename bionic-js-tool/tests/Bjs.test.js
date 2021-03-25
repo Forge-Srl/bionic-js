@@ -2,11 +2,12 @@ const t = require('./test-utils')
 
 describe('Bjs', () => {
 
-    let Bjs, BjsSync, BjsConfiguration, log, bjs
+    let Bjs, BjsInit, BjsSync, BjsConfiguration, log, bjs
 
     beforeEach(() => {
         t.resetModulesCache()
 
+        BjsInit = t.mockAndRequireModule('filesystem/BjsInit').BjsInit
         BjsSync = t.mockAndRequireModule('filesystem/BjsSync').BjsSync
         BjsConfiguration = t.mockAndRequireModule('filesystem/configuration/BjsConfiguration').BjsConfiguration
         Bjs = t.requireModule('Bjs').Bjs
@@ -37,6 +38,17 @@ describe('Bjs', () => {
 
         expect(bjs.bjsSyncFromPath('some path')).toStrictEqual({dummy: 'bjsSync'})
         expect(log.info).toHaveBeenCalledWith(`bionic.js - v${t.requireModule('package.json').version}\n\n`)
+    })
+
+    test('initializeConfiguration', async () => {
+        const init = t.mockFn()
+        BjsInit.mockImplementationOnce((aLog) => {
+            expect(aLog).toBe(log)
+            return {init}
+        })
+        await bjs.initializeConfiguration('some path', 'minimal config')
+        expect(init).toHaveBeenCalledTimes(1)
+        expect(init).toHaveBeenCalledWith('some path', 'minimal config')
     })
 
     describe('synchonize', () => {

@@ -1,3 +1,5 @@
+const colors = require('ansi-colors')
+
 class Log {
 
     constructor(debug) {
@@ -17,13 +19,13 @@ class Log {
 
     warning(message) {
         this.warningLog += message
-        this.writeInfo(`\x1b[33m${message}\x1b[0m`)
+        this.writeInfo(colors.yellow(message))
     }
 
     error(message) {
         message = message.stack ? message.stack : message
         this.errorLog += message
-        this.writeError(`\x1b[31m${message}\x1b[0m`)
+        this.writeError(colors.red(message))
     }
 }
 

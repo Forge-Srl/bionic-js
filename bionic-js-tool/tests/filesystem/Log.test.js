@@ -39,8 +39,8 @@ describe('Log', () => {
         expect(stderrWrite).toHaveBeenCalledTimes(0)
 
         expect(stdoutWrite).toHaveBeenCalledTimes(2)
-        expect(stdoutWrite).toHaveBeenCalledWith('\x1b[33mmsg1\x1b[0m')
-        expect(stdoutWrite).toHaveBeenCalledWith('\x1b[33mmsg2\x1b[0m')
+        expect(stdoutWrite).toHaveBeenCalledWith('\u001b[33mmsg1\u001b[39m')
+        expect(stdoutWrite).toHaveBeenCalledWith('\u001b[33mmsg2\u001b[39m')
     })
 
     test('error', () => {
@@ -50,8 +50,8 @@ describe('Log', () => {
         expect(log.errorLog).toBe('msg1msg2')
 
         expect(stderrWrite).toHaveBeenCalledTimes(2)
-        expect(stderrWrite).toHaveBeenCalledWith('\x1b[31mmsg1\x1b[0m')
-        expect(stderrWrite).toHaveBeenCalledWith('\x1b[31mmsg2\x1b[0m')
+        expect(stderrWrite).toHaveBeenCalledWith('\u001b[31mmsg1\u001b[39m')
+        expect(stderrWrite).toHaveBeenCalledWith('\u001b[31mmsg2\u001b[39m')
 
         expect(stdoutWrite).toHaveBeenCalledTimes(0)
     })

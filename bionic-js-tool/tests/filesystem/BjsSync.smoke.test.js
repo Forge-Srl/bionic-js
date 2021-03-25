@@ -3,7 +3,7 @@ const copydir = require('copy-dir')
 const {hostFiles: swiftHostFiles, bundleFiles: swiftBundleFiles} = require('../../testing-code/swift/files')
 const {hostFiles: javaHostFiles, bundleFiles: javaBundleFiles} = require('../../testing-code/java/files')
 
-describe('Bjs smoke tests', () => {
+describe('BjsSync smoke tests', () => {
 
     let BjsSync, Log, BjsConfiguration, Directory
 
@@ -14,30 +14,8 @@ describe('Bjs smoke tests', () => {
         Directory = t.requireModule('filesystem/Directory').Directory
     })
 
-    function expectLog(expectedLog, actualLogString) {
-        const actualRows = actualLogString.split('\n')
-        const errors = []
-
-        for (let rowId = 0; rowId < expectedLog.length; rowId++) {
-            const expectedRow = expectedLog[rowId]
-            if (rowId >= actualRows.length) {
-                errors.push(`Expected log row "${expectedRow}" not found in actual logs`)
-                break
-            }
-            const actualRow = actualRows[rowId]
-            if (expectedRow instanceof RegExp ? !expectedRow.test(actualRow) : expectedRow !== actualRow) {
-                errors.push(`Log row(${rowId}) "${actualRow}" doesn't match with expected row: "${expectedRow}"`)
-            }
-        }
-        if (actualRows.length > expectedLog.length) {
-            errors.push('Actual log rows exceed expected rows')
-        }
-        if (errors.length > 0) {
-            throw Error(errors.join('\n'))
-        }
-    }
-
     const getProjectDir = (projectName, lang) => new Directory(__dirname).getSubDir(`../../testing-code/${lang}/${projectName}`)
+    const projectFilesOrder = (text1, text2) => text1 < text2 ? -1 : text1 > text2 ? 1 : 0
 
     async function doSmokeTest(bjsSyncCallback, startProjectName, compareWithProject, expectedErrors, expectedWarnings, expectedInfos) {
         await Directory.runInTempDir(async tempDir => {
@@ -58,9 +36,9 @@ describe('Bjs smoke tests', () => {
             const bjsSync = new BjsSync(configuration, log)
             await bjsSyncCallback(bjsSync)
 
-            expectLog(expectedErrors, log.errorLog)
-            expectLog(expectedWarnings, log.warningLog)
-            expectLog(expectedInfos, log.infoLog)
+            t.expectLog(log.errorLog, expectedErrors)
+            t.expectLog(log.warningLog, expectedWarnings)
+            t.expectLog(log.infoLog, expectedInfos)
 
             await checkSwiftFiles(swiftTempDir, getProjectDir(compareWithProject, 'swift'))
             await checkJavaFiles(javaTempDir, getProjectDir(compareWithProject, 'java'))
@@ -73,7 +51,7 @@ describe('Bjs smoke tests', () => {
         for (const file of [...swiftHostFiles, ...swiftBundleFiles]) {
             const expectedFile = expectedSwiftDir.getSubDir(hostDir).getSubFile(file.path)
             const actualFile = actualSwiftDir.getSubDir(hostDir).getSubFile(file.path)
-            await filesAreEqualOrNotExistent(expectedFile, actualFile)
+            await t.expectFilesAreEqualOrNotExistent(actualFile, expectedFile)
         }
     }
 
@@ -84,7 +62,7 @@ describe('Bjs smoke tests', () => {
             for (const sourceSet of file.sourceSets) {
                 const expectedFile = expectedJavaDir.getSubDir(hostDir(sourceSet)).getSubFile(file.path)
                 const actualFile = actualJavaDir.getSubDir(hostDir(sourceSet)).getSubFile(file.path)
-                await filesAreEqualOrNotExistent(expectedFile, actualFile)
+                await t.expectFilesAreEqualOrNotExistent(actualFile, expectedFile)
             }
         }
 
@@ -93,30 +71,12 @@ describe('Bjs smoke tests', () => {
             for (const sourceSet of file.sourceSets) {
                 const expectedFile = expectedJavaDir.getSubDir(bundleDir(sourceSet)).getSubFile(file.path)
                 const actualFile = actualJavaDir.getSubDir(bundleDir(sourceSet)).getSubFile(file.path)
-                await filesAreEqualOrNotExistent(expectedFile, actualFile)
+                await t.expectFilesAreEqualOrNotExistent(actualFile, expectedFile)
             }
         }
     }
 
-    async function filesAreEqualOrNotExistent(expectedFile, actualFile) {
-        const expectedExists = await expectedFile.exists()
-        const actualExists = await actualFile.exists()
-        if (expectedExists && !actualExists) {
-            throw new Error(`${actualFile.absolutePath} should exist but it does not.`)
-        } else if (!expectedExists && actualExists) {
-            throw new Error(`${actualFile.absolutePath} should not exist but it does.`)
-        }
-
-        if (!expectedExists || !actualExists) return
-
-        const expectedContent = await expectedFile.getCodeContent()
-        const actualContent = await actualFile.getCodeContent()
-        await expect(actualContent).toEqual(expectedContent)
-    }
-
     test('Fill an empty project', async () => {
-        const projectFilesOrder = (text1, text2) => text1 < text2 ? -1 : text1 > text2 ? 1 : 0
-
         await doSmokeTest(async bjsSync => await bjsSync.sync(),
             'project-without-host',
             'project-with-host-files',
@@ -207,8 +167,6 @@ describe('Bjs smoke tests', () => {
     })
 
     test('Clean existing files', async () => {
-        const projectFilesOrder = (text1, text2) => text1 < text2 ? -1 : text1 > text2 ? 1 : 0
-
         await doSmokeTest(async bjsSync => await bjsSync.clean(),
             'project-with-host-files',
             'project-without-host',

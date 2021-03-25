@@ -1,3 +1,4 @@
+const {BjsInit} = require('./filesystem/BjsInit')
 const {BjsSync} = require('./filesystem/BjsSync')
 const {BjsConfiguration} = require('./filesystem/configuration/BjsConfiguration')
 const packageInfo = require('./package.json')
@@ -14,6 +15,11 @@ class Bjs {
 
     constructor(log) {
         this.log = log
+    }
+
+    async initializeConfiguration(configurationAbsolutePath, minimalConfiguration) {
+        const bjsInit = new BjsInit(this.log)
+        await bjsInit.init(configurationAbsolutePath, minimalConfiguration)
     }
 
     async synchronize(configurationAbsolutePath, cleanBefore = false) {

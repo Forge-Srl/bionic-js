@@ -53,13 +53,52 @@ class TestUtils {
         return this.mockFn().mockReturnValueOnce(returnValue)
     }
 
+    static mockFn(...params) {
+        return jest.fn(...params)
+    }
+
     static expectCode(codeBlock, ...expectedLines) {
         const expectedCode = expectedLines.join('\n')
         expect(codeBlock.getString !== undefined ? codeBlock.getString() : codeBlock).toBe(expectedCode)
     }
 
-    static mockFn(...params) {
-        return jest.fn(...params)
+    static expectLog(actualLogString, expectedLog) {
+        const actualRows = actualLogString.split('\n')
+        const errors = []
+
+        for (let rowId = 0; rowId < expectedLog.length; rowId++) {
+            const expectedRow = expectedLog[rowId]
+            if (rowId >= actualRows.length) {
+                errors.push(`Expected log row "${expectedRow}" not found in actual logs`)
+                break
+            }
+            const actualRow = actualRows[rowId]
+            if (expectedRow instanceof RegExp ? !expectedRow.test(actualRow) : expectedRow !== actualRow) {
+                errors.push(`Log row(${rowId}) "${actualRow}" doesn't match with expected row: "${expectedRow}"`)
+            }
+        }
+        if (actualRows.length > expectedLog.length) {
+            errors.push('Actual log rows exceed expected rows')
+        }
+        if (errors.length > 0) {
+            throw new Error(errors.join('\n'))
+        }
+    }
+
+    static async expectFilesAreEqualOrNotExistent(actualFile, expectedFile) {
+        const expectedExists = await expectedFile.exists()
+        const actualExists = await actualFile.exists()
+        if (expectedExists && !actualExists) {
+            throw new Error(`${actualFile.absolutePath} should exist but it does not.`)
+        } else if (!expectedExists && actualExists) {
+            throw new Error(`${actualFile.absolutePath} should not exist but it does.`)
+        }
+
+        if (!expectedExists || !actualExists) return
+
+        const expectedContent = await expectedFile.getCodeContent()
+        const actualContent = await actualFile.getCodeContent()
+        await expect(actualContent).toEqual(expectedContent)
     }
 }
 

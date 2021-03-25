@@ -13,7 +13,14 @@ npm install -g bionic-js-tool
 
 ## Usage
 
-### Generation
+### New configuration file
+
+To create a new bionic.js configuration file interactively you can use:
+```bash
+bionicjs init [config_file]
+```
+
+### Code generation
 
 To generate JS bundles and native bridging code you can call:
 ```bash
