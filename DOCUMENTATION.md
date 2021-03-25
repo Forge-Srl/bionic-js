@@ -736,6 +736,9 @@ module.exports = {
 
         /* sub-package to use by auto-generated Java bridging code */
         hostPackage: "js",
+        
+        /* sub-package which contains implementation of native wrappers */
+        nativePackage: "wrappers",
 
         /* key is the name of JS bundle, value is the configuration */
         targetBundles: {
