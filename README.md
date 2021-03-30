@@ -49,6 +49,7 @@ struct ContentView: View {
 ## Table of Contents
 
 - [Full Documentation](DOCUMENTATION.md)
+- [Getting started](TUTORIAL.md)
 - [Philosophy](#philosophy)
 - [Why should I use bionic.js?](#why-should-i-use-bionicjs)
 - [Installation](#installation)

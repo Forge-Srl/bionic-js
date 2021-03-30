@@ -7,7 +7,7 @@ This is the cli tool of bionic.js. For more information about bionic.js see the 
 ## Installation
 
 Install with npm:
-```bash
+```shell
 npm install -g bionic-js-tool
 ```
 
@@ -16,26 +16,26 @@ npm install -g bionic-js-tool
 ### New configuration file
 
 To create a new bionic.js configuration file interactively you can use:
-```bash
+```shell
 bionicjs init [config_file]
 ```
 
 ### Code generation
 
 To generate JS bundles and native bridging code you can call:
-```bash
+```shell
 bionicjs sync <config_file>
 ```
 Subsequent calls will only regenerate changed files. If you want to regenerate all the files, you can use the `-f`
 (or `--force`) option:
-```bash
+```shell
 bionicjs sync -f <config_file>
 ```
 
 ### Clean up
 
 To remove all generated files you can call:
-```bash
+```shell
 bionicjs clean <config_file>
 ```
 
