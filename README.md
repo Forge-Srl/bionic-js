@@ -1,7 +1,7 @@
 <div align="center">
 <img style="max-height: 250px;" alt="bionic.js" src="./bionic.js.svg">
 
-![Build bionic.js Tool](https://github.com/Forge-Srl/bionic-js/workflows/Build%20bionic.js%20Tool/badge.svg?branch=main)&nbsp;&nbsp;&nbsp;&nbsp; ![Build bionic.js Java](https://github.com/Forge-Srl/bionic-js-runtime-java/workflows/Build%20bionic.js%20Java/badge.svg?branch=main)&nbsp;&nbsp;&nbsp;&nbsp; ![Build bionic.js Swift](https://github.com/Forge-Srl/bionic-js-runtime-swift/workflows/Build%20bionic.js%20Swift/badge.svg?branch=main)
+![Build bionic.js Tool](https://github.com/Forge-Srl/bionic-js/workflows/Build%20bionic.js%20Tool/badge.svg?branch=main) ![Build bionic.js Java](https://github.com/Forge-Srl/bionic-js-runtime-java/workflows/Build%20bionic.js%20Java/badge.svg?branch=main) ![Build bionic.js Swift](https://github.com/Forge-Srl/bionic-js-runtime-swift/workflows/Build%20bionic.js%20Swift/badge.svg?branch=main)
 </div>
 <br>
 
