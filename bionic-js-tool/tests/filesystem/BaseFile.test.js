@@ -111,6 +111,17 @@ describe('BaseFile', () => {
         expect(baseFile.setRootDirPath(`${t.fsRoot}new${path.sep}dir`).rootDirPath).toBe(`${t.fsRoot}new/dir`)
     })
 
+    test('setRelativePath', async () => {
+        expect(baseFile.rootDirPath).toBe(`${t.fsRoot}dir1`)
+        expect(baseFile.relativePath).toBe(`dir2/filePath.js`)
+        expect(baseFile.setRelativePath(`newDir/newFile.js`).relativePath).toBe(`newDir/newFile.js`)
+        expect(baseFile.rootDirPath).toBe(`${t.fsRoot}dir1`)
+    })
+
+    test('setRelativePath, platform dependent path', async () => {
+        expect(baseFile.setRelativePath(`newDir${path.sep}newFile.js`).relativePath).toBe(`newDir/newFile.js`)
+    })
+
     test('exists', async () => {
         fs.access.mockImplementationOnce(async (path, mode) => {
             expect(path).toBe(filePath)

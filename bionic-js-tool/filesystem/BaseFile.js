@@ -62,6 +62,11 @@ class BaseFile {
         return this
     }
 
+    setRelativePath(relativePath) {
+        this.path = posixPath(path.resolve(this.rootDirPath, relativePath))
+        return this
+    }
+
     async exists() {
         return this.checkAccess(fs.orig.constants.F_OK)
     }

@@ -10,7 +10,9 @@ class JavaHostFile extends HostFile {
 
         return hostProjectConfig.getSourceSetsForBundles(guestFile.bundles).map(sourceSet => {
             const hostDir = hostProjectConfig.hostDir(sourceSet).path
-            const newPath = JavaUtils.pathToSafePath(guestFile.composeNewPath(hostDir, newFileName, JAVA_FILE_EXT))
+
+            const newPath = guestFile.setRelativePath(JavaUtils.pathToSafePath(guestFile.relativePath))
+                .composeNewPath(hostDir, newFileName, JAVA_FILE_EXT)
             return new JavaHostFile(newPath, hostDir, annotatedFile, projectName, hostProjectConfig.hostPackage,
                 hostProjectConfig.nativePackage)
         })

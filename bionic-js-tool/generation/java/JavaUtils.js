@@ -3,8 +3,12 @@ const {JavaKeywords} = require('./JavaKeywords')
 class JavaUtils {
 
     static pathToSafePath(path) {
-        return path.split('/')
+        const split = path.split('/')
+        const last = split.pop()
+
+        return split
             .map(folder => JavaKeywords.getSafeIdentifier(folder))
+            .concat(last)
             .join('/')
     }
 

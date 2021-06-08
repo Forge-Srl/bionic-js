@@ -9,6 +9,11 @@ describe('JavaHostFile', () => {
             guestFile: {
                 name: 'Code',
                 bundles: ['bundle1', 'bundle2'],
+                relativePath: 'relativePath',
+                setRelativePath: (escapedPath) => {
+                    expect(escapedPath).toBe('relativePath')
+                    return annotatedFile.guestFile
+                },
                 composeNewPath: (newRootDirPath, newName, newExtension) => {
                     expect(newRootDirPath.startsWith('/host/dir/source')).toBeTruthy()
                     expect(newName).toBe(expectedFileName)
