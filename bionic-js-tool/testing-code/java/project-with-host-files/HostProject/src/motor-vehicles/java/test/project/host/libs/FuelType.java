@@ -3,6 +3,7 @@ package test.project.host.libs;
 import jjbridge.api.runtime.JSReference;
 import jjbridge.api.value.strategy.FunctionCallback;
 import bionic.js.Bjs;
+import bionic.js.BjsAnyObject;
 import bionic.js.BjsTypeInfo;
 import bionic.js.BjsObjectTypeInfo;
 import bionic.js.Lambda;

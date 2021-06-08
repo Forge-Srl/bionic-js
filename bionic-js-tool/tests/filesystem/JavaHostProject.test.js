@@ -57,8 +57,8 @@ describe('JavaHostProject', () => {
                 ['MotorVehicles'], ['Vehicles'], ['Vehicles'], ['MotorVehicles'], ['MotorVehicles'],
                 ['MotorVehicles', 'Vehicles'],
             ])
-            expect(files.map(file => file.content.length)).toStrictEqual([3366, 2742, 1094, 1094, 352, 537, 352,
-                1153, 11973, 1513, 3776, 3776, 1999, 2598, 1537])
+            expect(files.map(file => file.content.length)).toStrictEqual([3458, 2814, 1125, 1125, 352, 537, 352,
+                1184, 11973, 1544, 3776, 3776, 2030, 2629, 1568])
         })
     })
 

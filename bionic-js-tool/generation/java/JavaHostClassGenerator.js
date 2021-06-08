@@ -61,6 +61,7 @@ class JavaHostClassGenerator extends ClassGenerator {
             .append('import jjbridge.api.runtime.JSReference;').newLine()
             .append('import jjbridge.api.value.strategy.FunctionCallback;').newLine()
             .append('import bionic.js.Bjs;').newLine()
+            .append('import bionic.js.BjsAnyObject;').newLine()
             .append('import bionic.js.BjsTypeInfo;').newLine()
             .append('import bionic.js.BjsObjectTypeInfo;').newLine()
             .append('import bionic.js.Lambda;').newLine()

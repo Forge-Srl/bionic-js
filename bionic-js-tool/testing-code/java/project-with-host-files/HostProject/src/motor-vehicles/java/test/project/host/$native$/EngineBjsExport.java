@@ -1,11 +1,13 @@
 package test.project.host.$native$;
 
 import bionic.js.Bjs;
+import bionic.js.BjsAnyObject;
 import bionic.js.BjsNativeExports;
 import bionic.js.BjsNativeWrapper;
 import bionic.js.BjsNativeWrapperTypeInfo;
 import bionic.js.BjsTypeInfo;
 import bionic.js.Lambda;
+import jjbridge.api.runtime.JSReference;
 import jjbridge.api.value.strategy.FunctionCallback;
 import java.util.Date;
 import test.project.host.libs.FuelType;

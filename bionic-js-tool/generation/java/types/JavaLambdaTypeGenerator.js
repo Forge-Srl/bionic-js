@@ -37,7 +37,7 @@ class JavaLambdaTypeGenerator extends JavaTypeGenerator {
                     .append(`JSReference ${jsFuncVar} = `).append(jsFuncIniRet.returningCode).append(';').newLine())
             .editRet(ret =>
                 ret.append(`${context.bjsEntrance}.getFunc(`).append(jsFuncVar)
-                    .__.append(`, (${paramNames.join(', ')}) -> {`).newLineIndenting()
+                    .__.append(`, (${this.getTypeStatement()}) (${paramNames.join(', ')}) -> {`).newLineIndenting()
                     .append(this.returnTypeGenerator.getNativeReturnCode(this.getCallerWithNativeIniRet(jsFuncVar,
                         paramNames, context)))
                     .__.newLineDeindenting()

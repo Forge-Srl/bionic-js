@@ -1,11 +1,13 @@
 package test.project.host.$native$;
 
 import bionic.js.Bjs;
+import bionic.js.BjsAnyObject;
 import bionic.js.BjsNativeExports;
 import bionic.js.BjsNativeWrapper;
 import bionic.js.BjsNativeWrapperTypeInfo;
 import bionic.js.BjsTypeInfo;
 import bionic.js.Lambda;
+import jjbridge.api.runtime.JSReference;
 import jjbridge.api.value.strategy.FunctionCallback;
 import java.util.Date;
 import bionic.js.BjsExport;
@@ -72,7 +74,7 @@ public interface BaseEngineBjsExport extends BjsExport {
         protected FunctionCallback<?> bjs_watch() {
             return jsReferences -> {
                 JSReference jsFunc_bjs0 = jsReferences[1];
-                ((BaseEngineBjsExport) bjs.getWrapped(jsReferences[0])).watch(bjs.getFunc(jsFunc_bjs0, () -> {
+                ((BaseEngineBjsExport) bjs.getWrapped(jsReferences[0])).watch(bjs.getFunc(jsFunc_bjs0, (Lambda.F0<String>) () -> {
                     return bjs.getString(bjs.funcCall(jsFunc_bjs0));
                 }));
                 return bjs.jsUndefined();
