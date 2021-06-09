@@ -48,6 +48,7 @@ public interface EngineBjsExport extends BaseEngineBjsExport {
         
         protected FunctionCallback<?> bjsBind() {
             return jsReferences -> {
+                jsReferences = bjs.ensureArraySize(jsReferences, 2);
                 EngineBjsExport bound = bjs.getBound(jsReferences[1], realImplementation);
                 if (bound == null) {
                     bound = invokeConstructor(new Class[]{FuelType.class}, new Object[]{bjs.getObj(jsReferences[1], FuelType.bjsFactory, FuelType.class)});

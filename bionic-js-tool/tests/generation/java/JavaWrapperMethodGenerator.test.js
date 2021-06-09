@@ -80,6 +80,7 @@ describe('JavaWrapperMethodGenerator', () => {
             '        ',
             '        protected FunctionCallback<?> bjsBind() {',
             '            return jsReferences -> {',
+            '                jsReferences = bjs.ensureArraySize(jsReferences, 2);',
             '                Class1BjsExport bound = bjs.getBound(jsReferences[1], realImplementation);',
             '                bjs.bindNative(bound, jsReferences[0]);',
             '                return bjs.jsUndefined();',

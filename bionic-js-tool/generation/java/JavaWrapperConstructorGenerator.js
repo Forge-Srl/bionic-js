@@ -58,6 +58,7 @@ class JavaWrapperConstructorGenerator extends JavaMethodGenerator {
             .newLine()
             .append('protected FunctionCallback<?> bjsBind() {').newLineIndenting()
             .append('return jsReferences -> {').newLineIndenting()
+            .append(`jsReferences = bjs.ensureArraySize(jsReferences, ${this.parameters.length});`).newLine()
             .append(`${this.classSchema.name}BjsExport bound = bjs.getBound(jsReferences[1], realImplementation);`).newLine()
             .append(publicConstructorCall)
             .append('bjs.bindNative(bound, jsReferences[0]);').newLine()
