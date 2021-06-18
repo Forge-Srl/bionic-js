@@ -162,9 +162,9 @@ Processing time: 0.84s
 ## Supported languages
 
 Here is a list of the native languages currently supported by bionic.js:
-- **Java** (ART on Android, JVM on Windows, macOS and Linux): <https://github.com/Forge-Srl/bionic-js-runtime-java>
+- **Java and Kotlin** (ART on Android, JVM on Windows, macOS and Linux): <https://github.com/Forge-Srl/bionic-js-runtime-java>
 - **Swift** (iOS and macOS): <https://github.com/Forge-Srl/bionic-js-runtime-swift>
-- Coming soon: other JVM-based languages (Kotlin, Groovy, Scala, ...)
+- Coming soon: other JVM-based languages (Groovy, Scala, ...)
 - Coming soon: Objective-C, thanks to the Swift-Objective-C interoperability.
 
 bionic.js is open to the integration of new native languages and runtimes.
