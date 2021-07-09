@@ -58,25 +58,25 @@
     "/LICENSE.md"
   ],
   "dependencies": {
-    "@babel/parser": "^7.13.12",
+    "@babel/parser": "^7.14.7",
     "ansi-colors": "^4.1.1",
     "commander": "^7.2.0",
     "enquirer": "^2.3.6",
-    "fast-glob": "^3.2.5",
+    "fast-glob": "^3.2.7",
     "graceful-fs": "^4.2.6",
     "ignore": "^5.1.8",
-    "memfs": "^3.2.0",
+    "memfs": "^3.2.2",
     "mkdirp": "^1.0.4",
     "rimraf": "^3.0.2",
     "touch": "^3.1.0",
     "uuid": "^8.3.2",
-    "webpack": "^5.28.0",
+    "webpack": "^5.44.0",
     "xcode": "^3.0.1"
   },
   "devDependencies": {
     "copy-dir": "^1.3.0",
-    "eslint": "^7.22.0",
-    "jest-cli": "^26.6.3",
+    "eslint": "^7.30.0",
+    "jest-cli": "^27.0.6",
     "jest-extended": "^0.11.5",
     "pegjs": "^0.10.0"
   }
