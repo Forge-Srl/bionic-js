@@ -3,11 +3,11 @@ const {JavaTypeGenerator} = require('./JavaTypeGenerator')
 class JavaIntTypeGenerator extends JavaTypeGenerator {
 
     getTypeStatement() {
-        return 'Integer'
+        return 'Long'
     }
 
     getJsToPrimitiveMethodName() {
-        return 'getInteger'
+        return 'getLong'
     }
 }
 

@@ -36,12 +36,12 @@ public class Vehicle extends BjsObject {
         bjsSetProperty("weight", bjs.putPrimitive(value));
     }
     
-    public Integer seats() {
-        return bjs.getInteger(bjsGetProperty("seats"));
+    public Long seats() {
+        return bjs.getLong(bjsGetProperty("seats"));
     }
     
-    public Integer maxSpeed() {
-        return bjs.getInteger(bjsGetProperty("maxSpeed"));
+    public Long maxSpeed() {
+        return bjs.getLong(bjsGetProperty("maxSpeed"));
     }
     
     private static final JSReference bjsClass = BjsObjectTypeInfo.get(Vehicle.class).bjsClass();

@@ -99,8 +99,8 @@ describe('JavaHostMethodGenerator', () => {
 
         t.expectCode(code,
             ...expectedHeader,
-            '    public Integer method1(Boolean boolParam) {',
-            '        return bjs.getInteger(bjsCall("method1", bjs.putPrimitive(boolParam)));',
+            '    public Long method1(Boolean boolParam) {',
+            '        return bjs.getLong(bjsCall("method1", bjs.putPrimitive(boolParam)));',
             '    }',
             ...expectedFooter)
     })
@@ -113,7 +113,7 @@ describe('JavaHostMethodGenerator', () => {
 
         t.expectCode(code,
             ...expectedHeader,
-            '    public void method1(Boolean boolParam, Integer intParam) {',
+            '    public void method1(Boolean boolParam, Long intParam) {',
             '        bjsCall("method1", bjs.putPrimitive(boolParam), bjs.putPrimitive(intParam));',
             '    }',
             ...expectedFooter)

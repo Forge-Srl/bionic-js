@@ -31,11 +31,11 @@ public class MotorVehicle extends Vehicle {
         this(MotorVehicle.class, arguments);
     }
     
-    public MotorVehicle(Integer weight, Integer seats, Integer maxSpeed, FuelType fuelType, Double maxRange, Double currentRange) {
+    public MotorVehicle(Long weight, Long seats, Long maxSpeed, FuelType fuelType, Double maxRange, Double currentRange) {
         this(bjs_MotorVehicle(weight, seats, maxSpeed, fuelType, maxRange, currentRange));
     }
     
-    private static JSReference[] bjs_MotorVehicle(Integer weight, Integer seats, Integer maxSpeed, FuelType fuelType, Double maxRange, Double currentRange) {
+    private static JSReference[] bjs_MotorVehicle(Long weight, Long seats, Long maxSpeed, FuelType fuelType, Double maxRange, Double currentRange) {
         return new JSReference[]{bjs.putPrimitive(weight), bjs.putPrimitive(seats), bjs.putPrimitive(maxSpeed), bjs.putObj(fuelType), bjs.putPrimitive(maxRange), bjs.putPrimitive(currentRange)};
     }
     

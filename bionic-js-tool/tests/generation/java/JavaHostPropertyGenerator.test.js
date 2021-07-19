@@ -74,8 +74,8 @@ describe('JavaHostPropertyGenerator', () => {
 
         t.expectCode(code,
             ...expectedHeader(),
-            '    public static Integer property1() {',
-            '        return bjs.getInteger(bjs.getProperty(bjsClass, "property1"));',
+            '    public static Long property1() {',
+            '        return bjs.getLong(bjs.getProperty(bjsClass, "property1"));',
             '    }',
             ...expectedFooter)
     })
@@ -85,8 +85,8 @@ describe('JavaHostPropertyGenerator', () => {
 
         t.expectCode(code,
             ...expectedHeader(),
-            '    public Integer $default$() {',
-            '        return bjs.getInteger(bjsGetProperty("default"));',
+            '    public Long $default$() {',
+            '        return bjs.getLong(bjsGetProperty("default"));',
             '    }',
             ...expectedFooter)
     })
@@ -96,7 +96,7 @@ describe('JavaHostPropertyGenerator', () => {
 
         t.expectCode(code,
             ...expectedHeader(),
-            '    public static void property1(Integer value) {',
+            '    public static void property1(Long value) {',
             '        bjs.setProperty(bjsClass, "property1", bjs.putPrimitive(value));',
             '    }',
             ...expectedFooter)
@@ -107,10 +107,10 @@ describe('JavaHostPropertyGenerator', () => {
 
         t.expectCode(code,
             ...expectedHeader(),
-            '    public static Integer property1() {',
-            '        return bjs.getInteger(bjs.getProperty(bjsClass, "property1"));',
+            '    public static Long property1() {',
+            '        return bjs.getLong(bjs.getProperty(bjsClass, "property1"));',
             '    }',
-            '    public static void property1(Integer value) {',
+            '    public static void property1(Long value) {',
             '        bjs.setProperty(bjsClass, "property1", bjs.putPrimitive(value));',
             '    }',
             ...expectedFooter)
@@ -135,14 +135,14 @@ describe('JavaHostPropertyGenerator', () => {
 
         t.expectCode(code,
             ...expectedHeader(),
-            '    public Integer[][] property1() {',
+            '    public Long[][] property1() {',
             '        return bjs.getArray(bjsGetProperty("property1"), r_bjs0 -> {',
             '            return bjs.getArray(r_bjs0, r_bjs1 -> {',
-            '                return bjs.getInteger(r_bjs1);',
-            '            }, Integer.class);',
-            '        }, Integer[].class);',
+            '                return bjs.getLong(r_bjs1);',
+            '            }, Long.class);',
+            '        }, Long[].class);',
             '    }',
-            '    public void property1(Integer[][] value) {',
+            '    public void property1(Long[][] value) {',
             '        bjsSetProperty("property1", bjs.putArray(value, nv_bjs0 -> {',
             '            return bjs.putArray(nv_bjs0, nv_bjs1 -> {',
             '                return bjs.putPrimitive(nv_bjs1);',
@@ -298,7 +298,7 @@ describe('JavaHostPropertyGenerator', () => {
             ...expectedScaffoldHeader,
             'public class Class1 implements Class1BjsExport {',
             '    ',
-            '    public static void property1(Integer value) {',
+            '    public static void property1(Long value) {',
             '        ',
             '    }',
             '}')
@@ -311,7 +311,7 @@ describe('JavaHostPropertyGenerator', () => {
             ...expectedScaffoldHeader,
             'public class Class1 implements Class1BjsExport {',
             '    ',
-            '    public Integer property1() {',
+            '    public Long property1() {',
             '        ',
             '    }',
             '}')
@@ -339,10 +339,10 @@ describe('JavaHostPropertyGenerator', () => {
             ...expectedScaffoldHeader,
             'public class Class1 implements Class1BjsExport {',
             '    ',
-            '    public Integer property1() {',
+            '    public Long property1() {',
             '        ',
             '    }',
-            '    public void property1(Integer value) {',
+            '    public void property1(Long value) {',
             '        ',
             '    }',
             '}')
